@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # Name: connectivity_ml.sh
 # Version: 0.0.1
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
@@ -50,7 +50,7 @@ else
       ;;
    --version)
       echo -e "Current version: $VERSION\n"
-      exit0
+      exit 0
       ;;
     esac
 fi
