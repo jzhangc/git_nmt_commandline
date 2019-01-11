@@ -8,6 +8,7 @@
 # ------ Version History ------
 # 0.0.1 script initiation
 
+
 # ------ variables ------
 # iniitate internal system variables
 VERSION="0.0.1"
@@ -54,3 +55,7 @@ else
       ;;
     esac
 fi
+
+
+# ------ functions ------
+# function to check dependencies
