@@ -3,7 +3,7 @@ Machine learning shell script applications for MEG datasets
 
 
 ## **Applications**
-- connectivity_ml.sh: A bash application for automating machin learning analysis for MEG connection data
+- connectivity_ml.sh: A bash application for automating machine learning analysis for MEG connection data
 
 
 ## **Current versions**
