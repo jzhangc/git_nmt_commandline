@@ -12,7 +12,18 @@ Machine learning shell script applications for MEG datasets
 
 ## **Update log**
 ```
+0.0.1 (Feature preview)
 (ICEBOX)
+  - connectivity_ml
+    - Core data analysis functionalities
+      - data processing
+      - univariant analysis
+      - unsupervised learning
+      - random forest feature selection
+      - SVM and PLS-DA classification
+    - Dependency check
+    - Call R packages and scripts from the application
+    - Automatic output folder construction
 
 (ADDED)
   - connectivity_ml
