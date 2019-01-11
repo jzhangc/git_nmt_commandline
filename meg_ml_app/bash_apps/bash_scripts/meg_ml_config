@@ -1,0 +1,11 @@
+# File name: meg_ml_config
+# Description: Configeration file for connectivity_ml.sh, containing variable and values for the application
+# Usage: Adjust the values for the variables
+#
+# ------ Variables for general settings ------
+# ------ Variables for data preprocessing ------
+# ------ Variables for unsupervised clustering analysis ------
+# ------ Variables for univariant analysis ------
+# ------ Variables for SVM classification ------
+# ------ Variables for PLS-DA modelling ------
+# ------ Variables for post-FS clustering analysis ------
