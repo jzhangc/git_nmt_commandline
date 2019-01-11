@@ -14,7 +14,7 @@ Machine learning shell script applications for MEG datasets
 ```
 0.0.1 (Feature preview)
 (ICEBOX)
-  - connectivity_ml
+  - connectivity_ml.sh
     - Core data analysis functionalities
       - data processing
       - univariant analysis
@@ -26,7 +26,7 @@ Machine learning shell script applications for MEG datasets
     - Automatic output folder construction
 
 (ADDED)
-  - connectivity_ml
+  - connectivity_ml.sh
     - config file connectivity_ml_config initiated
     - initial commit
 ```
