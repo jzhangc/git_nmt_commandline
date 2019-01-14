@@ -115,3 +115,11 @@ fi
 
 # ------ functions ------
 # function to check dependencies
+check_depende (){
+  echo -e "Rscript..."
+  if hash Rscript 2>/dev/null; then
+    echo -e "Pass!\n"
+  else
+    if [ $UNAMESTR=="Darwin" ]; then
+      
+}
