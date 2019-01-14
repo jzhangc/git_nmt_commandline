@@ -90,5 +90,28 @@ if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $MFLAG -eq 1 ||$NFLAG -eq 1 || $SFLAG -eq 
 	exit 1
 fi
 
+# ------ config file check -------
+# application variables from config file
+# and their default settings if no config file
+if [ -f ./connectivity_ml_config ]; then  # variables read from the configeration file
+  source connectivity_ml_config
+  ## below: to check the completeness of the file: the variables will only load if all the variables are present
+  # -z tests if the variable has zero length. returns True if zero.
+  # v1, v2, etc are placeholders for now
+  if [[ -z $v1 || -z $v2 || -z $v3 || -z $v4 ]]; then
+    CONFIG_MSG="Config file detected. But one or more vairables missing.\n\tProceed with default settings."
+    # set the values back to default
+    # v1=
+    # v2= etc
+  else
+    CONFIG_MSG="Config file detected and loaded."
+  fi
+else
+  CONFIG_MSG="Config file not detected. Proceed with default settings."
+  # set the values back to default
+  # v1=
+  # v2= etc
+fi
+
 # ------ functions ------
 # function to check dependencies
