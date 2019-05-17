@@ -3,6 +3,7 @@ a bash application for automating machin learning analysis for MEG connection da
 
 
  ------ Version History ------
+ 
 connectivity_ml.sh:  
 - 0.0.1
   - script initiation
