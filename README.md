@@ -1,19 +1,24 @@
 # meg_application
-a bash application for automating machin learning analysis for MEG connection data
+A bash application for automating machine learning analysis for MEG connection data
 
 
  ------ Version History ------
- 
-connectivity_ml.sh:  
-- 0.0.1
-  - script initiation
-  
+- 0.0.2
+(ICEBOX)
+  - Update to connectivity_ml.sh:
+    - incorporate the brain region annotation file
+    - add a spinner
+    - add fail safe for parallel computing worker failure
 
-connectivity_ml_classify.sh:    
-  - 0.0.1
-    - script initiation
-  
+  - Update to connectivity_ml_classify.sh:
+    - incorporate the brain region annotation file
+    - add a spinner
+    - add fail safe for parallel computing worker failure 
 
-connectivity_ml_reg.sh: 
+  - Update to connectivity_ml_reg.sh: 
+    - incorporate the brain region annotation file
+    - add a spinner
+    - add fail safe for parallel computing worker failure
+
 - 0.0.1
-    - script initiation
+    - Initial commit
