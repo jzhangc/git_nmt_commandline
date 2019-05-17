@@ -5,7 +5,6 @@
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
-<<<<<<< HEAD
 # ------ Version History ------
 # icebox features
 # - incoporate the brain region annotation file

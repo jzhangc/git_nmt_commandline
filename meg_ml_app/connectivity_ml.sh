@@ -1,23 +1,10 @@
 #!/usr/bin/env bash
 # Name: connectivity_ml.sh
-<<<<<<< HEAD
 # Version: 0.0.1
-=======
-# Version: 0.0.2
->>>>>>> beta
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
-<<<<<<< HEAD
-# ------ Version History ------
-# icebox features
-# - incoporate the brain region annotation file
-# - finish the classfiy function
-# - add a spinner
-# - add fail safe for parallel computing worker failure
-# current
-# 0.0.1 script initiation
 
 # ------ variables ------
 # --- iniitate internal system variables ---
