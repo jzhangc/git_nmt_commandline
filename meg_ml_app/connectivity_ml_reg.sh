@@ -8,11 +8,6 @@
 # ------ variables ------
 # --- iniitate internal system variables ---
 VERSION="0.01"
-=======
-# ------ variables ------
-# --- iniitate internal system variables ---
-VERSION="0.0.1"
->>>>>>> beta
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
