@@ -5,15 +5,9 @@
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
-
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.01"
-=======
-# ------ variables ------
-# --- iniitate internal system variables ---
-VERSION="0.0.2"
->>>>>>> beta
+VERSION="0.0.1"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# main test realm
+# for testing snippets
+#
 # Name: connectivity_ml.sh
 # Version: 0.0.1
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
@@ -7,7 +10,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.0.1"
+VERSION="0.01"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -205,42 +208,8 @@ required_file_check(){
   done
 }
 
-# timing function
-# from: https://www.shellscript.sh/tips/hms/
-hms(){
-  # Convert Seconds to Hours, Minutes, Seconds
-  # Optional second argument of "long" makes it display
-  # the longer format, otherwise short format.
-  local SECONDS H M S MM H_TAG M_TAG S_TAG
-  SECONDS=${1:-0}
-  let S=${SECONDS}%60
-  let MM=${SECONDS}/60 # Total number of minutes
-  let M=${MM}%60
-  let H=${MM}/60
-
-  if [ "$2" == "long" ]; then
-    # Display "1 hour, 2 minutes and 3 seconds" format
-    # Using the x_TAG variables makes this easier to translate; simply appending
-    # "s" to the word is not easy to translate into other languages.
-    [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
-    [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
-    [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
-    [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
-    [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
-    printf "%d %s\n" $S "${S_TAG}"
-  else
-    # Display "01h02m03s" format
-    [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
-    [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
-    printf "%02d%s\n" $S "s"
-  fi
-}
 
 # ------ script ------
-# --- start time ---
-start_t=`date +%s`
-
-
 # --- initial message ---
 echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml_reg.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
@@ -391,7 +360,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_perm_plot_y_tick_label_size=10
 	svm_perm_plot_width=300
 	svm_perm_plot_height=50
-	svm_roc_threshold=50
+	svm_roc_threshold=50 
 	svm_roc_smooth=FALSE
 	svm_roc_symbol_size=2
 	svm_roc_legend_size=9
@@ -478,7 +447,7 @@ echo -e "=======================================================================
 
 # --- read input files ---
 # -- input mat and annot files processing --
-r_var=`Rscript ./reg_input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./r_script_test.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" "$Y_VAR" \
 "${OUT_DIR}/OUTPUT" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
@@ -506,16 +475,16 @@ if [ "$group_summary" == "e" ]; then  # use "$group_summary" (quotations) to avi
 else
 	echo -e "$group_summary\n"
 fi
-echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
+echo -e "Data tranformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
 # --- univariant analysis ---
 echo -e "\n"
-echo -e "Unsupervised learning and univariate anlaysis"
+echo -e "Unsupervised learning and univeriate anlaysis"
 echo -e "=========================================================================="
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-echo -en "Unsupervised learning and univariate anlaysis..."
+echo -en "Unsupervised learning and univeriate anlaysis..."
 r_var=`Rscript ./reg_univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
@@ -586,11 +555,3 @@ echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
-
-
-# end time and display
-end_t=`date +%s`
-tot=`hms $((end_t-start_t))`
-echo -e "\n"
-echo -e "Total run time: $tot"
-echo -e "\n"
