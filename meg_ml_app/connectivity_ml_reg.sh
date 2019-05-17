@@ -5,14 +5,6 @@
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
-# ------ Version History ------
-# icebox features
-# - incoporate the brain region annotation file
-# - add a spinner
-# - add fail safe for parallel computing worker failure
-# current
-# 0.0.1 script initiation
-
 # ------ variables ------
 # --- iniitate internal system variables ---
 VERSION="0.01"
