@@ -1,0 +1,87 @@
+# File name: connectivity_ml_config
+# Description: Configeration file for connectivity_ml.sh, containing variable and values for the application
+# Usage: Adjust the values for the variables
+#
+# ------ Settings for data preprocessing ------
+log2_trans=TRUE
+
+# ------ Settings for all-connection clustering analysis ------
+# -- Hierarchical clustering --
+htmap_textsize_col=0.7
+htmap_textangle_col=90
+htmap_lab_row=FALSE
+htmap_textsize_row=0.7
+htmap_keysize=1.5
+htmap_key_xlab="Normalized connectivity value"
+htmap_key_ylab="Pair count"
+htmap_margin="c(6, 3)"
+htmap_width=8
+htmap_height=7
+
+# ------ Settings for univariate analysis ------
+# -- Univeriate analysis --
+uni_fdr=FALSE
+uni_alpha=0.05
+uni_fold_change=1
+
+# -- hierachical clustering: sig connections --
+# NOTE: fdr, p value and fc settings same as Univeriate settings for heatmap
+# NOTE: sig pca uses mostly the same settings as all connections pca
+sig_htmap_textsize_col=0.5
+sig_htmap_textangle_col=90
+sig_htmap_textsize_row=0.5
+sig_htmap_keysize=1.5
+sig_htmap_key_xlab="Z score"
+sig_htmap_key_ylab="Count"
+sig_htmap_margin="c(6, 3)"
+sig_htmap_width=8
+sig_htmap_height=7
+
+# ------ Settings for SVM machine learning analysis ------
+# -- General settings --
+cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
+
+# -- Data processing --
+training_percentage=0.7  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
+
+# -- SVM internal nested cross-validation and feature selection
+svm_cv_centre_scale=TRUE
+svm_cv_kernel="radial"  # options are "linear", "ploynomial", "radial", "sigmoid". "radial" aka RBF
+svm_cv_cross_k=10  # outer loop
+svm_cv_tune_method="cross"  # inner loop. options are "cross" (i.e. cross validation), "boot" (i.e. bootstrap), and "fix"
+svm_cv_tune_cross_k=10  # set only when svm_cv_tune_method="cross", fold number for cross validation
+svm_cv_tune_boot_n=10  # set only when svm_cv_tune_method="boot", bootstrap iterations
+svm_cv_fs_rf_ifs_ntree=501
+svm_cv_fs_rf_sfs_ntree=501
+svm_cv_fs_count_cutoff=2
+
+# -- SVM modelling --
+# NOTE: some settings will share with the above CV step
+# i.e. svm_cv_centre_scale, svm_cv_kernel
+svm_cross_k=10
+svm_tune_cross_k=10   # set only when svm_cv_tune_method="cross", fold number for cross validation
+svm_tune_boot_n=10  # set only when svm_cv_tune_method="boot", bootstrap iterations
+
+# -- SVM permuation test --
+svm_perm_method="by_y"  # options are "by_y" and "by_feature_per_y"
+svm_perm_n=99
+svm_perm_plot_symbol_size=2
+svm_perm_plot_legend_size=9
+svm_perm_plot_x_label_size=10
+svm_perm_plot_x_tick_label_size=10
+svm_perm_plot_y_label_size=10
+svm_perm_plot_y_tick_label_size=10
+svm_perm_plot_width=300
+svm_perm_plot_height=50
+
+# -- SVM ROC AUC --
+svm_roc_threshold=50  # change this accordingly
+svm_roc_smooth=FALSE
+svm_roc_symbol_size=2
+svm_roc_legend_size=9
+svm_roc_x_label_size=10
+svm_roc_x_tick_label_size=10
+svm_roc_y_label_size=10
+svm_roc_y_tick_label_size=10
+svm_roc_width=170
+svm_roc_height=150
