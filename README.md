@@ -3,6 +3,17 @@ A bash application for automating machine learning analysis for MEG connection d
 
 
  ------ Version History ------
+ 
+- 0.0.2
+
+  (ICEBOX)
+  - General fix
+    - Add a spinner
+    - Overall optimization
+  
+  - Updates to reg_ml_svm.R
+    - Hierarchical clustering after SVM
+    
 
 - 0.0.1
 
