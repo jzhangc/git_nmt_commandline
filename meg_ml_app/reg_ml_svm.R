@@ -106,6 +106,7 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
 sink()
 svm_rf_selected_pairs <- svm_nested_cv$selected.features
 
+# plot SFS results
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
   rbioFS_rf_SFS_plot(object = get(paste0("svm_nested_iter_", i, "_SFS")),
                      n = "all",
@@ -125,6 +126,42 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
                      plot.rightsideY = TRUE,
                      plot.Width = SVM_ROC_WIDTH,
                      plot.Height = SVM_ROC_HEIGHT, verbose = FALSE)
+}
+
+
+# hcluster after nested CV
+normdata_crosscv <- list(E = normdata$E[svm_rf_selected_pairs, ], genes = normdata$genes[svm_rf_selected_pairs, ],
+                         targets = normdata$targets, ArrayWeight = normdata$ArrayWeight)
+if (HTMAP_LAB_ROW) {
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
+                     fltlist = normdata_crosscv, n = "all", fct = factor(y, levels = unique(y)),
+                     ColSideCol = FALSE,
+                     sampleName = idx$sample,
+                     genesymbolOnly = FALSE,
+                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     key.title = "", dataProbeVar = "pair",
+                     cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
+                     keysize = HTMAP_KEYSIZE,
+                     key.xlab = HTMAP_KEY_XLAB,
+                     key.ylab = HTMAP_KEY_YLAB,
+                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+                     margin = HTMAP_MARGIN)
+} else {
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
+                     fltlist = normdata_crosscv, n = "all", fct = factor(y, levels = unique(y)),
+                     ColSideCol = FALSE,
+                     sampleName = idx$sample,
+                     genesymbolOnly = FALSE,
+                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+                     cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
+                     keysize = HTMAP_KEYSIZE,
+                     key.xlab = HTMAP_KEY_XLAB,
+                     key.ylab = HTMAP_KEY_YLAB,
+                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+                     margin = HTMAP_MARGIN)
 }
 
 
@@ -224,6 +261,10 @@ cat("SVM nested cross validation with rRF-FS\n")
 cat("-------------------------------------\n")
 svm_nested_cv
 cat("\n\n")
+cat("Clustering analysis: SVM training data upon nested CV\n")
+cat("-------------------------------------\n")
+cat("Hierarchical clustering heatmap saved to: ", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv.pdf\n"))
+cat("\n\n")
 cat("SVM modelling\n")
 cat("-------------------------------------\n")
 svm_m
@@ -241,10 +282,3 @@ cat("-------------------------------------\n")
 if (SVM_ROC_THRESHOLD_OUT_OF_RANGE) cat("ROC threshold(s) out of range: use median y value instead.\n\n")
 cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
 cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
-# cat("\n\n")
-# cat("Clustering analysis: SVM training data\n")
-# # cat("PCA on SVM selected pairs\n")
-# cat("-------------------------------------\n")
-# cat("PCA on SVM selected pairs saved to:\n")
-# cat("\tbiplot: pca_svm_rffs.pca.biplot.pdf\n")
-# cat("\tboxplot: pca_svm_rffs.pca.boxplot.pdf\n")
