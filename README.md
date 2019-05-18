@@ -10,6 +10,12 @@ A bash application for automating machine learning analysis for MEG connection d
   - General fix
     - Add a spinner
     - Overall optimization
+    
+  - Updates to reg_univariate.R
+    - Weights now incorporated
+  
+  - Updates to univariate.R
+    - Weights now incorporated
   
   - Updates to reg_ml_svm.R
     - Hierarchical clustering after SVM

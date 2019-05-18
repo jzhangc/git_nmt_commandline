@@ -185,7 +185,7 @@ if (UNI_FDR){
 
 tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                       fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
-                      weights = NULL,
+                      weights = normdata$ArrayWeight,
                       plot = TRUE, geneName = TRUE, genesymbolVar = "pair",
                       topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
                       padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
@@ -200,7 +200,7 @@ tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
            assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
            rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                         fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
-                        weights = NULL,
+                        weights = normdata$ArrayWeight,
                         plot = TRUE, geneName = TRUE, genesymbolVar = "pair",
                         topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
                         padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
