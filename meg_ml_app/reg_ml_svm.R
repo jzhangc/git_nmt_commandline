@@ -10,6 +10,7 @@ args <- commandArgs()
 
 ######  load libraries --------
 require(RBioFS)
+require(RBioArray)
 require(foreach)
 require(parallel)
 
@@ -76,6 +77,17 @@ SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[42])
 SVM_ROC_WIDTH <- as.numeric(args[43])
 SVM_ROC_HEIGHT <- as.numeric(args[44])
 
+HTMAP_TEXTSIZE_COL <- as.numeric(args[45])
+HTMAP_TEXTANGLE_COL <- as.numeric(args[46])
+HTMAP_LAB_ROW <-eval(parse(text = args[47]))
+HTMAP_TEXTSIZE_ROW <- as.numeric(args[48])
+HTMAP_KEYSIZE <- as.numeric(args[49])
+HTMAP_KEY_XLAB <- args[50]
+HTMAP_KEY_YLAB <- args[51]
+HTMAP_MARGIN <- eval(parse(text = args[52]))
+HTMAP_WIDTH <- as.numeric(args[53])
+HTMAP_HEIGHT <- as.numeric(args[54])
+
 ###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
@@ -86,6 +98,7 @@ ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
 training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
 training <- ml_dfm_randomized[1:training_n, ]
 test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
+load(file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -134,9 +147,9 @@ normdata_crosscv <- list(E = normdata$E[svm_rf_selected_pairs, ], genes = normda
                          targets = normdata$targets, ArrayWeight = normdata$ArrayWeight)
 if (HTMAP_LAB_ROW) {
   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
-                     fltlist = normdata_crosscv, n = "all", fct = factor(y, levels = unique(y)),
+                     fltlist = normdata_crosscv, n = "all", fct = factor(normdata$targets$y, levels = unique(normdata$targets$y)),
                      ColSideCol = FALSE,
-                     sampleName = idx$sample,
+                     sampleName = normdata$targets$sample,
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
@@ -149,9 +162,9 @@ if (HTMAP_LAB_ROW) {
                      margin = HTMAP_MARGIN)
 } else {
   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
-                     fltlist = normdata_crosscv, n = "all", fct = factor(y, levels = unique(y)),
+                     fltlist = normdata_crosscv, n = "all", fct = factor(normdata$targets$y, levels = unique(normdata$targets$y)),
                      ColSideCol = FALSE,
-                     sampleName = idx$sample,
+                     sampleName = normdata$targets$sample,
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
@@ -217,17 +230,20 @@ sink()
 
 
 ####### clean up the mess and export --------
-## variables for display
-orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
-  paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
+## clean up the mess from Pathview
+suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 
-training_y <- factor(training$y, levels = unique(training$y))
-training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
-  paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")
-test_y <- factor(test$y, levels = unique(test$y))
-test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
-  paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
+# ## variables for display
+# orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
+# orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
+#   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
+# 
+# training_y <- factor(training$y, levels = unique(training$y))
+# training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
+#   paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")
+# test_y <- factor(test$y, levels = unique(test$y))
+# test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
+#   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
 y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,

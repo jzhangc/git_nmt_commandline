@@ -19,6 +19,7 @@ A bash application for automating machine learning analysis for MEG connection d
   
   - Updates to reg_ml_svm.R
     - Hierarchical clustering after SVM
+    - Code base optimization
     
 
 - 0.0.1

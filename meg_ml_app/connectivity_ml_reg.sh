@@ -571,6 +571,10 @@ r_var=`Rscript ./reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$svm_perm_plot_y_label_size" "$svm_perm_plot_y_tick_label_size" "$svm_perm_plot_width" "$svm_perm_plot_height" \
 "$svm_roc_threshold" "$svm_roc_smooth" "$svm_roc_symbol_size" "$svm_roc_legend_size" "$svm_roc_x_label_size" \
 "$svm_roc_x_tick_label_size" "$svm_roc_y_label_size" "$svm_roc_y_tick_label_size" "$svm_roc_width" "$svm_roc_height" \
+"$htmap_textsize_col" "$htmap_textangle_col" \
+"$htmap_lab_row" "$htmap_textsize_row" \
+"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
+"$htmap_margin" "$htmap_width" "$htmap_height" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -579,6 +583,9 @@ rscript_display=`echo "${r_var[@]}"`
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+if [ -f "${OUT_DIR}"/OUTPUT/normdata.Rdata ]; then
+	rm "${OUT_DIR}"/OUTPUT/normdata.Rdata
 fi
 # -- set up variables for output svm model file
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
