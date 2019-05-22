@@ -259,7 +259,10 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)),
                            `Randomized group labels` = ml_dfm_randomized$y,
                            check.names = FALSE)
+output_for_dl <- ml_dfm[, c("sampleid", "y", svm_rf_selected_pairs)]
+
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
+write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
 save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test"),
      file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
@@ -297,6 +300,7 @@ cat("-------------------------------------\n")
 svm_m
 cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy/100, "\n")
 cat("Final SVM model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
+cat("Data with selected connections saved to file: ", paste0(MAT_FILE_NO_EXT, "_dl.csv\n"))
 cat("\n\n")
 cat("SVM permutation test\n")
 cat("-------------------------------------\n")

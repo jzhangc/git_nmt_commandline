@@ -4,17 +4,8 @@ A bash application for automating machine learning analysis for MEG connection d
 
  ------ Version History ------
  
-- 0.0.2
+- 0.0.2 (May.22.2019)
 
-  (ICEBOX)
-  - General fix
-    - Add a spinner
-    - Overall optimization
-      
-  - Updates to reg_ml_svm.R
-    - Code base optimization
-  
-  (ADDED)
   - Updates to reg_univariate.R
     - Weights now incorporated for univariate analysis
   
@@ -22,7 +13,13 @@ A bash application for automating machine learning analysis for MEG connection d
     - Weights now incorporated for univariate analysis
 
   - Updates to reg_ml_svm.R
-    - Hierarchical clustering after SVM  
+    - Hierarchical clustering added after SVM
+    - Subsetted data with selected connections now exported as a CSV file for the subsequent deep learning steps
+    - Code base optimization
+  
+  - Version bumped to 0.0.2 for all modules
+  
+  - Bug fixes
 
 
 - 0.0.1
