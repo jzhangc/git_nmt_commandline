@@ -136,7 +136,7 @@ rbioarray_DE(objTitle = MAT_FILE_NO_EXT,
              output.mode = "probe.all",
              fltlist = normdata, annot = normdata$genes,
              design = design, contra = NULL,
-             weights = NULL,
+             weights = normdata$ArrayWeight,
              geneName = TRUE, genesymbolVar = "pair",
              topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
              padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
@@ -195,8 +195,9 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
 x_ml <- t(normdata$E)[, sig_pairs_fit]
-ml_dfm <- data.frame(y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+ml_dfm <- data.frame(sampleid=raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
+# save(list = c("normdata"), file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
