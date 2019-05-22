@@ -4,6 +4,16 @@ A bash application for automating machine learning analysis for MEG connection d
 
  ------ Version History ------
  
+ - 0.0.3
+
+   (ICEBOX)
+   - General fix
+     - Spinner added as a running status indication
+     - Overall optimization
+  
+  - Version bumped to 0.0.3 for all modules   
+ 
+ 
 - 0.0.2 (May.22.2019)
 
   - Updates to reg_univariate.R
