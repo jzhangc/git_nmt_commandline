@@ -97,8 +97,11 @@ ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALS
 ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
 training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
 training <- ml_dfm_randomized[1:training_n, ]
+training_sampleid <- training$sampleid
+training <- training[, -1]  # remove sampleid
 test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
-load(file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
+test <- test[, -1]  # remove sampleid
+# load(file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -139,42 +142,6 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
                      plot.rightsideY = TRUE,
                      plot.Width = SVM_ROC_WIDTH,
                      plot.Height = SVM_ROC_HEIGHT, verbose = FALSE)
-}
-
-
-# hcluster after nested CV
-normdata_crosscv <- list(E = normdata$E[svm_rf_selected_pairs, ], genes = normdata$genes[svm_rf_selected_pairs, ],
-                         targets = normdata$targets, ArrayWeight = normdata$ArrayWeight)
-if (HTMAP_LAB_ROW) {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
-                     fltlist = normdata_crosscv, n = "all", fct = factor(normdata$targets$y, levels = unique(normdata$targets$y)),
-                     ColSideCol = FALSE,
-                     sampleName = normdata$targets$sample,
-                     genesymbolOnly = FALSE,
-                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair",
-                     cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
-                     keysize = HTMAP_KEYSIZE,
-                     key.xlab = HTMAP_KEY_XLAB,
-                     key.ylab = HTMAP_KEY_YLAB,
-                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
-                     margin = HTMAP_MARGIN)
-} else {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
-                     fltlist = normdata_crosscv, n = "all", fct = factor(normdata$targets$y, levels = unique(normdata$targets$y)),
-                     ColSideCol = FALSE,
-                     sampleName = normdata$targets$sample,
-                     genesymbolOnly = FALSE,
-                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
-                     cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
-                     keysize = HTMAP_KEYSIZE,
-                     key.xlab = HTMAP_KEY_XLAB,
-                     key.ylab = HTMAP_KEY_YLAB,
-                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
-                     margin = HTMAP_MARGIN)
 }
 
 
@@ -229,6 +196,47 @@ rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_
 sink()
 
 
+# hcluster after nested CV
+svm_training_E <- svm_training[, -1]
+normdata_crosscv <- list(E = t(svm_training_E), genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
+                         targets = data.frame(id=seq(nrow(training)), sample=training_sampleid), ArrayWeight = NULL)
+
+
+if (HTMAP_LAB_ROW) {
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
+                     fltlist = normdata_crosscv, n = "all",
+                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     ColSideCol = FALSE,
+                     sampleName = normdata_crosscv$targets$sample,
+                     genesymbolOnly = FALSE,
+                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     key.title = "", dataProbeVar = "pair",
+                     cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
+                     keysize = HTMAP_KEYSIZE,
+                     key.xlab = HTMAP_KEY_XLAB,
+                     key.ylab = HTMAP_KEY_YLAB,
+                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+                     margin = HTMAP_MARGIN)
+} else {
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
+                     fltlist = normdata_crosscv, n = "all",
+                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     ColSideCol = FALSE,
+                     sampleName = normdata_crosscv$targets$sample,
+                     genesymbolOnly = FALSE,
+                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+                     cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
+                     keysize = HTMAP_KEYSIZE,
+                     key.xlab = HTMAP_KEY_XLAB,
+                     key.ylab = HTMAP_KEY_YLAB,
+                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+                     margin = HTMAP_MARGIN)
+}
+
+
 ####### clean up the mess and export --------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
@@ -237,7 +245,7 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 # orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 # orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
 #   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
-# 
+#
 # training_y <- factor(training$y, levels = unique(training$y))
 # training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
 #   paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")

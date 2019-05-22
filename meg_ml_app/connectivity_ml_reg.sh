@@ -584,9 +584,9 @@ rscript_display=`echo "${r_var[@]}"`
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
-if [ -f "${OUT_DIR}"/OUTPUT/normdata.Rdata ]; then
-	rm "${OUT_DIR}"/OUTPUT/normdata.Rdata
-fi
+# if [ -f "${OUT_DIR}"/OUTPUT/normdata.Rdata ]; then
+# 	rm "${OUT_DIR}"/OUTPUT/normdata.Rdata
+# fi
 # -- set up variables for output svm model file
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 echo -e "Done!"
