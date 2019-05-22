@@ -1,15 +1,14 @@
 # meg_application
 A bash application for automating machine learning analysis for MEG connection data
 
-
- ------ Version History ------
+------ Version History ------
  
- - 0.0.3
-
-   (ICEBOX)
-   - General fix
-     - Spinner added as a running status indication
-     - Overall optimization
+- 0.0.3
+  
+  (ICEBOX)
+  - General fix
+   - Spinner added as a running status indication
+   - Overall optimization
        
   - Version bumped to 0.0.3 for all modules   
  
