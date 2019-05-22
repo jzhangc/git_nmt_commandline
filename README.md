@@ -10,7 +10,7 @@ A bash application for automating machine learning analysis for MEG connection d
    - General fix
      - Spinner added as a running status indication
      - Overall optimization
-  
+       
   - Version bumped to 0.0.3 for all modules   
  
  
