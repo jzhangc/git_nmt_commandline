@@ -198,8 +198,10 @@ sink()
 
 # hcluster after nested CV
 svm_training_E <- svm_training[, -1]
-normdata_crosscv <- list(E = t(svm_training_E), genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
-                         targets = data.frame(id=seq(nrow(training)), sample=training_sampleid), ArrayWeight = NULL)
+normdata_crosscv <- list(E = t(svm_training_E),
+                         genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
+                         targets = data.frame(id=seq(nrow(training)), sample=training_sampleid),
+                         ArrayWeight = NULL)
 
 
 if (HTMAP_LAB_ROW) {
@@ -254,7 +256,8 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 #   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
-y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
+y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)),
+                           `Randomized group labels` = ml_dfm_randomized$y,
                            check.names = FALSE)
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
 save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test"),
@@ -278,7 +281,7 @@ cat("Randomized y order saved to file: ml_randomized_group_label_order.csv\n")
 cat("\n\n")
 cat("Data split\n")
 cat("-------------------------------------\n")
-if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) cat("Invalid percentage. Use default instead.\n")
+if (TRAINING_PERCENTAGE<=options()$ts.eps || TRAINING_PERCENTAGE==1) cat("Invalid percentage. Use default instead.\n")
 cat("Training set percentage: ", TRAINING_PERCENTAGE, "\n")
 cat("\n\n")
 cat("SVM nested cross validation with rRF-FS\n")
