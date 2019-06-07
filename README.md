@@ -10,7 +10,10 @@ A bash application for automating machine learning analysis for MEG connection d
     - Spinner added as a running status indication
     - Overall optimization
        
-  - Version bumped to 0.0.3 for all modules   
+  - Version bumped to 0.0.3 for all modules  
+  
+  (ADDED)
+  - A bugs fixed for reg_ml_svm.R, now with correct error metric
  
  
 - 0.0.2 (May.22.2019)
