@@ -6,9 +6,10 @@ A bash application for automating machine learning analysis for MEG connection d
 - 0.0.3
   
   (ICEBOX)
-  - General fix
+  - General updates
     - Spinner added as a running status indication
     - Overall optimization
+    - A memory check module to ensure the stability
        
   - Version bumped to 0.0.3 for all modules  
   

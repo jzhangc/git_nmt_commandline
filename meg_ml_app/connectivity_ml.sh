@@ -71,9 +71,9 @@ OUT_DIR=.  # set the default to output directory
 if [ $# -eq 0 ]; then
 	echo -e $HELP
 	echo -e "\n"
-  echo -e "=========================================================================="
+	echo -e "=========================================================================="
 	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-  exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+	exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
 else
 	case "$1" in  # "one off" flags
 		-h|--help)
