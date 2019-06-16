@@ -649,8 +649,11 @@ echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-if [ "$group_summary" == "e" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "unequal_length" ]; then
+	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$group_summary\n"
@@ -696,7 +699,9 @@ rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
 # -- set up variables for output ml data file
 dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 # -- additional display --

@@ -35,7 +35,11 @@ raw_dim <- dim(raw)
 # ------ load annotation file (meta data) ------
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(annot))) {
-  cat("e")
+  cat("none_existent")
+  quit()
+}
+if (nrow(annot) != raw_dim[3]) {
+  cat("unequal_length")
   quit()
 }
 sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
