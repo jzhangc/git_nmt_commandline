@@ -558,7 +558,7 @@ if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
 else
 	echo -e "ON"
-	echo -e "Cores: $CORES"
+	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config.)"
 fi
 echo -en "SVM machine learning analysis..."
 r_var=`Rscript ./reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \

@@ -7,7 +7,7 @@ log2_trans=TRUE
 
 # ------ Settings for all-connection clustering analysis ------
 # -- Hierarchical clustering --
-htmap_textsize_col=0.7
+htmap_textsize_col=0.1
 htmap_textangle_col=90
 htmap_lab_row=FALSE
 htmap_textsize_row=0.7
@@ -54,7 +54,7 @@ volcano_height=150
 # -- hierachical clustering: sig connections --
 # NOTE: fdr, p value and fc settings same as Univeriate settings for heatmap
 # NOTE: sig pca uses mostly the same settings as all connections pca
-sig_htmap_textsize_col=0.5
+sig_htmap_textsize_col=0.1
 sig_htmap_textangle_col=90
 sig_htmap_textsize_row=0.5
 sig_htmap_keysize=1.5
