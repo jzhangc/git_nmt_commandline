@@ -11,11 +11,11 @@ A bash application for automating machine learning analysis for MEG connection d
     - Overall optimization
     - A memory check module to ensure the stability
   
-  - New module connectivity_ml_reg_2d.sh added
   - Version bumped to 0.0.3 for all modules  
   
   (ADDED)
   - New module connectivity_ml_2d.sh added
+  - New module connectivity_ml_reg_2d.sh added
 
   - Updates to connectivity_ml.sh (and the associated R modules)
     - Updates to connectivity_ml.sh

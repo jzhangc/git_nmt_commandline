@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml.sh
+# Name: connectivity_ml_reg.sh
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
@@ -720,7 +720,7 @@ if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
 else
 	echo -e "ON"
-	echo -e "Cores: $CORES"
+	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
 r_var=`Rscript ./ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \

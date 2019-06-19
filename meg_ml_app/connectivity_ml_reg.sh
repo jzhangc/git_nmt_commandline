@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml.sh
+# Name: connectivity_ml_reg.sh
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
@@ -59,8 +59,7 @@ CORES=1  # this is for the cores
 IFLAG=1
 AFLAG=1
 SFLAG=1
-GFLAG=1
-CFLAG=1
+YFLAG=1
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -558,7 +557,7 @@ if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
 else
 	echo -e "ON"
-	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config.)"
+	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
 r_var=`Rscript ./reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
