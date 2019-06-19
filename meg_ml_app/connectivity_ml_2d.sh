@@ -29,7 +29,7 @@ Current version: $VERSION\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
--u: if to concudct 
+-u: if to conduct univaiate analysis
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
