@@ -23,7 +23,8 @@ Current version: $VERSION\n
 \n
 <INPUTS>: Mandatory\n
 -i <file>: Input 2D .csv file with full path. Make sure the first two columns are named 'sampleid' and 'group'.\n
--a <file>: Annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
+-s <string>: Sample ID variable name.\n
+-g <string>: Group ID variable name.\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
@@ -45,7 +46,7 @@ NO_COLOUR="\033[0;0m"
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R plsda_val_svm.R r_script_test.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate.R ml_svm.R plsda_val_svm.R r_script_test.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
@@ -63,6 +64,8 @@ IFLAG=1
 # SFLAG=1
 # GFLAG=1
 CFLAG=1
+SFLAG=1
+GFLAG=1
 UFLAG=1
 
 # optional flag values
@@ -100,37 +103,21 @@ else
 				RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .mat format; or file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i the 2d input file should be in .csv format; or file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
-			# a)
-			# 	ANNOT_FILE=$OPTARG
-			# 	if ! [ -f "$ANNOT_FILE" ]; then
-			# 		# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-			# 		echo -e "${COLOUR_RED}\nERROR: -a annotation file not found.${NO_COLOUR}\n" >&2
-			# 		exit 1  # exit 1: terminating with error
-			# 	fi
-			# 
-			# 	ANNOT_FILENAME=`basename "$ANNOT_FILE"`
-			# 	if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
-			# 		echo -e "${COLOUR_RED}\nERROR: -a the annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
-			# 		exit 1  # exit 1: terminating with error
-			# 	fi
-			# 
-			# 	AFLAG=0
-			# 	;;
-			# s)
-			# 	SAMPLE_ID=$OPTARG
-			# 	SFLAG=0
-			# 	;;
-			# g)
-			# 	GROUP_ID=$OPTARG
-			# 	GFLAG=0
-			# 	;;
+			s)
+				SAMPLE_ID=$OPTARG
+				SFLAG=0
+				;;
+			g)
+				GROUP_ID=$OPTARG
+				GFLAG=0
+				;;
 			c)
 			 	CONTRAST=$OPTARG
 				CFLAG=0
@@ -167,7 +154,7 @@ fi
 # 	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 # 	exit 1
 # fi
-if [[ $IFLAG -eq 1 || $CFLAG -eq 1 ]]; then
+if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
 	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
@@ -634,7 +621,36 @@ echo -e "=======================================================================
 
 
 # --- read input 2D files ---
-dat_2d_file="$RAW_FILE"
+# -- input mat and annot files processing --
+r_var=`Rscript ./input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+"$SAMPLE_ID" "$GROUP_ID" \
+"${OUT_DIR}/OUTPUT" \
+--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
+group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
+# mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
+
+# -- display --
+echo -e "\n"
+echo -e "Input files"
+echo -e "=========================================================================="
+echo -e "Input data file"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
+# echo -e "$mat_dim"
+# echo -e "\nSample metadata"
+# echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+else
+	echo -e "$group_summary\n"
+fi
+echo -e "Data transformed into 2D format and saved to files:"
+echo -e "${MAT_FILENAME_WO_EXT}_2D.csv ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+echo -e "=========================================================================="
+
 
 # --- univariant analysis (or not)---
 if [ $UFLAG -eq 1 ]; then
@@ -642,7 +658,7 @@ if [ $UFLAG -eq 1 ]; then
 	echo -e "Unsupervised learning and univariate anlaysis"
 	echo -e "=========================================================================="
 	echo -en "Skipping univariate analysis..."
-	dat_ml_file="$RAW_FILE"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 	echo -e "Done!"
 	echo -e "=========================================================================="
 else
@@ -651,6 +667,7 @@ else
 	echo -e "=========================================================================="
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 	echo -en "Unsupervised learning and univariate anlaysis..."
+	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 	r_var=`Rscript ./univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 	"$ANNOT_FILE" \
 	"${OUT_DIR}/OUTPUT" \
@@ -682,7 +699,9 @@ else
 	echo -e "Done!\n\n"
 	echo -e "$rscript_display"  # print the screen display from the R script
 	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+	fi
 	# -- set up variables for output ml data file
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 	# -- additional display --

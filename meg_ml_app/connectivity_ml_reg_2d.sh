@@ -92,7 +92,7 @@ else
 				RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .mat format; or file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i the 2d input file should be in .csv format; or file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
@@ -449,20 +449,35 @@ echo -e "\tsvm_roc_height=$svm_roc_height"
 echo -e "=========================================================================="
 
 
-# --- read input files ---
-# # -- input mat and annot files processing --
-# r_var=`Rscript ./reg_input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
-# "$ANNOT_FILE" "$SAMPLE_ID" "$Y_VAR" \
-# "${OUT_DIR}/OUTPUT" \
-# --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
-# | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
-# echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-# echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
-# group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
+--- read input 2D files ---
+# -- input mat and annot files processing --
+r_var=`Rscript ./reg_input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+"$SAMPLE_ID" "$Y_VAR" \
+"${OUT_DIR}/OUTPUT" \
+--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
+group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 # mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
-# -- set up variables for output 2d data file
-dat_2d_file="$RAW_FILE"
+# -- display --
+echo -e "\n"
+echo -e "Input files"
+echo -e "=========================================================================="
+echo -e "Input data file"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
+echo -e "$mat_dim"
+echo -e "\nSample metadata"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
+echo -e "Data transformed into 2D format and saved to files:"
+echo -e "${MAT_FILENAME_WO_EXT}_2D.csv ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+echo -e "=========================================================================="
+
 
 # --- univariant analysis ---
 if [ $UFLAG -eq 1 ]; then
@@ -470,7 +485,7 @@ if [ $UFLAG -eq 1 ]; then
 	echo -e "Unsupervised learning and univariate anlaysis"
 	echo -e "=========================================================================="
 	echo -en "Skipping univariate analysis..."
-	dat_ml_file="$RAW_FILE"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 	echo -e "Done!"
 	echo -e "=========================================================================="
 else
@@ -479,6 +494,7 @@ else
 	echo -e "=========================================================================="
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 	echo -en "Unsupervised learning and univariate anlaysis..."
+	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 	r_var=`Rscript ./reg_univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 	"${OUT_DIR}/OUTPUT" \
 	"$log2_trans" \

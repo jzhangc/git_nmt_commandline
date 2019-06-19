@@ -15,7 +15,10 @@ A bash application for automating machine learning analysis for MEG connection d
   
   (ADDED)
   - New module connectivity_ml_2d.sh added
+    - input_dat_process_2d.R added
+    
   - New module connectivity_ml_reg_2d.sh added
+    - reg_input_dat_process_2d.R added
 
   - Updates to connectivity_ml.sh (and the associated R modules)
     - Updates to connectivity_ml.sh
