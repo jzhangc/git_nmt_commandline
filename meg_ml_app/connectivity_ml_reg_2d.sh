@@ -24,6 +24,8 @@ Current version: $VERSION\n
 \n
 <INPUTS>: Mandatory\n
 -i <file>: Input 2D .csv file with full path. Make sure the first two columns are named 'sampleid' and 'y'. \n
+-s <string>: Sample ID variable name.\n
+-y <string>: Continuous outcome (i.e. y) variable name.\n
 \n
 [OPTIONS]: Optional\n
 -u: if to conduct univaiate analysis. \n
@@ -44,7 +46,7 @@ NO_COLOUR="\033[0;0m"
 # --- dependency file id variables ---
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R)
+R_SCRIPT_FILES=(reg_input_dat_process_2d.R reg_univariate.R reg_ml_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
@@ -55,6 +57,8 @@ PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate vari
 CORES=1  # this is for the cores
 
 IFLAG=1
+SFLAG=1
+YFLAG=1
 UFLAG=1
 
 # optional flag values
@@ -82,7 +86,7 @@ else
 			;;
 	esac
 
-	while getopts ":p:i:a:s:y:o:" opt; do
+	while getopts ":up:i:a:s:y:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -98,6 +102,14 @@ else
 				MAT_FILENAME=`basename "$RAW_FILE"`
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
+				;;
+			s)
+				SAMPLE_ID=$OPTARG
+				SFLAG=0
+				;;
+			y)
+				Y_VAR=$OPTARG
+				YFLAG=0
 				;;
 			o)
 				OUT_DIR=$OPTARG
@@ -127,8 +139,8 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i flag is mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -s, -y flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 
@@ -449,7 +461,7 @@ echo -e "\tsvm_roc_height=$svm_roc_height"
 echo -e "=========================================================================="
 
 
---- read input 2D files ---
+# --- read input 2D files ---
 # -- input mat and annot files processing --
 r_var=`Rscript ./reg_input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" "$Y_VAR" \
@@ -474,8 +486,7 @@ if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotat
 	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
-echo -e "Data transformed into 2D format and saved to files:"
-echo -e "${MAT_FILENAME_WO_EXT}_2D.csv ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
@@ -485,7 +496,7 @@ if [ $UFLAG -eq 1 ]; then
 	echo -e "Unsupervised learning and univariate anlaysis"
 	echo -e "=========================================================================="
 	echo -en "Skipping univariate analysis..."
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 	echo -e "Done!"
 	echo -e "=========================================================================="
 else
@@ -531,7 +542,7 @@ echo -e "\n"
 echo -e "SVM machine learning (regression)"
 echo -e "=========================================================================="
 if [ $UFLAG -eq 1 ]; then
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME}${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 else
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
 fi

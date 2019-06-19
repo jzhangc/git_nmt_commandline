@@ -300,7 +300,7 @@ cat("-------------------------------------\n")
 svm_m
 cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy/100, "\n")
 cat("Final SVM model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
-cat("Data with selected connections saved to file: ", paste0(MAT_FILE_NO_EXT, "_dl.csv\n"))
+cat("Data with selected features saved to file: ", paste0(MAT_FILE_NO_EXT, "_dl.csv\n"))
 cat("\n\n")
 cat("SVM permutation test\n")
 cat("-------------------------------------\n")

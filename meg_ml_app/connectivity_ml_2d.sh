@@ -715,7 +715,7 @@ echo -e "\n"
 echo -e "SVM machine learning"
 echo -e "=========================================================================="
 if [ $UFLAG -eq 1 ]; then
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME}${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
 else
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
 fi
