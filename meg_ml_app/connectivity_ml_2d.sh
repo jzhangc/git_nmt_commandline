@@ -22,7 +22,7 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input 2D .csv file with full path. Make sure the first two columns are named 'sampleid' and 'group'.\n
+-i <file>: Input 2D .csv file with full path.\n
 -s <string>: Sample ID variable name.\n
 -g <string>: Group ID variable name.\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n

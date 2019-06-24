@@ -23,7 +23,7 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input 2D .csv file with full path. Make sure the first two columns are named 'sampleid' and 'y'. \n
+-i <file>: Input 2D .csv file with full path. \n
 -s <string>: Sample ID variable name.\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 \n
