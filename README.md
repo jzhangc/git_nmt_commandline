@@ -14,6 +14,9 @@ A bash application for automating machine learning analysis for MEG connection d
   - Version bumped to 0.0.3 for all modules  
   
   (ADDED)
+  - General updates
+    - SVM process now export the nested cross-validation results as part of the model files 
+    
   - New module connectivity_ml_2d.sh added
     - input_dat_process_2d.R added
     

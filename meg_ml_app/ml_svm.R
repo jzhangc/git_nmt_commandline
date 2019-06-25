@@ -224,7 +224,7 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
                            check.names = FALSE)
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test"),
+save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test", "svm_nested_cv"),
      file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 

@@ -21,7 +21,7 @@ htmap_height=7
 # -- PCA --
 pca_scale_data=TRUE
 pca_centre_data=TRUE
-pca_pc="c(1, 2)"
+pca_pc="c(1, 2, 3)"
 pca_biplot_samplelabel_type="none"  # options are "none", "direct" and "indirect"
 pca_biplot_samplelabel_size=2
 pca_biplot_symbol_size=5
@@ -63,7 +63,7 @@ sig_htmap_key_ylab="Count"
 sig_htmap_margin="c(6, 3)"
 sig_htmap_width=12
 sig_htmap_height=8
-sig_pca_pc="c(1, 2)"
+sig_pca_pc="c(1, 2, 3)"
 sig_pca_biplot_ellipse_conf=0.9
 
 # ------ Settings for SVM machine learning analysis ------
@@ -115,7 +115,7 @@ svm_roc_width=170
 svm_roc_height=150
 
 # -- SVM RFFS PCA --
-svm_rffs_pca_pc="c(1, 2)"
+svm_rffs_pca_pc="c(1, 2, 3)"
 svm_rffs_pca_biplot_ellipse_conf=0.95
 
 # ------ Settings for PLS-DA modelling for evaluating SVM results ------
