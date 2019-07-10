@@ -27,6 +27,9 @@ Current version: $VERSION\n
 -a <file>: Annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
 -s <string>: Sample ID variable name.\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
+-n <file>: Node annotation file with full path. Needs to be a .csv file. \n
+-d <string>: Node ID (digitized) variable name from -n file. \n
+-r <string>: Regional annotation variable name from -mn fle. \n
 \n
 [OPTIONS]: Optional\n
 -o <dir>: Optional output directory. Default is where the program is. \n
@@ -60,6 +63,9 @@ IFLAG=1
 AFLAG=1
 SFLAG=1
 YFLAG=1
+NFLAG=1
+DFLAG=1
+RFLAG=1
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -86,7 +92,7 @@ else
 			;;
 	esac
 
-	while getopts ":p:i:a:s:y:o:" opt; do
+	while getopts ":p:i:a:s:y:n:d:r:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -127,6 +133,30 @@ else
 				Y_VAR=$OPTARG
 				YFLAG=0
 				;;
+			n)
+				NODE_FILE=$OPTARG
+				if ! [ -f "$NODE_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_RED}\nERROR: -n node annotation file not found.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NODE_FILENAME=`basename "$NODE_FILE"`
+				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NFLAG=0
+				;;
+			d)
+				NODE_ID=$OPTARG
+				DFLAG=0
+				;;
+			r)
+				REGION_NAME=$OPTARG
+				RFLAG=0
+				;;
 			o)
 				OUT_DIR=$OPTARG
 				if ! [ -d "$OUT_DIR" ]; then
@@ -152,8 +182,8 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -y flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -y -n, -d, -r flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 
@@ -525,12 +555,21 @@ r_var=`Rscript ./R_files/reg_univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" 
 "$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
 "$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
 "$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
+"$NODE_FILE" \
+"$NODE_ID" "$REGION_NAME" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
+
+if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
+
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then

@@ -1,4 +1,5 @@
 # meg_application
+
 A bash application for automating machine learning analysis for MEG connection data
 
 ------ Version History ------
@@ -10,11 +11,14 @@ A bash application for automating machine learning analysis for MEG connection d
     - Spinner added as a running status indication
     - Overall optimization
     - A memory check module to ensure the stability
+    - Node file length check added for univariate.R and reg_univariate.R
   
-  - Version bumped to 0.0.3 for all modules  
+  - Version bumpped appropriately for all modules  
   
   (ADDED)
   - General updates
+    - The non-2D applications now able to take node file
+      - All related sh and R files updated for this update
     - SVM process now export the nested cross-validation results as part of the model files
     - Directory structure updated
     - R files put to the folder: R_files

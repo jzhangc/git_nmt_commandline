@@ -206,6 +206,45 @@ rbioFS_PCA(input = pca_svm_rffs, sampleIDVar = "row_num", groupIDVar = "y",
            fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
            verbose = FALSE)
 
+# # hcluster after nested CV (NOTE: uncomment out if needed)
+# svm_training_E <- svm_training[, -1]
+# normdata_crosscv <- list(E = t(svm_training_E),
+#                          genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
+#                          targets = data.frame(id=seq(nrow(training)), sample=training_sampleid),
+#                          ArrayWeight = NULL)
+# if (HTMAP_LAB_ROW) {
+#   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
+#                      fltlist = normdata_crosscv, n = "all",
+#                      fct = factor(svm_training$y, levels = unique(svm_training$y)),
+#                      ColSideCol = FALSE,
+#                      sampleName = normdata_crosscv$targets$sample,
+#                      genesymbolOnly = FALSE,
+#                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+#                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+#                      key.title = "", dataProbeVar = "pair",
+#                      cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
+#                      keysize = HTMAP_KEYSIZE,
+#                      key.xlab = HTMAP_KEY_XLAB,
+#                      key.ylab = HTMAP_KEY_YLAB,
+#                      plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+#                      margin = HTMAP_MARGIN)
+# } else {
+#   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
+#                      fltlist = normdata_crosscv, n = "all",
+#                      fct = factor(svm_training$y, levels = unique(svm_training$y)),
+#                      ColSideCol = FALSE,
+#                      sampleName = normdata_crosscv$targets$sample,
+#                      genesymbolOnly = FALSE,
+#                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+#                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+#                      key.title = "", dataProbeVar = "pair", labRow = FALSE,
+#                      cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
+#                      keysize = HTMAP_KEYSIZE,
+#                      key.xlab = HTMAP_KEY_XLAB,
+#                      key.ylab = HTMAP_KEY_YLAB,
+#                      plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+#                      margin = HTMAP_MARGIN)
+# }
 
 ####### clean up the mess and export --------
 ## variables for display

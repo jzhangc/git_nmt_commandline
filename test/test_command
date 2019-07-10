@@ -34,10 +34,13 @@
 ./connectivity_ml.sh \
 -i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/0.raw mat data/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
 -a "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
--s "test var" -g "group" -c "ptsd - control" \
+-s "test var" -g "group" \
+-n "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/node.csv" \
+-d "node_id" -r "region" \
+-c "ptsd - control" \
 -o "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
 
-
+# mTBI
 ./connectivity_ml.sh \
 -i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/pre_civthen_pre_tbi_90AMP_80-150.mat" \
 -a "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/annot.csv" \
@@ -56,7 +59,9 @@
 -i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_6.longitudinal.ptsd.mat" \
 -a "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
 -s "sample" -y "pcl" \
--o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_6_results" -p 3
+-n "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/node.csv" \
+-d "node_id" -r "region" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/test_res" -p 3
 
 # Ben H data (classification)
 ./connectivity_ml.sh \

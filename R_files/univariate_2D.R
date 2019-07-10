@@ -18,9 +18,7 @@ require(RBioFS)
 # ------ file name variables ------
 DAT_FILE <- args[6]  # 2D file
 MAT_FILE_NO_EXT <- args[7]  # from the raw mat file, for naming export data
-NODE_FILE <- args[8]
-NODE_ID_VAR <- args[61]
-REGION_NAME_VAR <- args[62]
+
 
 # ------ directory variables ------
 RES_OUT_DIR <- args[9]
@@ -97,16 +95,6 @@ setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 # ------ load and processed (from raw mat file) data files ------
 raw_sample_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 
-node <- read.csv(file = NODE_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-if (!all(c(NODE_ID_VAR, REGION_NAME_VAR) %in% names(node))) {
-  cat("none_existent")
-  quit()
-}
-# # below: add size/length check for node file
-# if (nrow(annot) != raw_dim[3]) {
-#   cat("unequal_length")
-#   quit()
-# }
 
 # ------ Data processing for univariate analysis ------
 ## data formating
@@ -125,15 +113,6 @@ pair <- data.frame(ProbeName = seq(ncol(raw_sample_dfm) - 2), pair = colnames(ra
 sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
-
-connections <- foreach(i = as.character(rawlist$genes$pair), .combine = "c") %do% {  # import node info
-  ids <- unlist(strsplit(i, "_"))
-  region1 <- node[, REGION_NAME_VAR][node[, NODE_ID_VAR] %in% ids[1]]
-  region2 <- node[, REGION_NAME_VAR][node[, NODE_ID_VAR] %in% ids[2]]
-  connection <- paste0(region1, ": ", region2)
-  connection
-}
-rawlist$genes$connections <- connections
 
 ## Normalization
 normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
@@ -322,7 +301,7 @@ cat("Data sample:\n")
 print(raw_sample_dfm[1:5, 1:5])
 # cat("-------------------------------------\n")
 cat("\n\n")
-cat("Clustering analysis: all features\n")
+cat("Clustering analysis: all connections\n")
 cat("-------------------------------------\n")
 cat("Hierarchical clustering heatmap saved to: ", paste0(MAT_FILE_NO_EXT, "_hclust_all.pdf\n"))
 cat("\n")
@@ -346,7 +325,7 @@ cat("\t", paste0(MAT_FILE_NO_EXT, "_", contra_string, "_DE.csv"), "\n")
 cat("\n")
 cat("Volcano plot saved to file(s): ", paste0(MAT_FILE_NO_EXT, "_", contra_string, ".volcano.pdf\n"))
 cat("\n\n")
-cat("Clustering analysis: significant features\n")
+cat("Clustering analysis: significant connections\n")
 cat("-------------------------------------\n")
 cat("Hierarchical clustering heatmap: \n")
 if (NO_SIG_WARNING) {

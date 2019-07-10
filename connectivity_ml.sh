@@ -24,9 +24,12 @@ Current version: $VERSION\n
 \n
 <INPUTS>: Mandatory\n
 -i <file>: Input .mat file with full path.\n
--a <file>: Annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
--s <string>: Sample ID variable name.\n
--g <string>: Group ID variable name.\n
+-a <file>: Sample annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
+-s <string>: Sample ID variable name from -a file.\n
+-g <string>: Group ID variable name from -a file.\n
+-n <file>: Node annotation file with full path. Needs to be a .csv file. \n
+-d <string>: Node ID (digitized) variable name from -n file. \n
+-r <string>: Regional annotation variable name from -mn fle. \n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
@@ -62,6 +65,9 @@ IFLAG=1
 AFLAG=1
 SFLAG=1
 GFLAG=1
+NFLAG=1
+DFLAG=1
+RFLAG=1
 CFLAG=1
 
 # optional flag values
@@ -89,7 +95,7 @@ else
 			;;
 	esac
 
-	while getopts ":p:i:a:s:g:c:o:" opt; do
+	while getopts ":p:i:a:s:g:n:d:r:c:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -110,13 +116,13 @@ else
 				ANNOT_FILE=$OPTARG
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -a annotation file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 
 				ANNOT_FILENAME=`basename "$ANNOT_FILE"`
 				if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -a the annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -129,6 +135,30 @@ else
 			g)
 				GROUP_ID=$OPTARG
 				GFLAG=0
+				;;
+			n)
+				NODE_FILE=$OPTARG
+				if ! [ -f "$NODE_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_RED}\nERROR: -n node annotation file not found.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NODE_FILENAME=`basename "$NODE_FILE"`
+				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NFLAG=0
+				;;
+			d)
+				NODE_ID=$OPTARG
+				DFLAG=0
+				;;
+			r)
+				REGION_NAME=$OPTARG
+				RFLAG=0
 				;;
 			c)
 			 	CONTRAST=$OPTARG
@@ -159,11 +189,10 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
-
 
 # ------ functions ------
 # function to check dependencies
@@ -171,7 +200,7 @@ check_dependency (){
 	echo -en "Rscript..."
 	if hash Rscript 2>/dev/null; then
 	echo -e "ok"
-	elseS
+	else
 	if [ $UNAMESTR=="Darwin" ]; then
 		echo -e "Fail!"
 		echo -e "\t-------------------------------------"
@@ -627,7 +656,7 @@ echo -e "=======================================================================
 
 # --- read input files ---
 # -- input mat and annot files processing --
-r_var=`Rscript ./R_files/nput_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
@@ -635,7 +664,7 @@ r_var=`Rscript ./R_files/nput_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
-mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
+mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the second line (i.e. 2p)
 
 # -- set up variables for output 2d data file
 dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
@@ -649,6 +678,8 @@ echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
+echo -e "\nNode data"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$NODE_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
@@ -669,7 +700,7 @@ echo -e "=======================================================================
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Unsupervised learning and univariate anlaysis..."
 r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-"$ANNOT_FILE" \
+"$NODE_FILE" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
 "$htmap_textsize_col" "$htmap_textangle_col" \
@@ -691,12 +722,20 @@ r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
 "$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
 "$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
+"$NODE_ID" "$REGION_NAME" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
+
+if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
+
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
