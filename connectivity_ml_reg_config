@@ -71,8 +71,8 @@ svm_perm_plot_x_label_size=10
 svm_perm_plot_x_tick_label_size=10
 svm_perm_plot_y_label_size=10
 svm_perm_plot_y_tick_label_size=10
-svm_perm_plot_width=300
-svm_perm_plot_height=50
+svm_perm_plot_width=250
+svm_perm_plot_height=150
 
 # -- SVM ROC AUC --
 svm_roc_threshold=30  # change this accordingly

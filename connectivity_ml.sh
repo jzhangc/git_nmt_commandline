@@ -168,28 +168,28 @@ fi
 # ------ functions ------
 # function to check dependencies
 check_dependency (){
-  echo -en "Rscript..."
-  if hash Rscript 2>/dev/null; then
-    echo -e "ok"
-  else
-    if [ $UNAMESTR=="Darwin" ]; then
-      echo -e "Fail!"
-      echo -e "\t-------------------------------------"
-      echo -en "\t\tChecking Homebrew..."
-        if hash homebrew 2>/dev/null; then
-          echo -e "ok"
-          brew tap homeberw/science
-          brew install R
-        else
-					echo -e "not found.\n"
-          echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
-					exit 1
-        fi
-    elif [ $UNAMESTR=="Linux" ]; then
-      echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+	echo -en "Rscript..."
+	if hash Rscript 2>/dev/null; then
+	echo -e "ok"
+	elseS
+	if [ $UNAMESTR=="Darwin" ]; then
+		echo -e "Fail!"
+		echo -e "\t-------------------------------------"
+		echo -en "\t\tChecking Homebrew..."
+		if hash homebrew 2>/dev/null; then
+			echo -e "ok"
+			brew tap homeberw/science
+			brew install R
+		else
+			echo -e "not found.\n"
+			echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
 			exit 1
-    fi
-  fi
+		fi
+	elif [ $UNAMESTR=="Linux" ]; then
+		echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+			exit 1
+	fi
+	fi
 }
 
 # function to check the program program files
@@ -197,17 +197,17 @@ required_file_check(){
 	# usage:
 	# ARR=(1 2 3)
 	# file_check "${ARR[@]}"
-  arr=("$@") # this is how you call the input arry from the function argument
-  for i in ${arr[@]}; do
-    echo -en "\t$i..."
-    if [ -f ./$i ]; then
-      echo -e "ok"
-    else
-      echo -e "not found"
-      echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
-      exit 1
-    fi
-  done
+	arr=("$@") # this is how you call the input arry from the function argument
+	for i in ${arr[@]}; do
+	echo -en "\t$i..."
+	if [ -f ./R_files/$i ]; then
+		echo -e "ok"
+	else
+		echo -e "not found"
+		echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
+		exit 1
+	fi
+	done
 }
 
 # timing function
@@ -276,10 +276,10 @@ echo -e "\n"
 echo -e "Checking config file(s)"
 echo -en "\tconnectivity_ml_config..."
 if [ -f ./connectivity_ml_config ]; then
-  echo -e "ok"
-  CONF_CHECK=0
+	echo -e "ok"
+	CONF_CHECK=0
 else
-  echo -e "not found"
+	echo -e "not found"
 fi
 echo -e "=========================================================================="
 
@@ -305,12 +305,12 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "Checking R pacakge dependecies"
 echo -e "=========================================================================="
-Rscript ./r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
+Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
 R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
 if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
-  echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
+	echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
 	echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
-  exit 1
+  	exit 1
 fi
 echo -e "=========================================================================="
 
@@ -627,7 +627,7 @@ echo -e "=======================================================================
 
 # --- read input files ---
 # -- input mat and annot files processing --
-r_var=`Rscript ./input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/nput_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
@@ -668,7 +668,7 @@ echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Unsupervised learning and univariate anlaysis..."
-r_var=`Rscript ./univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
@@ -723,7 +723,7 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
-r_var=`Rscript ./ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -772,7 +772,7 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLS-DA analysis..."
-r_var=`Rscript ./plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \
