@@ -24,7 +24,7 @@ RES_OUT_DIR <- args[11]
 
 # --- mata data input variables ---
 SAMPLEID_VAR <- args[9]
-Y_VAR <- args[10]
+GROUP_VAR <- args[10]
 
 ###### R script --------
 # ------ load mat file ------
@@ -34,11 +34,15 @@ raw_dim <- dim(raw)
 
 # ------ load annotation file (meta data) ------
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-if (!all(c(SAMPLEID_VAR, Y_VAR) %in% names(annot))) {
-  cat("e")
+if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(annot))) {
+  cat("none_existent")
   quit()
 }
-y <- annot[, Y_VAR]
+if (nrow(annot) != raw_dim[3]) {
+  cat("unequal_length")
+  quit()
+}
+sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
 sampleid <- annot[, SAMPLEID_VAR]
 
 
@@ -52,12 +56,18 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   names(sync.value) <- pair
   sync.value
 }
-raw_sample_dfm <- data.frame(sampleid = sampleid, y = y, raw_sample, row.names = NULL)
+group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
+raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
 
 ####### export and clean up the mess --------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 
+## set up additional variables for cat
+group_summary <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do%
+  paste0(levels(sample_group)[i], "(", summary(sample_group)[i], ")")
+
 ## cat the vairables to export to shell scipt
+cat("\tSample groups (size): ", group_summary, "\n") # line 1: input annot file groupping info
 cat("\tMat file dimensions: ", raw_dim, "\n") # line 2: input mat file dimension

@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
-# main test realm
-# for testing snippets
-
 # Name: connectivity_ml_classify.sh
-# Version: 0.0.1
-# Discription: A shell script application for unknown sample classification using machine learning model generated
-# by connectivity_ml.sh
-#
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.0.2"
+VERSION="0.0.3"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type

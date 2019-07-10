@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml.sh
-# Version: 0.0.1
+# Name: connectivity_ml_reg.sh
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.0.2"
+VERSION="0.0.3"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -25,9 +24,12 @@ Current version: $VERSION\n
 \n
 <INPUTS>: Mandatory\n
 -i <file>: Input .mat file with full path.\n
--a <file>: Annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
--s <string>: Sample ID variable name.\n
--g <string>: Group ID variable name.\n
+-a <file>: Sample annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
+-s <string>: Sample ID variable name from -a file.\n
+-g <string>: Group ID variable name from -a file.\n
+-n <file>: Node annotation file with full path. Needs to be a .csv file. \n
+-d <string>: Node ID (digitized) variable name from -n file. \n
+-r <string>: Regional annotation variable name from -mn fle. \n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
@@ -63,6 +65,9 @@ IFLAG=1
 AFLAG=1
 SFLAG=1
 GFLAG=1
+NFLAG=1
+DFLAG=1
+RFLAG=1
 CFLAG=1
 
 # optional flag values
@@ -72,9 +77,9 @@ OUT_DIR=.  # set the default to output directory
 if [ $# -eq 0 ]; then
 	echo -e $HELP
 	echo -e "\n"
-  echo -e "=========================================================================="
+	echo -e "=========================================================================="
 	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-  exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+	exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
 else
 	case "$1" in  # "one off" flags
 		-h|--help)
@@ -90,7 +95,7 @@ else
 			;;
 	esac
 
-	while getopts ":p:i:a:s:g:c:o:" opt; do
+	while getopts ":p:i:a:s:g:n:d:r:c:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -111,13 +116,13 @@ else
 				ANNOT_FILE=$OPTARG
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -a annotation file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 
 				ANNOT_FILENAME=`basename "$ANNOT_FILE"`
 				if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -a the annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -130,6 +135,30 @@ else
 			g)
 				GROUP_ID=$OPTARG
 				GFLAG=0
+				;;
+			n)
+				NODE_FILE=$OPTARG
+				if ! [ -f "$NODE_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_RED}\nERROR: -n node annotation file not found.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NODE_FILENAME=`basename "$NODE_FILE"`
+				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NFLAG=0
+				;;
+			d)
+				NODE_ID=$OPTARG
+				DFLAG=0
+				;;
+			r)
+				REGION_NAME=$OPTARG
+				RFLAG=0
 				;;
 			c)
 			 	CONTRAST=$OPTARG
@@ -160,37 +189,36 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
-
 
 # ------ functions ------
 # function to check dependencies
 check_dependency (){
-  echo -en "Rscript..."
-  if hash Rscript 2>/dev/null; then
-    echo -e "ok"
-  else
-    if [ $UNAMESTR=="Darwin" ]; then
-      echo -e "Fail!"
-      echo -e "\t-------------------------------------"
-      echo -en "\t\tChecking Homebrew..."
-        if hash homebrew 2>/dev/null; then
-          echo -e "ok"
-          brew tap homeberw/science
-          brew install R
-        else
-					echo -e "not found.\n"
-          echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
-					exit 1
-        fi
-    elif [ $UNAMESTR=="Linux" ]; then
-      echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+	echo -en "Rscript..."
+	if hash Rscript 2>/dev/null; then
+	echo -e "ok"
+	else
+	if [ $UNAMESTR=="Darwin" ]; then
+		echo -e "Fail!"
+		echo -e "\t-------------------------------------"
+		echo -en "\t\tChecking Homebrew..."
+		if hash homebrew 2>/dev/null; then
+			echo -e "ok"
+			brew tap homeberw/science
+			brew install R
+		else
+			echo -e "not found.\n"
+			echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
 			exit 1
-    fi
-  fi
+		fi
+	elif [ $UNAMESTR=="Linux" ]; then
+		echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+			exit 1
+	fi
+	fi
 }
 
 # function to check the program program files
@@ -198,17 +226,17 @@ required_file_check(){
 	# usage:
 	# ARR=(1 2 3)
 	# file_check "${ARR[@]}"
-  arr=("$@") # this is how you call the input arry from the function argument
-  for i in ${arr[@]}; do
-    echo -en "\t$i..."
-    if [ -f ./$i ]; then
-      echo -e "ok"
-    else
-      echo -e "not found"
-      echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
-      exit 1
-    fi
-  done
+	arr=("$@") # this is how you call the input arry from the function argument
+	for i in ${arr[@]}; do
+	echo -en "\t$i..."
+	if [ -f ./R_files/$i ]; then
+		echo -e "ok"
+	else
+		echo -e "not found"
+		echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
+		exit 1
+	fi
+	done
 }
 
 # timing function
@@ -277,10 +305,10 @@ echo -e "\n"
 echo -e "Checking config file(s)"
 echo -en "\tconnectivity_ml_config..."
 if [ -f ./connectivity_ml_config ]; then
-  echo -e "ok"
-  CONF_CHECK=0
+	echo -e "ok"
+	CONF_CHECK=0
 else
-  echo -e "not found"
+	echo -e "not found"
 fi
 echo -e "=========================================================================="
 
@@ -306,12 +334,12 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "Checking R pacakge dependecies"
 echo -e "=========================================================================="
-Rscript ./r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
+Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
 R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
 if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
-  echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
+	echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
 	echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
-  exit 1
+  	exit 1
 fi
 echo -e "=========================================================================="
 
@@ -628,7 +656,7 @@ echo -e "=======================================================================
 
 # --- read input files ---
 # -- input mat and annot files processing --
-r_var=`Rscript ./input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
@@ -636,7 +664,7 @@ r_var=`Rscript ./input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
-mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
+mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the second line (i.e. 2p)
 
 # -- set up variables for output 2d data file
 dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
@@ -650,8 +678,13 @@ echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-if [ "$group_summary" == "e" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+echo -e "\nNode data"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$NODE_FILENAME${NO_COLOUR}"
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "unequal_length" ]; then
+	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$group_summary\n"
@@ -666,8 +699,8 @@ echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Unsupervised learning and univariate anlaysis..."
-r_var=`Rscript ./univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-"$ANNOT_FILE" \
+r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+"$NODE_FILE" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
 "$htmap_textsize_col" "$htmap_textangle_col" \
@@ -689,15 +722,25 @@ r_var=`Rscript ./univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
 "$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
 "$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
+"$NODE_ID" "$REGION_NAME" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
+
+if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
+
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
 # -- set up variables for output ml data file
 dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 # -- additional display --
@@ -716,10 +759,10 @@ if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
 else
 	echo -e "ON"
-	echo -e "Cores: $CORES"
+	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
-r_var=`Rscript ./ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -768,7 +811,7 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLS-DA analysis..."
-r_var=`Rscript ./plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \

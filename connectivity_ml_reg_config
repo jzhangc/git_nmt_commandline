@@ -42,7 +42,7 @@ sig_htmap_height=7
 cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
 
 # -- Data processing --
-training_percentage=0.7  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
+training_percentage=0.9 # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
 
 # -- SVM internal nested cross-validation and feature selection
 svm_cv_centre_scale=TRUE
@@ -53,7 +53,7 @@ svm_cv_tune_cross_k=10  # set only when svm_cv_tune_method="cross", fold number 
 svm_cv_tune_boot_n=10  # set only when svm_cv_tune_method="boot", bootstrap iterations
 svm_cv_fs_rf_ifs_ntree=501
 svm_cv_fs_rf_sfs_ntree=501
-svm_cv_fs_count_cutoff=2
+svm_cv_fs_count_cutoff=5
 
 # -- SVM modelling --
 # NOTE: some settings will share with the above CV step
@@ -71,11 +71,11 @@ svm_perm_plot_x_label_size=10
 svm_perm_plot_x_tick_label_size=10
 svm_perm_plot_y_label_size=10
 svm_perm_plot_y_tick_label_size=10
-svm_perm_plot_width=300
-svm_perm_plot_height=50
+svm_perm_plot_width=250
+svm_perm_plot_height=150
 
 # -- SVM ROC AUC --
-svm_roc_threshold=50  # change this accordingly
+svm_roc_threshold=30  # change this accordingly
 svm_roc_smooth=FALSE
 svm_roc_symbol_size=2
 svm_roc_legend_size=9
