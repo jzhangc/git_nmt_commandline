@@ -1,0 +1,117 @@
+## Sickkids work Windows machine
+./connectivity_ml_test1.sh \
+-i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/test_data.mat" \
+-a "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
+-s "test var" -g "group" -c "ptsd-control" \
+-o "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
+
+./connectivity_ml.sh \
+-i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
+-a "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
+-s "test var" -g "group" -c "ptsd-control" \
+-o "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
+
+# regression study
+./connectivity_ml_reg.sh \
+-i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_5.longitudinal.ptsd.mat" \
+-a "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
+-s "sample" -y "pcl" \
+-o "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_5_results" -p 3
+
+./connectivity_ml_reg.sh \
+-i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/other/summer project/freq_1.longitudinal.ptsd.mat" \
+-a "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/other/summer project/longitudinal_annot.csv" \
+-s "sample" -y "pcl" \
+-o "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/other/summer project" -p 3
+
+## JZ Macbook
+./connectivity_ml_test1.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/test_data.mat" \
+-a "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
+-s "test var" -g "group" -c "ptsd - control" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 2
+
+./connectivity_ml.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/0.raw mat data/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
+-a "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
+-s "test var" -g "group" -c "ptsd - control" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
+
+
+./connectivity_ml.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/pre_civthen_pre_tbi_90AMP_80-150.mat" \
+-a "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/annot.csv" \
+-s "test var" -g "group" -c "mTBI - control" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/results/mTBI_freq_80-150/" -p 3
+
+
+# regression version
+./connectivity_ml_reg_test1.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_7.longitudinal.ptsd.mat" \
+-a "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
+-s "sample" -y "pcl" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_7_results" -p 3
+
+./connectivity_ml_reg.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_6.longitudinal.ptsd.mat" \
+-a "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
+-s "sample" -y "pcl" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_6_results" -p 3
+
+# Ben H data (classification)
+./connectivity_ml.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben H data/raw_mat/freq_3.mat" \
+-a "/Users/jzhangc/OneDrive/1.labs/sickkids/ben H data/raw_mat/annot.csv" \
+-s "Sample" -g "Group" -c "ASD - TD" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben H data/raw_mat/results/freq_3" -p 3
+
+
+## 2d input test
+# classification
+./connectivity_ml_2d.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/test_2d_univariate.csv" \
+-s "ID" -g "GROUP" -c "ptsd-control" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" \
+-p 3 -u
+
+
+# regression on 2D
+./connectivity_ml_reg_2d.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/pcl_cleanedup_dylan_working.csv" \
+-s "sampleid" -y "pcl" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
+
+
+
+## JZ iMac
+./connectivity_ml.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/0.raw mat data/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
+-a "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
+-s "test var" -g "group" -c "ptsd - control" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 6
+
+./connectivity_ml_test1.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
+-a "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
+-s "test var" -g "group" -c "ptsd - control" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 6
+
+# regression version
+./connectivity_ml_reg_test1.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_1.longitudinal.ptsd.mat" \
+-a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
+-s "sample" -y "pcl" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/" -p 6
+
+./connectivity_ml_reg.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_7.longitudinal.ptsd.mat" \
+-a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
+-s "sample" -y "pcl" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_7_results" -p 6
+
+# Ben H data (classification)
+./connectivity_ml.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben H data/raw_mat/freq_3.mat" \
+-a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben H data/raw_mat/annot.csv" \
+-s "Sample" -g "Group" -c "ASD - TD" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben H data/raw_mat/results/freq_3" -p 6
