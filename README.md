@@ -4,18 +4,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
-- 0.0.3
-  
-  (ICEBOX)
-  - General updates
-    - Spinner added as a running status indication
-    - Overall optimization
-    - A memory check module to ensure the stability
-    - Node file length check added for univariate.R and reg_univariate.R
-  
-  - Version bumpped appropriately for all modules  
-  
-  (ADDED)
+- 0.0.3 (July.10.2019)
   - General updates
     - The non-2D applications now able to take node file
       - All related sh and R files updated for this update
