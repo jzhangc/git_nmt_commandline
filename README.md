@@ -11,6 +11,7 @@ A bash application for automating machine learning analysis for MEG connection d
     - Overall optimization
     - A memory check module to ensure the stability
     - Node file length check added for univariate.R and reg_univariate.R
+    - Fix the "invalide ncomp" issue
   
   - Version bumpped appropriately for all modules  
 
