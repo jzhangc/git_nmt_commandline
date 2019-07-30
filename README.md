@@ -13,7 +13,13 @@ A bash application for automating machine learning analysis for MEG connection d
     - Node file length check added for univariate.R and reg_univariate.R
     - Fix the "invalide ncomp" issue
   
+  - Bug fixes
+
   - Version bumpped appropriately for all modules  
+
+  (ADDED）
+  - Updates to connectiity_ml.sh and connectivity_ml_2d.sh
+    - Resampling is now stratified.
 
 - 0.0.3
   - General updates

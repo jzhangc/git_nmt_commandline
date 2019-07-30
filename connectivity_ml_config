@@ -19,7 +19,7 @@ htmap_width=10
 htmap_height=10
 
 # -- PCA --
-pca_scale_data=FALSE
+pca_scale_data=TRUE
 pca_centre_data=TRUE
 pca_pc="c(1, 2, 3)"
 pca_biplot_samplelabel_type="none"  # options are "none", "direct" and "indirect"
