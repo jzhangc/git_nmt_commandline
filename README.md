@@ -18,8 +18,16 @@ A bash application for automating machine learning analysis for MEG connection d
   - Version bumpped appropriately for all modules  
 
   (ADDED）
-  - Updates to connectiity_ml.sh and connectivity_ml_2d.sh
-    - Resampling is now stratified.
+  - General updates
+    - SVM now saves training and test data as csv files
+
+  - Updates to connectiity_ml.sh
+    - Resampling is now stratified
+    - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+  
+  - Updates to  and connectivity_ml_2d.sh
+    - Resampling is now stratified
+    - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
 
 - 0.0.3
   - General updates

@@ -86,6 +86,7 @@ CONTRAST <- args[38]
 # ------ warning flags ------
 if (UNI_FDR) FDR_FAIL_WARNING <- FALSE
 NO_SIG_WARNING <- FALSE
+ONE_SIG_WARNING <- FALSE
 NO_SIG_WARNING_FIT <- FALSE
 
 ###### R script --------
@@ -224,6 +225,8 @@ de_names <- names(get(paste0(MAT_FILE_NO_EXT, "_DE")))
 for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
   if (DE_summary[i, "sig"] == 0) {
     NO_SIG_WARNING <- TRUE
+  } else if (DE_summary[i, "sig"] == 1) {
+    ONE_SIG_WARNING <- TRUE
   } else {
     rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_DE_",de_names[i]),
                              fltDOI = normdata, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
@@ -259,7 +262,7 @@ if (UNI_FDR){
 }
 sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
 
-if (length(sig_pairs_fit) < 1) {
+if (length(sig_pairs_fit) <= 1) {
   NO_SIG_WARNING_FIT <- TRUE
 } else {
   pca_sig <- pca_all[, names(pca_all) %in% c("group", "sample", sig_pairs_fit)]
@@ -287,7 +290,7 @@ if (length(sig_pairs_fit) < 1) {
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
-x_ml <- t(normdata$E)[, sig_pairs_fit]
+x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
 ml_dfm <- data.frame(y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
 
@@ -331,12 +334,14 @@ cat("Hierarchical clustering heatmap: \n")
 if (NO_SIG_WARNING) {
   cat("One or more comparisons failed to identify significant results. \n")
   cat("Check output folder for the results. \n")
+} else if (ONE_SIG_WARNING) {
+  cat("Only one significant result found, no need for supervised culstering. \n")
 } else {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
 if (NO_SIG_WARNING_FIT) {
-  cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+  cat("One or less than one reuslt found in F-stats results, no PCA needed. \n")
 } else {
   cat("PCA results saved to: \n")
   cat("\tbiplot: pca_sig.pca.biplot.pdf\n")

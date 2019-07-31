@@ -99,10 +99,21 @@ setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
-training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
-training <- ml_dfm_randomized[1:training_n, ]
-test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
+ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
+
+# stratified resampling: proportionally sample by groups
+training <- foreach(i = levels(ml_dfm$y), .combine = "rbind") %do% {
+  dfm <- ml_dfm[ml_dfm == i, ]
+  dfm_rand <- dfm[sample(nrow(dfm)), ]
+  training_n <- ceiling(nrow(dfm_rand) * TRAINING_PERCENTAGE)
+  training <- dfm_rand[1:training_n, ]
+}
+test <- ml_dfm[!rownames(ml_dfm) %in% rownames(training), ]
+
+# ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
+# training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
+# training <- ml_dfm_randomized[1:training_n, ]
+# test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -260,9 +271,10 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
-y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
-                           check.names = FALSE)
-write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
+# y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
+#                            check.names = FALSE)
+write.csv(file = "ml_training.csv", training, row.names = FALSE)
+write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test", "svm_nested_cv"),
      file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
@@ -281,7 +293,7 @@ cat("Group labels (size): ", orignal_y_summary, "\n")
 cat("\n\n")
 cat("Label randomization\n")
 cat("-------------------------------------\n")
-cat("Randomized group label order saved to file: ml_randomized_group_label_order.csv\n")
+cat("Training and test files saved to: ml_training.csv ml_test.csv\n")
 cat("\n\n")
 cat("Data split\n")
 cat("-------------------------------------\n")

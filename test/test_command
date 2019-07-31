@@ -86,6 +86,13 @@
 -s "sampleid" -y "pcl" \
 -o "/Users/jzhangc/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
 
+# mTBI power analysis
+./connectivity_ml_2d.sh \
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/power_raw/power_freq1.csv" \
+-s "smapleid" -g "groupid" -c "mtbi-control" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/results/freq1" \
+-p 3 -u
+
 
 
 ## JZ iMac

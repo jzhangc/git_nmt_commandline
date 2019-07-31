@@ -16,6 +16,7 @@ require(parallel)
 ###### sys variables --------
 # ------ warning flags ------
 CORE_OUT_OF_RANGE <- FALSE
+NCOMP_WARNING <- FALSE
 
 # ------ file name variables ------
 MODEL_FILE <- args[6]  # SVM MODEL R file
@@ -102,10 +103,18 @@ load(file = MODEL_FILE)
 
 # ------ PLs-DA modelling ------
 # inital modelling and ncomp optimization
-plsda_m <- rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
-                           ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-                           segments = PLSDA_VALIDATION_SEGMENT,
-                           method = "oscorespls", verbose = FALSE)
+plsda_m <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+                                    ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
+                                    segments = PLSDA_VALIDATION_SEGMENT,
+                                    method = "oscorespls", verbose = FALSE),
+                           error = function(w){
+                             assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+                             rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+                                                        validation = PLSDA_VALIDATION,
+                                                        segments = PLSDA_VALIDATION_SEGMENT,
+                                                        method = "oscorespls", verbose = FALSE)
+                           })
+
 rbioClass_plsda_ncomp_select(plsda_m, min.rmsep.line = T,
                              ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
                              randomization.alpha = 0.05,
@@ -199,6 +208,10 @@ save(list = c("plsda_m_optim"), file = paste0(MAT_FILE_NO_EXT, "_final_plsda_mod
 if (CORE_OUT_OF_RANGE) {
   cat("WARNING: CPU core number out of range! Set to maximum cores - 1. \n")
   cat("-------------------------------------\n\n")
+}
+if (NCOMP_WARNING) {
+    cat("WARNING: Set ncomp is invalid. Using default: number of classes - 1. \n")
+    cat("-------------------------------------\n\n")
 }
 cat("PLS-DA ncomp optimization\n")
 cat("-------------------------------------\n")
