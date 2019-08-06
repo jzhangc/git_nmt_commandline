@@ -115,7 +115,7 @@ plsda_m <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
                                                         method = "oscorespls", verbose = FALSE)
                            })
 
-rbioClass_plsda_ncomp_select(plsda_m, min.rmsep.line = T,
+rbioClass_plsda_ncomp_select(plsda_m,
                              ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
                              randomization.alpha = 0.05,
                              plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = ,

@@ -49,7 +49,7 @@ NO_COLOUR="\033[0;0m"
 # --- dependency file id variables ---
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R)
+R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R reg_plsr_val_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
@@ -501,6 +501,41 @@ echo -e "\tsvm_roc_y_label_size=$svm_roc_y_label_size"
 echo -e "\tsvm_roc_y_tick_label_size=$svm_roc_y_tick_label_size"
 echo -e "\tsvm_roc_width=$svm_roc_width"
 echo -e "\tsvm_roc_height=$svm_roc_height"
+echo -e "\nPLS-DA modelling for evaluating SVM results"
+echo -e "\tplsda_validation=$plsda_validation"
+echo -e "\tplsda_validation_segment=$plsda_validation_segment"
+echo -e "\tplsda_init_ncomp=$plsda_init_ncomp"
+echo -e "\tplsda_ncomp_select_method=$plsda_ncomp_select_method"
+echo -e "\tplsda_ncomp_select_plot_symbol_size=$plsda_ncomp_select_plot_symbol_size"
+echo -e "\tplsda_ncomp_select_plot_legend_size=$plsda_ncomp_select_plot_legend_size"
+echo -e "\tplsda_ncomp_select_plot_x_label_size=$plsda_ncomp_select_plot_x_label_size"
+echo -e "\tplsda_ncomp_select_plot_x_tick_label_size=$plsda_ncomp_select_plot_x_tick_label_size"
+echo -e "\tplsda_ncomp_select_plot_y_label_size=$plsda_ncomp_select_plot_y_label_size"
+echo -e "\tplsda_ncomp_select_plot_y_tick_label_size=$plsda_ncomp_select_plot_y_tick_label_size"
+echo -e "\tplsda_perm_method=$plsda_perm_method"
+echo -e "\tplsda_perm_n=$plsda_perm_n"
+echo -e "\tplsda_perm_plot_symbol_size=$plsda_perm_plot_symbol_size"
+echo -e "\tplsda_perm_plot_legend_size=$plsda_perm_plot_legend_size"
+echo -e "\tplsda_perm_plot_x_label_size=$plsda_perm_plot_x_label_size"
+echo -e "\tplsda_perm_plot_x_tick_label_size=$plsda_perm_plot_x_tick_label_size"
+echo -e "\tplsda_perm_plot_y_label_size=$plsda_perm_plot_y_label_size"
+echo -e "\tplsda_perm_plot_y_tick_label_size=$plsda_perm_plot_y_tick_label_size"
+echo -e "\tplsda_perm_plot_width=$plsda_perm_plot_width"
+echo -e "\tplsda_perm_plot_height=$plsda_perm_plot_height"
+echo -e "\tplsda_scoreplot_ellipse_conf=$plsda_scoreplot_ellipse_conf"
+echo -e "\tplsda_vip_alpha=$plsda_vip_alpha"
+echo -e "\tplsda_vip_boot=$plsda_vip_boot"
+echo -e "\tplsda_vip_boot_n=$plsda_vip_boot_n"
+echo -e "\tplsda_vip_plot_errorbar=$plsda_vip_plot_errorbar"
+echo -e "\tplsda_vip_plot_errorbar_width=$plsda_vip_plot_errorbar_width"
+echo -e "\tplsda_vip_plot_errorbar_label_size=$plsda_vip_plot_errorbar_label_size"
+echo -e "\tplsda_vip_plot_x_textangle=$plsda_vip_plot_x_textangle"
+echo -e "\tplsda_vip_plot_x_label_size=$plsda_vip_plot_x_label_size"
+echo -e "\tplsda_vip_plot_x_tick_label_size=$plsda_vip_plot_x_tick_label_size"
+echo -e "\tplsda_vip_plot_y_label_size=$plsda_vip_plot_y_label_size"
+echo -e "\tplsda_vip_plot_y_tick_label_size=$plsda_vip_plot_y_tick_label_size"
+echo -e "\tplsda_vip_plot_width=$plsda_vip_plot_width"
+echo -e "\tplsda_vip_plot_height=$plsda_vip_plot_height"
 echo -e "=========================================================================="
 
 
@@ -628,6 +663,61 @@ fi
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
+echo -e "$rscript_display" # print the screen display from the R script
+echo -e "=========================================================================="
+
+
+# -- PLSR validation of SVM analysis --
+echo -e "\n"
+echo -e "PLSR machine learning for SVM results evaluation"
+echo -e "=========================================================================="
+echo -e "SVM model file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
+echo -en "Parallel computing: "
+if [ $PSETTING == "FALSE" ]; then
+	echo -e "OFF"
+else
+	echo -e "ON"
+	echo -e "Cores: $CORES"
+fi
+echo -en "PLS-DA analysis..."
+r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+"${OUT_DIR}/OUTPUT" \
+"$PSETTING" "$CORES" \
+"$cpu_cluster" \
+"$plsda_validation" "$plsda_validation_segment" "$plsda_init_ncomp" "$plsda_ncomp_select_method" \
+"$plsda_ncomp_select_plot_symbol_size" "$plsda_ncomp_select_plot_legend_size" \
+"$plsda_ncomp_select_plot_x_label_size" "$plsda_ncomp_select_plot_x_tick_label_size" \
+"$plsda_ncomp_select_plot_y_label_size" "$plsda_ncomp_select_plot_y_tick_label_size" \
+"$plsda_perm_method" "$plsda_perm_n" \
+"$plsda_perm_plot_symbol_size" "$plsda_perm_plot_legend_size" \
+"$plsda_perm_plot_x_label_size" "$plsda_perm_plot_x_tick_label_size" \
+"$plsda_perm_plot_y_label_size" "$plsda_perm_plot_y_tick_label_size" \
+"$plsda_perm_plot_width" "$plsda_perm_plot_height" \
+"$plsda_scoreplot_ellipse_conf" \
+"$pca_biplot_symbol_size" \
+"$pca_biplot_ellipse" \
+"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
+"$pca_width" "$pca_height" \
+"$plsda_roc_smooth" \
+"$svm_roc_symbol_size" "$svm_roc_legend_size" "$svm_roc_x_label_size" "$svm_roc_x_tick_label_size" \
+"$svm_roc_y_label_size" "$svm_roc_y_tick_label_size" \
+"$plsda_vip_alpha" "$plsda_vip_boot" "$plsda_vip_boot_n" \
+"$plsda_vip_plot_errorbar" "$plsda_vip_plot_errorbar_width" "$plsda_vip_plot_errorbar_label_size" \
+"$plsda_vip_plot_x_textangle" "$plsda_vip_plot_x_label_size" "$plsda_vip_plot_x_tick_label_size" \
+"$plsda_vip_plot_y_label_size" "$plsda_vip_plot_y_tick_label_size" \
+"$plsda_vip_plot_width" "$plsda_vip_plot_height" \
+--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+rscript_display=`echo "${r_var[@]}"`
+# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
+if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+echo -e "Done!"
+echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 

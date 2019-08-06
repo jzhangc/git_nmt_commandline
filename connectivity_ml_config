@@ -121,7 +121,7 @@ svm_rffs_pca_biplot_ellipse_conf=0.95
 # ------ Settings for PLS-DA modelling for evaluating SVM results ------
 # -- global PLS-DA settings
 plsda_validation="CV"  # options are "none", "CV" and "LOO"
-plsda_validation_segment=10  # not needed when plsda_init_validation="LOO"
+plsda_validation_segment=10  # not needed when plsda_validation="LOO"
 
 # -- Initial PLS-DA modelling settings --
 plsda_init_ncomp=4
