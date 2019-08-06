@@ -29,7 +29,7 @@ Current version: $VERSION\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 -n <file>: Node annotation file with full path. Needs to be a .csv file. \n
 -d <string>: Node ID (digitized) variable name from -n file. \n
--r <string>: Regional annotation variable name from -mn fle. \n
+-r <string>: Regional annotation variable name from -n fle. \n
 \n
 [OPTIONS]: Optional\n
 -o <dir>: Optional output directory. Default is where the program is. \n

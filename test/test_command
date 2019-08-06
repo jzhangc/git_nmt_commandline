@@ -88,10 +88,10 @@
 
 # mTBI power analysis
 ./connectivity_ml_2d.sh \
--i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/power_raw/power_freq1.csv" \
--s "smapleid" -g "groupid" -c "mtbi-control" \
--o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/results/freq1" \
--p 3 -u
+-i "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/power_raw/power_freq5.csv" \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-o "/Users/jzhangc/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/results/freq5" \
+-p 3
 
 
 
@@ -144,3 +144,10 @@
 -s "ID" -g "GROUP" -c "ptsd-control" \
 -o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" \
 -p 6 -u
+
+# 2d power analysis
+./connectivity_ml_2d.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/power_raw/power_combined.csv" \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/tbi_amp_mat/power_analysis/results/freq_combined" \
+-p  -u

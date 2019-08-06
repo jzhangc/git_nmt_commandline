@@ -9,7 +9,6 @@ args <- commandArgs()
 
 ###### load libraries --------
 require(foreach)
-require(R.matlab) # to read .mat files
 
 ###### sys variables --------
 # --- file name variables ---

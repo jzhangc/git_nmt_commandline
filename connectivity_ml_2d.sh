@@ -648,7 +648,7 @@ else
 	echo -e "$group_summary\n"
 fi
 echo -e "Data transformed into 2D format and saved to files:"
-echo -e "${MAT_FILENAME_WO_EXT}_2D.csv ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+echo -e "\t${MAT_FILENAME_WO_EXT}_2D.csv ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 echo -e "=========================================================================="
 
 

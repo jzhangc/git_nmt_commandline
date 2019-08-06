@@ -63,7 +63,7 @@ SVM_PERM_PLOT_X_LABEL_SIZE <- as.numeric(args[29])
 SVM_PERM_PLOT_X_TICK_LABEL_SIZE <- as.numeric(args[30])
 SVM_PERM_PLOT_Y_LABEL_SIZE <- as.numeric(args[31])
 SVM_PERM_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[32])
-SVM_PERM_PLOT_WEIGHT <- as.numeric(args[33])
+SVM_PERM_PLOT_WIDTH <- as.numeric(args[33])
 SVM_PERM_PLOT_HEIGHT <- as.numeric(args[34])
 
 SVM_ROC_THRESHOLD <- as.numeric(args[35])
@@ -169,7 +169,7 @@ rbioUtil_perm_plot(perm_res = svm_m_perm,
                    plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
                    plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
                    plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-                   plot.Width = 300, plot.Height = 50)
+                   plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT)
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Permutation test ------\n")

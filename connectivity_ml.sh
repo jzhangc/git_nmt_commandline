@@ -29,7 +29,7 @@ Current version: $VERSION\n
 -g <string>: Group ID variable name from -a file.\n
 -n <file>: Node annotation file with full path. Needs to be a .csv file. \n
 -d <string>: Node ID (digitized) variable name from -n file. \n
--r <string>: Regional annotation variable name from -mn fle. \n
+-r <string>: Regional annotation variable name from -n fle. \n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
