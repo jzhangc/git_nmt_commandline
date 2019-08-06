@@ -15,6 +15,7 @@ A bash application for automating machine learning analysis for MEG connection d
   
   - Bug fixes
 
+
   (ADDED）
   - General updates
     - SVM now saves training and test data as csv files
@@ -27,11 +28,12 @@ A bash application for automating machine learning analysis for MEG connection d
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
   
-  -Updates to the regression module
+  - Updates to the regression module
     - PLSR functionality added so PLS VIP plot is produced as a validation for SVM-rRF-FS process
     - Accordingly, new R file reg_plsr_val_svm.R added
 
   - Version bumpped to 0.1 for all modules
+
 
 - 0.0.3
   - General updates
@@ -64,6 +66,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
   - A bugs fixed for reg_ml_svm.R, now with correct error metric
 
+
 - 0.0.2 (May.22.2019)
   - Updates to connectivity_ml.sh (and the associated R modules)
     - Updates to univariate.R
@@ -81,6 +84,7 @@ A bash application for automating machine learning analysis for MEG connection d
   - Version bumped to 0.0.2 for all modules
 
   - Bug fixes
+  
 
 - 0.0.1
   - Initial commit
