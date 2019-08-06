@@ -1,5 +1,5 @@
 ###### general info --------
-## name: ml_plsda_eval.R
+## name: reg_plsr_val_svm.R
 ## purpose: plada modelling to evaluating SVM results
 ## version: 0.1
 
