@@ -4,7 +4,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
-- 0.0.4  
+- 0.1  
   (ICEBOX)
   - General updates
     - Spinner added as a running status indication
@@ -15,7 +15,7 @@ A bash application for automating machine learning analysis for MEG connection d
   
   - Bug fixes
 
-  - Version bumpped appropriately for all modules  
+  - Version bumpped to 0.1 for all modules
 
   (ADDED）
   - General updates
@@ -25,9 +25,13 @@ A bash application for automating machine learning analysis for MEG connection d
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
   
-  - Updates to  and connectivity_ml_2d.sh
+  - Updates to connectivity_ml_2d.sh
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+  
+  -Updates to the regression module
+    - PLSR functionality added so PLS VIP plot is produced as a validation for SVM-rRF-FS process
+    - Accordingly, new R file reg_plsda_val_svm.R added
 
 - 0.0.3
   - General updates
