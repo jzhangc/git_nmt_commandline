@@ -38,7 +38,7 @@ A bash application for automating machine learning analysis for MEG connection d
     - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
     - Accordingly, new R file reg_plsr_val_svm.R added
 
-  - Version bumpped to 0.1 for all modules
+  - Version bumpped to 0.1.0 for all modules
 
 - 0.0.3
   - General updates

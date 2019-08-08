@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: reg_plsr_val_svm.R
 ## purpose: plada modelling to evaluating SVM results
-## version: 0.1
+## version: 0.1.0
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
