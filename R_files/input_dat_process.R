@@ -56,8 +56,9 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   names(sync.value) <- pair
   sync.value
 }
-group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
-raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_sample, row.names = NULL)
+# group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
+# raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_sample, row.names = NULL)
+raw_sample_dfm <- data.frame(sampleid = sampleid, group = sample_group, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
 
 ####### export and clean up the mess --------

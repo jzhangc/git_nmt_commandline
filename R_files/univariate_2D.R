@@ -228,15 +228,21 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
   } else if (DE_summary[i, "sig"] == 1) {
     ONE_SIG_WARNING <- TRUE
   } else {
+    normdata$E
+    normdata$targets
+    de_groups <- unlist(strsplit(de_names[i], "-"))
+    de_sample_idx <- which(normdata$targets$group %in% de_groups)
+    super_cluster_data <- list(E = normdata$E[, de_sample_idx], genes = normdata$genes,
+                               targets = normdata$targets[de_sample_idx, ])
     rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_DE_",de_names[i]),
-                             fltDOI = normdata, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
+                             fltDOI = super_cluster_data, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
                              DE.sig.method = sig.method, FC = UNI_FOLD_CHANGE, DE.sig.p = UNI_ALPHA,
                              clust = "complete",
                              ctrlProbe = FALSE,
                              fct = y, dataProbeVar = "pair",
                              rowLabel = TRUE,
-                             annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "pair",
-                             sampleName = idx$sample,
+                             annot = super_cluster_data$genes, annotProbeVar = "pair", genesymbolVar = "pair",
+                             sampleName = super_cluster_data$targets$sample,
                              trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
                              key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
                              cexCol = SIG_HTMAP_TEXTSIZE_COL, cexRow = SIG_HTMAP_TEXTSIZE_ROW,
@@ -326,7 +332,7 @@ cat("\t", paste0(MAT_FILE_NO_EXT, "_DE_Fstats.csv\n"))
 cat("\t", paste0(MAT_FILE_NO_EXT, "_threshold_summary.csv\n"))
 cat("\t", paste0(MAT_FILE_NO_EXT, "_", contra_string, "_DE.csv"), "\n")
 cat("\n")
-cat("Volcano plot saved to file(s): ", paste0(MAT_FILE_NO_EXT, "_", contra_string, ".volcano.pdf\n"))
+cat("Volcano plot saved to file(s): \n", paste0(MAT_FILE_NO_EXT, "_", contra_string, ".volcano.pdf\n"))
 cat("\n\n")
 cat("Clustering analysis: significant connections\n")
 cat("-------------------------------------\n")

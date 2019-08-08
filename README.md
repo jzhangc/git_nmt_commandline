@@ -20,12 +20,14 @@ A bash application for automating machine learning analysis for MEG connection d
     - SVM now saves training and test data as csv files
 
   - Updates to connectiity_ml.sh
+    - Unsorted annotation file support
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
     - A bug fixed for the display messaging order
     - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
   
   - Updates to connectivity_ml_2d.sh
+    - Unsorted annotation file support
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
     - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
@@ -47,7 +49,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
   - New module connectivity_ml_2d.sh added
     - input_dat_process_2d.R added
-
+ 
   - New module connectivity_ml_reg_2d.sh added
     - reg_input_dat_process_2d.R added
 
