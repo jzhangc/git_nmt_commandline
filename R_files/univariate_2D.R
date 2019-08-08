@@ -249,7 +249,7 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
 }
 
 # PCA
-fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))[, 1:8]
+fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))
 names(fit_dfm)[2] <- "pair"
 if (UNI_FDR){
   if (FDR_FAIL_WARNING){

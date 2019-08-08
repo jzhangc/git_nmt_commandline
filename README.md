@@ -22,10 +22,13 @@ A bash application for automating machine learning analysis for MEG connection d
   - Updates to connectiity_ml.sh
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+    - A bug fixed for the display messaging order
+    - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
   
   - Updates to connectivity_ml_2d.sh
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+    - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
   
   - Updates to the regression module
     - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
