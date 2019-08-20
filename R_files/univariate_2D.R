@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.1.0
+## version: 0.1
 
 ## test from Rscript
 args <- commandArgs()
@@ -198,7 +198,7 @@ tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                       plotWidth = VOLCANO_WIDTH, plotHeight = VOLCANO_HEIGHT,
                       parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE),
          warning = function(w) {
-           assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
+           if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
            rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                         fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
                         weights = normdata$ArrayWeight,
@@ -257,16 +257,34 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
 # PCA
 fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))
 names(fit_dfm)[2] <- "pair"
-if (UNI_FDR){
-  if (FDR_FAIL_WARNING){
-    pcutoff <- UNI_ALPHA
+if (length(contra_string) == 1) {
+  if (UNI_FDR){
+    if (FDR_FAIL_WARNING){
+      pcutoff <- UNI_ALPHA
+    } else {
+      pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val <= UNI_ALPHA)])
+    }
   } else {
-    pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)])
+    pcutoff <- UNI_ALPHA
   }
+  sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
 } else {
-  pcutoff <- UNI_ALPHA
+  if (UNI_FDR){
+    pcutoff <- tryCatch(max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)]),
+                        warning = function(w){
+                          NULL
+                        })
+    if (is.null(pcutoff)) {
+      sig_pairs_fit <- character(0)
+    } else {
+      sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value <= pcutoff, "pair"])
+    }
+
+  } else {
+    pcutoff <- UNI_ALPHA
+    sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
+  }
 }
-sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
 
 if (length(sig_pairs_fit) <= 1) {
   NO_SIG_WARNING_FIT <- TRUE
@@ -346,10 +364,16 @@ if (NO_SIG_WARNING) {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
-if (NO_SIG_WARNING_FIT) {
-  cat("One or less than one reuslt found in F-stats results, no PCA needed. \n")
+if (length(contra_string) == 1){
+  if (NO_SIG_WARNING_FIT) {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+  } else {
+    cat("PCA results saved to: \n")
+    cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
+    cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+  }
 } else {
-  cat("PCA results saved to: \n")
-  cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
-  cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+  if (NO_SIG_WARNING_FIT) {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
+  }
 }
