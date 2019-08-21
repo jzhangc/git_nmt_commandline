@@ -134,7 +134,7 @@ if (length(unique(table(svm_training$y))) > 1) {  # if to use adjCV depending on
 } else {
   is_adj_cv <- FALSE
 }
-rbioClass_plsda_perm(object = plsr_m_optim, nperm = PLSDA_PERM_N,
+rbioReg_plsr_perm(object = plsr_m_optim, nperm = PLSDA_PERM_N,
                      adjCV = is_adj_cv,
                      perm.plot = FALSE,
                      parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
@@ -177,7 +177,7 @@ rbioUtil_perm_plot(perm_res = plsr_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PL
 # sink()
 
 # VIP plot
-rbioFS_plsda_vip(object = plsr_m_optim, comps = 1:plsr_m_optim$ncomp,
+rbioReg_plsr_vip(object = plsr_m_optim, comps = 1:plsr_m_optim$ncomp,
                  vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
                  boot.n = PLSDA_VIP_BOOT_N, plot = FALSE,
                  boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,

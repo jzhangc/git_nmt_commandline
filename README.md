@@ -4,7 +4,6 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
-
 - 0.1  
   (ICEBOX)
   - General updates
