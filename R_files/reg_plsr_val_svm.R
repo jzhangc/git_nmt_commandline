@@ -199,7 +199,7 @@ rbioFS_plsda_vip_plot(vip_obj = plsr_m_optim_plsr_vip,
 ## variables for display
 
 ## export to results files if needed
-save(list = c("plsr_m_optim"), file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
+save(list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"), file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
 
 
 ## cat the vairables to export to shell scipt
