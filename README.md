@@ -4,6 +4,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
+
 - 0.1  
   (ICEBOX)
   - General updates
@@ -23,6 +24,7 @@ A bash application for automating machine learning analysis for MEG connection d
     - Unsorted annotation file support
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+    - Small formatting fix for univariate module
     - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
     - A bug fixed for the display messaging order
     - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
@@ -30,8 +32,9 @@ A bash application for automating machine learning analysis for MEG connection d
   - Updates to connectivity_ml_2d.sh
     - Unsorted annotation file support
     - Resampling is now stratified
-    - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
+    - Small formatting fix for univariate module
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+    - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
     - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
   
   - Updates to the regression module
