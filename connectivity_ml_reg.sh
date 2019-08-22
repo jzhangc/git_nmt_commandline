@@ -361,7 +361,18 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $svm_perm_plot_x_tick_label_size || -z $svm_perm_plot_y_label_size || -z $svm_perm_plot_y_tick_label_size \
 	|| -z $svm_perm_plot_width || -z $svm_perm_plot_height || -z $svm_roc_threshold || -z $svm_roc_smooth \
 	|| -z $svm_roc_symbol_size || -z $svm_roc_legend_size || -z $svm_roc_x_label_size || -z $svm_roc_x_tick_label_size \
-	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height ]]; then
+	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height || -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
+	|| -z $plsda_ncomp_select_method || -z $plsda_ncomp_select_plot_symbol_size || -z $plsda_ncomp_select_plot_legend_size \
+	|| -z $plsda_ncomp_select_plot_x_label_size || -z $plsda_ncomp_select_plot_x_tick_label_size \
+	|| -z $plsda_ncomp_select_plot_y_label_size || -z $plsda_ncomp_select_plot_y_tick_label_size || -z $plsda_perm_method \
+	|| -z $plsda_perm_n || -z $plsda_perm_plot_symbol_size || -z $plsda_perm_plot_legend_size \
+	|| -z $plsda_perm_plot_x_label_size || -z $plsda_perm_plot_x_tick_label_size || -z $plsda_perm_plot_y_label_size \
+	|| -z $plsda_perm_plot_y_tick_label_size || -z $plsda_perm_plot_width || -z $plsda_perm_plot_height \
+	|| -z $plsda_scoreplot_ellipse_conf || -z $plsda_vip_alpha || -z $plsda_vip_boot \
+	|| -z $plsda_vip_boot_n || -z $plsda_vip_plot_errorbar || -z $plsda_vip_plot_errorbar_width \
+	|| -z $plsda_vip_plot_errorbar_label_size || -z $plsda_vip_plot_x_textangle|| -z $plsda_vip_plot_x_label_size \
+	|| -z $plsda_vip_plot_x_tick_label_size || -z $plsda_vip_plot_y_label_size || -z $plsda_vip_plot_y_tick_label_size \
+	|| -z $plsda_vip_plot_width || -z $plsda_vip_plot_height ]]; then
     echo -e "${COLOUR_YELLOW}WARNING: Config file detected. But one or more vairables missing.${NO_COLOUR}"
     CONF_CHECK=1
   else
