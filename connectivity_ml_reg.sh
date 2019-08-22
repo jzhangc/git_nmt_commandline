@@ -429,6 +429,41 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_y_tick_label_size=10
 	svm_roc_width=170
 	svm_roc_height=150
+	plsda_validation="CV"
+	plsda_validation_segment=10
+	plsda_init_ncomp=10
+	plsda_ncomp_select_method="1err"
+	plsda_ncomp_select_plot_symbol_size=2
+	plsda_ncomp_select_plot_legend_size=9
+	plsda_ncomp_select_plot_x_label_size=10
+	plsda_ncomp_select_plot_x_tick_label_size=10
+	plsda_ncomp_select_plot_y_label_size=10
+	plsda_ncomp_select_plot_y_tick_label_size=10
+	plsda_perm_method="by_y"
+	plsda_perm_n=999
+	plsda_perm_plot_symbol_size=2
+	plsda_perm_plot_legend_size=9
+	plsda_perm_plot_x_label_size=10
+	plsda_perm_plot_x_tick_label_size=10
+	plsda_perm_plot_y_label_size=10
+	plsda_perm_plot_y_tick_label_size=10
+	plsda_perm_plot_width=300
+	plsda_perm_plot_height=50
+	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
+	plsda_vip_alpha=0.8  # 0.8~1 is good
+	plsda_vip_boot=TRUE
+	plsda_vip_boot_n=50
+	plsda_vip_plot_errorbar="SEM"  # options are "SEM" and "SD"
+	plsda_vip_plot_errorbar_width=0.2
+	plsda_vip_plot_errorbar_label_size=6
+	plsda_vip_plot_x_textangle=90
+	plsda_vip_plot_x_label_size=10
+	plsda_vip_plot_x_tick_label_size=10
+	plsda_vip_plot_y_label_size=10
+	plsda_vip_plot_y_tick_label_size=10
+	plsda_vip_plot_width=150
+	plsda_vip_plot_height=100
+
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"
