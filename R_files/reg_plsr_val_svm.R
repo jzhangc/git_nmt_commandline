@@ -116,12 +116,13 @@ plsr_m <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
                            })
 
 rbioReg_plsr_ncomp_select(plsr_m,
-                             ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
-                             randomization.alpha = 0.05,
-                             plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = ,
-                             plot.Width = 80 * length(unique(svm_training$y)),
-                             plot.Height = 100,
-                             plot.yLabel = "RMSEP", verbose = FALSE)
+                          ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD,
+                          randomization.nperm = 999,
+                          randomization.alpha = 0.05,
+                          plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE,
+                          plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
+                          plot.yLabel = "RMSEP", verbose = FALSE)
+
 ncomp_select <- max(as.vector(plsr_m_plsr_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
 plsr_m_optim <- rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
                                  ncomp = ncomp_select, validation = PLSDA_VALIDATION,
@@ -221,7 +222,7 @@ cat("RMSEP figure saved to file: plsr_m.plsr.rmsepplot.pdf\n")
 cat("\n\n")
 cat("PLSR permutation test\n")
 cat("-------------------------------------\n")
-plsda_m_optim_perm
+plsr_m_optim_perm
 cat("Permutation figure saved to file: plsr_m_optim_perm.plsr.perm.plot.pdf\n")
 cat("\n\n")
 cat("PLSR VIP (variable importance) plot\n")
