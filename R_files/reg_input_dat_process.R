@@ -59,6 +59,7 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
 raw_sample_dfm <- data.frame(sampleid = sampleid, y = y, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
 
+
 ####### export and clean up the mess --------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)

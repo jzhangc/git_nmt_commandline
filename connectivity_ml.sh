@@ -33,6 +33,7 @@ Current version: $VERSION\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
+-u: if to use univariate analysis result for ML. NOTE: the analysis is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -69,6 +70,7 @@ NFLAG=1
 DFLAG=1
 RFLAG=1
 CFLAG=1
+UFLAG=1
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -172,6 +174,9 @@ else
 				else
 					OFLAG=0
 				fi
+				;;
+			u)
+				UFLAG=0
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
@@ -742,7 +747,12 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- set up variables for output ml data file
-dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "\n"	
+if [ $UFLAG -eq 1 ]; then
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
 # -- additional display --
 echo -e "\n"
 echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
@@ -753,7 +763,11 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "SVM machine learning"
 echo -e "=========================================================================="
-echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+if [ $UFLAG -eq 1 ]; then
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
+else
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+fi
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"

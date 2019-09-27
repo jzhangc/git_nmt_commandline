@@ -28,7 +28,7 @@ Current version: $VERSION\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 \n
 [OPTIONS]: Optional\n
--u: if to conduct univaiate analysis. \n
+-u: if to use univaiate analysis for ML. The analysis is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -491,51 +491,90 @@ echo -e "=======================================================================
 
 
 # --- univariant analysis ---
+echo -e "\n"
+echo -e "Unsupervised learning and univariate anlaysis"
+echo -e "=========================================================================="
+echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
+echo -en "Unsupervised learning and univariate anlaysis..."
+dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+r_var=`Rscript ./R_files/reg_univariate_2D.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+"${OUT_DIR}/OUTPUT" \
+"$log2_trans" \
+"$htmap_textsize_col" "$htmap_textangle_col" \
+"$htmap_lab_row" "$htmap_textsize_row" \
+"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
+"$htmap_margin" "$htmap_width" "$htmap_height" \
+"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
+"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
+"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
+"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
+--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+rscript_display=`echo "${r_var[@]}"`
+echo -e "Done!\n\n"
+echo -e "$rscript_display"  # print the screen display from the R script
+# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
+if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+# -- set up variables for output ml data file
 if [ $UFLAG -eq 1 ]; then
-	echo -e "\n"
-	echo -e "Unsupervised learning and univariate anlaysis"
-	echo -e "=========================================================================="
-	echo -en "Skipping univariate analysis..."
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-	echo -e "Done!"
-	echo -e "=========================================================================="
-else
-	echo -e "\n"
-	echo -e "Unsupervised learning and univariate anlaysis"
-	echo -e "=========================================================================="
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-	echo -en "Unsupervised learning and univariate anlaysis..."
-	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-	r_var=`Rscript ./R_files/reg_univariate_2D.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-	"${OUT_DIR}/OUTPUT" \
-	"$log2_trans" \
-	"$htmap_textsize_col" "$htmap_textangle_col" \
-	"$htmap_lab_row" "$htmap_textsize_row" \
-	"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-	"$htmap_margin" "$htmap_width" "$htmap_height" \
-	"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
-	"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
-	"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
-	"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
-	--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
-	| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
-	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
-	rscript_display=`echo "${r_var[@]}"`
-	echo -e "Done!\n\n"
-	echo -e "$rscript_display"  # print the screen display from the R script
-	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
-		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
-	fi
-	# -- set up variables for output ml data file
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-	# -- additional display --
-	echo -e "\n"
-	echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
-	echo -e "=========================================================================="
-fi 
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
+# -- additional display --
+echo -e "\n"
+echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
+echo -e "=========================================================================="
 
+# if [ $UFLAG -eq 1 ]; then
+# 	echo -e "\n"
+# 	echo -e "Unsupervised learning and univariate anlaysis"
+# 	echo -e "=========================================================================="
+# 	echo -en "Skipping univariate analysis..."
+# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+# 	echo -e "Done!"
+# 	echo -e "=========================================================================="
+# else
+# 	echo -e "\n"
+# 	echo -e "Unsupervised learning and univariate anlaysis"
+# 	echo -e "=========================================================================="
+# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
+# 	echo -en "Unsupervised learning and univariate anlaysis..."
+# 	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+# 	r_var=`Rscript ./R_files/reg_univariate_2D.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+# 	"${OUT_DIR}/OUTPUT" \
+# 	"$log2_trans" \
+# 	"$htmap_textsize_col" "$htmap_textangle_col" \
+# 	"$htmap_lab_row" "$htmap_textsize_row" \
+# 	"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
+# 	"$htmap_margin" "$htmap_width" "$htmap_height" \
+# 	"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
+# 	"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
+# 	"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
+# 	"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
+# 	--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+# 	| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+# 	rscript_display=`echo "${r_var[@]}"`
+# 	echo -e "Done!\n\n"
+# 	echo -e "$rscript_display"  # print the screen display from the R script
+# 	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
+# 	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+# 		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+# 	fi
+# 	# -- set up variables for output ml data file
+# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+# 	# -- additional display --
+# 	echo -e "\n"
+# 	echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
+# 	echo -e "=========================================================================="
+# fi 
 
 # --- SVM machine learning analysis ---
 echo -e "\n"

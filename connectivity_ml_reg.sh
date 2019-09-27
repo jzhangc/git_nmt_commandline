@@ -32,6 +32,7 @@ Current version: $VERSION\n
 -r <string>: Regional annotation variable name from -n fle. \n
 \n
 [OPTIONS]: Optional\n
+-u: if to use univaiate analysis for ML. The analysis is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -66,6 +67,7 @@ YFLAG=1
 NFLAG=1
 DFLAG=1
 RFLAG=1
+UFLAG=1
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -165,6 +167,9 @@ else
 				else
 					OFLAG=0
 				fi
+				;;
+			u)
+				UFLAG=0
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
@@ -645,22 +650,25 @@ echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
 node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
-
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
-
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- set up variables for output ml data file
-dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+if [ $UFLAG -eq 1 ]; then
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
 # -- additional display --
 echo -e "\n"
-echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
 

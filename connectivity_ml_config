@@ -7,15 +7,15 @@ log2_trans=TRUE
 
 # ------ Settings for all-connection clustering analysis ------
 # -- Hierarchical clustering --
-htmap_textsize_col=0.8
+htmap_textsize_col=0.3
 htmap_textangle_col=90
 htmap_lab_row=FALSE
 htmap_textsize_row=0.7
 htmap_keysize=1.5
-htmap_key_xlab="Normalized connectivity value"
+htmap_key_xlab="Normalized connectivity"
 htmap_key_ylab="Pair count"
 htmap_margin="c(6, 3)"
-htmap_width=10
+htmap_width=15
 htmap_height=10
 
 # -- PCA --
@@ -54,15 +54,15 @@ volcano_height=150
 # -- hierachical clustering: sig connections --
 # NOTE: fdr, p value and fc settings same as Univeriate settings for heatmap
 # NOTE: sig pca uses mostly the same settings as all connections pca
-sig_htmap_textsize_col=0.8
+sig_htmap_textsize_col=0.3
 sig_htmap_textangle_col=90
-sig_htmap_textsize_row=0.9
+sig_htmap_textsize_row=0.2
 sig_htmap_keysize=1.5
 sig_htmap_key_xlab="Z score"
 sig_htmap_key_ylab="Count"
 sig_htmap_margin="c(6, 9)"
-sig_htmap_width=10
-sig_htmap_height=6
+sig_htmap_width=15
+sig_htmap_height=10
 sig_pca_pc="c(1, 2, 3)"
 sig_pca_biplot_ellipse_conf=0.9
 
@@ -100,7 +100,7 @@ svm_perm_plot_x_label_size=10
 svm_perm_plot_x_tick_label_size=10
 svm_perm_plot_y_label_size=10
 svm_perm_plot_y_tick_label_size=10
-svm_perm_plot_width=170
+svm_perm_plot_width=250
 svm_perm_plot_height=150
 
 # -- SVM ROC AUC --
@@ -121,7 +121,7 @@ svm_rffs_pca_biplot_ellipse_conf=0.95
 # ------ Settings for PLS-DA modelling for evaluating SVM results ------
 # -- global PLS-DA settings
 plsda_validation="CV"  # options are "none", "CV" and "LOO"
-plsda_validation_segment=10  # not needed when plsda_validation="LOO"
+plsda_validation_segment=10  # not needed when plsda_init_validation="LOO"
 
 # -- Initial PLS-DA modelling settings --
 plsda_init_ncomp=4
@@ -141,7 +141,7 @@ plsda_perm_n=999
 plsda_perm_plot_symbol_size=2
 plsda_perm_plot_legend_size=9
 plsda_perm_plot_x_label_size=10
-plsda_perm_plot_x_tick_label_size=10
+plsda_perm_plot_x_tick_label_size=6
 plsda_perm_plot_y_label_size=10
 plsda_perm_plot_y_tick_label_size=10
 plsda_perm_plot_width=250
@@ -164,7 +164,7 @@ plsda_vip_plot_errorbar_width=0.2
 plsda_vip_plot_errorbar_label_size=6
 plsda_vip_plot_x_textangle=90
 plsda_vip_plot_x_label_size=10
-plsda_vip_plot_x_tick_label_size=10
+plsda_vip_plot_x_tick_label_size=4
 plsda_vip_plot_y_label_size=10
 plsda_vip_plot_y_tick_label_size=10
 plsda_vip_plot_width=150

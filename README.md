@@ -18,6 +18,7 @@ A bash application for automating machine learning analysis for MEG connection d
   (ADDED）
   - General updates
     - SVM now saves training and test data as csv files
+    - Univariate analysis now skippable for all modules
 
   - Updates to connectiity_ml.sh
     - Unsorted annotation file support

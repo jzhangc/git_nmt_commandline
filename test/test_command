@@ -1,14 +1,11 @@
 ## Sickkids work Windows machine
-./connectivity_ml_test1.sh \
--i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/test_data.mat" \
--a "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
--s "test var" -g "group" -c "ptsd-control" \
--o "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
-
 ./connectivity_ml.sh \
--i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
+-i "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/ben D data/0.raw mat data/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
 -a "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
--s "test var" -g "group" -c "ptsd-control" \
+-s "test var" -g "group" \
+-n "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/node.csv" \
+-d "node_id" -r "region" \
+-c "ptsd - control" \
 -o "/mnt/c/Users/Jing Zhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 3
 
 # regression study
