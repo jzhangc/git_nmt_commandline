@@ -5,16 +5,6 @@ A bash application for automating machine learning analysis for MEG connection d
 ------ Version History ------
 
 - 0.1  
-  (ICEBOX)
-  - General updates
-    - Spinner added as a running status indication
-    - Overall optimization
-    - A memory check module to ensure the stability
-    - Node file length check added for univariate.R and reg_univariate.R
-    - Fix the "invalide ncomp" issue
-  
-  - Bug fixes
-
   (ADDED）
   - General updates
     - SVM now saves training and test data as csv files
