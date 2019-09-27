@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.01
+## version: 0.1
 
 ## test from Rscript
 args <- commandArgs()
@@ -86,6 +86,7 @@ CONTRAST <- args[38]
 # ------ warning flags ------
 if (UNI_FDR) FDR_FAIL_WARNING <- FALSE
 NO_SIG_WARNING <- FALSE
+ONE_SIG_WARNING <- FALSE
 NO_SIG_WARNING_FIT <- FALSE
 
 ###### R script --------
@@ -197,7 +198,7 @@ tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                       plotWidth = VOLCANO_WIDTH, plotHeight = VOLCANO_HEIGHT,
                       parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE),
          warning = function(w) {
-           assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
+           if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
            rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                         fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
                         weights = normdata$ArrayWeight,
@@ -224,16 +225,24 @@ de_names <- names(get(paste0(MAT_FILE_NO_EXT, "_DE")))
 for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
   if (DE_summary[i, "sig"] == 0) {
     NO_SIG_WARNING <- TRUE
+  } else if (DE_summary[i, "sig"] == 1) {
+    ONE_SIG_WARNING <- TRUE
   } else {
+    normdata$E
+    normdata$targets
+    de_groups <- unlist(strsplit(de_names[i], "-"))
+    de_sample_idx <- which(normdata$targets$group %in% de_groups)
+    super_cluster_data <- list(E = normdata$E[, de_sample_idx], genes = normdata$genes,
+                               targets = normdata$targets[de_sample_idx, ])
     rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_DE_",de_names[i]),
-                             fltDOI = normdata, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
+                             fltDOI = super_cluster_data, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
                              DE.sig.method = sig.method, FC = UNI_FOLD_CHANGE, DE.sig.p = UNI_ALPHA,
                              clust = "complete",
                              ctrlProbe = FALSE,
                              fct = y, dataProbeVar = "pair",
                              rowLabel = TRUE,
-                             annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "pair",
-                             sampleName = idx$sample,
+                             annot = super_cluster_data$genes, annotProbeVar = "pair", genesymbolVar = "pair",
+                             sampleName = super_cluster_data$targets$sample,
                              trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
                              key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
                              cexCol = SIG_HTMAP_TEXTSIZE_COL, cexRow = SIG_HTMAP_TEXTSIZE_ROW,
@@ -246,20 +255,38 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
 }
 
 # PCA
-fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))[, 1:8]
+fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))
 names(fit_dfm)[2] <- "pair"
-if (UNI_FDR){
-  if (FDR_FAIL_WARNING){
-    pcutoff <- UNI_ALPHA
+if (length(contra_string) == 1) {
+  if (UNI_FDR){
+    if (FDR_FAIL_WARNING){
+      pcutoff <- UNI_ALPHA
+    } else {
+      pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val <= UNI_ALPHA)])
+    }
   } else {
-    pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)])
+    pcutoff <- UNI_ALPHA
   }
+  sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
 } else {
-  pcutoff <- UNI_ALPHA
-}
-sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
+  if (UNI_FDR){
+    pcutoff <- tryCatch(max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)]),
+                        warning = function(w){
+                          NULL
+                        })
+    if (is.null(pcutoff)) {
+      sig_pairs_fit <- character(0)
+    } else {
+      sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value <= pcutoff, "pair"])
+    }
 
-if (length(sig_pairs_fit) < 1) {
+  } else {
+    pcutoff <- UNI_ALPHA
+    sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
+  }
+}
+
+if (length(sig_pairs_fit) <= 1) {
   NO_SIG_WARNING_FIT <- TRUE
 } else {
   pca_sig <- pca_all[, names(pca_all) %in% c("group", "sample", sig_pairs_fit)]
@@ -287,7 +314,7 @@ if (length(sig_pairs_fit) < 1) {
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
-x_ml <- t(normdata$E)[, sig_pairs_fit]
+x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
 ml_dfm <- data.frame(y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
 
@@ -323,7 +350,7 @@ cat("\t", paste0(MAT_FILE_NO_EXT, "_DE_Fstats.csv\n"))
 cat("\t", paste0(MAT_FILE_NO_EXT, "_threshold_summary.csv\n"))
 cat("\t", paste0(MAT_FILE_NO_EXT, "_", contra_string, "_DE.csv"), "\n")
 cat("\n")
-cat("Volcano plot saved to file(s): ", paste0(MAT_FILE_NO_EXT, "_", contra_string, ".volcano.pdf\n"))
+cat("Volcano plot saved to file(s): \n", paste0("\t", MAT_FILE_NO_EXT, "_", contra_string, ".volcano.pdf\n"))
 cat("\n\n")
 cat("Clustering analysis: significant connections\n")
 cat("-------------------------------------\n")
@@ -331,14 +358,22 @@ cat("Hierarchical clustering heatmap: \n")
 if (NO_SIG_WARNING) {
   cat("One or more comparisons failed to identify significant results. \n")
   cat("Check output folder for the results. \n")
+} else if (ONE_SIG_WARNING) {
+  cat("Only one significant result found, no need for supervised culstering. \n")
 } else {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
-if (NO_SIG_WARNING_FIT) {
-  cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+if (length(contra_string) == 1){
+  if (NO_SIG_WARNING_FIT) {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+  } else {
+    cat("PCA results saved to: \n")
+    cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
+    cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+  }
 } else {
-  cat("PCA results saved to: \n")
-  cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
-  cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+  if (NO_SIG_WARNING_FIT) {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
+  }
 }

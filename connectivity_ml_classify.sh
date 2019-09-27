@@ -5,7 +5,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.0.3"
+VERSION="0.1.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type

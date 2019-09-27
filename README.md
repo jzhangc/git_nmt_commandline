@@ -4,7 +4,46 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
-- 0.0.3 (July.10.2019)
+- 0.1  
+  (ICEBOX)
+  - General updates
+    - Spinner added as a running status indication
+    - Overall optimization
+    - A memory check module to ensure the stability
+    - Node file length check added for univariate.R and reg_univariate.R
+    - Fix the "invalide ncomp" issue
+  
+  - Bug fixes
+
+  (ADDED）
+  - General updates
+    - SVM now saves training and test data as csv files
+    - Univariate analysis now skippable for all modules
+
+  - Updates to connectiity_ml.sh
+    - Unsorted annotation file support
+    - Resampling is now stratified
+    - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+    - Small formatting fix for univariate module
+    - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
+    - A bug fixed for the display messaging order
+    - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
+  
+  - Updates to connectivity_ml_2d.sh
+    - Unsorted annotation file support
+    - Resampling is now stratified
+    - Small formatting fix for univariate module
+    - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+    - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
+    - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
+  
+  - Updates to the regression module
+    - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
+    - Accordingly, new R file reg_plsr_val_svm.R added
+
+  - Version bumpped to 0.1.0 for all modules
+
+- 0.0.3
   - General updates
     - The non-2D applications now able to take node file
       - All related sh and R files updated for this update
@@ -15,7 +54,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
   - New module connectivity_ml_2d.sh added
     - input_dat_process_2d.R added
-
+ 
   - New module connectivity_ml_reg_2d.sh added
     - reg_input_dat_process_2d.R added
 

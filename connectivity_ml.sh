@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.0.3"
+VERSION="0.1.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -29,10 +29,11 @@ Current version: $VERSION\n
 -g <string>: Group ID variable name from -a file.\n
 -n <file>: Node annotation file with full path. Needs to be a .csv file. \n
 -d <string>: Node ID (digitized) variable name from -n file. \n
--r <string>: Regional annotation variable name from -mn fle. \n
+-r <string>: Regional annotation variable name from -n fle. \n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
+-u: if to use univariate analysis result for ML. NOTE: the analysis is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -69,6 +70,7 @@ NFLAG=1
 DFLAG=1
 RFLAG=1
 CFLAG=1
+UFLAG=1
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -172,6 +174,9 @@ else
 				else
 					OFLAG=0
 				fi
+				;;
+			u)
+				UFLAG=0
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
@@ -676,10 +681,6 @@ echo -e "=======================================================================
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$mat_dim"
-echo -e "\nSample metadata"
-echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-echo -e "\nNode data"
-echo -e "\tFile name: ${COLOUR_GREEN_L}$NODE_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
@@ -687,9 +688,13 @@ elif [ "$group_summary" == "unequal_length" ]; then
 	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
-	echo -e "$group_summary\n"
+	echo -e "$group_summary"
 fi
-echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
+echo -e "\nSample metadata"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
+echo -e "\nNode data"
+echo -e "\tFile name: ${COLOUR_GREEN_L}$NODE_FILENAME${NO_COLOUR}"
+echo -e "\nData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
@@ -742,10 +747,15 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- set up variables for output ml data file
-dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "\n"	
+if [ $UFLAG -eq 1 ]; then
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
 # -- additional display --
-echo -e "\n"
-echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
 
@@ -753,7 +763,14 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "SVM machine learning"
 echo -e "=========================================================================="
-echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+echo -en "Prior univariate screening: "
+if [ $UFLAG -eq 1 ]; then
+	echo -e "OFF"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
+else
+	echo -e "ON"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+fi
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"

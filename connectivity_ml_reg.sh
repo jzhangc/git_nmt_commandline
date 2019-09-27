@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.0.3"
+VERSION="0.1.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -29,9 +29,10 @@ Current version: $VERSION\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 -n <file>: Node annotation file with full path. Needs to be a .csv file. \n
 -d <string>: Node ID (digitized) variable name from -n file. \n
--r <string>: Regional annotation variable name from -mn fle. \n
+-r <string>: Regional annotation variable name from -n fle. \n
 \n
 [OPTIONS]: Optional\n
+-u: if to use univaiate analysis for ML. The analysis is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -49,7 +50,7 @@ NO_COLOUR="\033[0;0m"
 # --- dependency file id variables ---
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R)
+R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R reg_plsr_val_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
@@ -66,6 +67,7 @@ YFLAG=1
 NFLAG=1
 DFLAG=1
 RFLAG=1
+UFLAG=1
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -165,6 +167,9 @@ else
 				else
 					OFLAG=0
 				fi
+				;;
+			u)
+				UFLAG=0
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
@@ -361,7 +366,18 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $svm_perm_plot_x_tick_label_size || -z $svm_perm_plot_y_label_size || -z $svm_perm_plot_y_tick_label_size \
 	|| -z $svm_perm_plot_width || -z $svm_perm_plot_height || -z $svm_roc_threshold || -z $svm_roc_smooth \
 	|| -z $svm_roc_symbol_size || -z $svm_roc_legend_size || -z $svm_roc_x_label_size || -z $svm_roc_x_tick_label_size \
-	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height ]]; then
+	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height || -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
+	|| -z $plsda_ncomp_select_method || -z $plsda_ncomp_select_plot_symbol_size || -z $plsda_ncomp_select_plot_legend_size \
+	|| -z $plsda_ncomp_select_plot_x_label_size || -z $plsda_ncomp_select_plot_x_tick_label_size \
+	|| -z $plsda_ncomp_select_plot_y_label_size || -z $plsda_ncomp_select_plot_y_tick_label_size || -z $plsda_perm_method \
+	|| -z $plsda_perm_n || -z $plsda_perm_plot_symbol_size || -z $plsda_perm_plot_legend_size \
+	|| -z $plsda_perm_plot_x_label_size || -z $plsda_perm_plot_x_tick_label_size || -z $plsda_perm_plot_y_label_size \
+	|| -z $plsda_perm_plot_y_tick_label_size || -z $plsda_perm_plot_width || -z $plsda_perm_plot_height \
+	|| -z $plsda_scoreplot_ellipse_conf || -z $plsda_vip_alpha || -z $plsda_vip_boot \
+	|| -z $plsda_vip_boot_n || -z $plsda_vip_plot_errorbar || -z $plsda_vip_plot_errorbar_width \
+	|| -z $plsda_vip_plot_errorbar_label_size || -z $plsda_vip_plot_x_textangle|| -z $plsda_vip_plot_x_label_size \
+	|| -z $plsda_vip_plot_x_tick_label_size || -z $plsda_vip_plot_y_label_size || -z $plsda_vip_plot_y_tick_label_size \
+	|| -z $plsda_vip_plot_width || -z $plsda_vip_plot_height ]]; then
     echo -e "${COLOUR_YELLOW}WARNING: Config file detected. But one or more vairables missing.${NO_COLOUR}"
     CONF_CHECK=1
   else
@@ -429,6 +445,41 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_y_tick_label_size=10
 	svm_roc_width=170
 	svm_roc_height=150
+	plsda_validation="CV"
+	plsda_validation_segment=10
+	plsda_init_ncomp=10
+	plsda_ncomp_select_method="1err"
+	plsda_ncomp_select_plot_symbol_size=2
+	plsda_ncomp_select_plot_legend_size=9
+	plsda_ncomp_select_plot_x_label_size=10
+	plsda_ncomp_select_plot_x_tick_label_size=10
+	plsda_ncomp_select_plot_y_label_size=10
+	plsda_ncomp_select_plot_y_tick_label_size=10
+	plsda_perm_method="by_y"
+	plsda_perm_n=999
+	plsda_perm_plot_symbol_size=2
+	plsda_perm_plot_legend_size=9
+	plsda_perm_plot_x_label_size=10
+	plsda_perm_plot_x_tick_label_size=10
+	plsda_perm_plot_y_label_size=10
+	plsda_perm_plot_y_tick_label_size=10
+	plsda_perm_plot_width=300
+	plsda_perm_plot_height=50
+	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
+	plsda_vip_alpha=0.8  # 0.8~1 is good
+	plsda_vip_boot=TRUE
+	plsda_vip_boot_n=50
+	plsda_vip_plot_errorbar="SEM"  # options are "SEM" and "SD"
+	plsda_vip_plot_errorbar_width=0.2
+	plsda_vip_plot_errorbar_label_size=6
+	plsda_vip_plot_x_textangle=90
+	plsda_vip_plot_x_label_size=10
+	plsda_vip_plot_x_tick_label_size=10
+	plsda_vip_plot_y_label_size=10
+	plsda_vip_plot_y_tick_label_size=10
+	plsda_vip_plot_width=150
+	plsda_vip_plot_height=100
+
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"
@@ -501,6 +552,41 @@ echo -e "\tsvm_roc_y_label_size=$svm_roc_y_label_size"
 echo -e "\tsvm_roc_y_tick_label_size=$svm_roc_y_tick_label_size"
 echo -e "\tsvm_roc_width=$svm_roc_width"
 echo -e "\tsvm_roc_height=$svm_roc_height"
+echo -e "\nPLS-DA modelling for evaluating SVM results"
+echo -e "\tplsda_validation=$plsda_validation"
+echo -e "\tplsda_validation_segment=$plsda_validation_segment"
+echo -e "\tplsda_init_ncomp=$plsda_init_ncomp"
+echo -e "\tplsda_ncomp_select_method=$plsda_ncomp_select_method"
+echo -e "\tplsda_ncomp_select_plot_symbol_size=$plsda_ncomp_select_plot_symbol_size"
+echo -e "\tplsda_ncomp_select_plot_legend_size=$plsda_ncomp_select_plot_legend_size"
+echo -e "\tplsda_ncomp_select_plot_x_label_size=$plsda_ncomp_select_plot_x_label_size"
+echo -e "\tplsda_ncomp_select_plot_x_tick_label_size=$plsda_ncomp_select_plot_x_tick_label_size"
+echo -e "\tplsda_ncomp_select_plot_y_label_size=$plsda_ncomp_select_plot_y_label_size"
+echo -e "\tplsda_ncomp_select_plot_y_tick_label_size=$plsda_ncomp_select_plot_y_tick_label_size"
+echo -e "\tplsda_perm_method=$plsda_perm_method"
+echo -e "\tplsda_perm_n=$plsda_perm_n"
+echo -e "\tplsda_perm_plot_symbol_size=$plsda_perm_plot_symbol_size"
+echo -e "\tplsda_perm_plot_legend_size=$plsda_perm_plot_legend_size"
+echo -e "\tplsda_perm_plot_x_label_size=$plsda_perm_plot_x_label_size"
+echo -e "\tplsda_perm_plot_x_tick_label_size=$plsda_perm_plot_x_tick_label_size"
+echo -e "\tplsda_perm_plot_y_label_size=$plsda_perm_plot_y_label_size"
+echo -e "\tplsda_perm_plot_y_tick_label_size=$plsda_perm_plot_y_tick_label_size"
+echo -e "\tplsda_perm_plot_width=$plsda_perm_plot_width"
+echo -e "\tplsda_perm_plot_height=$plsda_perm_plot_height"
+echo -e "\tplsda_scoreplot_ellipse_conf=$plsda_scoreplot_ellipse_conf"
+echo -e "\tplsda_vip_alpha=$plsda_vip_alpha"
+echo -e "\tplsda_vip_boot=$plsda_vip_boot"
+echo -e "\tplsda_vip_boot_n=$plsda_vip_boot_n"
+echo -e "\tplsda_vip_plot_errorbar=$plsda_vip_plot_errorbar"
+echo -e "\tplsda_vip_plot_errorbar_width=$plsda_vip_plot_errorbar_width"
+echo -e "\tplsda_vip_plot_errorbar_label_size=$plsda_vip_plot_errorbar_label_size"
+echo -e "\tplsda_vip_plot_x_textangle=$plsda_vip_plot_x_textangle"
+echo -e "\tplsda_vip_plot_x_label_size=$plsda_vip_plot_x_label_size"
+echo -e "\tplsda_vip_plot_x_tick_label_size=$plsda_vip_plot_x_tick_label_size"
+echo -e "\tplsda_vip_plot_y_label_size=$plsda_vip_plot_y_label_size"
+echo -e "\tplsda_vip_plot_y_tick_label_size=$plsda_vip_plot_y_tick_label_size"
+echo -e "\tplsda_vip_plot_width=$plsda_vip_plot_width"
+echo -e "\tplsda_vip_plot_height=$plsda_vip_plot_height"
 echo -e "=========================================================================="
 
 
@@ -564,22 +650,25 @@ echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
 node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
-
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
-
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- set up variables for output ml data file
-dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+if [ $UFLAG -eq 1 ]; then
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
 # -- additional display --
 echo -e "\n"
-echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
 
@@ -628,6 +717,61 @@ fi
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
+echo -e "$rscript_display" # print the screen display from the R script
+echo -e "=========================================================================="
+
+
+# -- PLSR validation of SVM analysis --
+echo -e "\n"
+echo -e "PLSR machine learning for SVM results evaluation"
+echo -e "=========================================================================="
+echo -e "SVM model file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
+echo -en "Parallel computing: "
+if [ $PSETTING == "FALSE" ]; then
+	echo -e "OFF"
+else
+	echo -e "ON"
+	echo -e "Cores: $CORES"
+fi
+echo -en "PLS-DA analysis..."
+r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+"${OUT_DIR}/OUTPUT" \
+"$PSETTING" "$CORES" \
+"$cpu_cluster" \
+"$plsda_validation" "$plsda_validation_segment" "$plsda_init_ncomp" "$plsda_ncomp_select_method" \
+"$plsda_ncomp_select_plot_symbol_size" "$plsda_ncomp_select_plot_legend_size" \
+"$plsda_ncomp_select_plot_x_label_size" "$plsda_ncomp_select_plot_x_tick_label_size" \
+"$plsda_ncomp_select_plot_y_label_size" "$plsda_ncomp_select_plot_y_tick_label_size" \
+"$plsda_perm_method" "$plsda_perm_n" \
+"$plsda_perm_plot_symbol_size" "$plsda_perm_plot_legend_size" \
+"$plsda_perm_plot_x_label_size" "$plsda_perm_plot_x_tick_label_size" \
+"$plsda_perm_plot_y_label_size" "$plsda_perm_plot_y_tick_label_size" \
+"$plsda_perm_plot_width" "$plsda_perm_plot_height" \
+"$plsda_scoreplot_ellipse_conf" \
+"$pca_biplot_symbol_size" \
+"$pca_biplot_ellipse" \
+"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
+"$pca_width" "$pca_height" \
+"$plsda_roc_smooth" \
+"$svm_roc_symbol_size" "$svm_roc_legend_size" "$svm_roc_x_label_size" "$svm_roc_x_tick_label_size" \
+"$svm_roc_y_label_size" "$svm_roc_y_tick_label_size" \
+"$plsda_vip_alpha" "$plsda_vip_boot" "$plsda_vip_boot_n" \
+"$plsda_vip_plot_errorbar" "$plsda_vip_plot_errorbar_width" "$plsda_vip_plot_errorbar_label_size" \
+"$plsda_vip_plot_x_textangle" "$plsda_vip_plot_x_label_size" "$plsda_vip_plot_x_tick_label_size" \
+"$plsda_vip_plot_y_label_size" "$plsda_vip_plot_y_tick_label_size" \
+"$plsda_vip_plot_width" "$plsda_vip_plot_height" \
+--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+rscript_display=`echo "${r_var[@]}"`
+# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
+if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+echo -e "Done!"
+echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
