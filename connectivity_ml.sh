@@ -754,8 +754,8 @@ else
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 fi
 # -- additional display --
-echo -e "\n"
-echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
 
@@ -763,9 +763,12 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "SVM machine learning"
 echo -e "=========================================================================="
+echo -en "Prior univariate screening: "
 if [ $UFLAG -eq 1 ]; then
+	echo -e "OFF"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
 else
+	echo -e "ON"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
 fi
 echo -en "Parallel computing: "
