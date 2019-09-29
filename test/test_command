@@ -85,26 +85,19 @@
 -n "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/node.csv" \
 -d "node_id" -r "region" \
 -c "ptsd - control" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 6
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 6 -u
 
-./connectivity_ml_test1.sh \
--i "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/pre_controlthen_pre_ptsd_90WPLI_80-150.mat" \
--a "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/annot.csv" \
--s "test var" -g "group" -c "ptsd - control" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 6
 
 # regression version
-./connectivity_ml_reg_test1.sh \
--i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_1.longitudinal.ptsd.mat" \
--a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
--s "sample" -y "pcl" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/" -p 6
-
 ./connectivity_ml_reg.sh \
--i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_7.longitudinal.ptsd.mat" \
--a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/longitudinal_annot.csv" \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/freq_1.longitudinal.ptsd.mat" \
+-a "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/raw/longitudinal_annot.csv" \
 -s "sample" -y "pcl" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/longitudinal ptsd/combined_mat/freq_7_results" -p 6
+-n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D data/1.shared/node_ben_ver.csv" \
+-d "node_id" -r "region" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/projects/bash_ml_app/test_data/out" -p 6 -u
+
+
 
 # Ben H data (classification)
 ./connectivity_ml.sh \

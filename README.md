@@ -4,11 +4,27 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
-- 0.1  
-  (ADDED）
+- 0.2 
+  (ICEBOX)
+  - General updates
+    - Spinner added as a running status indication
+    - Overall optimization
+    - A memory check module to ensure the stability
+    - Node file length check added for univariate.R and reg_univariate.R
+    - Fix the "invalide ncomp" issue
+
+  - Add univariate ananlysis inside the CV-SVM-rRF-FS process for all modules
+
+  - Bug fixes
+
+  (ADDED)
+  - General updates
+    - A separate univariate analysis now integrated to the CV process for all modules. and skippable
+    - The existing univariate analysis now mandatory for all modules
+
+- 0.1
   - General updates
     - SVM now saves training and test data as csv files
-    - Univariate analysis now skippable for all modules
 
   - Updates to connectiity_ml.sh
     - Unsorted annotation file support

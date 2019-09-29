@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.1.0
+## version: 0.2.0
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -13,6 +13,8 @@ require(RBioFS)
 require(RBioArray)
 require(foreach)
 require(parallel)
+require(limma)
+require(splines)
 
 ###### sys variables --------
 # ------ warning flags ------
@@ -88,6 +90,12 @@ HTMAP_MARGIN <- eval(parse(text = args[52]))
 HTMAP_WIDTH <- as.numeric(args[53])
 HTMAP_HEIGHT <- as.numeric(args[54])
 
+# below: for if to do the univariate redution
+CVUNI <- eval(parse(text = args[55]))
+LOG2_TRANS <- eval(parse(text = args[56]))
+UNI_FDR <- eval(parse(text = args[57]))
+UNI_ALPHA <- as.numeric(args[58])
+
 ###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
@@ -109,6 +117,8 @@ cat("------ Internal nested cross-validation with rRF-FS ------\n")
 svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
                                       y = training$y,
                                       center.scale = SVM_CV_CENTRE_SCALE,
+                                      univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
+                                      uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
                                       cross.k = SVM_CV_CROSS_K,
                                       tune.method = SVM_CV_TUNE_METHOD,
                                       tune.cross.k = SVM_CV_TUNE_CROSS_K,

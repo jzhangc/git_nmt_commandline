@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.1.0
+## version: 0.2.0
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -12,6 +12,7 @@ args <- commandArgs()
 require(RBioFS)
 require(foreach)
 require(parallel)
+require(limma)
 
 ###### sys variables --------
 # ------ warning flags ------
@@ -92,6 +93,12 @@ PCA_HEIGHT <- as.numeric(args[58])
 SVM_RFFS_PCA_PC <- eval(parse(text = args[59]))
 SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF <- as.numeric(args[60])
 
+# below: for if to do the univariate redution
+CVUNI <- eval(parse(text = args[61]))
+LOG2_TRANS <- eval(parse(text = args[62]))
+CONTRAST <- args[63]
+UNI_FDR <- eval(parse(text = args[64]))
+UNI_ALPHA <- as.numeric(args[65])
 
 ###### R script --------
 # ------ set the output directory as the working directory ------
@@ -120,6 +127,9 @@ sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
 svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
                                       y = factor(training$y, levels = unique(training$y)),
+                                      univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
+                                      uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
+                                      uni.contrast = CONTRAST,
                                       center.scale = SVM_CV_CENTRE_SCALE,
                                       cross.k = SVM_CV_CROSS_K,
                                       tune.method = SVM_CV_TUNE_METHOD,
