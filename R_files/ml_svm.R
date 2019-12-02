@@ -110,7 +110,7 @@ ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 
 # stratified resampling: proportionally sample by groups
 training <- foreach(i = levels(ml_dfm$y), .combine = "rbind") %do% {
-  dfm <- ml_dfm[ml_dfm == i, ]
+  dfm <- ml_dfm[ml_dfm$y == i, ]
   dfm_rand <- dfm[sample(nrow(dfm)), ]
   training_n <- ceiling(nrow(dfm_rand) * TRAINING_PERCENTAGE)
   training <- dfm_rand[1:training_n, ]

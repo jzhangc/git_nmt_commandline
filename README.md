@@ -21,12 +21,15 @@ A bash application for automating machine learning analysis for MEG connection d
   - General updates
     - A separate univariate analysis now integrated to the CV process for all modules. and skippable
     - The existing univariate analysis now mandatory for all modules
+  
+  - Updates to connectivity_ml.sh
+    - A bug fixed for ml_svm.R where y column was missing during random sampling
 
 - 0.1
   - General updates
     - SVM now saves training and test data as csv files
 
-  - Updates to connectiity_ml.sh
+  - Updates to connectivity_ml.sh
     - Unsorted annotation file support
     - Resampling is now stratified
     - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
