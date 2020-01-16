@@ -336,7 +336,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $sig_htmap_key_xlab || -z $sig_htmap_key_ylab || -z $sig_htmap_margin || -z $sig_htmap_width \
 	|| -z $sig_htmap_height || -z $sig_pca_pc || -z $sig_pca_biplot_ellipse_conf || -z $cpu_cluster || -z $training_percentage \
 	|| -z $svm_cv_centre_scale || -z $svm_cv_kernel || -z $svm_cv_cross_k || -z $svm_cv_tune_method || -z $svm_cv_tune_cross_k \
-	|| -z $svm_cv_tune_boot_n || -z $svm_cv_fs_rf_ifs_ntree || -z $svm_cv_fs_rf_sfs_ntree || -z $svm_cv_fs_count_cutoff \
+	|| -z $svm_cv_tune_boot_n || -z $svm_cv_fs_rf_ifs_ntree || -z $svm_cv_fs_rf_sfs_ntree || -z $svm_cv_best_model_method || -z $svm_cv_fs_count_cutoff \
 	|| -z $svm_cross_k || -z $svm_tune_cross_k || -z $svm_tune_boot_n || -z $svm_perm_method || -z $svm_perm_n \
 	|| -z $svm_perm_plot_symbol_size || -z $svm_perm_plot_legend_size || -z $svm_perm_plot_x_label_size \
 	|| -z $svm_perm_plot_x_tick_label_size || -z $svm_perm_plot_y_label_size || -z $svm_perm_plot_y_tick_label_size \
@@ -425,6 +425,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_cv_tune_boot_n=10
 	svm_cv_fs_rf_ifs_ntree=501
 	svm_cv_fs_rf_sfs_ntree=501
+	svm_cv_best_model_method="none"
 	svm_cv_fs_count_cutoff=2
 	svm_cross_k=10
 	svm_tune_cross_k=10
@@ -560,6 +561,7 @@ echo -e "\tsvm_cv_tune_cross_k=$svm_cv_tune_cross_k"
 echo -e "\tsvm_cv_tune_boot_n=$svm_cv_tune_boot_n"
 echo -e "\tsvm_cv_fs_rf_ifs_ntree=$svm_cv_fs_rf_ifs_ntree"
 echo -e "\tsvm_cv_fs_rf_sfs_ntree=$svm_cv_fs_rf_sfs_ntree"
+echo -e "\tsvm_cv_best_model_method=$svm_cv_best_model_method"
 echo -e "\tsvm_cv_fs_count_cutoff=$svm_cv_fs_count_cutoff"
 echo -e "\tsvm_cross_k=$svm_cross_k"
 echo -e "\tsvm_tune_cross_k$svm_tune_cross_k"
@@ -793,7 +795,7 @@ r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
 "$svm_cv_centre_scale" "$svm_cv_kernel" "$svm_cv_cross_k" "$svm_cv_tune_method" "$svm_cv_tune_cross_k" "$svm_cv_tune_boot_n" \
-"$svm_cv_fs_rf_ifs_ntree" "$svm_cv_fs_rf_sfs_ntree" "$svm_cv_fs_count_cutoff" \
+"$svm_cv_fs_rf_ifs_ntree" "$svm_cv_fs_rf_sfs_ntree" "$svm_cv_best_model_method" "$svm_cv_fs_count_cutoff" \
 "$svm_cross_k" "$svm_tune_cross_k" "$svm_tune_boot_n" \
 "$svm_perm_method" "$svm_perm_n" \
 "$svm_perm_plot_symbol_size" "$svm_perm_plot_legend_size" "$svm_perm_plot_x_label_size" "$svm_perm_plot_x_tick_label_size" \

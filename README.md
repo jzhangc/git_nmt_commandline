@@ -4,7 +4,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
 ------ Version History ------
 
-- 0.2 
+- 0.2
   (ICEBOX)
   - General updates
     - Spinner added as a running status indication
@@ -22,8 +22,12 @@ A bash application for automating machine learning analysis for MEG connection d
     - A separate univariate analysis now integrated to the CV process for all modules. and skippable
     - The existing univariate analysis now mandatory for all modules
   
-  - Updates to connectivity_ml.sh
+  - Updates to classification module
+    - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml.sh and connectivity_ml_2d.sh
     - A bug fixed for ml_svm.R where y column was missing during random sampling
+
+  - Updates to regression module
+    - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml_reg.sh and connectivity_ml_reg_2d.sh
 
 - 0.1
   - General updates
@@ -63,7 +67,7 @@ A bash application for automating machine learning analysis for MEG connection d
 
   - New module connectivity_ml_2d.sh added
     - input_dat_process_2d.R added
- 
+
   - New module connectivity_ml_reg_2d.sh added
     - reg_input_dat_process_2d.R added
 

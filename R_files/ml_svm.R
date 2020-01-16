@@ -48,57 +48,58 @@ SVM_CV_TUNE_CROSS_K <- as.numeric(args[17])
 SVM_CV_TUNE_BOOT_N <- as.numeric(args[18])
 SVM_CV_FS_RF_IFS_NTREE <- as.numeric(args[19])
 SVM_CV_FS_RF_SFS_NTREE <- as.numeric(args[20])
-SVM_CV_FS_COUNT_CUTOFF <- as.numeric(args[21])
+SVM_CV_BEST_MODEL_METHOD <- args[21]
+SVM_CV_FS_COUNT_CUTOFF <- as.numeric(args[22])
 
-SVM_CROSS_K <- as.numeric(args[22])
-SVM_TUNE_CROSS_K <- as.numeric(args[23])
-SVM_TUNE_BOOT_N <- as.numeric(args[24])
+SVM_CROSS_K <- as.numeric(args[23])
+SVM_TUNE_CROSS_K <- as.numeric(args[24])
+SVM_TUNE_BOOT_N <- as.numeric(args[25])
 
-SVM_PERM_METHOD <- args[25]  # OPTIONS ARE "BY_Y" AND "BY_FEATURE_PER_Y"
-SVM_PERM_N <- as.numeric(args[26])
-SVM_PERM_PLOT_SYMBOL_SIZE <- as.numeric(args[27])
-SVM_PERM_PLOT_LEGEND_SIZE <- as.numeric(args[28])
-SVM_PERM_PLOT_X_LABEL_SIZE <- as.numeric(args[29])
-SVM_PERM_PLOT_X_TICK_LABEL_SIZE <- as.numeric(args[30])
-SVM_PERM_PLOT_Y_LABEL_SIZE <- as.numeric(args[31])
-SVM_PERM_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[32])
-SVM_PERM_PLOT_WIDTH <- as.numeric(args[33])
-SVM_PERM_PLOT_HEIGHT <- as.numeric(args[34])
+SVM_PERM_METHOD <- args[26]  # OPTIONS ARE "BY_Y" AND "BY_FEATURE_PER_Y"
+SVM_PERM_N <- as.numeric(args[27])
+SVM_PERM_PLOT_SYMBOL_SIZE <- as.numeric(args[28])
+SVM_PERM_PLOT_LEGEND_SIZE <- as.numeric(args[29])
+SVM_PERM_PLOT_X_LABEL_SIZE <- as.numeric(args[30])
+SVM_PERM_PLOT_X_TICK_LABEL_SIZE <- as.numeric(args[31])
+SVM_PERM_PLOT_Y_LABEL_SIZE <- as.numeric(args[32])
+SVM_PERM_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[33])
+SVM_PERM_PLOT_WIDTH <- as.numeric(args[34])
+SVM_PERM_PLOT_HEIGHT <- as.numeric(args[35])
 
-SVM_ROC_SMOOTH <- eval(parse(text = args[35]))
-SVM_ROC_SYMBOL_SIZE <- as.numeric(args[36])
-SVM_ROC_LEGEND_SIZE <- as.numeric(args[37])
-SVM_ROC_X_LABEL_SIZE <- as.numeric(args[38])
-SVM_ROC_X_TICK_LABEL_SIZE <- as.numeric(args[39])
-SVM_ROC_Y_LABEL_SIZE <- as.numeric(args[40])
-SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[41])
-SVM_ROC_WIDTH <- as.numeric(args[42])
-SVM_ROC_HEIGHT <- as.numeric(args[43])
+SVM_ROC_SMOOTH <- eval(parse(text = args[36]))
+SVM_ROC_SYMBOL_SIZE <- as.numeric(args[37])
+SVM_ROC_LEGEND_SIZE <- as.numeric(args[38])
+SVM_ROC_X_LABEL_SIZE <- as.numeric(args[39])
+SVM_ROC_X_TICK_LABEL_SIZE <- as.numeric(args[40])
+SVM_ROC_Y_LABEL_SIZE <- as.numeric(args[41])
+SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[42])
+SVM_ROC_WIDTH <- as.numeric(args[43])
+SVM_ROC_HEIGHT <- as.numeric(args[44])
 
-PCA_SCALE_DATA <- eval(parse(text = args[44]))
-PCA_CENTRE_DATA <- eval(parse(text = args[45]))
-PCA_BIPLOT_SAMPLELABEL_TYPE <- args[46]
-PCA_BIPLOT_SAMPLELABEL_SIZE <- as.numeric(args[47])
-PCA_BIPLOT_SYMBOL_SIZE <- as.numeric(args[48])
-PCA_BIPLOT_ELLIPSE <- eval(parse(text = args[49]))
-PCA_BIPLOT_LOADING <- eval(parse(text = args[50]))
-PCA_BIPLOT_LOADING_TEXTSIZE <- as.numeric(args[51])
-PCA_BIPLOT_MULTI_DESITY <- eval(parse(text = args[52]))
-PCA_BIPLOT_MULTI_STRIPLABEL_SIZE <- as.numeric(args[53])
-PCA_RIGHTSIDE_Y <- eval(parse(text = args[54]))
-PCA_X_TICK_LABEL_SIZE <- as.numeric(args[55])
-PCA_Y_TICK_LABEL_SIZE <- as.numeric(args[56])
-PCA_WIDTH <- as.numeric(args[57])
-PCA_HEIGHT <- as.numeric(args[58])
-SVM_RFFS_PCA_PC <- eval(parse(text = args[59]))
-SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF <- as.numeric(args[60])
+PCA_SCALE_DATA <- eval(parse(text = args[45]))
+PCA_CENTRE_DATA <- eval(parse(text = args[46]))
+PCA_BIPLOT_SAMPLELABEL_TYPE <- args[47]
+PCA_BIPLOT_SAMPLELABEL_SIZE <- as.numeric(args[48])
+PCA_BIPLOT_SYMBOL_SIZE <- as.numeric(args[49])
+PCA_BIPLOT_ELLIPSE <- eval(parse(text = args[50]))
+PCA_BIPLOT_LOADING <- eval(parse(text = args[51]))
+PCA_BIPLOT_LOADING_TEXTSIZE <- as.numeric(args[52])
+PCA_BIPLOT_MULTI_DESITY <- eval(parse(text = args[53]))
+PCA_BIPLOT_MULTI_STRIPLABEL_SIZE <- as.numeric(args[54])
+PCA_RIGHTSIDE_Y <- eval(parse(text = args[55]))
+PCA_X_TICK_LABEL_SIZE <- as.numeric(args[56])
+PCA_Y_TICK_LABEL_SIZE <- as.numeric(args[57])
+PCA_WIDTH <- as.numeric(args[58])
+PCA_HEIGHT <- as.numeric(args[59])
+SVM_RFFS_PCA_PC <- eval(parse(text = args[60]))
+SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF <- as.numeric(args[61])
 
 # below: for if to do the univariate redution
-CVUNI <- eval(parse(text = args[61]))
-LOG2_TRANS <- eval(parse(text = args[62]))
-CONTRAST <- args[63]
-UNI_FDR <- eval(parse(text = args[64]))
-UNI_ALPHA <- as.numeric(args[65])
+CVUNI <- eval(parse(text = args[62]))
+LOG2_TRANS <- eval(parse(text = args[63]))
+CONTRAST <- args[64]
+UNI_FDR <- eval(parse(text = args[65]))
+UNI_ALPHA <- as.numeric(args[66])
 
 ###### R script --------
 # ------ set the output directory as the working directory ------
@@ -138,6 +139,7 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
                                       fs.method = "rf",
                                       rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
                                       fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
+                                      cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
                                       parallelComputing = PSETTING, n_cores = CORES,
                                       clusterType = CPU_CLUSTER,
                                       verbose = TRUE)

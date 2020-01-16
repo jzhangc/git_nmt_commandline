@@ -51,50 +51,51 @@ SVM_CV_TUNE_CROSS_K <- as.numeric(args[17])
 SVM_CV_TUNE_BOOT_N <- as.numeric(args[18])
 SVM_CV_FS_RF_IFS_NTREE <- as.numeric(args[19])
 SVM_CV_FS_RF_SFS_NTREE <- as.numeric(args[20])
-SVM_CV_FS_COUNT_CUTOFF <- as.numeric(args[21])
+SVM_CV_BEST_MODEL_METHOD <- args[21]
+SVM_CV_FS_COUNT_CUTOFF <- as.numeric(args[22])
 
-SVM_CROSS_K <- as.numeric(args[22])
-SVM_TUNE_CROSS_K <- as.numeric(args[23])
-SVM_TUNE_BOOT_N <- as.numeric(args[24])
+SVM_CROSS_K <- as.numeric(args[23])
+SVM_TUNE_CROSS_K <- as.numeric(args[24])
+SVM_TUNE_BOOT_N <- as.numeric(args[25])
 
-SVM_PERM_METHOD <- args[25]  # OPTIONS ARE "BY_Y" AND "BY_FEATURE_PER_Y"
-SVM_PERM_N <- as.numeric(args[26])
-SVM_PERM_PLOT_SYMBOL_SIZE <- as.numeric(args[27])
-SVM_PERM_PLOT_LEGEND_SIZE <- as.numeric(args[28])
-SVM_PERM_PLOT_X_LABEL_SIZE <- as.numeric(args[29])
-SVM_PERM_PLOT_X_TICK_LABEL_SIZE <- as.numeric(args[30])
-SVM_PERM_PLOT_Y_LABEL_SIZE <- as.numeric(args[31])
-SVM_PERM_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[32])
-SVM_PERM_PLOT_WIDTH <- as.numeric(args[33])
-SVM_PERM_PLOT_HEIGHT <- as.numeric(args[34])
+SVM_PERM_METHOD <- args[26]  # OPTIONS ARE "BY_Y" AND "BY_FEATURE_PER_Y"
+SVM_PERM_N <- as.numeric(args[27])
+SVM_PERM_PLOT_SYMBOL_SIZE <- as.numeric(args[28])
+SVM_PERM_PLOT_LEGEND_SIZE <- as.numeric(args[29])
+SVM_PERM_PLOT_X_LABEL_SIZE <- as.numeric(args[30])
+SVM_PERM_PLOT_X_TICK_LABEL_SIZE <- as.numeric(args[31])
+SVM_PERM_PLOT_Y_LABEL_SIZE <- as.numeric(args[32])
+SVM_PERM_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[33])
+SVM_PERM_PLOT_WIDTH <- as.numeric(args[34])
+SVM_PERM_PLOT_HEIGHT <- as.numeric(args[35])
 
-SVM_ROC_THRESHOLD <- as.numeric(args[35])
-SVM_ROC_SMOOTH <- eval(parse(text = args[36]))
-SVM_ROC_SYMBOL_SIZE <- as.numeric(args[37])
-SVM_ROC_LEGEND_SIZE <- as.numeric(args[38])
-SVM_ROC_X_LABEL_SIZE <- as.numeric(args[39])
-SVM_ROC_X_TICK_LABEL_SIZE <- as.numeric(args[40])
-SVM_ROC_Y_LABEL_SIZE <- as.numeric(args[41])
-SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[42])
-SVM_ROC_WIDTH <- as.numeric(args[43])
-SVM_ROC_HEIGHT <- as.numeric(args[44])
+SVM_ROC_THRESHOLD <- as.numeric(args[36])
+SVM_ROC_SMOOTH <- eval(parse(text = args[37]))
+SVM_ROC_SYMBOL_SIZE <- as.numeric(args[38])
+SVM_ROC_LEGEND_SIZE <- as.numeric(args[39])
+SVM_ROC_X_LABEL_SIZE <- as.numeric(args[40])
+SVM_ROC_X_TICK_LABEL_SIZE <- as.numeric(args[41])
+SVM_ROC_Y_LABEL_SIZE <- as.numeric(args[42])
+SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[43])
+SVM_ROC_WIDTH <- as.numeric(args[44])
+SVM_ROC_HEIGHT <- as.numeric(args[45])
 
-HTMAP_TEXTSIZE_COL <- as.numeric(args[45])
-HTMAP_TEXTANGLE_COL <- as.numeric(args[46])
-HTMAP_LAB_ROW <-eval(parse(text = args[47]))
-HTMAP_TEXTSIZE_ROW <- as.numeric(args[48])
-HTMAP_KEYSIZE <- as.numeric(args[49])
-HTMAP_KEY_XLAB <- args[50]
-HTMAP_KEY_YLAB <- args[51]
-HTMAP_MARGIN <- eval(parse(text = args[52]))
-HTMAP_WIDTH <- as.numeric(args[53])
-HTMAP_HEIGHT <- as.numeric(args[54])
+HTMAP_TEXTSIZE_COL <- as.numeric(args[46])
+HTMAP_TEXTANGLE_COL <- as.numeric(args[47])
+HTMAP_LAB_ROW <-eval(parse(text = args[48]))
+HTMAP_TEXTSIZE_ROW <- as.numeric(args[49])
+HTMAP_KEYSIZE <- as.numeric(args[50])
+HTMAP_KEY_XLAB <- args[51]
+HTMAP_KEY_YLAB <- args[52]
+HTMAP_MARGIN <- eval(parse(text = args[53]))
+HTMAP_WIDTH <- as.numeric(args[54])
+HTMAP_HEIGHT <- as.numeric(args[55])
 
 # below: for if to do the univariate redution
-CVUNI <- eval(parse(text = args[55]))
-LOG2_TRANS <- eval(parse(text = args[56]))
-UNI_FDR <- eval(parse(text = args[57]))
-UNI_ALPHA <- as.numeric(args[58])
+CVUNI <- eval(parse(text = args[56]))
+LOG2_TRANS <- eval(parse(text = args[57]))
+UNI_FDR <- eval(parse(text = args[58]))
+UNI_ALPHA <- as.numeric(args[59])
 
 ###### R script --------
 # ------ set the output directory as the working directory ------
@@ -125,7 +126,8 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
                                       tune.boot.n = SVM_CV_TUNE_BOOT_N,
                                       fs.method = "rf",
                                       rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
-                                      fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
+                                      fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF, 
+                                      cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,,
                                       parallelComputing = PSETTING, n_cores = CORES,
                                       clusterType = CPU_CLUSTER,
                                       verbose = TRUE)
