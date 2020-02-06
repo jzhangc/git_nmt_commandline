@@ -310,7 +310,7 @@ cat("\n\n")
 cat("SVM modelling\n")
 cat("-------------------------------------\n")
 svm_m
-cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy/100, "\n")
+cat("Total internal cross-validation RMSE: ", rbioReg_svm_rmse(object=svm_m), "\n")
 cat("Final SVM model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
 cat("Data with selected features saved to file: ", paste0(MAT_FILE_NO_EXT, "_dl.csv\n"))
 cat("\n\n")
