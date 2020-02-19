@@ -51,7 +51,7 @@ NO_COLOUR="\033[0;0m"
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R plsda_val_svm.R r_script_test.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R plsda_val_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
