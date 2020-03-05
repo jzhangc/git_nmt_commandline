@@ -28,6 +28,7 @@ Current version: $VERSION\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 \n
 [OPTIONS]: Optional\n
+-k: if to incoporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. 
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
@@ -89,7 +90,7 @@ else
 			;;
 	esac
 
-	while getopts ":up:i:a:s:y:o:" opt; do
+	while getopts ":kup:i:a:s:y:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -123,6 +124,9 @@ else
 					OFLAG=0
 				fi
 				;;
+			k)
+				KFLAG=0  # no to set CVUNI as FALSE is the default
+				;;
 			u)
 				UFLAG=0
 				CVUNI=TRUE
@@ -148,6 +152,10 @@ if [[ $IFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 ]]; then
 	exit 1
 fi
 
+if [ $KFLAG -eq 0 && $UFLAG -eq 0 ]; then
+	echo -e "${COLOUR_RED}ERROR: when either -u or -k, but not both.${NO_COLOUR}\n" >&2
+	exit 1
+fi
 
 # ------ functions ------
 # function to check dependencies
@@ -527,13 +535,12 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- set up variables for output ml data file
 echo -e "\n"
-dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# if [ $UFLAG -eq 1 ]; then
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# else
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-# fi
-# -- additional display --
+if [ $KFLAG -eq 1 ]; then
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
+-- additional display --
 echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
@@ -587,13 +594,20 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "SVM machine learning (regression)"
 echo -e "=========================================================================="
+echo -en "Univariate prior knowledge incorporation: "
+if [ $KFLAG -eq 1 ]; then
+	echo -e "OFF"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
+else
+	echo -e "ON"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+fi 
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"
 else
 	echo -e "ON"
 fi
-echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"

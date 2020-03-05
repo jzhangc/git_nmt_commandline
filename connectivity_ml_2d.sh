@@ -69,6 +69,7 @@ GFLAG=1
 # below: CV univariate reduction
 UFLAG=1
 CVUNI=FALSE
+KFLAG=1  # prior univariate knowledge
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -95,7 +96,7 @@ else
 			;;
 	esac
 
-	while getopts ":up:i:a:s:g:c:o:" opt; do
+	while getopts ":kup:i:a:s:g:c:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -133,6 +134,9 @@ else
 					OFLAG=0
 				fi
 				;;
+			k)
+				KFLAG=0  # no to set CVUNI as FALSE is the default
+				;;
 			u)
 				UFLAG=0
 				CVUNI=TRUE
@@ -162,6 +166,10 @@ if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
 	exit 1
 fi
 
+if [ $KFLAG -eq 0 && $UFLAG -eq 0 ]; then
+	echo -e "${COLOUR_RED}ERROR: when either -u or -k, but not both.${NO_COLOUR}\n" >&2
+	exit 1
+fi
 
 # ------ functions ------
 # function to check dependencies
@@ -652,12 +660,11 @@ if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotat
 else
 	echo -e "$group_summary\n"
 fi
-echo -e "Data transformed into 2D format and saved to files:"
-echo -e "\t${MAT_FILENAME_WO_EXT}_2D.csv ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+echo -e "\n2D file to use in machine learning without univariate prior knowledge: ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 echo -e "=========================================================================="
 
 
-# --- univariant analysis (or not)---
+# --- univariant analysis---
 echo -e "\n"
 echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
@@ -701,11 +708,11 @@ fi
 # -- set up variables for output ml data file
 echo -e "\n"
 dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
-# if [ $UFLAG -eq 1 ]; then
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
-# else
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-# fi
+if [ $kFLAG -eq 1 ]; then
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+else
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+fi
 # -- additional display --
 echo -e "=========================================================================="
 
@@ -770,18 +777,20 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "SVM machine learning"
 echo -e "=========================================================================="
+echo -en "Univariate prior knowledge incorporation: "
+if [ $KFLAG -eq 1 ]; then
+	echo -e "OFF"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
+else
+	echo -e "ON"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+fi 
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"
 else
 	echo -e "ON"
 fi
-echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
-# if [ $UFLAG -eq 1 ]; then
-# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
-# else
-# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
-# fi
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
