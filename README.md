@@ -21,6 +21,7 @@ A bash application for automating machine learning analysis for MEG connection d
   - General updates
     - A separate univariate analysis now integrated to the CV process for all modules. and skippable
     - The existing univariate analysis now mandatory for all modules
+    - Univariate prior knowlege flag -k added to all modules
   
   - Updates to classification module
     - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml.sh and connectivity_ml_2d.sh
