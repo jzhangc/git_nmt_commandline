@@ -28,7 +28,7 @@ Current version: $VERSION\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 \n
 [OPTIONS]: Optional\n
--k: if to incoporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. 
+-k: if to incoporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
