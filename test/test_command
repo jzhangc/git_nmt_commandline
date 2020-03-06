@@ -1,4 +1,13 @@
 # ------ Sickkids work Windows machine ------
+# classification
+./connectivity_ml.sh \
+-i "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/0.data/ptsd_classification_mat/pre_controlthen_pre_ptsd_90WPLI_4-7.mat" \
+-a "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/raw/annot.csv" \
+-s "subjectid" -g "group" \
+-n "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
+-d "node_id" -r "region" \
+-c "ptsd-control" \
+-o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u
 
 # -- regression --
 ./connectivity_ml_reg.sh \
@@ -7,7 +16,7 @@
 -s "id" -y "pcl" \
 -n "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
 -d "node_id" -r "region" \
--o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -k -u
+-o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u -k
 
 
 ## JZ Macbook

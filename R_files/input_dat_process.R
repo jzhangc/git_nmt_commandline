@@ -59,8 +59,10 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
 # raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_sample, row.names = NULL)
 raw_sample_dfm <- data.frame(sampleid = sampleid, group = sample_group, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
-raw_sample_dfm_wo_uni <- data.frame(y = sample_group, raw_sample, row.names = NULL)
-names(raw_sample_dfm_wo_uni)[-1] <- colnames(raw_sample)
+# raw_sample_dfm_wo_uni <- data.frame(y = sample_group, raw_sample, row.names = NULL)
+# names(raw_sample_dfm_wo_uni)[-1] <- colnames(raw_sample)
+raw_sample_dfm_wo_uni <- raw_sample_dfm
+names(raw_sample_dfm_wo_uni)[2] <- "y"
 
 ####### export and clean up the mess --------
 ## export to results files if needed

@@ -332,7 +332,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $pca_scale_data || -z $pca_centre_data || -z $pca_pc \
 	|| -z $pca_biplot_samplelabel_type || -z $pca_biplot_samplelabel_size || -z $pca_biplot_symbol_size \
@@ -352,7 +352,10 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $svm_perm_plot_width || -z $svm_perm_plot_height || -z $svm_roc_smooth || -z $svm_roc_symbol_size \
 	|| -z $svm_roc_legend_size || -z $svm_roc_x_label_size || -z $svm_roc_x_tick_label_size || -z $svm_roc_y_label_size \
 	|| -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height || -z $svm_rffs_pca_pc \
-	|| -z $svm_rffs_pca_biplot_ellipse_conf || -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
+	|| -z $svm_rffs_pca_biplot_ellipse_conf || -z $rffs_htmap_textsize_col || -z $rffs_htmap_textangle_col \
+	|| -z $rffs_htmap_textsize_row || -z $rffs_htmap_keysize || -z $rffs_htmap_key_xlab || -z $rffs_htmap_key_ylab \
+	|| -z $rffs_htmap_margin || -z $rffs_htmap_width || -z $rffs_htmap_height \
+	|| -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
 	|| -z $plsda_ncomp_select_method || -z $plsda_ncomp_select_plot_symbol_size || -z $plsda_ncomp_select_plot_legend_size \
 	|| -z $plsda_ncomp_select_plot_x_label_size || -z $plsda_ncomp_select_plot_x_tick_label_size \
 	|| -z $plsda_ncomp_select_plot_y_label_size || -z $plsda_ncomp_select_plot_y_tick_label_size || -z $plsda_perm_method \
@@ -374,6 +377,7 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
+  	random_state=0
 	log2_trans=TRUE
 	htmap_textsize_col=0.7
 	htmap_textangle_col=90
@@ -460,6 +464,15 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_height=150
 	svm_rffs_pca_pc="c(1, 2)"
 	svm_rffs_pca_biplot_ellipse_conf=0.95
+	rffs_htmap_textsize_col=0.5
+	rffs_htmap_textangle_col=90
+	rffs_htmap_textsize_row=0.2
+	rffs_htmap_keysize=1.5
+	rffs_htmap_key_xlab="Z score"
+	rffs_htmap_key_ylab="Count"
+	rffs_htmap_margin="c(6, 9)"
+	rffs_htmap_width=15
+	rffs_htmap_height=10
 	plsda_validation="CV"
 	plsda_validation_segment=10
 	plsda_init_ncomp=10
@@ -505,7 +518,9 @@ else
   echo -e "Variables loaded from the config file:"
 fi
 # below: place loaders
-echo -e "Data processing"
+echo -e "Random state (0=FALSE)"
+echo -e "\trandom_state=$random_state"
+echo -e "\nData processing"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\nClustering analysis for all connections"
 echo -e "\thtmap_textsize_col=$htmap_textsize_col"
@@ -596,6 +611,15 @@ echo -e "\tsvm_roc_width=$svm_roc_width"
 echo -e "\tsvm_roc_height=$svm_roc_height"
 echo -e "\tsvm_rffs_pca_pc=$svm_rffs_pca_pc"
 echo -e "\tsvm_rffs_pca_biplot_ellipse_conf=$svm_rffs_pca_biplot_ellipse_conf"
+echo -e "\trffs_htmap_textsize_col=$rffs_htmap_textsize_col"
+echo -e "\trffs_htmap_textangle_col=$rffs_htmap_textangle_col"
+echo -e "\trffs_htmap_textsize_row=$rffs_htmap_textsize_row"
+echo -e "\trffs_htmap_keysize=$rffs_htmap_keysize"
+echo -e "\trffs_htmap_key_xlab=$rffs_htmap_key_xlab"
+echo -e "\trffs_htmap_key_ylab=$rffs_htmap_key_ylab"
+echo -e "\trffs_htmap_margin=$rffs_htmap_margin"
+echo -e "\trffs_htmap_width=$rffs_htmap_width"
+echo -e "\trffs_htmap_height=$rffs_htmap_height"
 echo -e "\nPLS-DA modelling for evaluating SVM results"
 echo -e "\tplsda_validation=$plsda_validation"
 echo -e "\tplsda_validation_segment=$plsda_validation_segment"
@@ -821,6 +845,10 @@ r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$pca_width" "$pca_height" \
 "$svm_rffs_pca_pc" "$svm_rffs_pca_biplot_ellipse_conf" \
 "$CVUNI" "$log2_trans" "$CONTRAST" "$uni_fdr" "$uni_alpha" \
+"$rffs_htmap_textsize_col" "$rffs_htmap_textangle_col" "$htmap_lab_row" \
+"$rffs_htmap_textsize_row" "$rffs_htmap_keysize" "$rffs_htmap_key_xlab" \
+"$rffs_htmap_key_ylab" "$rffs_htmap_margin" "$rffs_htmap_width" "$rffs_htmap_height" \
+"$random_state" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -877,6 +905,7 @@ r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT
 "$plsda_vip_plot_x_textangle" "$plsda_vip_plot_x_label_size" "$plsda_vip_plot_x_tick_label_size" \
 "$plsda_vip_plot_y_label_size" "$plsda_vip_plot_y_tick_label_size" \
 "$plsda_vip_plot_width" "$plsda_vip_plot_height" \
+"$random_state" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log

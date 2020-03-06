@@ -1,4 +1,4 @@
-###### general info --------
+ ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
 ## version: 0.2.0
@@ -112,6 +112,7 @@ if (!all(c(NODE_ID_VAR, REGION_NAME_VAR) %in% names(node))) {
 # ------ Data processing for univariate analysis ------
 ## data formating
 x <- raw_sample_dfm[, -c(1:2)]
+sampleid <- raw_sample_dfm$sampleid
 y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
 
 # if to log2 transform the data
@@ -335,7 +336,7 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
 x_ml <- t(normdata$E)[, sig_pairs_fit]
-ml_dfm <- data.frame(y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+ml_dfm <- data.frame(sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
 
 ## cat the vairables to export to shell scipt

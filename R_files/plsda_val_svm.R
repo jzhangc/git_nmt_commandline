@@ -93,8 +93,15 @@ PLSDA_VIP_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[59])
 PLSDA_VIP_PLOT_WIDTH <- as.numeric(args[60])
 PLSDA_VIP_PLOT_HEIGHT <- as.numeric(args[61])
 
+# random state
+RANDOM_STATE <- as.numeric(args[62])
 
 ###### R script --------
+# ------ set random state if available
+if (RANDOM_STATE) {
+  set.seed(RANDOM_STATE)
+}
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
