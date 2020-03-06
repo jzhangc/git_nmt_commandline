@@ -2,6 +2,9 @@
 # Description: Configeration file for connectivity_ml.sh, containing variable and values for the application
 # Usage: Adjust the values for the variables
 #
+# ------ Random state ------
+random_state=999  # 0 is FALSE, or a >0 random integer
+
 # ------ Settings for data preprocessing ------
 log2_trans=TRUE
 
@@ -86,6 +89,17 @@ svm_roc_y_label_size=10
 svm_roc_y_tick_label_size=10
 svm_roc_width=170
 svm_roc_height=150
+
+# -- RFFS hierachical --
+rffs_htmap_textsize_col=0.7
+rffs_htmap_textangle_col=90
+rffs_htmap_textsize_row=0.7
+rffs_htmap_keysize=1.5
+rffs_htmap_key_xlab="Z score"
+rffs_htmap_key_ylab="Count"
+rffs_htmap_margin="c(6, 9)"
+rffs_htmap_width=15
+rffs_htmap_height=10
 
 # ------ PLSR ------
 # NOTE: share with the PLSDA settings

@@ -80,16 +80,16 @@ SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[43])
 SVM_ROC_WIDTH <- as.numeric(args[44])
 SVM_ROC_HEIGHT <- as.numeric(args[45])
 
-HTMAP_TEXTSIZE_COL <- as.numeric(args[46])
-HTMAP_TEXTANGLE_COL <- as.numeric(args[47])
+RFFS_HTMAP_TEXTSIZE_COL <- as.numeric(args[46])
+RFFS_HTMAP_TEXTANGLE_COL <- as.numeric(args[47])
 HTMAP_LAB_ROW <-eval(parse(text = args[48]))
-HTMAP_TEXTSIZE_ROW <- as.numeric(args[49])
-HTMAP_KEYSIZE <- as.numeric(args[50])
-HTMAP_KEY_XLAB <- args[51]
-HTMAP_KEY_YLAB <- args[52]
-HTMAP_MARGIN <- eval(parse(text = args[53]))
-HTMAP_WIDTH <- as.numeric(args[54])
-HTMAP_HEIGHT <- as.numeric(args[55])
+RFFS_HTMAP_TEXTSIZE_ROW <- as.numeric(args[49])
+RFFS_HTMAP_KEYSIZE <- as.numeric(args[50])
+RFFS_HTMAP_KEY_XLAB <- args[51]
+RFFS_HTMAP_KEY_YLAB <- args[52]
+RFFS_HTMAP_MARGIN <- eval(parse(text = args[53]))
+RFFS_HTMAP_WIDTH <- as.numeric(args[54])
+RFFS_HTMAP_HEIGHT <- as.numeric(args[55])
 
 # below: for if to do the univariate redution
 CVUNI <- eval(parse(text = args[56]))
@@ -97,7 +97,15 @@ LOG2_TRANS <- eval(parse(text = args[57]))
 UNI_FDR <- eval(parse(text = args[58]))
 UNI_ALPHA <- as.numeric(args[59])
 
+# random state
+RANDOM_STATE <- as.numeric(args[60])
+
 ###### R script --------
+# ------ set random state if available
+if (RANDOM_STATE) {
+  set.seed(RANDOM_STATE)
+}
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
@@ -127,12 +135,13 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
                                       fs.method = "rf",
                                       rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
                                       fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF, 
-                                      cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,,
+                                      cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
                                       parallelComputing = PSETTING, n_cores = CORES,
                                       clusterType = CPU_CLUSTER,
-                                      verbose = TRUE)
+                                      verbose = TRUE)                                 
 sink()
 svm_rf_selected_pairs <- svm_nested_cv$selected.features
+rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_pairs)]  # training + testing
 
 # plot SFS results
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
@@ -208,46 +217,86 @@ rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_
 sink()
 
 
-# hcluster after nested CV
+# hcluster after nested CV: all data
+rffs_selected_E <- rffs_selected_dfm[, -c(1:2)]  # all sample: training + test
+normdata_crosscv <- list(E = t(rffs_selected_E),
+                         genes = data.frame(ProbeName=seq(ncol(rffs_selected_E)), pair=colnames(rffs_selected_E)),
+                         targets = data.frame(id=seq(nrow(rffs_selected_dfm)), sample=rffs_selected_dfm$sampleid),
+                         ArrayWeight = NULL)
+
+if (HTMAP_LAB_ROW) {
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
+                     fltlist = normdata_crosscv, n = "all",
+                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     ColSideCol = FALSE,
+                     sampleName = normdata_crosscv$targets$sample,
+                     genesymbolOnly = FALSE,
+                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+                     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     key.title = "", dataProbeVar = "pair",
+                     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
+                     keysize = RFFS_HTMAP_KEYSIZE,
+                     key.xlab = RFFS_HTMAP_KEY_XLAB,
+                     key.ylab = RFFS_HTMAP_KEY_YLAB,
+                     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+                     margin = RFFS_HTMAP_MARGIN)
+} else {
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
+                     fltlist = normdata_crosscv, n = "all",
+                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     ColSideCol = FALSE,
+                     sampleName = normdata_crosscv$targets$sample,
+                     genesymbolOnly = FALSE,
+                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+                     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+                     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow= RFFS_HTMAP_TEXTSIZE_ROW,
+                     keysize = RFFS_HTMAP_KEYSIZE,
+                     key.xlab = RFFS_HTMAP_KEY_XLAB,
+                     key.ylab = RFFS_HTMAP_KEY_YLAB,
+                     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+                     margin = RFFS_HTMAP_MARGIN)
+}
+
+# hcluster after nested CV: training data
 svm_training_E <- svm_training[, -1]
-normdata_crosscv <- list(E = t(svm_training_E),
+normdata_crosscv_training <- list(E = t(svm_training_E),
                          genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
                          targets = data.frame(id=seq(nrow(training)), sample=training_sampleid),
                          ArrayWeight = NULL)
 
-
 if (HTMAP_LAB_ROW) {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
-                     fltlist = normdata_crosscv, n = "all",
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
+                     fltlist = normdata_crosscv_training, n = "all",
                      fct = factor(svm_training$y, levels = unique(svm_training$y)),
                      ColSideCol = FALSE,
-                     sampleName = normdata_crosscv$targets$sample,
+                     sampleName = normdata_crosscv_training$targets$sample,
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
                      key.title = "", dataProbeVar = "pair",
-                     cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
-                     keysize = HTMAP_KEYSIZE,
-                     key.xlab = HTMAP_KEY_XLAB,
-                     key.ylab = HTMAP_KEY_YLAB,
-                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
-                     margin = HTMAP_MARGIN)
+                     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
+                     keysize = RFFS_HTMAP_KEYSIZE,
+                     key.xlab = RFFS_HTMAP_KEY_XLAB,
+                     key.ylab = RFFS_HTMAP_KEY_YLAB,
+                     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+                     margin = RFFS_HTMAP_MARGIN)
 } else {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv"),
-                     fltlist = normdata_crosscv, n = "all",
+  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
+                     fltlist = normdata_crosscv_training, n = "all",
                      fct = factor(svm_training$y, levels = unique(svm_training$y)),
                      ColSideCol = FALSE,
-                     sampleName = normdata_crosscv$targets$sample,
+                     sampleName = normdata_crosscv_training$targets$sample,
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+                     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
                      key.title = "", dataProbeVar = "pair", labRow = FALSE,
-                     cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
-                     keysize = HTMAP_KEYSIZE,
-                     key.xlab = HTMAP_KEY_XLAB,
-                     key.ylab = HTMAP_KEY_YLAB,
-                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
-                     margin = HTMAP_MARGIN)
+                     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow= RFFS_HTMAP_TEXTSIZE_ROW,
+                     keysize = RFFS_HTMAP_KEYSIZE,
+                     key.xlab = RFFS_HTMAP_KEY_XLAB,
+                     key.ylab = RFFS_HTMAP_KEY_YLAB,
+                     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+                     margin = RFFS_HTMAP_MARGIN)
 }
 
 
@@ -325,3 +374,12 @@ cat("-------------------------------------\n")
 if (SVM_ROC_THRESHOLD_OUT_OF_RANGE) cat("ROC threshold(s) out of range: use median y value instead.\n\n")
 cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
 cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
+cat("\n\n")
+cat("Clustering analysis\n")
+# cat("PCA on SVM selected pairs\n")
+cat("-------------------------------------\n")
+cat("Hierarchical clustering on CV-SVR-rRF-FS selected pairs saved to:\n")
+cat("\tOn all data:\n")
+cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
+cat("\tOn training data:\n")
+cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training_heatmap.pdf"), "\n")

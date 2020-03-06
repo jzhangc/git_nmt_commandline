@@ -263,7 +263,7 @@ rbioFS_PCA(input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar
            fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
            verbose = FALSE)
 
-# hcluster after nested CV 
+# hcluster after nested CV: all data
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)]  # all sample: training + test
 normdata_crosscv <- list(E = t(rffs_selected_E),
                          genes = data.frame(ProbeName=seq(ncol(rffs_selected_E)), pair=colnames(rffs_selected_E)),
@@ -303,6 +303,7 @@ if (HTMAP_LAB_ROW) {
                      margin = RFFS_HTMAP_MARGIN)
 }
 
+# hcluster after nested CV: training data
 svm_training_E <- svm_training[, -1]
 normdata_crosscv_training <- list(E = t(svm_training_E),
                          genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
@@ -411,7 +412,7 @@ cat("\n\n")
 cat("Clustering analysis\n")
 # cat("PCA on SVM selected pairs\n")
 cat("-------------------------------------\n")
-cat("PCA on SVM selected pairs saved to:\n")
+cat("PCA on CV-SVM-rRF-FS selected pairs saved to:\n")
 cat("\tOn all data:\n")
 cat("\t\tbiplot: pca_svm_rffs_all_samples.pca.biplot.pdf\n")
 cat("\t\tboxplot: pca_svm_rffs_all_samples.pca.boxplot.pdf\n")
@@ -419,7 +420,7 @@ cat("\tOn training data:\n")
 cat("\t\tbiplot: pca_svm_rffs_training.pca.biplot.pdf\n")
 cat("\t\tboxplot: pca_svm_rffs_training.pca.boxplot.pdf\n")
 cat("\n\n")
-cat("Hierarchical clustering on SVM selected pairs saved to:\n")
+cat("Hierarchical clustering on CV-SVM-rRF-FS selected pairs saved to:\n")
 cat("\tOn all data:\n")
 cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
 cat("\tOn training data:\n")

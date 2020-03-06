@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.1.0"
+VERSION="0.2.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -63,7 +63,7 @@ YFLAG=1
 # below: CV univariate reduction
 UFLAG=1
 CVUNI=FALSE
-
+KFLAG=1   # prior univariate knowledge
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -317,7 +317,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $uni_fdr || -z $uni_alpha || -z $uni_fold_change \
 	|| -z $sig_htmap_textsize_col || -z $sig_htmap_textangle_col || -z $sig_htmap_textsize_row || -z $sig_htmap_keysize \
@@ -330,7 +330,22 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $svm_perm_plot_x_tick_label_size || -z $svm_perm_plot_y_label_size || -z $svm_perm_plot_y_tick_label_size \
 	|| -z $svm_perm_plot_width || -z $svm_perm_plot_height || -z $svm_roc_threshold || -z $svm_roc_smooth \
 	|| -z $svm_roc_symbol_size || -z $svm_roc_legend_size || -z $svm_roc_x_label_size || -z $svm_roc_x_tick_label_size \
-	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height ]]; then
+	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height \
+	|| -z $rffs_htmap_textsize_col || -z $rffs_htmap_textangle_col \
+	|| -z $rffs_htmap_textsize_row || -z $rffs_htmap_keysize || -z $rffs_htmap_key_xlab || -z $rffs_htmap_key_ylab \
+	|| -z $rffs_htmap_margin || -z $rffs_htmap_width || -z $rffs_htmap_height \
+	|| -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
+	|| -z $plsda_ncomp_select_method || -z $plsda_ncomp_select_plot_symbol_size || -z $plsda_ncomp_select_plot_legend_size \
+	|| -z $plsda_ncomp_select_plot_x_label_size || -z $plsda_ncomp_select_plot_x_tick_label_size \
+	|| -z $plsda_ncomp_select_plot_y_label_size || -z $plsda_ncomp_select_plot_y_tick_label_size || -z $plsda_perm_method \
+	|| -z $plsda_perm_n || -z $plsda_perm_plot_symbol_size || -z $plsda_perm_plot_legend_size \
+	|| -z $plsda_perm_plot_x_label_size || -z $plsda_perm_plot_x_tick_label_size || -z $plsda_perm_plot_y_label_size \
+	|| -z $plsda_perm_plot_y_tick_label_size || -z $plsda_perm_plot_width || -z $plsda_perm_plot_height \
+	|| -z $plsda_scoreplot_ellipse_conf || -z $plsda_vip_alpha || -z $plsda_vip_boot \
+	|| -z $plsda_vip_boot_n || -z $plsda_vip_plot_errorbar || -z $plsda_vip_plot_errorbar_width \
+	|| -z $plsda_vip_plot_errorbar_label_size || -z $plsda_vip_plot_x_textangle|| -z $plsda_vip_plot_x_label_size \
+	|| -z $plsda_vip_plot_x_tick_label_size || -z $plsda_vip_plot_y_label_size || -z $plsda_vip_plot_y_tick_label_size \
+	|| -z $plsda_vip_plot_width || -z $plsda_vip_plot_height ]]; then
     echo -e "${COLOUR_YELLOW}WARNING: Config file detected. But one or more vairables missing.${NO_COLOUR}"
     CONF_CHECK=1
   else
@@ -341,6 +356,7 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
+  	random_state=0
 	log2_trans=TRUE
 	htmap_textsize_col=0.7
 	htmap_textangle_col=90
@@ -399,6 +415,49 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_y_tick_label_size=10
 	svm_roc_width=170
 	svm_roc_height=150
+	rffs_htmap_textsize_col=0.5
+	rffs_htmap_textangle_col=90
+	rffs_htmap_textsize_row=0.2
+	rffs_htmap_keysize=1.5
+	rffs_htmap_key_xlab="Z score"
+	rffs_htmap_key_ylab="Count"
+	rffs_htmap_margin="c(6, 9)"
+	rffs_htmap_width=15
+	rffs_htmap_height=10
+	plsda_validation="CV"
+	plsda_validation_segment=10
+	plsda_init_ncomp=10
+	plsda_ncomp_select_method="1err"
+	plsda_ncomp_select_plot_symbol_size=2
+	plsda_ncomp_select_plot_legend_size=9
+	plsda_ncomp_select_plot_x_label_size=10
+	plsda_ncomp_select_plot_x_tick_label_size=10
+	plsda_ncomp_select_plot_y_label_size=10
+	plsda_ncomp_select_plot_y_tick_label_size=10
+	plsda_perm_method="by_y"
+	plsda_perm_n=999
+	plsda_perm_plot_symbol_size=2
+	plsda_perm_plot_legend_size=9
+	plsda_perm_plot_x_label_size=10
+	plsda_perm_plot_x_tick_label_size=10
+	plsda_perm_plot_y_label_size=10
+	plsda_perm_plot_y_tick_label_size=10
+	plsda_perm_plot_width=300
+	plsda_perm_plot_height=50
+	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
+	plsda_vip_alpha=0.8  # 0.8~1 is good
+	plsda_vip_boot=TRUE
+	plsda_vip_boot_n=50
+	plsda_vip_plot_errorbar="SEM"  # options are "SEM" and "SD"
+	plsda_vip_plot_errorbar_width=0.2
+	plsda_vip_plot_errorbar_label_size=6
+	plsda_vip_plot_x_textangle=90
+	plsda_vip_plot_x_label_size=10
+	plsda_vip_plot_x_tick_label_size=10
+	plsda_vip_plot_y_label_size=10
+	plsda_vip_plot_y_tick_label_size=10
+	plsda_vip_plot_width=150
+	plsda_vip_plot_height=100
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"
@@ -409,7 +468,9 @@ else
   echo -e "Variables loaded from the config file:"
 fi
 # below: place loaders
-echo -e "Data processing"
+echo -e "Random state (0=FALSE)"
+echo -e "\trandom_state=$random_state"
+echo -e "\nData processing"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\nClustering analysis for all connections"
 echo -e "\thtmap_textsize_col=$htmap_textsize_col"
@@ -472,6 +533,50 @@ echo -e "\tsvm_roc_y_label_size=$svm_roc_y_label_size"
 echo -e "\tsvm_roc_y_tick_label_size=$svm_roc_y_tick_label_size"
 echo -e "\tsvm_roc_width=$svm_roc_width"
 echo -e "\tsvm_roc_height=$svm_roc_height"
+echo -e "\trffs_htmap_textsize_col=$rffs_htmap_textsize_col"
+echo -e "\trffs_htmap_textangle_col=$rffs_htmap_textangle_col"
+echo -e "\trffs_htmap_textsize_row=$rffs_htmap_textsize_row"
+echo -e "\trffs_htmap_keysize=$rffs_htmap_keysize"
+echo -e "\trffs_htmap_key_xlab=$rffs_htmap_key_xlab"
+echo -e "\trffs_htmap_key_ylab=$rffs_htmap_key_ylab"
+echo -e "\trffs_htmap_margin=$rffs_htmap_margin"
+echo -e "\trffs_htmap_width=$rffs_htmap_width"
+echo -e "\trffs_htmap_height=$rffs_htmap_height"
+echo -e "\nPLS-DA modelling for evaluating SVM results"
+echo -e "\tplsda_validation=$plsda_validation"
+echo -e "\tplsda_validation_segment=$plsda_validation_segment"
+echo -e "\tplsda_init_ncomp=$plsda_init_ncomp"
+echo -e "\tplsda_ncomp_select_method=$plsda_ncomp_select_method"
+echo -e "\tplsda_ncomp_select_plot_symbol_size=$plsda_ncomp_select_plot_symbol_size"
+echo -e "\tplsda_ncomp_select_plot_legend_size=$plsda_ncomp_select_plot_legend_size"
+echo -e "\tplsda_ncomp_select_plot_x_label_size=$plsda_ncomp_select_plot_x_label_size"
+echo -e "\tplsda_ncomp_select_plot_x_tick_label_size=$plsda_ncomp_select_plot_x_tick_label_size"
+echo -e "\tplsda_ncomp_select_plot_y_label_size=$plsda_ncomp_select_plot_y_label_size"
+echo -e "\tplsda_ncomp_select_plot_y_tick_label_size=$plsda_ncomp_select_plot_y_tick_label_size"
+echo -e "\tplsda_perm_method=$plsda_perm_method"
+echo -e "\tplsda_perm_n=$plsda_perm_n"
+echo -e "\tplsda_perm_plot_symbol_size=$plsda_perm_plot_symbol_size"
+echo -e "\tplsda_perm_plot_legend_size=$plsda_perm_plot_legend_size"
+echo -e "\tplsda_perm_plot_x_label_size=$plsda_perm_plot_x_label_size"
+echo -e "\tplsda_perm_plot_x_tick_label_size=$plsda_perm_plot_x_tick_label_size"
+echo -e "\tplsda_perm_plot_y_label_size=$plsda_perm_plot_y_label_size"
+echo -e "\tplsda_perm_plot_y_tick_label_size=$plsda_perm_plot_y_tick_label_size"
+echo -e "\tplsda_perm_plot_width=$plsda_perm_plot_width"
+echo -e "\tplsda_perm_plot_height=$plsda_perm_plot_height"
+echo -e "\tplsda_scoreplot_ellipse_conf=$plsda_scoreplot_ellipse_conf"
+echo -e "\tplsda_vip_alpha=$plsda_vip_alpha"
+echo -e "\tplsda_vip_boot=$plsda_vip_boot"
+echo -e "\tplsda_vip_boot_n=$plsda_vip_boot_n"
+echo -e "\tplsda_vip_plot_errorbar=$plsda_vip_plot_errorbar"
+echo -e "\tplsda_vip_plot_errorbar_width=$plsda_vip_plot_errorbar_width"
+echo -e "\tplsda_vip_plot_errorbar_label_size=$plsda_vip_plot_errorbar_label_size"
+echo -e "\tplsda_vip_plot_x_textangle=$plsda_vip_plot_x_textangle"
+echo -e "\tplsda_vip_plot_x_label_size=$plsda_vip_plot_x_label_size"
+echo -e "\tplsda_vip_plot_x_tick_label_size=$plsda_vip_plot_x_tick_label_size"
+echo -e "\tplsda_vip_plot_y_label_size=$plsda_vip_plot_y_label_size"
+echo -e "\tplsda_vip_plot_y_tick_label_size=$plsda_vip_plot_y_tick_label_size"
+echo -e "\tplsda_vip_plot_width=$plsda_vip_plot_width"
+echo -e "\tplsda_vip_plot_height=$plsda_vip_plot_height"
 echo -e "=========================================================================="
 
 
@@ -545,51 +650,6 @@ echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
-# if [ $UFLAG -eq 1 ]; then
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -en "Skipping univariate analysis..."
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# 	echo -e "Done!"
-# 	echo -e "=========================================================================="
-# else
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-# 	echo -en "Unsupervised learning and univariate anlaysis..."
-# 	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# 	r_var=`Rscript ./R_files/reg_univariate_2D.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-# 	"${OUT_DIR}/OUTPUT" \
-# 	"$log2_trans" \
-# 	"$htmap_textsize_col" "$htmap_textangle_col" \
-# 	"$htmap_lab_row" "$htmap_textsize_row" \
-# 	"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-# 	"$htmap_margin" "$htmap_width" "$htmap_height" \
-# 	"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
-# 	"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
-# 	"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
-# 	"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
-# 	--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
-# 	| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
-# 	rscript_display=`echo "${r_var[@]}"`
-# 	echo -e "Done!\n\n"
-# 	echo -e "$rscript_display"  # print the screen display from the R script
-# 	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-# 	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
-# 		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
-# 	fi
-# 	# -- set up variables for output ml data file
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	# -- additional display --
-# 	echo -e "\n"
-# 	echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	echo -e "=========================================================================="
-# fi 
-
 # --- SVM machine learning analysis ---
 echo -e "\n"
 echo -e "SVM machine learning (regression)"
@@ -628,11 +688,12 @@ r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$svm_perm_plot_y_label_size" "$svm_perm_plot_y_tick_label_size" "$svm_perm_plot_width" "$svm_perm_plot_height" \
 "$svm_roc_threshold" "$svm_roc_smooth" "$svm_roc_symbol_size" "$svm_roc_legend_size" "$svm_roc_x_label_size" \
 "$svm_roc_x_tick_label_size" "$svm_roc_y_label_size" "$svm_roc_y_tick_label_size" "$svm_roc_width" "$svm_roc_height" \
-"$htmap_textsize_col" "$htmap_textangle_col" \
-"$htmap_lab_row" "$htmap_textsize_row" \
-"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-"$htmap_margin" "$htmap_width" "$htmap_height" \
+"$rffs_htmap_textsize_col" "$rffs_htmap_textangle_col" \
+"$htmap_lab_row" "$rffs_htmap_textsize_row" \
+"$rffs_htmap_keysize" "$rffs_htmap_key_xlab" "$rffs_htmap_key_ylab" \
+"$rffs_htmap_margin" "$rffs_htmap_width" "$rffs_htmap_height" \
 "$CVUNI" "$log2_trans" "$uni_fdr" "$uni_alpha" \
+"$random_state"
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -652,6 +713,60 @@ echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
+# -- PLSR validation of SVM analysis --
+echo -e "\n"
+echo -e "PLSR machine learning for SVM results evaluation"
+echo -e "=========================================================================="
+echo -e "SVM model file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
+echo -en "Parallel computing: "
+if [ $PSETTING == "FALSE" ]; then
+	echo -e "OFF"
+else
+	echo -e "ON"
+	echo -e "Cores: $CORES"
+fi
+echo -en "PLS-DA analysis..."
+r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+"${OUT_DIR}/OUTPUT" \
+"$PSETTING" "$CORES" \
+"$cpu_cluster" \
+"$plsda_validation" "$plsda_validation_segment" "$plsda_init_ncomp" "$plsda_ncomp_select_method" \
+"$plsda_ncomp_select_plot_symbol_size" "$plsda_ncomp_select_plot_legend_size" \
+"$plsda_ncomp_select_plot_x_label_size" "$plsda_ncomp_select_plot_x_tick_label_size" \
+"$plsda_ncomp_select_plot_y_label_size" "$plsda_ncomp_select_plot_y_tick_label_size" \
+"$plsda_perm_method" "$plsda_perm_n" \
+"$plsda_perm_plot_symbol_size" "$plsda_perm_plot_legend_size" \
+"$plsda_perm_plot_x_label_size" "$plsda_perm_plot_x_tick_label_size" \
+"$plsda_perm_plot_y_label_size" "$plsda_perm_plot_y_tick_label_size" \
+"$plsda_perm_plot_width" "$plsda_perm_plot_height" \
+"$plsda_scoreplot_ellipse_conf" \
+"$pca_biplot_symbol_size" \
+"$pca_biplot_ellipse" \
+"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
+"$pca_width" "$pca_height" \
+"$plsda_roc_smooth" \
+"$svm_roc_symbol_size" "$svm_roc_legend_size" "$svm_roc_x_label_size" "$svm_roc_x_tick_label_size" \
+"$svm_roc_y_label_size" "$svm_roc_y_tick_label_size" \
+"$plsda_vip_alpha" "$plsda_vip_boot" "$plsda_vip_boot_n" \
+"$plsda_vip_plot_errorbar" "$plsda_vip_plot_errorbar_width" "$plsda_vip_plot_errorbar_label_size" \
+"$plsda_vip_plot_x_textangle" "$plsda_vip_plot_x_label_size" "$plsda_vip_plot_x_tick_label_size" \
+"$plsda_vip_plot_y_label_size" "$plsda_vip_plot_y_tick_label_size" \
+"$plsda_vip_plot_width" "$plsda_vip_plot_height" \
+"$random_state" \
+--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
+| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
+rscript_display=`echo "${r_var[@]}"`
+# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
+if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+echo -e "Done!"
+echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
+echo -e "$rscript_display" # print the screen display from the R script
+echo -e "=========================================================================="
 
 # end time and display
 end_t=`date +%s`
