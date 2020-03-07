@@ -3,16 +3,16 @@
 # Usage: Adjust the values for the variables
 #
 # ------ Random state ------
-random_state=999  # 0 is FALSE, or a >0 random integer
+random_state=0  # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
 log2_trans=TRUE
 
 # ------ Settings for all-connection clustering analysis ------
 # -- Hierarchical clustering --
+htmap_lab_row=TRUE
 htmap_textsize_col=0.7
 htmap_textangle_col=90
-htmap_lab_row=FALSE
 htmap_textsize_row=0.7
 htmap_keysize=1.5
 htmap_key_xlab="Normalized connectivity value"
