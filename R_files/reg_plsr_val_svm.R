@@ -19,7 +19,7 @@ CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE
 
 # ------ file name variables ------
-MODEL_FILE <- args[6]  # SVM MODEL R file
+MODEL_FILE <- args[6]  # SVM MODEL R file  
 MAT_FILE_NO_EXT <- args[7]  # from the raw mat file, for naming export data
 
 # ------ directory variables ------
