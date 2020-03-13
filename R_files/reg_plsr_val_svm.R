@@ -112,13 +112,14 @@ load(file = MODEL_FILE)
 # inital modelling and ncomp optimization
 plsr_m <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
                                     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-                                    segments = PLSDA_VALIDATION_SEGMENT,
+                                    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
                              rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
                                                         validation = PLSDA_VALIDATION,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
+                                                        maxit = 200,
                                                         method = "oscorespls", verbose = FALSE)
                            })
 
@@ -135,6 +136,19 @@ plsr_m_optim <- rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
                                  ncomp = ncomp_select, validation = PLSDA_VALIDATION,
                                  segments = PLSDA_VALIDATION_SEGMENT,
                                  method = "oscorespls", verbose = FALSE)
+
+plsr_m_optim <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+                                    ncomp = ncomp_select, validation = PLSDA_VALIDATION,
+                                    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
+                                    method = "oscorespls", verbose = FALSE),
+                           error = function(w){
+                             assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+                             rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+                                                        validation = PLSDA_VALIDATION,
+                                                        segments = PLSDA_VALIDATION_SEGMENT,
+                                                        maxit = 200,
+                                                        method = "oscorespls", verbose = FALSE)
+                           })
 
 # permutation test
 if (length(unique(table(svm_training$y))) > 1) {  # if to use adjCV depending on if the training set is balanced

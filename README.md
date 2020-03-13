@@ -26,12 +26,14 @@ A bash application for automating machine learning analysis for MEG connection d
         - Updates to classification module
           - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml.sh and connectivity_ml_2d.sh
           - CV-SVM-rRF-FS hierarchical heatmap re-enabled for the classification module
+          - Error check added to the PLS-DA module
           - A bug fixed for ml_svm.R where y column was missing during random sampling
 
         - Updates to regression module
           - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml_reg.sh and connectivity_ml_reg_2d.sh
           - Regression module now correct displays total CV RMSE on the result information page
           - PLSR analysis added to connectivity_ml_reg_2d.sh
+          - Error check added to the PLSR module
         
         - Version bumped to 0.2.0 to all modules
 

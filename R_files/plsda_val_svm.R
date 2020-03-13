@@ -112,12 +112,12 @@ load(file = MODEL_FILE)
 # inital modelling and ncomp optimization
 plsda_m <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
                                     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-                                    segments = PLSDA_VALIDATION_SEGMENT,
+                                    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
                              rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
-                                                        validation = PLSDA_VALIDATION,
+                                                        validation = PLSDA_VALIDATION, maxit = 200,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
                                                         method = "oscorespls", verbose = FALSE)
                            })
@@ -125,15 +125,24 @@ plsda_m <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
 rbioClass_plsda_ncomp_select(plsda_m,
                              ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
                              randomization.alpha = 0.05,
-                             plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = ,
+                             plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
                              plot.Width = 80 * length(unique(svm_training$y)),
                              plot.Height = 100,
                              plot.yLabel = "RMSEP", verbose = FALSE)
+
 ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
-plsda_m_optim <- rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
-                                 ncomp = ncomp_select, validation = PLSDA_VALIDATION,
-                                 segments = PLSDA_VALIDATION_SEGMENT,
-                                 method = "oscorespls", verbose = FALSE)
+plsda_m_optim <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+                                    ncomp = ncomp_select, validation = PLSDA_VALIDATION,
+                                    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
+                                    method = "oscorespls", verbose = FALSE),
+                           error = function(w){
+                             assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+                             rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+                                                        validation = PLSDA_VALIDATION, maxit = 200,
+                                                        segments = PLSDA_VALIDATION_SEGMENT,
+                                                        method = "oscorespls", verbose = FALSE)
+                           })
+
 
 # permutation test
 if (length(unique(table(svm_training$y))) > 1) {  # if to use adjCV depending on if the training set is balanced
