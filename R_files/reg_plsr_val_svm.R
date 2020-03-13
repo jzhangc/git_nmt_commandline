@@ -132,11 +132,6 @@ rbioReg_plsr_ncomp_select(plsr_m,
                           plot.yLabel = "RMSEP", verbose = FALSE)
 
 ncomp_select <- max(as.vector(plsr_m_plsr_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
-plsr_m_optim <- rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
-                                 ncomp = ncomp_select, validation = PLSDA_VALIDATION,
-                                 segments = PLSDA_VALIDATION_SEGMENT,
-                                 method = "oscorespls", verbose = FALSE)
-
 plsr_m_optim <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
                                     ncomp = ncomp_select, validation = PLSDA_VALIDATION,
                                     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
