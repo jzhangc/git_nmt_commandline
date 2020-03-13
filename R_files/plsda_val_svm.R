@@ -162,7 +162,18 @@ rbioUtil_perm_plot(perm_res = plsda_m_optim_perm, plot.SymbolSize = PLSDA_PERM_P
                    verbose = FALSE)
 
 # score plot
-rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
+tryCatch(rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
+                          plot.sampleLabel.type = "none",
+                          plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
+                          plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+                          plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+                          plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+                          plot.rightsideY = PCA_RIGHTSIDE_Y,
+                          plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+                          plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE),
+                           error = function(w){
+                             assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+                             rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
                           plot.sampleLabel.type = "none",
                           plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
                           plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
@@ -171,6 +182,7 @@ rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
                           plot.rightsideY = PCA_RIGHTSIDE_Y,
                           plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
                           plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE)
+                           })
 
 
 # ROC-AUC
