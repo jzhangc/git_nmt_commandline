@@ -28,7 +28,7 @@
 -n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
 -d "node_id" -r "region" \
 -c "ptsd-control" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u
 
 # -- regression --
 ./connectivity_ml_reg.sh \
@@ -37,7 +37,7 @@
 -s "id" -y "pcl" \
 -n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
 -d "node_id" -r "region" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u -k
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u -k
 
 
 

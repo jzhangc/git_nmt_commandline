@@ -3,7 +3,7 @@
 # Usage: Adjust the values for the variables
 #
 # ------ Random state ------
-random_state=999  # 0 is FALSE, or a >0 random integer
+random_state=0  # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
 log2_trans=TRUE

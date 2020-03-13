@@ -148,6 +148,7 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, !colnames(training) %in% c(
                                       uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
                                       uni.contrast = CONTRAST,
                                       center.scale = SVM_CV_CENTRE_SCALE,
+                                      kernel = SVM_CV_KERNEL,
                                       cross.k = SVM_CV_CROSS_K,
                                       tune.method = SVM_CV_TUNE_METHOD,
                                       tune.cross.k = SVM_CV_TUNE_CROSS_K,
