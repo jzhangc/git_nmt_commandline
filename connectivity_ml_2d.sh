@@ -47,7 +47,7 @@ NO_COLOUR="\033[0;0m"
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2D.R ml_svm.R plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
@@ -696,7 +696,7 @@ echo -e "=======================================================================
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Unsupervised learning and univariate anlaysis..."
 dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-r_var=`Rscript ./R_files/univariate_2D.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
