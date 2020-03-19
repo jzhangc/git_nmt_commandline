@@ -385,17 +385,28 @@ if (NO_SIG_WARNING) {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
-if (length(contra_string) == 1){
-  if (NO_SIG_WARNING_FIT) {
-    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+if (NO_SIG_WARNING_FIT){
+  if (length(contra_string) == 1){
+      cat("NO significant reuslts found in univariate analysis results, no PCA needed. \n")
   } else {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+  }
+} else {
     cat("PCA results saved to: \n")
     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
-  }
-} else {
-  if (NO_SIG_WARNING_FIT) {
-    cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
-  }
 }
+# if (length(contra_string) == 1){
+#   if (NO_SIG_WARNING_FIT) {
+#     cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+#   } else {
+#     cat("PCA results saved to: \n")
+#     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
+#     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+#   }
+# } else {
+#   if (NO_SIG_WARNING_FIT) {
+#     cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
+#   }
+# }
 
