@@ -35,6 +35,8 @@ A bash application for automating machine learning analysis for MEG connection d
           - PLSR analysis added to connectivity_ml_reg_2d.sh
           - Error check added to the PLSR module
         
+        - Other small bug fixes
+        
         - Version bumped to 0.2.0 to all modules
 
     - 0.1

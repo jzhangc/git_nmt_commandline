@@ -733,7 +733,7 @@ fi
 # -- set up variables for output ml data file
 echo -e "\n"
 dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
-if [ $kFLAG -eq 1 ]; then
+if [ $KFLAG -eq 1 ]; then
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 else
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
