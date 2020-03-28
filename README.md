@@ -22,7 +22,7 @@ A bash application for automating machine learning analysis for MEG connection d
           - Univariate prior knowlege flag -k added to all modules
           - Random state added to all modules
           - CV-SVM-rRF-FS heatmap lables fixed for all moduels
-          - Error handling add to rRF-FS plotting
+          - Error handling added to rRF-FS plotting
         
         - Updates to classification module
           - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml.sh and connectivity_ml_2d.sh
