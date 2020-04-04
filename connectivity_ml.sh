@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml_reg.sh
+# Name: connectivity_ml.sh
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
