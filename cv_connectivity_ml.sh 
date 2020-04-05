@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Name: cv_connectivity_ml.sh
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data, with "CV_only" methods.
+# 				This application uses the same config file as connectivity_ml.sh, with unused items ignored. 
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
@@ -825,7 +826,7 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
-r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/cv_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -879,7 +880,7 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLS-DA analysis..."
-r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/cv_plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \
