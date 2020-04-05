@@ -110,13 +110,13 @@ load(file = MODEL_FILE)
 
 # ------ PLs-DA modelling ------
 # inital modelling and ncomp optimization
-plsda_m <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+plsda_m <- tryCatch(rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
                                     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
                                     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-                             rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+                             rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
                                                         validation = PLSDA_VALIDATION, maxit = 200,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
                                                         method = "oscorespls", verbose = FALSE)
@@ -126,18 +126,18 @@ rbioClass_plsda_ncomp_select(plsda_m,
                              ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
                              randomization.alpha = 0.05,
                              plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
-                             plot.Width = 80 * length(unique(svm_training$y)),
+                             plot.Width = 80 * length(unique(svm_m$inputY)),
                              plot.Height = 100,
                              plot.yLabel = "RMSEP", verbose = FALSE)
 
 ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
-plsda_m_optim <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+plsda_m_optim <- tryCatch(rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
                                     ncomp = ncomp_select, validation = PLSDA_VALIDATION,
                                     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-                             rbioClass_plsda(x = svm_training[, -1], y = svm_training$y,
+                             rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
                                                         validation = PLSDA_VALIDATION, maxit = 200,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
                                                         method = "oscorespls", verbose = FALSE)
@@ -145,7 +145,7 @@ plsda_m_optim <- tryCatch(rbioClass_plsda(x = svm_training[, -1], y = svm_traini
 
 
 # permutation test
-if (length(unique(table(svm_training$y))) > 1) {  # if to use adjCV depending on if the training set is balanced
+if (length(unique(table(svm_m$inputY))) > 1) {  # if to use adjCV depending on if the data is balanced
   is_adj_cv <- TRUE
 } else {
   is_adj_cv <- FALSE
@@ -185,24 +185,24 @@ tryCatch(rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_selec
                            })
 
 
-# ROC-AUC
-sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), append = TRUE)
-cat("------ ROC-AUC ------\n")
-rbioClass_plsda_roc_auc(object = plsda_m_optim,
-                        newdata = svm_test[, -1],
-                        newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
-                        center.newdata = TRUE,
-                        plot.smooth = PLSDA_ROC_SMOOTH,
-                        plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-                        plot.legendSize = SVM_ROC_LEGEND_SIZE,
-                        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-                        plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-                        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
-                        plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-                        plot.Width = 80 * plsda_m_optim$ncomp,
-                        plot.Height = 100,
-                        verbose = TRUE)
-sink()
+# # ROC-AUC
+# sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), append = TRUE)
+# cat("------ ROC-AUC ------\n")
+# rbioClass_plsda_roc_auc(object = plsda_m_optim,
+#                         newdata = svm_test[, -1],
+#                         newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
+#                         center.newdata = TRUE,
+#                         plot.smooth = PLSDA_ROC_SMOOTH,
+#                         plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+#                         plot.legendSize = SVM_ROC_LEGEND_SIZE,
+#                         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
+#                         plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+#                         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
+#                         plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+#                         plot.Width = 80 * plsda_m_optim$ncomp,
+#                         plot.Height = 100,
+#                         verbose = TRUE)
+# sink()
 
 # VIP plot
 rbioFS_plsda_vip(object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
@@ -256,12 +256,12 @@ cat("PLS-DA score plot\n")
 cat("-------------------------------------\n")
 cat("PLS-DA score plot saved to file: plsda_m_optim.plsda.scoreplot.pdf\n")
 cat("\n\n")
-cat("PLS-DA ROC-AUC\n")
-cat("-------------------------------------\n")
-cat("NOTE: PLS-DA ROC-Auc is based on the test set used in SVM ROC-AUC analysis.\n")
-cat("NOTE: Check the PLS-DA results file ", paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), " for AUC values.\n")
-cat("PLS-DA ROC figure saved to file: plsda_m_optim.plsda.roc.pdf\n")
-cat("\n\n")
+# cat("PLS-DA ROC-AUC\n")
+# cat("-------------------------------------\n")
+# cat("NOTE: PLS-DA ROC-Auc is based on the test set used in SVM ROC-AUC analysis.\n")
+# cat("NOTE: Check the PLS-DA results file ", paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), " for AUC values.\n")
+# cat("PLS-DA ROC figure saved to file: plsda_m_optim.plsda.roc.pdf\n")
+# cat("\n\n")
 cat("PLS-DA VIP (variable importance) plot\n")
 cat("-------------------------------------\n")
 cat("VIP alpha: ", PLSDA_VIP_ALPHA, "\n")
