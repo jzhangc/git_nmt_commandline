@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: connectivity_ml_2d.sh
-# Discription: A version of connectivity_ml_reg.sh that takes 2D data table, instead of 3D mat adjacency matrices.
+# Discription: A version of cv_connectivity_ml_reg.sh that takes 2D data table, instead of 3D mat adjacency matrices.
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
@@ -16,7 +16,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./connectivity_ml_reg_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./cv_connectivity_ml_reg_2d.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n

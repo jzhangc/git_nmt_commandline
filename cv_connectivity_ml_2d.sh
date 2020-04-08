@@ -15,7 +15,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./connectivity_ml_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./cv_connectivity_ml_2d.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
