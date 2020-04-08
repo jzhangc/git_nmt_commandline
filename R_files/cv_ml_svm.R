@@ -133,8 +133,8 @@ ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
-nested_cv_x = ml_dfm[, !colnames(training) %in% c("sampleid", "y")]
-nested_cv_y = ml_dfm$y
+nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
+nested_cv_y <- ml_dfm$y
 svm_nested_cv <- rbioClass_svm_ncv_fs(x = nested_cv_x,
                                       y = nested_cv_y,
                                       univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
@@ -304,10 +304,6 @@ cat("ML data file summary\n")
 cat("-------------------------------------\n")
 cat("ML file dimensions: ", dim(ml_dfm), "\n")
 cat("Group labels (size): ", orignal_y_summary, "\n")
-cat("\n\n")
-cat("Label randomization\n")
-cat("-------------------------------------\n")
-cat("Training and test files saved to: ml_training.csv ml_test.csv\n")
 cat("\n\n")
 cat("SVM nested cross validation with rRF-FS\n")
 cat("-------------------------------------\n")

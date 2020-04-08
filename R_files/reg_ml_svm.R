@@ -230,7 +230,7 @@ normdata_crosscv <- list(E = t(rffs_selected_E),
 if (HTMAP_LAB_ROW) {
   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
                      fltlist = normdata_crosscv, n = "all",
-                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
                      ColSideCol = FALSE,
                      sampleName = normdata_crosscv$targets$sample,
                      genesymbolOnly = FALSE,
@@ -246,7 +246,7 @@ if (HTMAP_LAB_ROW) {
 } else {
   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
                      fltlist = normdata_crosscv, n = "all",
-                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
                      ColSideCol = FALSE,
                      sampleName = normdata_crosscv$targets$sample,
                      genesymbolOnly = FALSE,

@@ -111,20 +111,21 @@ setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
-training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
-training <- ml_dfm_randomized[1:training_n, ]
-training_sampleid <- training$sampleid
-training <- training[, -1]  # remove sampleid
-test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
-test <- test[, -1]  # remove sampleid
-# load(file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
+# ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
+# training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
+# training <- ml_dfm_randomized[1:training_n, ]
+# training_sampleid <- training$sampleid
+# training <- training[, -1]  # remove sampleid
+# test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
+# test <- test[, -1]  # remove sampleid
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
-svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
-                                      y = training$y,
+nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
+nested_cv_y <- ml_dfm$y
+svm_nested_cv <- rbioClass_svm_ncv_fs(x = nested_cv_x,
+                                      y = nested_cv_y,
                                       center.scale = SVM_CV_CENTRE_SCALE,
                                       univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
                                       uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
@@ -170,12 +171,11 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
 }
 
 # ------ SVM modelling ------
-# sub set the training/test data using the selected features
-svm_training <- training[, c("y", svm_rf_selected_pairs)]
-svm_test <- test[, c("y", svm_rf_selected_pairs)]
+# set up modelling data using the selected features
+final_svr_data <- ml_dfm[, c("y", svm_rf_selected_pairs)]
 
 # modelling
-svm_m <- rbioClass_svm(x = svm_training[, -1], y = svm_training$y,
+svm_m <- rbioClass_svm(x = final_svr_data[, -1], y = final_svr_data$y,
                        center.scale = SVM_CV_CENTRE_SCALE, kernel = SVM_CV_KERNEL,
                        svm.cross.k = SVM_CROSS_K,
                        tune.method = SVM_CV_TUNE_METHOD,
@@ -200,24 +200,24 @@ cat("\n\n------ Permutation test ------\n")
 svm_m_perm
 sink()
 
-# ROC-AUC
-if (any(SVM_ROC_THRESHOLD < 0) || any(SVM_ROC_THRESHOLD > max(svm_m$inputY))) {
-  SVM_ROC_THRESHOLD_OUT_OF_RANGE <- TRUE
-  SVM_ROC_THRESHOLD <- round(median(svm_m$inputY))
-  }
+# # ROC-AUC
+# if (any(SVM_ROC_THRESHOLD < 0) || any(SVM_ROC_THRESHOLD > max(svm_m$inputY))) {
+#   SVM_ROC_THRESHOLD_OUT_OF_RANGE <- TRUE
+#   SVM_ROC_THRESHOLD <- round(median(svm_m$inputY))
+#   }
 
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("------ ROC-AUC ------\n")
-rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_test$y,
-                      y.threshold = SVM_ROC_THRESHOLD,
-                      center.scale.newdata = SVM_CV_CENTRE_SCALE,
-                      plot.smooth = SVM_ROC_SMOOTH,
-                      plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-                      plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-                      plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-                      plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-                      verbose = FALSE)
-sink()
+# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+# cat("------ ROC-AUC ------\n")
+# rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_test$y,
+#                       y.threshold = SVM_ROC_THRESHOLD,
+#                       center.scale.newdata = SVM_CV_CENTRE_SCALE,
+#                       plot.smooth = SVM_ROC_SMOOTH,
+#                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+#                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+#                       plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+#                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+#                       verbose = FALSE)
+# sink()
 
 
 # hcluster after nested CV: all data
@@ -230,7 +230,7 @@ normdata_crosscv <- list(E = t(rffs_selected_E),
 if (HTMAP_LAB_ROW) {
   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
                      fltlist = normdata_crosscv, n = "all",
-                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
                      ColSideCol = FALSE,
                      sampleName = normdata_crosscv$targets$sample,
                      genesymbolOnly = FALSE,
@@ -246,7 +246,7 @@ if (HTMAP_LAB_ROW) {
 } else {
   rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
                      fltlist = normdata_crosscv, n = "all",
-                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+                     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
                      ColSideCol = FALSE,
                      sampleName = normdata_crosscv$targets$sample,
                      genesymbolOnly = FALSE,
@@ -261,74 +261,16 @@ if (HTMAP_LAB_ROW) {
                      margin = RFFS_HTMAP_MARGIN)
 }
 
-# hcluster after nested CV: training data
-svm_training_E <- svm_training[, -1]
-normdata_crosscv_training <- list(E = t(svm_training_E),
-                         genes = data.frame(ProbeName=seq(ncol(svm_training_E)), pair=colnames(svm_training_E)),
-                         targets = data.frame(id=seq(nrow(training)), sample=training_sampleid),
-                         ArrayWeight = NULL)
-
-if (HTMAP_LAB_ROW) {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-                     fltlist = normdata_crosscv_training, n = "all",
-                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
-                     ColSideCol = FALSE,
-                     sampleName = normdata_crosscv_training$targets$sample,
-                     genesymbolOnly = FALSE,
-                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair",
-                     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-                     keysize = RFFS_HTMAP_KEYSIZE,
-                     key.xlab = RFFS_HTMAP_KEY_XLAB,
-                     key.ylab = RFFS_HTMAP_KEY_YLAB,
-                     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-                     margin = RFFS_HTMAP_MARGIN)
-} else {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-                     fltlist = normdata_crosscv_training, n = "all",
-                     fct = factor(svm_training$y, levels = unique(svm_training$y)),
-                     ColSideCol = FALSE,
-                     sampleName = normdata_crosscv_training$targets$sample,
-                     genesymbolOnly = FALSE,
-                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
-                     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow= RFFS_HTMAP_TEXTSIZE_ROW,
-                     keysize = RFFS_HTMAP_KEYSIZE,
-                     key.xlab = RFFS_HTMAP_KEY_XLAB,
-                     key.ylab = RFFS_HTMAP_KEY_YLAB,
-                     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-                     margin = RFFS_HTMAP_MARGIN)
-}
-
-
 ####### clean up the mess and export --------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 
-# ## variables for display
-# orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-# orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
-#   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
-#
-# training_y <- factor(training$y, levels = unique(training$y))
-# training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
-#   paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")
-# test_y <- factor(test$y, levels = unique(test$y))
-# test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
-#   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
-
 ## export to results files if needed
-y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)),
-                           `Randomized group labels` = ml_dfm_randomized$y,
-                           check.names = FALSE)
-output_for_dl <- ml_dfm[, c("sampleid", "y", svm_rf_selected_pairs)]
+output_for_dl <- rffs_selected_dfm
 
-write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test", "svm_nested_cv"),
-     file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
+save(list = c("svm_m", "svm_rf_selected_pairs", "svm_nested_cv"),
+     file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 
 ## cat the vairables to export to shell scipt
@@ -372,17 +314,9 @@ svm_m_perm
 cat("Permutation test results saved to file: svm_m.perm.csv\n")
 cat("Permutation plot saved to file: svm_m_perm.svm.perm.plot.pdf\n")
 cat("\n\n")
-cat("ROC-AUC\n")
-cat("-------------------------------------\n")
-if (SVM_ROC_THRESHOLD_OUT_OF_RANGE) cat("ROC threshold(s) out of range: use median y value instead.\n\n")
-cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
-cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
-cat("\n\n")
 cat("Clustering analysis\n")
 # cat("PCA on SVM selected pairs\n")
 cat("-------------------------------------\n")
 cat("Hierarchical clustering on CV-SVR-rRF-FS selected pairs saved to:\n")
 cat("\tOn all data:\n")
 cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
-cat("\tOn training data:\n")
-cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training_heatmap.pdf"), "\n")

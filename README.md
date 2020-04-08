@@ -8,7 +8,6 @@ A bash application for automating machine learning analysis for MEG connection d
       (ICEBOX)
         - New modules
           - "CV only" equivalents added for all the modules:
-            - cv_connectivity_ml_reg.sh
             - cv_connectivity_ml_reg_2d.sh
 
         - General updates
@@ -25,6 +24,7 @@ A bash application for automating machine learning analysis for MEG connection d
           - "CV only" equivalents added for all the modules:
             - cv_connectivity_ml.sh
             - cv_connectivity_ml_2d.sh
+            - cv_connectivity_ml_reg.sh
 
         - General updates
           - A separate univariate analysis now integrated to the CV process for all modules. and skippable

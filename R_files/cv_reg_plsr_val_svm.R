@@ -1,6 +1,6 @@
 ###### general info --------
 ## name: reg_plsr_val_svm.R
-## purpose: plada modelling to evaluating SVM results
+## purpose: plsr modelling to evaluating SVR results for "cv only" methods
 ## version: 0.2.0
 
 ## flags from Rscript
@@ -110,13 +110,13 @@ load(file = MODEL_FILE)
 
 # ------ PLs-DA modelling ------
 # inital modelling and ncomp optimization
-plsr_m <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+plsr_m <- tryCatch(rbioReg_plsr(x = svm_m$inputX, y = svm_m$inputY,
                                     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
                                     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-                             rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+                             rbioReg_plsr(x = svm_m$inputX, y = svm_m$inputY,
                                                         validation = PLSDA_VALIDATION,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
                                                         maxit = 200,
@@ -132,13 +132,13 @@ rbioReg_plsr_ncomp_select(plsr_m,
                           plot.yLabel = "RMSEP", verbose = FALSE)
 
 ncomp_select <- max(as.vector(plsr_m_plsr_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
-plsr_m_optim <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+plsr_m_optim <- tryCatch(rbioReg_plsr(x = svm_m$inputX, y = svm_m$inputY,
                                     ncomp = ncomp_select, validation = PLSDA_VALIDATION,
                                     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-                             rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+                             rbioReg_plsr(x = svm_m$inputX, y = svm_m$inputY,
                                                         validation = PLSDA_VALIDATION,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
                                                         maxit = 200,
@@ -146,7 +146,7 @@ plsr_m_optim <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y
                            })
 
 # permutation test
-if (length(unique(table(svm_training$y))) > 1) {  # if to use adjCV depending on if the training set is balanced
+if (length(unique(table(svm_m$inputY))) > 1) {  # if to use adjCV depending on if the data is balanced
   is_adj_cv <- TRUE
 } else {
   is_adj_cv <- FALSE
