@@ -43,6 +43,7 @@ A bash application for automating machine learning analysis for MEG connection d
           - Regression module now correct displays total CV RMSE on the result information page
           - PLSR analysis added to connectivity_ml_reg_2d.sh
           - Error check added to the PLSR module
+          - ROC-AUC removed from regression modules
         
         - Other small bug fixes
         

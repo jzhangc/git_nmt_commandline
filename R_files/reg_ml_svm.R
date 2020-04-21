@@ -200,24 +200,24 @@ cat("\n\n------ Permutation test ------\n")
 svm_m_perm
 sink()
 
-# ROC-AUC
-if (any(SVM_ROC_THRESHOLD < 0) || any(SVM_ROC_THRESHOLD > max(svm_m$inputY))) {
-  SVM_ROC_THRESHOLD_OUT_OF_RANGE <- TRUE
-  SVM_ROC_THRESHOLD <- round(median(svm_m$inputY))
-  }
+# # ROC-AUC
+# if (any(SVM_ROC_THRESHOLD < 0) || any(SVM_ROC_THRESHOLD > max(svm_m$inputY))) {
+#   SVM_ROC_THRESHOLD_OUT_OF_RANGE <- TRUE
+#   SVM_ROC_THRESHOLD <- round(median(svm_m$inputY))
+#   }
 
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("------ ROC-AUC ------\n")
-rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_test$y,
-                      y.threshold = SVM_ROC_THRESHOLD,
-                      center.scale.newdata = SVM_CV_CENTRE_SCALE,
-                      plot.smooth = SVM_ROC_SMOOTH,
-                      plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-                      plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-                      plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-                      plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-                      verbose = FALSE)
-sink()
+# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+# cat("------ ROC-AUC ------\n")
+# rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_test$y,
+#                       y.threshold = SVM_ROC_THRESHOLD,
+#                       center.scale.newdata = SVM_CV_CENTRE_SCALE,
+#                       plot.smooth = SVM_ROC_SMOOTH,
+#                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+#                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+#                       plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+#                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+#                       verbose = FALSE)
+# sink()
 
 
 # hcluster after nested CV: all data
@@ -372,12 +372,12 @@ svm_m_perm
 cat("Permutation test results saved to file: svm_m.perm.csv\n")
 cat("Permutation plot saved to file: svm_m_perm.svm.perm.plot.pdf\n")
 cat("\n\n")
-cat("ROC-AUC\n")
-cat("-------------------------------------\n")
-if (SVM_ROC_THRESHOLD_OUT_OF_RANGE) cat("ROC threshold(s) out of range: use median y value instead.\n\n")
-cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
-cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
-cat("\n\n")
+# cat("ROC-AUC\n")
+# cat("-------------------------------------\n")
+# if (SVM_ROC_THRESHOLD_OUT_OF_RANGE) cat("ROC threshold(s) out of range: use median y value instead.\n\n")
+# cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
+# cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
+# cat("\n\n")
 cat("Clustering analysis\n")
 # cat("PCA on SVM selected pairs\n")
 cat("-------------------------------------\n")
