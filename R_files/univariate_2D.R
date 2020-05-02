@@ -228,10 +228,10 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
   } else if (DE_summary[i, "sig"] == 1) {
     ONE_SIG_WARNING <- TRUE
   } else {
-    normdata$E
-    normdata$targets
     de_groups <- unlist(strsplit(de_names[i], "-"))
     de_sample_idx <- which(normdata$targets$group %in% de_groups)
+    de_groups <- gsub("(", "", de_groups, fixed = TRUE)
+    de_groups <- gsub(")", "", de_groups, fixed = TRUE)
     super_cluster_data <- list(E = normdata$E[, de_sample_idx], genes = normdata$genes,
                                targets = normdata$targets[de_sample_idx, ])
     rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_DE_",de_names[i]),

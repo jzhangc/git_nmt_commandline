@@ -5,7 +5,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.1.0"
+VERSION="0.2.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -181,3 +181,15 @@ hms(){
     printf "%02d%s\n" $S "s"
   fi
 }
+
+# ------ script ------
+# --- start time ---
+start_t=`date +%s`
+
+# --- initial message ---
+echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml_classify.sh${NO_COLOUR}"
+echo -e "Version: $VERSION"
+echo -e "Current OS: $PLATFORM"
+echo -e "Output direcotry: $OUT_DIR"
+echo -e "Today is: $CURRENT_DAY\n"
+echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"

@@ -37,6 +37,7 @@ A bash application for automating machine learning analysis for MEG connection d
           - Error check added to the PLS-DA module
           - A bug fixed for ml_svm.R where y column was missing during random sampling
           - RFFS heatmap now displays the top colour strip
+          - Fixed a bug for univariate modules where supervised hierarchical clustering will fail for contrasts with more than two groups
 
         - Updates to regression module
           - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml_reg.sh and connectivity_ml_reg_2d.sh
