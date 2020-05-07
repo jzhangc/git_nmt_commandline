@@ -2,20 +2,12 @@
 
 A bash application for automating machine learning analysis for MEG connection data
 
+Please cite the following if you are to use this application:
+    Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5
+
 ------ Version History ------
 
-    - 0.2.0
-      (ICEBOX)
-        - General updates
-          - Spinner added as a running status indication
-          - Overall optimization
-          - A memory check module to ensure the stability
-          - Node file length check added for univariate.R and reg_univariate.R
-          - Fix the "invalide ncomp" issue
-
-        - Bug fixes
-
-      (ADDED)
+    - 0.2.0 (May.7.2020)
         - New modules
           - "CV only" equivalents added for all the modules:
             - cv_connectivity_ml.sh
@@ -30,6 +22,7 @@ A bash application for automating machine learning analysis for MEG connection d
           - Random state added to all modules
           - CV-SVM-rRF-FS heatmap lables fixed for all moduels
           - Error handling added to rRF-FS plotting
+          - Citation added
         
         - Updates to classification module
           - Best CV model selection functionality added for CV-SVM-rRF-FS for connectivity_ml.sh and connectivity_ml_2d.sh

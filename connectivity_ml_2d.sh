@@ -34,7 +34,11 @@ Current version: $VERSION\n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
 Contact: jing.zhang@sickkids.ca, jzhangcad@gmail.com
-To cite in your research: TBA"
+To cite in your research:     
+	Zhang J, Richardson DJ, Dunkley BT. 2020. 
+	Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. 
+	doi: 10.1038/s41598-020-62713-5
+"
 
 # below: some colours
 COLOUR_YELLOW="\033[1;33m"
