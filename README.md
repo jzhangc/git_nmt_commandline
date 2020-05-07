@@ -8,6 +8,21 @@ Please cite the following if you are to use this application:
 
 ------ Version History ------
 
+    - 0.2.1
+    (ICEBOX)
+        - General updates
+          - Spinner added as a running status indication
+          - Overall optimization
+          - A memory check module to ensure the stability
+          - Node file length check added for univariate.R and reg_univariate.R
+          - Fix the "invalide ncomp" issue
+        
+        - Naive data clasification module
+
+        - Bug fixes
+        
+    (ADDED)      
+
     - 0.2.0 (May.7.2020)
         - New modules
           - "CV only" equivalents added for all the modules:
