@@ -3,7 +3,7 @@
 A bash application for automating machine learning analysis for MEG connection data
 
 Please cite the following if you are to use this application:
-    Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5
+      Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5
 
 ------ Version History ------
 
