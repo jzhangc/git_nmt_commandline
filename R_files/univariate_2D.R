@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.1
+## version: 0.2.0
 
 ## test from Rscript
 args <- commandArgs()
@@ -228,9 +228,9 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
   } else if (DE_summary[i, "sig"] == 1) {
     ONE_SIG_WARNING <- TRUE
   } else {
-    normdata$E
-    normdata$targets
     de_groups <- unlist(strsplit(de_names[i], "-"))
+    de_groups <- gsub("(", "", de_groups, fixed = TRUE)
+    de_groups <- gsub(")", "", de_groups, fixed = TRUE)
     de_sample_idx <- which(normdata$targets$group %in% de_groups)
     super_cluster_data <- list(E = normdata$E[, de_sample_idx], genes = normdata$genes,
                                targets = normdata$targets[de_sample_idx, ])
@@ -364,16 +364,27 @@ if (NO_SIG_WARNING) {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
-if (length(contra_string) == 1){
-  if (NO_SIG_WARNING_FIT) {
-    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+if (NO_SIG_WARNING_FIT){
+  if (length(contra_string) == 1){
+      cat("NO significant reuslts found in univariate analysis results, no PCA needed. \n")
   } else {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+  }
+} else {
     cat("PCA results saved to: \n")
     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
-  }
-} else {
-  if (NO_SIG_WARNING_FIT) {
-    cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
-  }
 }
+# if (length(contra_string) == 1){
+#   if (NO_SIG_WARNING_FIT) {
+#     cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+#   } else {
+#     cat("PCA results saved to: \n")
+#     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
+#     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+#   }
+# } else {
+#   if (NO_SIG_WARNING_FIT) {
+#     cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
+#   }
+# }

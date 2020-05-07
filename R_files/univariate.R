@@ -1,7 +1,7 @@
-###### general info --------
+ ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.1
+## version: 0.2.0
 
 ## test from Rscript
 args <- commandArgs()
@@ -112,6 +112,7 @@ if (!all(c(NODE_ID_VAR, REGION_NAME_VAR) %in% names(node))) {
 # ------ Data processing for univariate analysis ------
 ## data formating
 x <- raw_sample_dfm[, -c(1:2)]
+sampleid <- raw_sample_dfm$sampleid
 y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
 
 # if to log2 transform the data
@@ -249,9 +250,9 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
   } else if (DE_summary[i, "sig"] == 1) {
     ONE_SIG_WARNING <- TRUE
   }else {
-    normdata$E
-    normdata$targets
     de_groups <- unlist(strsplit(de_names[i], "-"))
+    de_groups <- gsub("(", "", de_groups, fixed = TRUE)
+    de_groups <- gsub(")", "", de_groups, fixed = TRUE)
     de_sample_idx <- which(normdata$targets$group %in% de_groups)
     super_cluster_data <- list(E = normdata$E[, de_sample_idx], genes = normdata$genes,
                                targets = normdata$targets[de_sample_idx, ])
@@ -335,7 +336,7 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
 x_ml <- t(normdata$E)[, sig_pairs_fit]
-ml_dfm <- data.frame(y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+ml_dfm <- data.frame(sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
 
 ## cat the vairables to export to shell scipt
@@ -384,17 +385,28 @@ if (NO_SIG_WARNING) {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
-if (length(contra_string) == 1){
-  if (NO_SIG_WARNING_FIT) {
-    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+if (NO_SIG_WARNING_FIT){
+  if (length(contra_string) == 1){
+      cat("NO significant reuslts found in univariate analysis results, no PCA needed. \n")
   } else {
+    cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+  }
+} else {
     cat("PCA results saved to: \n")
     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
-  }
-} else {
-  if (NO_SIG_WARNING_FIT) {
-    cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
-  }
 }
+# if (length(contra_string) == 1){
+#   if (NO_SIG_WARNING_FIT) {
+#     cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
+#   } else {
+#     cat("PCA results saved to: \n")
+#     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
+#     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+#   }
+# } else {
+#   if (NO_SIG_WARNING_FIT) {
+#     cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
+#   }
+# }
 

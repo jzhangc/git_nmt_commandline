@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.1.0"
+VERSION="0.2.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -32,12 +32,16 @@ Current version: $VERSION\n
 -r <string>: Regional annotation variable name from -n fle. \n
 \n
 [OPTIONS]: Optional\n
--u: if to use univaiate analysis for ML. The analysis is still done. \n
+-k: if to incoporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
+-u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
 Contact: jing.zhang@sickkids.ca, jzhangcad@gmail.com
-To cite in your research: TBA"
+To cite in your research: 	
+	Zhang J, Richardson DJ, Dunkley BT. 2020. 
+	Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. 
+	doi: 10.1038/s41598-020-62713-5"
 
 # below: some colours
 COLOUR_YELLOW="\033[1;33m"
@@ -67,7 +71,10 @@ YFLAG=1
 NFLAG=1
 DFLAG=1
 RFLAG=1
+# below: CV univariate reduction
 UFLAG=1
+CVUNI=FALSE
+KFLAG=1   # prior univariate knowledge
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -94,7 +101,7 @@ else
 			;;
 	esac
 
-	while getopts ":p:i:a:s:y:n:d:r:o:" opt; do
+	while getopts ":kup:i:a:s:y:n:d:r:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -168,8 +175,12 @@ else
 					OFLAG=0
 				fi
 				;;
+			k)
+				KFLAG=0  # no to set CVUNI as FALSE is the default
+				;;
 			u)
 				UFLAG=0
+				CVUNI=TRUE
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
@@ -192,6 +203,10 @@ if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 || $NFLAG -eq
 	exit 1
 fi
 
+if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
+	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
+	exit 1
+fi
 
 # ------ functions ------
 # function to check dependencies
@@ -353,20 +368,24 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $uni_fdr || -z $uni_alpha || -z $uni_fold_change \
 	|| -z $sig_htmap_textsize_col || -z $sig_htmap_textangle_col || -z $sig_htmap_textsize_row || -z $sig_htmap_keysize \
 	|| -z $sig_htmap_key_xlab || -z $sig_htmap_key_ylab || -z $sig_htmap_margin || -z $sig_htmap_width \
 	|| -z $sig_htmap_height || -z $cpu_cluster || -z $training_percentage \
 	|| -z $svm_cv_centre_scale || -z $svm_cv_kernel || -z $svm_cv_cross_k || -z $svm_cv_tune_method || -z $svm_cv_tune_cross_k \
-	|| -z $svm_cv_tune_boot_n || -z $svm_cv_fs_rf_ifs_ntree || -z $svm_cv_fs_rf_sfs_ntree || -z $svm_cv_fs_count_cutoff \
+	|| -z $svm_cv_tune_boot_n || -z $svm_cv_fs_rf_ifs_ntree || -z $svm_cv_fs_rf_sfs_ntree || -z $svm_cv_best_model_method || -z $svm_cv_fs_count_cutoff \
 	|| -z $svm_cross_k || -z $svm_tune_cross_k || -z $svm_tune_boot_n || -z $svm_perm_method || -z $svm_perm_n \
 	|| -z $svm_perm_plot_symbol_size || -z $svm_perm_plot_legend_size || -z $svm_perm_plot_x_label_size \
 	|| -z $svm_perm_plot_x_tick_label_size || -z $svm_perm_plot_y_label_size || -z $svm_perm_plot_y_tick_label_size \
 	|| -z $svm_perm_plot_width || -z $svm_perm_plot_height || -z $svm_roc_threshold || -z $svm_roc_smooth \
 	|| -z $svm_roc_symbol_size || -z $svm_roc_legend_size || -z $svm_roc_x_label_size || -z $svm_roc_x_tick_label_size \
-	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height || -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
+	|| -z $svm_roc_y_label_size || -z $svm_roc_y_tick_label_size || -z $svm_roc_width || -z $svm_roc_height \
+	|| -z $rffs_htmap_textsize_col || -z $rffs_htmap_textangle_col \
+	|| -z $rffs_htmap_textsize_row || -z $rffs_htmap_keysize || -z $rffs_htmap_key_xlab || -z $rffs_htmap_key_ylab \
+	|| -z $rffs_htmap_margin || -z $rffs_htmap_width || -z $rffs_htmap_height \
+	|| -z $plsda_validation || -z $plsda_validation_segment || -z $plsda_init_ncomp \
 	|| -z $plsda_ncomp_select_method || -z $plsda_ncomp_select_plot_symbol_size || -z $plsda_ncomp_select_plot_legend_size \
 	|| -z $plsda_ncomp_select_plot_x_label_size || -z $plsda_ncomp_select_plot_x_tick_label_size \
 	|| -z $plsda_ncomp_select_plot_y_label_size || -z $plsda_ncomp_select_plot_y_tick_label_size || -z $plsda_perm_method \
@@ -388,6 +407,7 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
+	random_state=0
 	log2_trans=TRUE
 	htmap_textsize_col=0.7
 	htmap_textangle_col=90
@@ -421,6 +441,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_cv_tune_boot_n=10
 	svm_cv_fs_rf_ifs_ntree=501
 	svm_cv_fs_rf_sfs_ntree=501
+	svm_cv_best_model_method="none"
 	svm_cv_fs_count_cutoff=2
 	svm_cross_k=10
 	svm_tune_cross_k=10
@@ -445,6 +466,15 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_y_tick_label_size=10
 	svm_roc_width=170
 	svm_roc_height=150
+	rffs_htmap_textsize_col=0.5
+	rffs_htmap_textangle_col=90
+	rffs_htmap_textsize_row=0.2
+	rffs_htmap_keysize=1.5
+	rffs_htmap_key_xlab="Z score"
+	rffs_htmap_key_ylab="Count"
+	rffs_htmap_margin="c(6, 9)"
+	rffs_htmap_width=15
+	rffs_htmap_height=10
 	plsda_validation="CV"
 	plsda_validation_segment=10
 	plsda_init_ncomp=10
@@ -479,7 +509,6 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_vip_plot_y_tick_label_size=10
 	plsda_vip_plot_width=150
 	plsda_vip_plot_height=100
-
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"
@@ -490,7 +519,9 @@ else
   echo -e "Variables loaded from the config file:"
 fi
 # below: place loaders
-echo -e "Data processing"
+echo -e "Random state (0=FALSE)"
+echo -e "\trandom_state=$random_state"
+echo -e "\nData processing"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\nClustering analysis for all connections"
 echo -e "\thtmap_textsize_col=$htmap_textsize_col"
@@ -528,6 +559,7 @@ echo -e "\tsvm_cv_tune_cross_k=$svm_cv_tune_cross_k"
 echo -e "\tsvm_cv_tune_boot_n=$svm_cv_tune_boot_n"
 echo -e "\tsvm_cv_fs_rf_ifs_ntree=$svm_cv_fs_rf_ifs_ntree"
 echo -e "\tsvm_cv_fs_rf_sfs_ntree=$svm_cv_fs_rf_sfs_ntree"
+echo -e "\tsvm_cv_best_model_method=$svm_cv_best_model_method"
 echo -e "\tsvm_cv_fs_count_cutoff=$svm_cv_fs_count_cutoff"
 echo -e "\tsvm_cross_k=$svm_cross_k"
 echo -e "\tsvm_tune_cross_k$svm_tune_cross_k"
@@ -552,6 +584,15 @@ echo -e "\tsvm_roc_y_label_size=$svm_roc_y_label_size"
 echo -e "\tsvm_roc_y_tick_label_size=$svm_roc_y_tick_label_size"
 echo -e "\tsvm_roc_width=$svm_roc_width"
 echo -e "\tsvm_roc_height=$svm_roc_height"
+echo -e "\trffs_htmap_textsize_col=$rffs_htmap_textsize_col"
+echo -e "\trffs_htmap_textangle_col=$rffs_htmap_textangle_col"
+echo -e "\trffs_htmap_textsize_row=$rffs_htmap_textsize_row"
+echo -e "\trffs_htmap_keysize=$rffs_htmap_keysize"
+echo -e "\trffs_htmap_key_xlab=$rffs_htmap_key_xlab"
+echo -e "\trffs_htmap_key_ylab=$rffs_htmap_key_ylab"
+echo -e "\trffs_htmap_margin=$rffs_htmap_margin"
+echo -e "\trffs_htmap_width=$rffs_htmap_width"
+echo -e "\trffs_htmap_height=$rffs_htmap_height"
 echo -e "\nPLS-DA modelling for evaluating SVM results"
 echo -e "\tplsda_validation=$plsda_validation"
 echo -e "\tplsda_validation_segment=$plsda_validation_segment"
@@ -660,15 +701,15 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- set up variables for output ml data file
-if [ $UFLAG -eq 1 ]; then
+echo -e "\n"
+if [ $KFLAG -eq 1 ]; then
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 else
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 fi
 # -- additional display --
-echo -e "\n"
 echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
-echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
+echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
@@ -676,7 +717,20 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "SVM machine learning (regression)"
 echo -e "=========================================================================="
-echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+echo -en "Univariate prior knowledge incorporation: "
+if [ $KFLAG -eq 1 ]; then
+	echo -e "OFF"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
+else
+	echo -e "ON"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+fi 
+echo -en "Univariate reduction for CV-SVM-rRF-FS: "
+if [ $UFLAG -eq 1 ]; then
+	echo -e "OFF"
+else
+	echo -e "ON"
+fi
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
@@ -690,17 +744,19 @@ r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
 "$svm_cv_centre_scale" "$svm_cv_kernel" "$svm_cv_cross_k" "$svm_cv_tune_method" "$svm_cv_tune_cross_k" "$svm_cv_tune_boot_n" \
-"$svm_cv_fs_rf_ifs_ntree" "$svm_cv_fs_rf_sfs_ntree" "$svm_cv_fs_count_cutoff" \
+"$svm_cv_fs_rf_ifs_ntree" "$svm_cv_fs_rf_sfs_ntree" "$svm_cv_best_model_method" "$svm_cv_fs_count_cutoff" \
 "$svm_cross_k" "$svm_tune_cross_k" "$svm_tune_boot_n" \
 "$svm_perm_method" "$svm_perm_n" \
 "$svm_perm_plot_symbol_size" "$svm_perm_plot_legend_size" "$svm_perm_plot_x_label_size" "$svm_perm_plot_x_tick_label_size" \
 "$svm_perm_plot_y_label_size" "$svm_perm_plot_y_tick_label_size" "$svm_perm_plot_width" "$svm_perm_plot_height" \
 "$svm_roc_threshold" "$svm_roc_smooth" "$svm_roc_symbol_size" "$svm_roc_legend_size" "$svm_roc_x_label_size" \
 "$svm_roc_x_tick_label_size" "$svm_roc_y_label_size" "$svm_roc_y_tick_label_size" "$svm_roc_width" "$svm_roc_height" \
-"$htmap_textsize_col" "$htmap_textangle_col" \
-"$htmap_lab_row" "$htmap_textsize_row" \
-"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-"$htmap_margin" "$htmap_width" "$htmap_height" \
+"$rffs_htmap_textsize_col" "$rffs_htmap_textangle_col" \
+"$htmap_lab_row" "$rffs_htmap_textsize_row" \
+"$rffs_htmap_keysize" "$rffs_htmap_key_xlab" "$rffs_htmap_key_ylab" \
+"$rffs_htmap_margin" "$rffs_htmap_width" "$rffs_htmap_height" \
+"$CVUNI" "$log2_trans" "$uni_fdr" "$uni_alpha" \
+"$random_state" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -719,7 +775,6 @@ echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
-
 
 # -- PLSR validation of SVM analysis --
 echo -e "\n"
@@ -761,6 +816,7 @@ r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_
 "$plsda_vip_plot_x_textangle" "$plsda_vip_plot_x_label_size" "$plsda_vip_plot_x_tick_label_size" \
 "$plsda_vip_plot_y_label_size" "$plsda_vip_plot_y_tick_label_size" \
 "$plsda_vip_plot_width" "$plsda_vip_plot_height" \
+"$random_state" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log

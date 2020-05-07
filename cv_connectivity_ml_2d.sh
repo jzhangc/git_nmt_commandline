@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: connectivity_ml_2d.sh
-# Discription: A version of connectivity_ml.sh that takes 2D data table, instead of 3D mat adjacency matrices. 
+# Discription: A version of cv_connectivity_ml.sh that takes 2D data table, instead of 3D mat adjacency matrices. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -15,7 +15,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./connectivity_ml_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./cv_connectivity_ml_2d.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
@@ -34,11 +34,10 @@ Current version: $VERSION\n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
 Contact: jing.zhang@sickkids.ca, jzhangcad@gmail.com
-To cite in your research:     
+To cite in your research: 
 	Zhang J, Richardson DJ, Dunkley BT. 2020. 
 	Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. 
-	doi: 10.1038/s41598-020-62713-5
-"
+	doi: 10.1038/s41598-020-62713-5"
 
 # below: some colours
 COLOUR_YELLOW="\033[1;33m"
@@ -51,7 +50,7 @@ NO_COLOUR="\033[0;0m"
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R cv_ml_svm.R cv_plsda_val_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
@@ -830,7 +829,7 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
-r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/cv_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -884,7 +883,7 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLS-DA analysis..."
-r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/cv_plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \

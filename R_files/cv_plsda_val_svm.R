@@ -1,7 +1,7 @@
 ###### general info --------
-## name: reg_plsr_val_svm.R
-## purpose: plada modelling to evaluating SVM results
-## version: 0.1.0
+## name: cv_ml_plsda_eval.R
+## purpose: plsda modelling to evaluating SVM results for "cv only" methods
+## version: 0.2.0
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -93,8 +93,15 @@ PLSDA_VIP_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[59])
 PLSDA_VIP_PLOT_WIDTH <- as.numeric(args[60])
 PLSDA_VIP_PLOT_HEIGHT <- as.numeric(args[61])
 
+# random state
+RANDOM_STATE <- as.numeric(args[62])
 
 ###### R script --------
+# ------ set random state if available
+if (RANDOM_STATE) {
+  set.seed(RANDOM_STATE)
+}
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
@@ -103,59 +110,79 @@ load(file = MODEL_FILE)
 
 # ------ PLs-DA modelling ------
 # inital modelling and ncomp optimization
-plsr_m <- tryCatch(rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
+plsda_m <- tryCatch(rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
                                     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-                                    segments = PLSDA_VALIDATION_SEGMENT,
+                                    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
                                     method = "oscorespls", verbose = FALSE),
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-                             rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
-                                                        validation = PLSDA_VALIDATION,
+                             rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
+                                                        validation = PLSDA_VALIDATION, maxit = 200,
                                                         segments = PLSDA_VALIDATION_SEGMENT,
                                                         method = "oscorespls", verbose = FALSE)
                            })
 
-rbioReg_plsr_ncomp_select(plsr_m,
-                          ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD,
-                          randomization.nperm = 999,
-                          randomization.alpha = 0.05,
-                          plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE,
-                          plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
-                          plot.yLabel = "RMSEP", verbose = FALSE)
+rbioClass_plsda_ncomp_select(plsda_m,
+                             ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
+                             randomization.alpha = 0.05,
+                             plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
+                             plot.Width = 80 * length(unique(svm_m$inputY)),
+                             plot.Height = 100,
+                             plot.yLabel = "RMSEP", verbose = FALSE)
 
-ncomp_select <- max(as.vector(plsr_m_plsr_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
-plsr_m_optim <- rbioReg_plsr(x = svm_training[, -1], y = svm_training$y,
-                                 ncomp = ncomp_select, validation = PLSDA_VALIDATION,
-                                 segments = PLSDA_VALIDATION_SEGMENT,
-                                 method = "oscorespls", verbose = FALSE)
+ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected))  # get the maximum ncomp needed
+plsda_m_optim <- tryCatch(rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
+                                    ncomp = ncomp_select, validation = PLSDA_VALIDATION,
+                                    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
+                                    method = "oscorespls", verbose = FALSE),
+                           error = function(w){
+                             assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+                             rbioClass_plsda(x = svm_m$inputX, y = svm_m$inputY,
+                                                        validation = PLSDA_VALIDATION, maxit = 200,
+                                                        segments = PLSDA_VALIDATION_SEGMENT,
+                                                        method = "oscorespls", verbose = FALSE)
+                           })
+
 
 # permutation test
-if (length(unique(table(svm_training$y))) > 1) {  # if to use adjCV depending on if the training set is balanced
+if (length(unique(table(svm_m$inputY))) > 1) {  # if to use adjCV depending on if the data is balanced
   is_adj_cv <- TRUE
 } else {
   is_adj_cv <- FALSE
 }
-rbioReg_plsr_perm(object = plsr_m_optim, nperm = PLSDA_PERM_N,
+rbioClass_plsda_perm(object = plsda_m_optim, perm.method = PLSDA_PERM_METHOD, nperm = PLSDA_PERM_N,
                      adjCV = is_adj_cv,
                      perm.plot = FALSE,
                      parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
                      verbose = FALSE)
-rbioUtil_perm_plot(perm_res = plsr_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PLOT_SYMBOL_SIZE,
+rbioUtil_perm_plot(perm_res = plsda_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PLOT_SYMBOL_SIZE,
                    plot.legendSize = PLSDA_PERM_PLOT_LEGEND_SIZE,
                    plot.xLabelSize = PLSDA_PERM_PLOT_X_LABEL_SIZE, plot.xTickLblSize = PLSDA_PERM_PLOT_X_TICK_LABEL_SIZE,
                    plot.yLabelSize = PLSDA_PERM_PLOT_Y_LABEL_SIZE, plot.yTickLblSize = PLSDA_PERM_PLOT_Y_TICK_LABEL_SIZE,
                    verbose = FALSE)
 
-# # score plot
-# rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
-#                           plot.sampleLabel.type = "none",
-#                           plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
-#                           plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-#                           plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-#                           plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-#                           plot.rightsideY = PCA_RIGHTSIDE_Y,
-#                           plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-#                           plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE)
+# score plot
+tryCatch(rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
+                          plot.sampleLabel.type = "none",
+                          plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
+                          plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+                          plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+                          plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+                          plot.rightsideY = PCA_RIGHTSIDE_Y,
+                          plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+                          plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE),
+                           error = function(w){
+                             assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+                             rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
+                          plot.sampleLabel.type = "none",
+                          plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
+                          plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+                          plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+                          plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+                          plot.rightsideY = PCA_RIGHTSIDE_Y,
+                          plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+                          plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE)
+                           })
 
 
 # # ROC-AUC
@@ -178,12 +205,12 @@ rbioUtil_perm_plot(perm_res = plsr_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PL
 # sink()
 
 # VIP plot
-rbioReg_plsr_vip(object = plsr_m_optim, comps = 1:plsr_m_optim$ncomp,
+rbioFS_plsda_vip(object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
                  vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
                  boot.n = PLSDA_VIP_BOOT_N, plot = FALSE,
                  boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,
                  verbose = FALSE)
-rbioFS_plsda_vip_plot(vip_obj = plsr_m_optim_plsr_vip,
+rbioFS_plsda_vip_plot(vip_obj = plsda_m_optim_plsda_vip,
                       plot.errorbar = PLSDA_VIP_PLOT_ERRORBAR,
                       plot.errorbarWidth = PLSDA_VIP_PLOT_ERRORBAR_WIDTH,
                       plot.errorbarLblSize = PLSDA_VIP_PLOT_ERRORBAR_LABEL_SIZE,
@@ -200,7 +227,7 @@ rbioFS_plsda_vip_plot(vip_obj = plsr_m_optim_plsr_vip,
 ## variables for display
 
 ## export to results files if needed
-save(list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"), file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
+save(list = c("plsda_m_optim"), file = paste0(MAT_FILE_NO_EXT, "_final_plsda_model.Rdata"))
 
 
 ## cat the vairables to export to shell scipt
@@ -214,20 +241,30 @@ if (NCOMP_WARNING) {
     cat("WARNING: Set ncomp is invalid. Using default: number of classes - 1. \n")
     cat("-------------------------------------\n\n")
 }
-cat("PLSR ncomp optimization\n")
+cat("PLS-DA ncomp optimization\n")
 cat("-------------------------------------\n")
 cat("Optimal number of components: ", ncomp_select, "\n")
-cat("Final PLSR model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata\n"))
-cat("RMSEP figure saved to file: plsr_m.plsr.rmsepplot.pdf\n")
+cat("Final PLS-DA model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_plsda_model.Rdata\n"))
+cat("RMSEP figure saved to file: plsda_m.plsda.rmsepplot.pdf\n")
 cat("\n\n")
-cat("PLSR permutation test\n")
+cat("PLS-DA permutation test\n")
 cat("-------------------------------------\n")
-plsr_m_optim_perm
-cat("Permutation figure saved to file: plsr_m_optim_perm.plsr.perm.plot.pdf\n")
+plsda_m_optim_perm
+cat("Permutation figure saved to file: plsda_m_optim_perm.plsda.perm.plot.pdf\n")
 cat("\n\n")
-cat("PLSR VIP (variable importance) plot\n")
+cat("PLS-DA score plot\n")
+cat("-------------------------------------\n")
+cat("PLS-DA score plot saved to file: plsda_m_optim.plsda.scoreplot.pdf\n")
+cat("\n\n")
+# cat("PLS-DA ROC-AUC\n")
+# cat("-------------------------------------\n")
+# cat("NOTE: PLS-DA ROC-Auc is based on the test set used in SVM ROC-AUC analysis.\n")
+# cat("NOTE: Check the PLS-DA results file ", paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), " for AUC values.\n")
+# cat("PLS-DA ROC figure saved to file: plsda_m_optim.plsda.roc.pdf\n")
+# cat("\n\n")
+cat("PLS-DA VIP (variable importance) plot\n")
 cat("-------------------------------------\n")
 cat("VIP alpha: ", PLSDA_VIP_ALPHA, "\n")
 cat("VIP Bootstrap: ", PLSDA_VIP_BOOT, "\n")
-if (PLSDA_VIP_BOOT) cat("Boostrap iterations: ", VIP_VIP_BOOT_N, "\n")
-cat("PLSR VIP plot saved to file(s) with the naming format: plsr_m_optim_plsr_vip.<comp>.vip.pdf\n")
+if (PLSDA_VIP_BOOT) cat("Boostrap iterations: ", PLSDA_VIP_BOOT_N, "\n")
+cat("PLS-DA VIP plot saved to file(s) with the naming format: plsda_m_optim_plsda_vip.<comp>.vip.pdf\n")
