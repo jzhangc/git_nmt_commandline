@@ -82,6 +82,9 @@ sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$y)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
+connections <- pair
+rawlist$genes$connections <- connections
+
 ## Normalization
 normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
 
@@ -95,7 +98,7 @@ if (HTMAP_LAB_ROW) {
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair",
+                     key.title = "", dataProbeVar = "connections",
                      cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
                      keysize = HTMAP_KEYSIZE,
                      key.xlab = HTMAP_KEY_XLAB,
@@ -110,7 +113,7 @@ if (HTMAP_LAB_ROW) {
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+                     key.title = "", dataProbeVar = "connections", labRow = FALSE,
                      cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
                      keysize = HTMAP_KEYSIZE,
                      key.xlab = HTMAP_KEY_XLAB,
@@ -137,7 +140,7 @@ rbioarray_DE(objTitle = MAT_FILE_NO_EXT,
              fltlist = normdata, annot = normdata$genes,
              design = design, contra = NULL,
              weights = normdata$ArrayWeight,
-             geneName = TRUE, genesymbolVar = "pair",
+             geneName = TRUE, genesymbolVar = "connections",
              topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
              padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
              ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
@@ -175,7 +178,7 @@ if (!NO_SIG_WARNING){
                            ctrlProbe = FALSE,
                            fct = factor(y, levels = unique(y)), dataProbeVar = "pair",
                            rowLabel = TRUE,
-                           annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "pair",
+                           annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "connections",
                            sampleName = idx$sample,
                            ColSideCol = FALSE,
                            trace = "none", offsetCol = 0.2, adjCol = c(1, 0),

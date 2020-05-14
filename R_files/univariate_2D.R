@@ -115,6 +115,9 @@ sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
+connections <- pair
+rawlist$genes$connections <- connections
+
 ## Normalization
 normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
 

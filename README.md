@@ -11,7 +11,6 @@ Please cite the following if you are to use this application:
     - 0.2.1
     (ICEBOX)
         - General updates
-          - Spinner added as a running status indication
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
@@ -21,7 +20,9 @@ Please cite the following if you are to use this application:
 
         - Bug fixes
         
-    (ADDED)      
+    (ADDED)
+        - General updates
+          - Heatmap row now displays connection names for all non-2d modules      
 
     - 0.2.0 (May.7.2020)
         - New modules
