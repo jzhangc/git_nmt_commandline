@@ -22,7 +22,8 @@ Please cite the following if you are to use this application:
         
     (ADDED)
         - General updates
-          - Heatmap row now displays connection names for all non-2d modules      
+          - Heatmap row now displays connection names for all non-2d modules
+          - Log2 transformation updated into "by feature" mode for all modules      
 
     - 0.2.0 (May.7.2020)
         - New modules
