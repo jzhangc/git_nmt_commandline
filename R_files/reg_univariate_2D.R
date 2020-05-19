@@ -72,7 +72,7 @@ y <- raw_sample_dfm$y
 # if to log2 transform the data
 if (LOG2_TRANS) {
   E <- foreach(i = seq(nrow(t(x))), .combine = "rbind") %do% {
-    out <- log2(t(x)[i, ] + 2 - min( t(x)[i, ]))
+    out <- log2(t(x)[i, ] + 2 - min(t(x)[i, ]))
   }
   rownames(E) <- rownames(t(x))
 } else {
