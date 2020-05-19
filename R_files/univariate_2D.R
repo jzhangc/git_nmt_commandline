@@ -118,7 +118,7 @@ sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
-connections <- pair
+connections <- pair$pair
 rawlist$genes$connections <- connections
 
 ## Normalization
