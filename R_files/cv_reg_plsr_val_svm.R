@@ -216,7 +216,7 @@ rbioFS_plsda_vip_plot(vip_obj = plsr_m_optim_plsr_vip,
 ## variables for display
 
 ## export to results files if needed
-save(list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"), file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
+save(list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"), file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
 
 
 ## cat the vairables to export to shell scipt
@@ -233,7 +233,7 @@ if (NCOMP_WARNING) {
 cat("PLSR ncomp optimization\n")
 cat("-------------------------------------\n")
 cat("Optimal number of components: ", ncomp_select, "\n")
-cat("Final PLSR model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata\n"))
+cat("Final PLSR model saved to file: ", paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsr_model.Rdata\n"))
 cat("RMSEP figure saved to file: plsr_m.plsr.rmsepplot.pdf\n")
 cat("\n\n")
 cat("PLSR permutation test\n")
