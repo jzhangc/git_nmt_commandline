@@ -142,8 +142,8 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = nested_cv_x,
                                       clusterType = CPU_CLUSTER,
                                       verbose = TRUE)                                 
 sink()
-svm_rf_selected_pairs <- svm_nested_cv$selected.features
-rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_pairs)]  # training + testing
+svm_rf_selected_features <- svm_nested_cv$selected.features
+rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)]  # training + testing
 
 # plot SFS results
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
@@ -172,7 +172,7 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
 
 # ------ SVM modelling ------
 # set up modelling data using the selected features
-final_svr_data <- ml_dfm[, c("y", svm_rf_selected_pairs)]
+final_svr_data <- ml_dfm[, c("y", svm_rf_selected_features)]
 
 # modelling
 svm_m <- rbioClass_svm(x = final_svr_data[, -1], y = final_svr_data$y,
@@ -269,7 +269,7 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 output_for_dl <- rffs_selected_dfm
 
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_pairs", "svm_nested_cv"),
+save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv"),
      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 

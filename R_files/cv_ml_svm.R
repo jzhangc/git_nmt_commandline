@@ -153,8 +153,8 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = nested_cv_x,
                                       clusterType = CPU_CLUSTER,
                                       verbose = TRUE)
 sink()
-svm_rf_selected_pairs <- svm_nested_cv$selected.features
-rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_pairs)]  # training + testing
+svm_rf_selected_features <- svm_nested_cv$selected.features
+rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)]  # training + testing
 
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
   tryCatch({rbioFS_rf_SFS_plot(object = get(paste0("svm_nested_iter_", i, "_SFS")),
@@ -183,7 +183,7 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
 
 # ------ SVM modelling ------
 # sub set the training/test data using the selected features
-final_svm_data <- ml_dfm[, c("y", svm_rf_selected_pairs)]
+final_svm_data <- ml_dfm[, c("y", svm_rf_selected_features)]
 
 # modelling
 svm_m <- rbioClass_svm(x = final_svm_data[, -1], y = factor(final_svm_data$y, levels = unique(final_svm_data$y)),
@@ -289,7 +289,7 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
 #                            check.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_pairs","svm_nested_cv"),
+save(list = c("svm_m", "svm_rf_selected_features","svm_nested_cv"),
      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 

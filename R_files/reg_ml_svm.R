@@ -141,8 +141,8 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = training[, -1],
                                       clusterType = CPU_CLUSTER,
                                       verbose = TRUE)                                 
 sink()
-svm_rf_selected_pairs <- svm_nested_cv$selected.features
-rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_pairs)]  # training + testing
+svm_rf_selected_features <- svm_nested_cv$selected.features
+rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)]  # training + testing
 
 # plot SFS results
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
@@ -171,8 +171,8 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
 
 # ------ SVM modelling ------
 # sub set the training/test data using the selected features
-svm_training <- training[, c("y", svm_rf_selected_pairs)]
-svm_test <- test[, c("y", svm_rf_selected_pairs)]
+svm_training <- training[, c("y", svm_rf_selected_features)]
+svm_test <- test[, c("y", svm_rf_selected_features)]
 
 # modelling
 svm_m <- rbioClass_svm(x = svm_training[, -1], y = svm_training$y,
@@ -323,11 +323,11 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)),
                            `Randomized group labels` = ml_dfm_randomized$y,
                            check.names = FALSE)
-output_for_dl <- ml_dfm[, c("sampleid", "y", svm_rf_selected_pairs)]
+output_for_dl <- ml_dfm[, c("sampleid", "y", svm_rf_selected_features)]
 
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_pairs", "svm_training", "svm_test", "svm_nested_cv"),
+save(list = c("svm_m", "svm_rf_selected_features", "svm_training", "svm_test", "svm_nested_cv"),
      file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 
@@ -381,7 +381,7 @@ cat("\n\n")
 cat("Clustering analysis\n")
 # cat("PCA on SVM selected pairs\n")
 cat("-------------------------------------\n")
-cat("Hierarchical clustering on CV-SVR-rRF-FS selected pairs saved to:\n")
+cat("Hierarchical clustering on CV-SVR-rRF-FS selected features saved to:\n")
 cat("\tOn all data:\n")
 cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
 cat("\tOn training data:\n")
