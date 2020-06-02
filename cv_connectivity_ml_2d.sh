@@ -28,7 +28,7 @@ Current version: $VERSION\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
--k: if to incoporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
+-k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
