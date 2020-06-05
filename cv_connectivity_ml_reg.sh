@@ -7,7 +7,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.2.0"
+VERSION="0.2.1"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -291,7 +291,7 @@ start_t=`date +%s`
 
 
 # --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml_reg.sh${NO_COLOUR}"
+echo -e "\nYou are running ${COLOUR_BLUE_L}cv_connectivity_ml_reg.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"

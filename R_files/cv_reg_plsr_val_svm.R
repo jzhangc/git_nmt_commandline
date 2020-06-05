@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: reg_plsr_val_svm.R
 ## purpose: plsr modelling to evaluating SVR results for "cv only" methods
-## version: 0.2.0
+## version: 0.2.1
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
