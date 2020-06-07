@@ -15,6 +15,7 @@ Please cite the following if you are to use this application:
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
           - Fix the "invalide ncomp" issue
+          - All the 2D commands renamed to "train.sh" format
         
         - Naive data clasification module
 
