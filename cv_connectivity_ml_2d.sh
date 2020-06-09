@@ -761,7 +761,7 @@ echo -e "=======================================================================
 # 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 # 	echo -en "Unsupervised learning and univariate anlaysis..."
 # 	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# 	r_var=`Rscript ./R_files/univariate_2D.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+# 	r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 # 	"$ANNOT_FILE" \
 # 	"${OUT_DIR}/OUTPUT" \
 # 	"$log2_trans" \
