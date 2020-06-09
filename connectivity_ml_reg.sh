@@ -788,7 +788,7 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES"
 fi
-echo -en "PLS-DA analysis..."
+echo -en "PLSR analysis..."
 r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
