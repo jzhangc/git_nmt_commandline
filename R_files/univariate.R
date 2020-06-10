@@ -383,7 +383,7 @@ if (NO_SIG_WARNING) {
   cat("One or more comparisons failed to identify significant results. \n")
   cat("Check output folder for the results. \n")
 } else if (ONE_SIG_WARNING) {
-  cat("Only one significant result found, no need for supervised culstering. \n")
+  cat("Only one significant result found, no need for culstering. \n")
 } else {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
