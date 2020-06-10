@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml_2d.sh
-# Discription: A version of connectivity_ml_reg.sh that takes 2D data table, instead of 3D mat adjacency matrices.
+# Name: train_reg.sh
+# Discription: A generalized version of connectivity_ml_reg.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices.
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -15,7 +15,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./connectivity_ml_reg_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./train_reg.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
@@ -241,7 +241,7 @@ start_t=`date +%s`
 
 
 # --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml_reg_2d.sh${NO_COLOUR}"
+echo -e "\nYou are running ${COLOUR_BLUE_L}train_reg.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"

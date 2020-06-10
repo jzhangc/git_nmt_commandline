@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml_2d.sh
-# Discription: A version of cv_connectivity_ml.sh that takes 2D data table, instead of 3D mat adjacency matrices. 
+# Name: cv_train_class.sh
+# Discription: A generalized version of cv_connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -15,7 +15,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./cv_connectivity_ml_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./cv_train_class.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
@@ -257,7 +257,7 @@ start_t=`date +%s`
 
 
 # --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}cv_connectivity_ml_2d.sh${NO_COLOUR}"
+echo -e "\nYou are running ${COLOUR_BLUE_L}cv_train_class.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"
