@@ -14,8 +14,8 @@
 # Output files from R CMD check
 /*.Rcheck/
 
-# # test scripts
-# testrealm/
+# test scripts
+testrealm/
 
 # RStudio files
 .Rproj.user/
