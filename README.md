@@ -8,6 +8,19 @@ Please cite the following if you are to use this application:
 
 ------ Version History ------
 
+    - 0.3.0
+    (ICEBOX)
+        - General updates
+          - Overall optimization
+          - A memory check module to ensure the stability
+          - Node file length check added for univariate.R and reg_univariate.R
+          - Fix the "invalide ncomp" issue
+          - All the 2D commands renamed to "train.sh" format
+        
+        - Naive data clasification module
+        
+        - Bug fixes
+
     - 0.2.1 (June.10.2020)        
         - General updates
           - Heatmap row now displays connection names for all non-2d modules

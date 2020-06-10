@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: mat_process.R
 ## purpose: load and process mat files
-## version: 0.2.1
+## version: 0.3.0
 
 ## flags from Rscript
 args <- commandArgs()

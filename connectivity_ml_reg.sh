@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # Name: connectivity_ml_reg.sh
 # Discription: A shell script application for automated machine learning analysis for MEG connectivity data
-# Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.2.1"
+VERSION="0.3.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
