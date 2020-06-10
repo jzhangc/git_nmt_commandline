@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.2.0
+## version: 0.2.1
 
 ## test from Rscript
 args <- commandArgs()
@@ -71,7 +71,10 @@ y <- raw_sample_dfm$y
 
 # if to log2 transform the data
 if (LOG2_TRANS) {
-  E <- apply(t(x), c(1, 2), FUN = function(x)log2(x + 2))
+  E <- foreach(i = seq(nrow(t(x))), .combine = "rbind") %do% {
+    out <- log2(t(x)[i, ] + 2 - min(t(x)[i, ]))
+  }
+  rownames(E) <- rownames(t(x))
 } else {
   E <- t(x)
 }
@@ -81,6 +84,9 @@ pair <- data.frame(ProbeName = seq(ncol(raw_sample_dfm) - 2), pair = colnames(ra
 sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$y)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
+
+connections <- pair$pair
+rawlist$genes$connections <- connections
 
 ## Normalization
 normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
@@ -95,7 +101,7 @@ if (HTMAP_LAB_ROW) {
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair",
+                     key.title = "", dataProbeVar = "connections",
                      cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
                      keysize = HTMAP_KEYSIZE,
                      key.xlab = HTMAP_KEY_XLAB,
@@ -110,7 +116,7 @@ if (HTMAP_LAB_ROW) {
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+                     key.title = "", dataProbeVar = "connections", labRow = FALSE,
                      cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
                      keysize = HTMAP_KEYSIZE,
                      key.xlab = HTMAP_KEY_XLAB,
@@ -137,7 +143,7 @@ rbioarray_DE(objTitle = MAT_FILE_NO_EXT,
              fltlist = normdata, annot = normdata$genes,
              design = design, contra = NULL,
              weights = normdata$ArrayWeight,
-             geneName = TRUE, genesymbolVar = "pair",
+             geneName = TRUE, genesymbolVar = "connections",
              topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
              padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
              ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
@@ -175,7 +181,7 @@ if (!NO_SIG_WARNING){
                            ctrlProbe = FALSE,
                            fct = factor(y, levels = unique(y)), dataProbeVar = "pair",
                            rowLabel = TRUE,
-                           annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "pair",
+                           annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "connections",
                            sampleName = idx$sample,
                            ColSideCol = FALSE,
                            trace = "none", offsetCol = 0.2, adjCol = c(1, 0),

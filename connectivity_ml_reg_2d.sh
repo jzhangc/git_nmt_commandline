@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.2.0"
+VERSION="0.2.1"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -28,7 +28,7 @@ Current version: $VERSION\n
 -y <string>: Continuous outcome (i.e. y) variable name.\n
 \n
 [OPTIONS]: Optional\n
--k: if to incoporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
+-k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
@@ -728,7 +728,7 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES"
 fi
-echo -en "PLS-DA analysis..."
+echo -en "PLSR analysis..."
 r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \

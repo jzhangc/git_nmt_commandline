@@ -1,7 +1,7 @@
  ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.2.0
+## version: 0.2.1
 
 ## test from Rscript
 args <- commandArgs()
@@ -117,7 +117,10 @@ y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
 
 # if to log2 transform the data
 if (LOG2_TRANS) {
-  E <- apply(t(x), c(1, 2), FUN = function(x)log2(x + 2))
+  E <- foreach(i = seq(nrow(t(x))), .combine = "rbind") %do% {
+    out <- log2(t(x)[i, ] + 2 - min(t(x)[i, ]))
+  }
+  rownames(E) <- rownames(t(x))
 } else {
   E <- t(x)
 }
@@ -148,7 +151,7 @@ if (HTMAP_LAB_ROW) {
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair",
+                     key.title = "", dataProbeVar = "connections",
                      cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
                      keysize = HTMAP_KEYSIZE,
                      key.xlab = HTMAP_KEY_XLAB,
@@ -161,7 +164,7 @@ if (HTMAP_LAB_ROW) {
                      genesymbolOnly = FALSE,
                      trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
                      srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+                     key.title = "", dataProbeVar = "connections", labRow = FALSE,
                      cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
                      keysize = HTMAP_KEYSIZE,
                      key.xlab = HTMAP_KEY_XLAB,
@@ -209,7 +212,7 @@ if (UNI_FDR){
 tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                       fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
                       weights = normdata$ArrayWeight,
-                      plot = TRUE, geneName = TRUE, genesymbolVar = "pair",
+                      plot = TRUE, geneName = TRUE, genesymbolVar = "connections",
                       topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
                       padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
                       ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
@@ -224,7 +227,7 @@ tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
            rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
                         fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
                         weights = normdata$ArrayWeight,
-                        plot = TRUE, geneName = TRUE, genesymbolVar = "pair",
+                        plot = TRUE, geneName = TRUE, genesymbolVar = "connections",
                         topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
                         padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
                         ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
@@ -263,7 +266,7 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
                              ctrlProbe = FALSE,
                              fct = y, dataProbeVar = "pair",
                              rowLabel = TRUE,
-                             annot = super_cluster_data$genes, annotProbeVar = "pair", genesymbolVar = "pair",
+                             annot = super_cluster_data$genes, annotProbeVar = "pair", genesymbolVar = "connections",
                              sampleName = super_cluster_data$targets$sample,
                              trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
                              key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
@@ -380,7 +383,7 @@ if (NO_SIG_WARNING) {
   cat("One or more comparisons failed to identify significant results. \n")
   cat("Check output folder for the results. \n")
 } else if (ONE_SIG_WARNING) {
-  cat("Only one significant result found, no need for supervised culstering. \n")
+  cat("Only one significant result found, no need for culstering. \n")
 } else {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }

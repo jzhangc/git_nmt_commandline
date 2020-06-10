@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_plsda_eval.R
 ## purpose: plada modelling to evaluating SVM results
-## version: 0.2.0
+## version: 0.2.1
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command

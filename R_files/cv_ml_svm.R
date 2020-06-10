@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.2.0
+## version: 0.2.1
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -153,8 +153,8 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(x = nested_cv_x,
                                       clusterType = CPU_CLUSTER,
                                       verbose = TRUE)
 sink()
-svm_rf_selected_pairs <- svm_nested_cv$selected.features
-rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_pairs)]  # training + testing
+svm_rf_selected_features <- svm_nested_cv$selected.features
+rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)]  # training + testing
 
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
   tryCatch({rbioFS_rf_SFS_plot(object = get(paste0("svm_nested_iter_", i, "_SFS")),
@@ -183,7 +183,7 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
 
 # ------ SVM modelling ------
 # sub set the training/test data using the selected features
-final_svm_data <- ml_dfm[, c("y", svm_rf_selected_pairs)]
+final_svm_data <- ml_dfm[, c("y", svm_rf_selected_features)]
 
 # modelling
 svm_m <- rbioClass_svm(x = final_svm_data[, -1], y = factor(final_svm_data$y, levels = unique(final_svm_data$y)),
@@ -289,7 +289,7 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
 #                            check.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_pairs","svm_nested_cv"),
+save(list = c("svm_m", "svm_rf_selected_features","svm_nested_cv"),
      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 
@@ -313,7 +313,7 @@ cat("SVM modelling\n")
 cat("-------------------------------------\n")
 svm_m
 cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy/100, "\n")
-cat("Final SVM model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
+cat("Final SVM model saved to file: ", paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
 cat("\n\n")
 cat("SVM permutation test\n")
 cat("-------------------------------------\n")
@@ -329,11 +329,11 @@ cat("\n\n")
 cat("Clustering analysis\n")
 # cat("PCA on SVM selected pairs\n")
 cat("-------------------------------------\n")
-cat("PCA on CV-SVM-rRF-FS selected pairs saved to:\n")
+cat("PCA on CV-SVM-rRF-FS selected features saved to:\n")
 cat("\tOn all data:\n")
 cat("\t\tbiplot: pca_svm_rffs_all_samples.pca.biplot.pdf\n")
 cat("\t\tboxplot: pca_svm_rffs_all_samples.pca.boxplot.pdf\n")
 cat("\n\n")
-cat("Hierarchical clustering on CV-SVM-rRF-FS selected pairs saved to:\n")
+cat("Hierarchical clustering on CV-SVM-rRF-FS selected features saved to:\n")
 cat("\tOn all data:\n")
 cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
