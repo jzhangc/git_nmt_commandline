@@ -8,14 +8,14 @@ Please cite the following if you are to use this application:
 
 ------ Version History ------
 
-    - 0.2.1 (May.7.2020)        
+    - 0.2.1 (June.10.2020)        
         - General updates
           - Heatmap row now displays connection names for all non-2d modules
           - Log2 transformation updated into "by feature" mode for all modules
           - In the SVM models, item "svm_rf_selected_pairs" changed to "svm_rf_selected_features" 
           - Small bug fixes     
 
-    - 0.2.0 (May.7.2020)
+    - 0.2.0
         - New modules
           - "CV only" equivalents added for all the modules:
             - cv_connectivity_ml.sh
