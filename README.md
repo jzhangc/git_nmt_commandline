@@ -20,12 +20,9 @@ Please cite the following if you are to use this application:
         - Naive data clasification module
         
         - Bug fixes
-
-    - 0.2.1 (June.10.2020)        
+    
+    (ADDED)
         - General updates
-          - Heatmap row now displays connection names for all non-2d modules
-          - Log2 transformation updated into "by feature" mode for all modules
-          - In the SVM models, item "svm_rf_selected_pairs" changed to "svm_rf_selected_features" 
           - Users now can designate config files via "-m" flag for all modules
             - config file template can be found in application folder as a reference
           - All the 2D commands renamed to "train.sh" format:
@@ -33,6 +30,12 @@ Please cite the following if you are to use this application:
             connectivity_ml_reg_2d.sh -> train_reg.sh
             cv_connectivity_ml_2d.sh -> cv_train_class.sh
             cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
+
+    - 0.2.1 (June.10.2020)        
+        - General updates
+          - Heatmap row now displays connection names for all non-2d modules
+          - Log2 transformation updated into "by feature" mode for all modules
+          - In the SVM models, item "svm_rf_selected_pairs" changed to "svm_rf_selected_features" 
           - Small bug fixes     
 
     - 0.2.0
