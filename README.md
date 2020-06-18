@@ -16,11 +16,6 @@ Please cite the following if you are to use this application:
           - Node file length check added for univariate.R and reg_univariate.R
           - Fix the "invalide ncomp" issue
           - Non-nested CV without FS analysis added to all modules
-          - All the 2D commands renamed to "train.sh" format:
-            connectivity_ml_2d.sh -> train_class.sh
-            connectivity_ml_reg_2d.sh -> train_reg.sh
-            cv_connectivity_ml_2d.sh -> cv_train_class.sh
-            cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
         
         - Naive data clasification module
         
@@ -31,6 +26,13 @@ Please cite the following if you are to use this application:
           - Heatmap row now displays connection names for all non-2d modules
           - Log2 transformation updated into "by feature" mode for all modules
           - In the SVM models, item "svm_rf_selected_pairs" changed to "svm_rf_selected_features" 
+          - Users now can designate config files via "-m" flag for all modules
+            - config file template can be found in application folder as a reference
+          - All the 2D commands renamed to "train.sh" format:
+            connectivity_ml_2d.sh -> train_class.sh
+            connectivity_ml_reg_2d.sh -> train_reg.sh
+            cv_connectivity_ml_2d.sh -> cv_train_class.sh
+            cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
           - Small bug fixes     
 
     - 0.2.0

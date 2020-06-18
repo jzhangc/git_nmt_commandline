@@ -19,7 +19,7 @@
 -o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u -k
 
 
-## JZ Macbook
+## JZ iMac
 # classification
 ./connectivity_ml.sh \
 -i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/0.data/ptsd_classification_mat/pre_controlthen_pre_ptsd_90WPLI_4-7.mat" \
@@ -27,6 +27,7 @@
 -s "subjectid" -g "group" \
 -n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
 -d "node_id" -r "region" \
+-m "/Users/jingzhang/Documents/git_repos/git_meg_ml_app/test/config_template_for_classification" \
 -c "ptsd-control" \
 -o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u
 
@@ -37,8 +38,5 @@
 -s "id" -y "pcl" \
 -n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
 -d "node_id" -r "region" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u -k
-
-
-
-## JZ iMac
+-m "/Users/jingzhang/Documents/git_repos/git_meg_ml_app/test/config_template_for_reg" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u

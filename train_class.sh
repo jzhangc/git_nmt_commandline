@@ -30,6 +30,7 @@ Current version: $VERSION\n
 [OPTIONS]: Optional\n
 -k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
+-m <CONFIG>: Optional input config file. The program will use the default if not provided. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -62,7 +63,7 @@ POSITIONAL=()
 
 # initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
-CORES=1  # this is for the 
+CORES=1  # this is for the parallel computing
 
 IFLAG=1
 # AFLAG=1
@@ -101,7 +102,7 @@ else
 			;;
 	esac
 
-	while getopts ":kup:i:a:s:g:c:o:" opt; do
+	while getopts ":kup:i:a:s:g:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -129,6 +130,16 @@ else
 			c)
 			 	CONTRAST=$OPTARG
 				CFLAG=0
+				;;
+			m)
+				CONFIG_FILE=$OPTARG  # file with full path and extension
+				if ! [ -f "$CONFIG_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
+				else
+					CONFIG_FILENAME=`basename "$CONFIG_FILE"`
+					CONF_CHECK=0
+				fi
 				;;
 			o)
 				OUT_DIR=$OPTARG
@@ -282,16 +293,16 @@ echo -e "=======================================================================
 # -- R script chack --
 echo -e "Checking required R script file(s)"
 required_file_check "${R_SCRIPT_FILES[@]}"
-# - Optional config file check --
-echo -e "\n"
-echo -e "Checking config file(s)"
-echo -en "\tconnectivity_ml_config..."
-if [ -f ./connectivity_ml_config ]; then
-  echo -e "ok"
-  CONF_CHECK=0
-else
-  echo -e "not found"
-fi
+# # - Optional config file check --
+# echo -e "\n"
+# echo -e "Checking config file(s)"
+# echo -en "\tconnectivity_ml_config..."
+# if [ -f ./connectivity_ml_config ]; then
+#   echo -e "ok"
+#   CONF_CHECK=0
+# else
+#   echo -e "not found"
+# fi
 echo -e "=========================================================================="
 
 
@@ -328,11 +339,11 @@ echo -e "=======================================================================
 
 # --- config file and variables ---
 echo -e "\n"
-echo -e "Config file: ${COLOUR_GREEN_L}connectivity_ml_config${NO_COLOUR}"
+echo -e "Config file: ${COLOUR_GREEN_L}$CONFIG_FILENAME${NO_COLOUR}"
 echo -e "=========================================================================="
 # load application variables from config file; or set their default settings if no config file
 if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
-  source connectivity_ml_config
+  source "$CONFIG_FILE"
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
