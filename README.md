@@ -14,9 +14,7 @@ Please cite the following if you are to use this application:
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
-          - Fix the "invalide ncomp" issue
-          - Non-nested CV without FS analysis added to all modules
-        
+
         - Naive data clasification module
         
         - Bug fixes
@@ -30,6 +28,8 @@ Please cite the following if you are to use this application:
             connectivity_ml_reg_2d.sh -> train_reg.sh
             cv_connectivity_ml_2d.sh -> cv_train_class.sh
             cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
+          - Fix the "invalide ncomp" issue
+          - Non-nested CV without FS analysis added to all modules
 
     - 0.2.1 (June.10.2020)        
         - General updates
