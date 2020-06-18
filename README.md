@@ -24,10 +24,10 @@ Please cite the following if you are to use this application:
           - Users now can designate config files via "-m" flag for all modules
             - config file template can be found in application folder as a reference
           - All the 2D commands renamed to "train.sh" format:
-            connectivity_ml_2d.sh -> train_class.sh
-            connectivity_ml_reg_2d.sh -> train_reg.sh
-            cv_connectivity_ml_2d.sh -> cv_train_class.sh
-            cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
+              connectivity_ml_2d.sh -> train_class.sh
+              connectivity_ml_reg_2d.sh -> train_reg.sh
+              cv_connectivity_ml_2d.sh -> cv_train_class.sh
+              cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
           - Fix the "invalide ncomp" issue
           - Non-nested CV without FS analysis added to all modules
 
