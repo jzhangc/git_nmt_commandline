@@ -79,6 +79,7 @@ svm_perm_plot_width=250
 svm_perm_plot_height=150
 
 # -- SVM ROC AUC --
+# NOTE: ROC AUC for regression is deprecated, please ignore
 svm_roc_threshold=30  # change this accordingly
 svm_roc_smooth=FALSE
 svm_roc_symbol_size=2

@@ -182,5 +182,5 @@ plsda_vip_plot_x_label_size=10
 plsda_vip_plot_x_tick_label_size=6
 plsda_vip_plot_y_label_size=10
 plsda_vip_plot_y_tick_label_size=10
-plsda_vip_plot_width=150
-plsda_vip_plot_height=100
+plsda_vip_plot_width=170
+plsda_vip_plot_height=150

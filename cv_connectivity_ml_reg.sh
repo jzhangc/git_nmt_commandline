@@ -424,13 +424,13 @@ if [ $CONF_CHECK -eq 1 ]; then
 	htmap_textsize_col=0.7
 	htmap_textangle_col=90
 	htmap_lab_row=FALSE
-	htmap_textsize_row=0.7
+	htmap_textsize_row=0.2
 	htmap_keysize=1.5
 	htmap_key_xlab="Normalized connectivity value"
 	htmap_key_ylab="Pair count"
-	htmap_margin="c(6, 3)"
-	htmap_width=8
-	htmap_height=7
+	htmap_margin="c(4, 5)"
+	htmap_width=6
+	htmap_height=5
 	uni_fdr=TRUE
 	uni_alpha=0.05
 	uni_fold_change=1
@@ -440,9 +440,9 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_htmap_keysize=1.5
 	sig_htmap_key_xlab="Z score"
 	sig_htmap_key_ylab="Count"
-	sig_htmap_margin="c(6, 3)"
-	sig_htmap_width=8
-	sig_htmap_height=7
+	sig_htmap_margin="c(4, 8)"
+	sig_htmap_width=6
+	sig_htmap_height=5
 	cpu_cluster="FORK"
 	training_percentage=0.8
 	svm_cv_centre_scale=TRUE
@@ -466,8 +466,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_perm_plot_x_tick_label_size=10
 	svm_perm_plot_y_label_size=10
 	svm_perm_plot_y_tick_label_size=10
-	svm_perm_plot_width=300
-	svm_perm_plot_height=50
+	svm_perm_plot_width=170
+	svm_perm_plot_height=150
 	svm_roc_threshold=50
 	svm_roc_smooth=FALSE
 	svm_roc_symbol_size=2
@@ -480,13 +480,13 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_height=150
 	rffs_htmap_textsize_col=0.5
 	rffs_htmap_textangle_col=90
-	rffs_htmap_textsize_row=0.2
+	rffs_htmap_textsize_row=0.5
 	rffs_htmap_keysize=1.5
 	rffs_htmap_key_xlab="Z score"
 	rffs_htmap_key_ylab="Count"
-	rffs_htmap_margin="c(6, 9)"
-	rffs_htmap_width=15
-	rffs_htmap_height=10
+	rffs_htmap_margin="c(3, 9)"
+	rffs_htmap_width=6
+	rffs_htmap_height=5
 	plsda_validation="CV"
 	plsda_validation_segment=10
 	plsda_init_ncomp=10
@@ -505,8 +505,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_perm_plot_x_tick_label_size=10
 	plsda_perm_plot_y_label_size=10
 	plsda_perm_plot_y_tick_label_size=10
-	plsda_perm_plot_width=300
-	plsda_perm_plot_height=50
+	plsda_perm_plot_width=170
+	plsda_perm_plot_height=150
 	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
 	plsda_vip_alpha=0.8  # 0.8~1 is good
 	plsda_vip_boot=TRUE
@@ -520,7 +520,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_vip_plot_y_label_size=10
 	plsda_vip_plot_y_tick_label_size=10
 	plsda_vip_plot_width=150
-	plsda_vip_plot_height=100
+	plsda_vip_plot_height=150
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"
