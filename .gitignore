@@ -40,3 +40,6 @@ rsconnect/
 
 # macOS things
 .DS_store
+
+# test folder
+test
