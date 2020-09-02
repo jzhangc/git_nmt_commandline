@@ -14,9 +14,8 @@ Please cite the following if you are to use this application:
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
-
         - Naive data clasification module
-        
+        - Version bumped to 0.3.0        
         - Bug fixes
     
     (ADDED)
@@ -28,8 +27,14 @@ Please cite the following if you are to use this application:
               connectivity_ml_reg_2d.sh -> train_reg.sh
               cv_connectivity_ml_2d.sh -> cv_train_class.sh
               cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
-          - Fix the "invalide ncomp" issue
+          - Fixed the "invalide ncomp" issue
           - Non-nested CV without FS analysis added to all modules
+        
+        - Updates to classification modules
+          - Additional analysis added to ml_svm.R and cv_ml_svm.R
+            - Additonal display options added to train, connectivity, cv_train and cv_connectivity 
+              commands to accomodate the above
+            
 
     - 0.2.1 (June.10.2020)        
         - General updates
@@ -37,6 +42,7 @@ Please cite the following if you are to use this application:
           - Log2 transformation updated into "by feature" mode for all modules
           - In the SVM models, item "svm_rf_selected_pairs" changed to "svm_rf_selected_features" 
           - Small bug fixes     
+
 
     - 0.2.0
         - New modules
@@ -74,6 +80,7 @@ Please cite the following if you are to use this application:
         
         - Version bumped to 0.2.0 to all modules
 
+
     - 0.1
         - General updates
           - SVM now saves training and test data as csv files
@@ -100,6 +107,7 @@ Please cite the following if you are to use this application:
           - Accordingly, new R file reg_plsr_val_svm.R added
 
         - Version bumpped to 0.1.0 for all modules
+
 
     - 0.0.3
         - General updates
@@ -132,6 +140,7 @@ Please cite the following if you are to use this application:
 
         - A bugs fixed for reg_ml_svm.R, now with correct error metric
 
+
     - 0.0.2 (May.22.2019)
         - Updates to connectivity_ml.sh (and the associated R modules)
           - Updates to univariate.R
@@ -149,6 +158,7 @@ Please cite the following if you are to use this application:
         - Version bumped to 0.0.2 for all modules
 
         - Bug fixes
+
 
     - 0.0.1
         - Initial commit
