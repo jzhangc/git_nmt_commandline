@@ -239,6 +239,12 @@ rbioClass_svm_cv_roc_auc(svm_nested_cv,
                          plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
                          plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
                          verbose = FALSE)
+rffs_nested_cv_auc <- vector(length=SVM_CV_CROSS_K)
+for (i in 1:SVM_CV_CROSS_K){
+  rffs_nested_cv_auc[i] <- svm_nested_cv_svm_nestedcv_roc_auc[[i]]$svm.roc_object$mtbi$auc
+}
+cat(paste0("CV-SVM-rRF-FS AUC(mean): ", mean(rffs_nested_cv_auc), "\n"))
+cat(paste0("CV-SVM-rRF-FS AUC(SD): ", sd(rffs_nested_cv_auc), "\n"))
 cat("-- On final CV models --\n")
 rbioClass_svm_cv_roc_auc(svm_m_cv, 
                          plot.smooth = SVM_ROC_SMOOTH,
@@ -247,6 +253,12 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
                          plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
                          plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
                          verbose = FALSE)
+final_cv_auc <- vector(length = SVM_CV_CROSS_K)
+for (i in 1:SVM_CV_CROSS_K){
+  nested_cv_auc[i] <- svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object$mtbi$auc
+}
+cat(paste0("Final CV AUC(mean): ", mean(final_cv_auc), "\n"))
+cat(paste0("Final CV AUC(SD): ", sd(final_cv_auc), "\n"))
 cat("-- On training data --\n")
 rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_training",                       
                       center.scale.newdata = FALSE,
