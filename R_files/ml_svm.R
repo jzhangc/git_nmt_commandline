@@ -255,7 +255,7 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
                          verbose = FALSE)
 final_cv_auc <- vector(length = SVM_CV_CROSS_K)
 for (i in 1:SVM_CV_CROSS_K){
-  nested_cv_auc[i] <- svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object$mtbi$auc
+  final_cv_auc[i] <- svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object$mtbi$auc
 }
 cat(paste0("Final CV AUC(mean): ", mean(final_cv_auc), "\n"))
 cat(paste0("Final CV AUC(SD): ", sd(final_cv_auc), "\n"))
