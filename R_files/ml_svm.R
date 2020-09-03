@@ -188,7 +188,6 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
            })
 }
 
-
 # ------ SVM modelling ------
 # sub set the training/test data using the selected features
 svm_training <- training[, c("y", svm_rf_selected_features)]
@@ -250,7 +249,7 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
                          verbose = FALSE)
 cat("-- On training data --\n")
 rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_training",                       
-                      center.scale.newdata = SVM_CV_CENTRE_SCALE,
+                      center.scale.newdata = FALSE,
                       plot.smooth = SVM_ROC_SMOOTH,
                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
@@ -258,9 +257,10 @@ rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_training",
                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
                       verbose = FALSE)
 cat("-- On holdout test data --\n")
+center_scale_newdata <- t((t(svm_test[,-1]) - svm_m$center.scaledX$meanX)/svm_m$center.scaledX$columnSD)
 rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_test", 
-                      newdata = svm_test[, -1], newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
-                      center.scale.newdata = SVM_CV_CENTRE_SCALE,
+                      newdata = center_scale_newdata, newdata.label = svm_test$y,
+                      center.scale.newdata = FALSE,
                       plot.smooth = SVM_ROC_SMOOTH,
                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
