@@ -269,10 +269,19 @@ rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_training",
                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
                       verbose = FALSE)
 cat("-- On holdout test data --\n")
-center_scale_newdata <- t((t(svm_test[,-1]) - svm_m$center.scaledX$meanX)/svm_m$center.scaledX$columnSD)
+# center_scale_newdata <- t((t(svm_test[,-1]) - svm_m$center.scaledX$meanX)/svm_m$center.scaledX$columnSD)
+# rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_test", 
+#                       newdata = center_scale_newdata, newdata.label = svm_test$y,
+#                       center.scale.newdata = FALSE,
+#                       plot.smooth = SVM_ROC_SMOOTH,
+#                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+#                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+#                       plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+#                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+#                       verbose = FALSE)
 rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_test", 
-                      newdata = center_scale_newdata, newdata.label = svm_test$y,
-                      center.scale.newdata = FALSE,
+                      newdata = svm_test[, -1], newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
+                      center.scale.newdata = SVM_CV_CENTRE_SCALE,
                       plot.smooth = SVM_ROC_SMOOTH,
                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
