@@ -422,8 +422,8 @@ echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 sampleid_pred=`echo "${r_var[@]}" | sed -n "1p"`  # pipe to sed to print the second line (i.e. 1p)
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-if [ -f "${OUT_DIR}"/PREDCITION/Rplots.pdf ]; then
-	rm "${OUT_DIR}"/PREDCITION/Rplots.pdf
+if [ -f "${OUT_DIR}"/PREDICTION/Rplots.pdf ]; then
+	rm "${OUT_DIR}"/PREDICTION/Rplots.pdf
 fi
 # echo -e "\nFeature subset according to model"
 if [ "$sampleid_pred" == "feature_error" ]; then  # use "$sampleid_pred" (quotations) to avid "too many arguments" error
