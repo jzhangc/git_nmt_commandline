@@ -62,7 +62,6 @@ R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R cv_ml_svm.
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
 
-
 # --- flag check and flag variables (unfinished) ---
 # initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used

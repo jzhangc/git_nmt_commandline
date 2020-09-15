@@ -14,12 +14,12 @@ Please cite the following if you are to use this application:
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
-        - Naive data clasification module
         - Version bumped to 0.3.0        
         - Bug fixes
     
     (ADDED)
         - General updates
+          - Naive data clasification module: connectivity_predict.sh predict_class.sh
           - Users now can designate config files via "-m" flag for all modules
             - config file template can be found in application folder as a reference
           - All the 2D commands renamed to "train.sh" format:
