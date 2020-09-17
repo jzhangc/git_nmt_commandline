@@ -1,6 +1,6 @@
 ###### general info --------
-## name: mat_process.R
-## purpose: load and process mat files
+## name: reg_input_dat_process_2d.R
+## purpose: load and process 2d data file for regression
 ## version: 0.3.0
 
 ## flags from Rscript
