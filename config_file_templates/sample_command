@@ -48,10 +48,15 @@
 -i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat" \
 -a "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/ptsd_mtbi_multiclass_annot.csv" \
 -s "subjectid" \
+-m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
 -l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
 -o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
 
 
 # - 2D input file -
-
-
+./predict_class.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_2D.csv" \
+-s "sampleid" \
+-m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
+-l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
+-o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"

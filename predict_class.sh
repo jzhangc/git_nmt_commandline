@@ -383,7 +383,6 @@ elif [ "$mat_dim" == "unequal_length" ]; then
 	exit 1
 fi
 echo -e "\nSample annotation"
-echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 echo -e "$nsamples_to_pred"
 echo -e "=========================================================================="
 
