@@ -115,6 +115,10 @@ else
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
+				if [ ${MAT_FILENAME: -4} != ".mat" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;

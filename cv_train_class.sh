@@ -111,10 +111,14 @@ else
 				RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i the 2d input file should be in .csv format; or file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
+				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
