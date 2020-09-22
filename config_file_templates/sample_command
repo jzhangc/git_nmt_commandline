@@ -43,10 +43,15 @@
 
 
 # -- test command for prediction --
+# - mat input file and others -
 ./connectivity_predict.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat" \
 -a "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/ptsd_mtbi_multiclass_annot.csv" \
 -s "subjectid" \
 -l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
 -o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
+
+
+# - 2D input file -
+
 

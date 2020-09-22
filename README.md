@@ -29,6 +29,7 @@ Please cite the following if you are to use this application:
               cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
           - Fixed the "invalide ncomp" issue
           - Non-nested CV without FS analysis added to all modules
+          - Additional flag check added to all sh files
         
         - Updates to classification modules
           - Additional analysis added to ml_svm.R and cv_ml_svm.R
