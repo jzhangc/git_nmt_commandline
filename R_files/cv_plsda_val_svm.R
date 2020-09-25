@@ -163,7 +163,7 @@ rbioUtil_perm_plot(perm_res = plsda_m_optim_perm, plot.SymbolSize = PLSDA_PERM_P
 
 # score plot
 tryCatch(rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
-                          plot.sampleLabel.type = "none",
+                          plot.sampleID.type = "none",
                           plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
                           plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
                           plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
@@ -174,7 +174,7 @@ tryCatch(rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_selec
                            error = function(w){
                              assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
                              rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
-                          plot.sampleLabel.type = "none",
+                          plot.sampleID.type = "none",
                           plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
                           plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
                           plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
