@@ -164,7 +164,7 @@ rbioUtil_perm_plot(perm_res = plsr_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PL
 
 # # score plot
 # rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
-#                           plot.sampleID.type = "none",
+#                           plot.sampleLabel.type = "none",
 #                           plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
 #                           plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
 #                           plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
