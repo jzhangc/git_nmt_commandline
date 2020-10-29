@@ -230,12 +230,34 @@ rbioClass_svm_cv_roc_auc(svm_nested_cv,
                          plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
                          plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
                          verbose = FALSE)
-rffs_nested_cv_auc <- vector(length=SVM_CV_CROSS_K)
-for (i in 1:SVM_CV_CROSS_K){
-  rffs_nested_cv_auc[i] <- svm_nested_cv_svm_nestedcv_roc_auc[[i]]$svm.roc_object$mtbi$auc
+
+rffs_nested_cv_auc  <- vector(mode = "list", length = length(unique(ml_dfm$y)))
+for (i in 1:length(rffs_nested_cv_auc)) {
+  out <- vector(length = length(svm_nested_cv_svm_nestedcv_roc_auc))
+  for (j in 1:length(svm_nested_cv_svm_nestedcv_roc_auc)) {
+    out[j] <- svm_nested_cv_svm_nestedcv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+  }
+  rffs_nested_cv_auc[[i]] <- out
 }
-cat(paste0("CV-SVM-rRF-FS AUC(mean): ", mean(rffs_nested_cv_auc), "\n"))
-cat(paste0("CV-SVM-rRF-FS AUC(SD): ", sd(rffs_nested_cv_auc), "\n"))
+
+for (i in 1:length(svm_nested_cv_svm_nestedcv_roc_auc)) {  # set up group names for display
+  skip_to_next <- FALSE
+  nested_cv_names <- tryCatch({
+    names(svm_nested_cv_svm_nestedcv_roc_auc[[i]]$svm.roc_object)
+  }, 
+  error = function(e)skip_to_next <<- TRUE)
+  if(skip_to_next) { 
+      next 
+    } else {
+      break
+    }     
+}
+names(rffs_nested_cv_auc) <- nested_cv_names
+for (i in 1:length(rffs_nested_cv_auc)) {
+  cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[1]]), "\n"))
+  cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[1]]), "\n"))
+}
+
 cat("-- On final CV models --\n")
 rbioClass_svm_cv_roc_auc(svm_m_cv, 
                          plot.smooth = SVM_ROC_SMOOTH,
@@ -244,15 +266,37 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
                          plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
                          plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
                          verbose = FALSE)
-final_cv_auc <- vector(length = SVM_CV_CROSS_K)
-for (i in 1:SVM_CV_CROSS_K){
-  final_cv_auc[i] <- svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object$mtbi$auc
+
+final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
+for (i in 1:length(final_cv_auc)) {
+  out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
+  for (j in 1:length(svm_m_cv_svm_cv_roc_auc)) {
+    out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+  }
+  final_cv_auc[[i]] <- out
 }
-cat(paste0("Final CV AUC(mean): ", mean(final_cv_auc), "\n"))
-cat(paste0("Final CV AUC(SD): ", sd(final_cv_auc), "\n"))
+
+for (i in 1:length(svm_m_cv_svm_cv_roc_auc)) {  # set up group names for display
+  skip_to_next <- FALSE
+  final_cv_names <- tryCatch({
+    names(svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object)
+  }, 
+  error = function(e)skip_to_next <<- TRUE)
+  if(skip_to_next) { 
+    next 
+  } else {
+    break
+  }     
+}
+names(final_cv_auc) <- final_cv_names
+
+for (i in 1:length(final_cv_auc)) {
+  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[1]]), "\n"))
+  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[1]]), "\n"))
+}
+
 cat("-- On training data --\n")
 rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_training",                       
-                      center.scale.newdata = FALSE,
                       plot.smooth = SVM_ROC_SMOOTH,
                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,

@@ -35,6 +35,7 @@ Please cite the following if you are to use this application:
           - Additional analysis added to ml_svm.R and cv_ml_svm.R
             - Additonal display options added to train, connectivity, cv_train and cv_connectivity 
               commands to accomodate the above
+          - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
             
 
     - 0.2.1 (June.10.2020)        

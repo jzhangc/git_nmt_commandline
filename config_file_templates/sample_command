@@ -60,3 +60,22 @@
 -m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
 -l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
 -o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
+
+
+
+
+# ------ additional test ------
+./predict_class.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_2D.csv" \
+-s "sampleid" \
+-m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
+-l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
+-o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
+
+./cv_train_class.sh \
+-i "/Users/jingzhang/Desktop/surface_area_use_this.csv" \
+-s "subjectid" \
+-g "groupid" \
+-c "PTSD-TD" \
+-o "/Users/jingzhang/Desktop" \
+-p 12
