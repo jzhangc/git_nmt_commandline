@@ -202,7 +202,7 @@ svm_m <- rbioClass_svm(x = final_svm_data[, -1], y = factor(final_svm_data$y, le
 
 # CV modelling
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("------ CV modelling ------\n")
+cat("\n------ CV modelling ------\n")
 svm_m_cv <- rbioClass_svm_cv(x = final_svm_data[, -1], y = factor(final_svm_data$y, levels = unique(final_svm_data$y)),
                               center.scale = SVM_CV_CENTRE_SCALE, kernel = SVM_CV_KERNEL, cross.k = SVM_CROSS_K, cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
                               tune.method = SVM_CV_TUNE_METHOD, tune.cross.k = SVM_TUNE_CROSS_K, tune.boot.n = SVM_TUNE_BOOT_N,
