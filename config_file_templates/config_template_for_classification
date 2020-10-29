@@ -3,7 +3,7 @@
 # Usage: Adjust the values for the variables
 #
 # ------ Random state ------
-random_state=4 # 0 is FALSE, or a >0 random integer
+random_state=1 # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
 log2_trans=TRUE
@@ -24,7 +24,7 @@ htmap_height=5
 # -- PCA --
 pca_scale_data=TRUE
 pca_centre_data=TRUE
-pca_pc="c(1, 2, 3)"
+pca_pc="c(1, 2)"
 pca_biplot_samplelabel_type="none"  # options are "none", "direct" and "indirect"
 pca_biplot_samplelabel_size=2
 pca_biplot_symbol_size=5
@@ -43,7 +43,7 @@ pca_height=150
 # ------ Settings for univariate analysis ------
 # -- Univeriate analysis --
 uni_fdr=FALSE
-uni_alpha=0.01
+uni_alpha=0.05
 uni_fold_change=1
 volcano_n_top_connection=10
 volcano_symbol_size=2
@@ -66,7 +66,7 @@ sig_htmap_key_ylab="Count"
 sig_htmap_margin="c(4, 10)"
 sig_htmap_width=6
 sig_htmap_height=5
-sig_pca_pc="c(1, 2, 3)"
+sig_pca_pc="c(1, 2)"
 sig_pca_biplot_ellipse_conf=0.9
 
 # ------ Settings for SVM machine learning analysis ------
@@ -74,7 +74,7 @@ sig_pca_biplot_ellipse_conf=0.9
 cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
 
 # -- Data processing --
-training_percentage=0.85  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
+training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
 
 # -- SVM internal nested cross-validation and feature selection
 svm_cv_centre_scale=TRUE

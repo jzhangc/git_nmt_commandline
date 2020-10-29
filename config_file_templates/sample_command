@@ -73,7 +73,7 @@
 -o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
 
 ./cv_train_class.sh \
--i "/Users/jingzhang/Desktop/surface_area_use_this.csv" \
+-i "/Users/jingzhang/Desktop/test/surface_area_use_this.csv" \
 -s "subjectid" \
 -g "groupid" \
 -c "PTSD-TD" \
