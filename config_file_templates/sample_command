@@ -77,5 +77,6 @@
 -s "subjectid" \
 -g "groupid" \
 -c "PTSD-TD" \
+-m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_classification" \
 -o "/Users/jingzhang/Desktop" \
--p 12
+-p 12 -u

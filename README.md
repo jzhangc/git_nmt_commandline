@@ -7,7 +7,7 @@ Please cite the following if you are to use this application:
       Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5
 
 ------ Version History ------
-
+```
     - 0.3.0
     (ICEBOX)
         - General updates
@@ -36,7 +36,7 @@ Please cite the following if you are to use this application:
             - Additonal display options added to train, connectivity, cv_train and cv_connectivity 
               commands to accomodate the above
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
-            
+          - Error message updated            
 
     - 0.2.1 (June.10.2020)        
         - General updates
@@ -164,3 +164,4 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
+```

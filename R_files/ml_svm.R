@@ -184,7 +184,7 @@ for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
                                 plot.Width = SVM_ROC_WIDTH,
                                 plot.Height = SVM_ROC_HEIGHT, verbose = FALSE)},
            error = function(e){
-             cat(paste0(e, "\n"))
+             cat(paste0("ML feature selection step failed. try running the command without -u or -k", "\n"))
            })
 }
 
