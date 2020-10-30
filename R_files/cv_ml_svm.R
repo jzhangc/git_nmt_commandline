@@ -158,7 +158,7 @@ tryCatch({
               cat(paste0("\n\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n"))
             }
           )
-cat("------ SFS plot error messages ------\n")
+cat("\n------ SFS plot error messages ------\n")
 for (i in 1:SVM_CV_CROSS_K){  # plot SFS curve
   tryCatch({rbioFS_rf_SFS_plot(object = get(paste0("svm_nested_iter_", i, "_SFS")),
                                 n = "all",
