@@ -278,7 +278,7 @@ tryCatch({
       cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[1]]), "\n"))
       cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[1]]), "\n"))
     }
-}, error = function(c) cat("CV-rRF-FS-SVM results incomplete. ROC-AUC for CV-SVM-rRF-FS models skipped.\n"))
+}, error = function(e) cat("CV-rRF-FS-SVM results incomplete. ROC-AUC for CV-SVM-rRF-FS models skipped.\n"))
 
 cat("-- On final CV models --\n")
 rbioClass_svm_cv_roc_auc(svm_m_cv, 
