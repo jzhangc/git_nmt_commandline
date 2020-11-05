@@ -264,8 +264,8 @@ tryCatch({
   }
   names(rffs_nested_cv_auc) <- nested_cv_names
   for (i in 1:length(rffs_nested_cv_auc)) {
-    cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[1]]), "\n"))
-    cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[1]]), "\n"))
+    cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[i]]), "\n"))
+    cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[i]]), "\n"))
   }
 }, error = function(e) cat("CV-rRF-FS-SVM results incomplete. ROC-AUC for CV-SVM-rRF-FS models skipped.\n"))
 cat("\n")
@@ -302,8 +302,8 @@ for (i in 1:length(svm_m_cv_svm_cv_roc_auc)) {  # set up group names for display
 names(final_cv_auc) <- final_cv_names
 
 for (i in 1:length(final_cv_auc)) {
-  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[1]]), "\n"))
-  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[1]]), "\n"))
+  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
+  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
 }
 cat("\n")
 cat("-- On training data --\n")
