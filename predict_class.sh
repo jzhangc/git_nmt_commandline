@@ -87,7 +87,7 @@ else
 			;;
 	esac
 
-	while getopts ":p:i:a:s:l:m:o:" opt; do
+	while getopts ":p:i:s:l:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -164,7 +164,7 @@ else
 fi
 
 if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||  $LFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -l flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}ERROR: -i, -s, -l flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 
