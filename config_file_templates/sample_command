@@ -29,7 +29,7 @@
 -d "node_id" -r "region" \
 -m "/Users/jingzhang/Documents/git_repos/git_meg_ml_app/test/config_template_for_classification" \
 -c "ptsd-control" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 20 -u
 
 # -- regression --
 ./connectivity_ml_reg.sh \

@@ -194,7 +194,9 @@ svm_m_cv <- rbioClass_svm_cv(x = svm_training[, -1], y = svm_training$y,
 
 # permuation test and plotting
 rbioClass_svm_perm(object = svm_m, perm.method = SVM_PERM_METHOD, nperm = SVM_PERM_N,
-                   parallelComputing = PSETTING, clusterType =  CPU_CLUSTER, perm.plot = FALSE,
+                   parallelComputing = PSETTING, clusterType =  CPU_CLUSTER, 
+                   n_cores = CORES,
+                   perm.plot = FALSE,
                    verbose = FALSE)
 rbioUtil_perm_plot(perm_res = svm_m_perm,
                    plot.SymbolSize = SVM_PERM_PLOT_SYMBOL_SIZE,
