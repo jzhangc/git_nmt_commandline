@@ -8,7 +8,7 @@ Please cite the following if you are to use this application:
 
 ------ Version History ------
 ```
-    - 0.3.0
+    - 0.3.1
     (ICEBOX)
         - General updates
           - Overall optimization
@@ -17,7 +17,7 @@ Please cite the following if you are to use this application:
         - Version bumped to 0.3.0        
         - Bug fixes
     
-    (ADDED)
+    - 0.3.0
         - General updates
           - Naive data clasification module: connectivity_predict.sh predict_class.sh
           - Users now can designate config files via "-m" flag for all modules
