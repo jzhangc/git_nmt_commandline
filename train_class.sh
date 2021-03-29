@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml_2d.sh
-# Discription: A version of connectivity_ml.sh that takes 2D data table, instead of 3D mat adjacency matrices. 
+# Name: train_class.sh
+# Discription: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.2.1"
+VERSION="0.3.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -15,7 +15,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./connectivity_ml_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./train_class.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
@@ -30,6 +30,7 @@ Current version: $VERSION\n
 [OPTIONS]: Optional\n
 -k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
+-m <CONFIG>: Optoinal configuration file with full path. NOTE: If no config file is supplied, the default settings are used. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -62,7 +63,7 @@ POSITIONAL=()
 
 # initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
-CORES=1  # this is for the 
+CORES=1  # this is for the parallel computing
 
 IFLAG=1
 # AFLAG=1
@@ -101,7 +102,7 @@ else
 			;;
 	esac
 
-	while getopts ":kup:i:a:s:g:c:o:" opt; do
+	while getopts ":kup:i:a:s:g:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -111,10 +112,14 @@ else
 				RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i the 2d input file should be in .csv format; or file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
+				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
@@ -129,6 +134,16 @@ else
 			c)
 			 	CONTRAST=$OPTARG
 				CFLAG=0
+				;;
+			m)
+				CONFIG_FILE=$OPTARG  # file with full path and extension
+				if ! [ -f "$CONFIG_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
+				else
+					CONFIG_FILENAME=`basename "$CONFIG_FILE"`
+					CONF_CHECK=0
+				fi
 				;;
 			o)
 				OUT_DIR=$OPTARG
@@ -258,7 +273,7 @@ start_t=`date +%s`
 
 
 # --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml_2d.sh${NO_COLOUR}"
+echo -e "\nYou are running ${COLOUR_BLUE_L}train_class.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"
@@ -282,16 +297,16 @@ echo -e "=======================================================================
 # -- R script chack --
 echo -e "Checking required R script file(s)"
 required_file_check "${R_SCRIPT_FILES[@]}"
-# - Optional config file check --
-echo -e "\n"
-echo -e "Checking config file(s)"
-echo -en "\tconnectivity_ml_config..."
-if [ -f ./connectivity_ml_config ]; then
-  echo -e "ok"
-  CONF_CHECK=0
-else
-  echo -e "not found"
-fi
+# # - Optional config file check --
+# echo -e "\n"
+# echo -e "Checking config file(s)"
+# echo -en "\tconnectivity_ml_config..."
+# if [ -f ./connectivity_ml_config ]; then
+#   echo -e "ok"
+#   CONF_CHECK=0
+# else
+#   echo -e "not found"
+# fi
 echo -e "=========================================================================="
 
 
@@ -328,11 +343,11 @@ echo -e "=======================================================================
 
 # --- config file and variables ---
 echo -e "\n"
-echo -e "Config file: ${COLOUR_GREEN_L}connectivity_ml_config${NO_COLOUR}"
+echo -e "Config file: ${COLOUR_GREEN_L}$CONFIG_FILENAME${NO_COLOUR}"
 echo -e "=========================================================================="
 # load application variables from config file; or set their default settings if no config file
 if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
-  source connectivity_ml_config
+  source "$CONFIG_FILE"
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
@@ -383,16 +398,16 @@ if [ $CONF_CHECK -eq 1 ]; then
   # set the values back to default
   	random_state=0
 	log2_trans=TRUE
-	htmap_textsize_col=0.7
+	htmap_textsize_col=0.5
 	htmap_textangle_col=90
 	htmap_lab_row=FALSE
-	htmap_textsize_row=0.7
+	htmap_textsize_row=0.2
 	htmap_keysize=1.5
 	htmap_key_xlab="Normalized connectivity value"
 	htmap_key_ylab="Pair count"
-	htmap_margin="c(6, 3)"
-	htmap_width=8
-	htmap_height=7
+	htmap_margin="c(4, 5)"
+	htmap_width=6
+	htmap_height=5
 	pca_scale_data=TRUE
 	pca_centre_data=TRUE
 	pca_pc="c(1, 2)"
@@ -427,11 +442,11 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_htmap_keysize=1.5
 	sig_htmap_key_xlab="Z score"
 	sig_htmap_key_ylab="Count"
-	sig_htmap_margin="c(6, 3)"
-	sig_htmap_width=8
-	sig_htmap_height=7
-	sig_pca_pc="c(1, 2, 3)"
-	sig_pca_biplot_ellipse_conf=0.95
+	sig_htmap_margin="c(4, 8)"
+	sig_htmap_width=6
+	sig_htmap_height=5
+	sig_pca_pc="c(1, 2)"
+	sig_pca_biplot_ellipse_conf=0.9
 	cpu_cluster="FORK"
 	training_percentage=0.8
 	svm_cv_centre_scale=TRUE
@@ -455,8 +470,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_perm_plot_x_tick_label_size=10
 	svm_perm_plot_y_label_size=10
 	svm_perm_plot_y_tick_label_size=10
-	svm_perm_plot_width=300
-	svm_perm_plot_height=50
+	svm_perm_plot_width=170
+	svm_perm_plot_height=150
 	svm_roc_smooth=FALSE
 	svm_roc_symbol_size=2
 	svm_roc_legend_size=9
@@ -470,13 +485,13 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_rffs_pca_biplot_ellipse_conf=0.95
 	rffs_htmap_textsize_col=0.5
 	rffs_htmap_textangle_col=90
-	rffs_htmap_textsize_row=0.2
+	rffs_htmap_textsize_row=0.5
 	rffs_htmap_keysize=1.5
 	rffs_htmap_key_xlab="Z score"
 	rffs_htmap_key_ylab="Count"
-	rffs_htmap_margin="c(6, 9)"
-	rffs_htmap_width=15
-	rffs_htmap_height=10
+	rffs_htmap_margin="c(3, 9)"
+	rffs_htmap_width=6
+	rffs_htmap_height=5
 	plsda_validation="CV"
 	plsda_validation_segment=10
 	plsda_init_ncomp=10
@@ -495,9 +510,9 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_perm_plot_x_tick_label_size=10
 	plsda_perm_plot_y_label_size=10
 	plsda_perm_plot_y_tick_label_size=10
-	plsda_perm_plot_width=300
-	plsda_perm_plot_height=50
-	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
+	plsda_perm_plot_width=170
+	plsda_perm_plot_height=150
+	plsda_scoreplot_ellipse_conf=0.9  # the other scoreplot settings are the same as the all connections PCA biplot
 	plsda_roc_smooth=FALSE
 	plsda_vip_alpha=0.8  # 0.8~1 is good
 	plsda_vip_boot=TRUE
@@ -510,8 +525,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_vip_plot_x_tick_label_size=10
 	plsda_vip_plot_y_label_size=10
 	plsda_vip_plot_y_tick_label_size=10
-	plsda_vip_plot_width=150
-	plsda_vip_plot_height=100
+	plsda_vip_plot_width=170
+	plsda_vip_plot_height=150
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"
@@ -747,62 +762,6 @@ echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
-# if [ $UFLAG -eq 1 ]; then
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -en "Skipping univariate analysis..."
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
-# 	echo -e "Done!"
-# 	echo -e "=========================================================================="
-# else
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-# 	echo -en "Unsupervised learning and univariate anlaysis..."
-# 	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# 	r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-# 	"$ANNOT_FILE" \
-# 	"${OUT_DIR}/OUTPUT" \
-# 	"$log2_trans" \
-# 	"$htmap_textsize_col" "$htmap_textangle_col" \
-# 	"$htmap_lab_row" "$htmap_textsize_row" \
-# 	"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-# 	"$htmap_margin" "$htmap_width" "$htmap_height" \
-# 	"$pca_scale_data" "$pca_centre_data" "$pca_pc" \
-# 	"$pca_biplot_samplelabel_type" "$pca_biplot_samplelabel_size" "$pca_biplot_symbol_size" \
-# 	"$pca_biplot_ellipse" "$pca_biplot_ellipse_conf" \
-# 	"$pca_biplot_loading" "$pca_biplot_loading_textsize" \
-# 	"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
-# 	"$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
-# 	"$pca_width" "$pca_height" \
-# 	"$CONTRAST" \
-# 	"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
-# 	"$volcano_n_top_connection" "$volcano_symbol_size" "$volcano_sig_colour" "$volcano_nonsig_colour" \
-# 	"$volcano_x_text_size" "$volcano_y_text_size" "$volcano_width" "$volcano_height" \
-# 	"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
-# 	"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
-# 	"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
-# 	"$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
-# 	--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
-# 	| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
-# 	rscript_display=`echo "${r_var[@]}"`
-# 	echo -e "Done!\n\n"
-# 	echo -e "$rscript_display"  # print the screen display from the R script
-# 	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-# 	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
-# 		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
-# 	fi
-# 	# -- set up variables for output ml data file
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	# -- additional display --
-# 	echo -e "\n"	
-# 	echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	echo -e "=========================================================================="
-# fi
 
 # --- SVM machine learning analysis ---
 echo -e "\n"

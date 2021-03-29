@@ -7,6 +7,38 @@ Please cite the following if you are to use this application:
       Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5
 
 ------ Version History ------
+```
+    - 0.3.1
+    (ICEBOX)
+        - General updates
+          - Overall optimization
+          - A memory check module to ensure the stability
+          - Node file length check added for univariate.R and reg_univariate.R
+        - Version bumped to 0.3.0        
+        - Bug fixes
+    
+    - 0.3.0
+        - General updates
+          - Naive data clasification module: connectivity_predict.sh predict_class.sh
+          - Users now can designate config files via "-m" flag for all modules
+            - config file template can be found in application folder as a reference
+          - All the 2D commands renamed to "train.sh" format:
+              connectivity_ml_2d.sh -> train_class.sh
+              connectivity_ml_reg_2d.sh -> train_reg.sh
+              cv_connectivity_ml_2d.sh -> cv_train_class.sh
+              cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
+          - Non-nested CV without FS analysis added to all modules
+          - Additional flag check added to all sh files
+          - Fixed the "invalide ncomp" issue
+          - Fixed a bug where parellel computing always uses the max number of cores
+          - Other bug fixes 
+        
+        - Updates to classification modules
+          - Additional analysis added to ml_svm.R and cv_ml_svm.R
+            - Additonal display options added to train, connectivity, cv_train and cv_connectivity 
+              commands to accomodate the above
+          - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
+          - Error handling substantially updated            
 
     - 0.2.1 (June.10.2020)        
         - General updates
@@ -14,6 +46,7 @@ Please cite the following if you are to use this application:
           - Log2 transformation updated into "by feature" mode for all modules
           - In the SVM models, item "svm_rf_selected_pairs" changed to "svm_rf_selected_features" 
           - Small bug fixes     
+
 
     - 0.2.0
         - New modules
@@ -51,6 +84,7 @@ Please cite the following if you are to use this application:
         
         - Version bumped to 0.2.0 to all modules
 
+
     - 0.1
         - General updates
           - SVM now saves training and test data as csv files
@@ -77,6 +111,7 @@ Please cite the following if you are to use this application:
           - Accordingly, new R file reg_plsr_val_svm.R added
 
         - Version bumpped to 0.1.0 for all modules
+
 
     - 0.0.3
         - General updates
@@ -109,6 +144,7 @@ Please cite the following if you are to use this application:
 
         - A bugs fixed for reg_ml_svm.R, now with correct error metric
 
+
     - 0.0.2 (May.22.2019)
         - Updates to connectivity_ml.sh (and the associated R modules)
           - Updates to univariate.R
@@ -127,5 +163,7 @@ Please cite the following if you are to use this application:
 
         - Bug fixes
 
+
     - 0.0.1
         - Initial commit
+```

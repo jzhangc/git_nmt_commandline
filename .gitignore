@@ -1,3 +1,10 @@
+# Jing's stuff
+data
+results
+.DS_Store
+.vscode
+log
+
 # History files
 .Rhistory
 .Rapp.history
@@ -20,6 +27,9 @@ testrealm/
 # RStudio files
 .Rproj.user/
 
+# data ane results
+
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
@@ -40,3 +50,6 @@ rsconnect/
 
 # macOS things
 .DS_store
+
+# test folder
+test

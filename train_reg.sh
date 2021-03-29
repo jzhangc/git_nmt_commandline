@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Name: connectivity_ml_2d.sh
-# Discription: A version of connectivity_ml_reg.sh that takes 2D data table, instead of 3D mat adjacency matrices.
-# Usage: TBD
+# Name: train_reg.sh
+# Discription: A generalized version of connectivity_ml_reg.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices.
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.2.1"
+VERSION="0.3.0"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -16,7 +15,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./connectivity_ml_reg_2d.sh <INPUTS> [OPTIONS]\n
+Format: ./train_reg.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
@@ -30,6 +29,7 @@ Current version: $VERSION\n
 [OPTIONS]: Optional\n
 -k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
+-m <CONFIG>: Optoinal configuration file with full path. NOTE: If no config file is supplied, the default settings are used. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD
@@ -93,7 +93,7 @@ else
 			;;
 	esac
 
-	while getopts ":kup:i:a:s:y:o:" opt; do
+	while getopts ":kup:i:a:s:y:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -103,10 +103,14 @@ else
 				RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i the 2d input file should be in .csv format; or file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
+				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
@@ -117,6 +121,16 @@ else
 			y)
 				Y_VAR=$OPTARG
 				YFLAG=0
+				;;
+			m)
+				CONFIG_FILE=$OPTARG  # file with full path and extension
+				if ! [ -f "$CONFIG_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
+				else
+					CONFIG_FILENAME=`basename "$CONFIG_FILE"`
+					CONF_CHECK=0
+				fi
 				;;
 			o)
 				OUT_DIR=$OPTARG
@@ -242,7 +256,7 @@ start_t=`date +%s`
 
 
 # --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml_reg_2d.sh${NO_COLOUR}"
+echo -e "\nYou are running ${COLOUR_BLUE_L}train_reg.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"
@@ -266,16 +280,16 @@ echo -e "=======================================================================
 # -- R script chack --
 echo -e "Checking required R script file(s)"
 required_file_check "${R_SCRIPT_FILES[@]}"
-# - Optional config file check --
-echo -e "\n"
-echo -e "Checking config file(s)"
-echo -en "\tconnectivity_ml_reg_config..."
-if [ -f ./connectivity_ml_reg_config ]; then
-  echo -e "ok"
-  CONF_CHECK=0
-else
-  echo -e "not found"
-fi
+# # - Optional config file check --
+# echo -e "\n"
+# echo -e "Checking config file(s)"
+# echo -en "\tconnectivity_ml_reg_config..."
+# if [ -f ./connectivity_ml_reg_config ]; then
+#   echo -e "ok"
+#   CONF_CHECK=0
+# else
+#   echo -e "not found"
+# fi
 echo -e "=========================================================================="
 
 
@@ -312,11 +326,11 @@ echo -e "=======================================================================
 
 # --- config file and variables ---
 echo -e "\n"
-echo -e "Config file: ${COLOUR_GREEN_L}connectivity_ml_reg_config${NO_COLOUR}"
+echo -e "Config file: ${COLOUR_GREEN_L}$CONFIG_FILENAME${NO_COLOUR}"
 echo -e "=========================================================================="
 # load application variables from config file; or set their default settings if no config file
 if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
-  source connectivity_ml_reg_config
+  source "$CONFIG_FILE"
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
@@ -361,16 +375,16 @@ if [ $CONF_CHECK -eq 1 ]; then
   # set the values back to default
   	random_state=0
 	log2_trans=TRUE
-	htmap_textsize_col=0.7
+	htmap_textsize_col=0.5
 	htmap_textangle_col=90
 	htmap_lab_row=FALSE
-	htmap_textsize_row=0.7
+	htmap_textsize_row=0.2
 	htmap_keysize=1.5
 	htmap_key_xlab="Normalized connectivity value"
 	htmap_key_ylab="Pair count"
-	htmap_margin="c(6, 3)"
-	htmap_width=8
-	htmap_height=7
+	htmap_margin="c(4, 5)"
+	htmap_width=6
+	htmap_height=5
 	uni_fdr=TRUE
 	uni_alpha=0.05
 	uni_fold_change=1
@@ -380,9 +394,9 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_htmap_keysize=1.5
 	sig_htmap_key_xlab="Z score"
 	sig_htmap_key_ylab="Count"
-	sig_htmap_margin="c(6, 3)"
-	sig_htmap_width=8
-	sig_htmap_height=7
+	htmap_margin="c(4, 8)"
+	htmap_width=6
+	htmap_height=5
 	cpu_cluster="FORK"
 	training_percentage=0.8
 	svm_cv_centre_scale=TRUE
@@ -420,13 +434,13 @@ if [ $CONF_CHECK -eq 1 ]; then
 	svm_roc_height=150
 	rffs_htmap_textsize_col=0.5
 	rffs_htmap_textangle_col=90
-	rffs_htmap_textsize_row=0.2
+	rffs_htmap_textsize_row=0.5
 	rffs_htmap_keysize=1.5
 	rffs_htmap_key_xlab="Z score"
 	rffs_htmap_key_ylab="Count"
-	rffs_htmap_margin="c(6, 9)"
-	rffs_htmap_width=15
-	rffs_htmap_height=10
+	rffs_htmap_margin="c(3, 9)"
+	rffs_htmap_width=6
+	rffs_htmap_height=5
 	plsda_validation="CV"
 	plsda_validation_segment=10
 	plsda_init_ncomp=10
@@ -445,8 +459,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_perm_plot_x_tick_label_size=10
 	plsda_perm_plot_y_label_size=10
 	plsda_perm_plot_y_tick_label_size=10
-	plsda_perm_plot_width=300
-	plsda_perm_plot_height=50
+	plsda_perm_plot_width=170
+	plsda_perm_plot_height=150
 	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
 	plsda_vip_alpha=0.8  # 0.8~1 is good
 	plsda_vip_boot=TRUE
@@ -459,8 +473,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_vip_plot_x_tick_label_size=10
 	plsda_vip_plot_y_label_size=10
 	plsda_vip_plot_y_tick_label_size=10
-	plsda_vip_plot_width=150
-	plsda_vip_plot_height=100
+	plsda_vip_plot_width=170
+	plsda_vip_plot_height=150
 fi
 # below: display the (loaded) variables and their values
 echo -e "\n"

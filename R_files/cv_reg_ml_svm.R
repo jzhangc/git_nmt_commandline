@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.2.1
+## version: 0.3.0
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -182,9 +182,20 @@ svm_m <- rbioClass_svm(x = final_svr_data[, -1], y = final_svr_data$y,
                        tune.cross.k = SVM_TUNE_CROSS_K, tune.boot.n = SVM_TUNE_BOOT_N,
                        verbose = FALSE)
 
+# CV modelling
+svm_m_cv <- rbioClass_svm_cv(x = final_svr_data[, -1], y = final_svr_data$y,
+                              center.scale = SVM_CV_CENTRE_SCALE, kernel = SVM_CV_KERNEL, cross.k = SVM_CROSS_K, cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
+                              tune.method = SVM_CV_TUNE_METHOD, tune.cross.k = SVM_TUNE_CROSS_K, tune.boot.n = SVM_TUNE_BOOT_N,
+                              parallelComputing = PSETTING, n_cores = CORES,
+                              clusterType = CPU_CLUSTER,
+                              verbose = TRUE)
+
+
 # permuation test and plotting
 rbioClass_svm_perm(object = svm_m, perm.method = SVM_PERM_METHOD, nperm = SVM_PERM_N,
-                   parallelComputing = PSETTING, clusterType =  CPU_CLUSTER, perm.plot = FALSE,
+                   parallelComputing = PSETTING, clusterType =  CPU_CLUSTER,
+                   n_cores = CORES,
+                   perm.plot = FALSE,
                    verbose = FALSE)
 rbioUtil_perm_plot(perm_res = svm_m_perm,
                    plot.SymbolSize = SVM_PERM_PLOT_SYMBOL_SIZE,
@@ -269,7 +280,7 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 output_for_dl <- rffs_selected_dfm
 
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv"),
+save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv", "svm_m_cv"),
      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 

@@ -1,11 +1,13 @@
 ###### general info --------
-## name: mat_process.R
-## purpose: load and process mat files
+## name: pred_dat_process.R
+## purpose: load and process mat file for prediction
 ## version: 0.3.0
+## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
 
 ## flags from Rscript
-args <- commandArgs()
+args <- commandArgs(trailingOnly = TRUE)
 # print(args)
+
 
 ###### load libraries --------
 require(foreach)
@@ -13,28 +15,31 @@ require(R.matlab) # to read .mat files
 
 ###### sys variables --------
 # --- file name variables ---
-MAT_FILE <- args[6]
-MAT_FILE_NO_EXT <- args[7]
-ANNOT_FILE <- args[8]
+MAT_FILE <- args[1]
+MAT_FILE_NO_EXT <- args[2]
 
+# --- mata data input variables ---
+ANNOT_FILE <- args[3]
+SAMPLEID_VAR <- args[4]
 
 # --- directory variables ---
 # FIG_OUT_DIR
-RES_OUT_DIR <- args[11]
-
-# --- mata data input variables ---
-SAMPLEID_VAR <- args[9]
-Y_VAR <- args[10]
+RES_OUT_DIR <- args[5]
 
 ###### R script --------
+# ------ set the output directory as the working directory ------
+setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
+
 # ------ load mat file ------
+# setwd("/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/")
+# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat"
 raw <- readMat(MAT_FILE)
 raw <- raw[[1]]
 raw_dim <- dim(raw)
 
 # ------ load annotation file (meta data) ------
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-if (!all(c(SAMPLEID_VAR, Y_VAR) %in% names(annot))) {
+if (!all(SAMPLEID_VAR %in% names(annot))) {
   cat("none_existent")
   quit()
 }
@@ -42,11 +47,9 @@ if (nrow(annot) != raw_dim[3]) {
   cat("unequal_length")
   quit()
 }
-y <- annot[, Y_VAR]
 sampleid <- annot[, SAMPLEID_VAR]
 
-
-# ------ process the mat file with the mata data ------
+# ------ process the mat file ------
 raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   tmp <- raw[, , i]
   colnames(tmp) <- as.character(seq(ncol(tmp)))
@@ -56,13 +59,13 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   names(sync.value) <- pair
   sync.value
 }
-raw_sample_dfm <- data.frame(sampleid = sampleid, y = y, raw_sample, row.names = NULL)
-colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
+raw_sample_dfm <- data.frame(sampleid = sampleid, raw_sample, row.names = NULL, check.names = FALSE)
 
-
-####### export and clean up the mess --------
+# ------ export and clean up the mess --------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 
-## cat the vairables to export to shell scipt
+# ------ display messages so far ------
+# cat the variables to export to shell script
 cat("\tMat file dimensions: ", raw_dim, "\n") # line 2: input mat file dimension
+cat("\tSamples to predict: ", nrow(raw_sample_dfm), "\n")
