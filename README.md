@@ -30,7 +30,8 @@ Please cite the following if you are to use this application:
           - Non-nested CV without FS analysis added to all modules
           - Additional flag check added to all sh files
           - Fixed the "invalide ncomp" issue
-          - Fixed a bug where parellel computing always uses the max number of cores 
+          - Fixed a bug where parellel computing always uses the max number of cores
+          - Other bug fixes 
         
         - Updates to classification modules
           - Additional analysis added to ml_svm.R and cv_ml_svm.R
