@@ -23,7 +23,7 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input .mat file with full path. Make sure to have 3 dimensions, even if only one matrix: MxNx1\n
+-i <file>: Input 2D CSV file with full path.
 -s <string>: Sample ID variable name from the -i inpout file.\n
 -l <file>: Input .RData SVM model file with full path. \n
 \n

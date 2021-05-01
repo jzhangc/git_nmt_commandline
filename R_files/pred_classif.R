@@ -8,7 +8,6 @@
 args <- commandArgs(trailingOnly = TRUE)
 # print(args)
 
-
 ###### load libraries --------
 require(foreach)
 require(RBioFS)
