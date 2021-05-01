@@ -14,7 +14,7 @@ Please cite the following if you are to use this application:
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
-        - Version bumped to 0.3.0        
+        - Version bumped to 0.3.1        
         - Bug fixes
         
     - 0.3.0 (March.28.2021)
