@@ -23,7 +23,7 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input 2D CSV file with full path.
+-i <file>: Input 2D CSV file with full path. \n
 -s <string>: Sample ID variable name from the -i inpout file.\n
 -l <file>: Input .RData SVM model file with full path. \n
 \n
