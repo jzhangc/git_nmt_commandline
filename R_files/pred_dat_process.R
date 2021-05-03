@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: pred_dat_process.R
 ## purpose: load and process mat file for prediction
-## version: 0.3.0
+## version: 0.3.1
 ## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
 
 ## flags from Rscript
