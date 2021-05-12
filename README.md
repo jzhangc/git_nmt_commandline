@@ -11,14 +11,9 @@ Please cite the following if you are to use this application:
 
 ------ Version History ------
 ```
-    - 0.3.1
-    (ICEBOX)
-        - General updates
-          - Overall optimization
-          - A memory check module to ensure the stability
-          - Node file length check added for univariate.R and reg_univariate.R
-        - Version bumped to 0.3.1        
-        - Bug fixes
+    - 0.3.1 (May.12.2021)
+        - More citations added
+        - Version bumped to 0.3.1
         
     - 0.3.0 (March.28.2021)
         - General updates
