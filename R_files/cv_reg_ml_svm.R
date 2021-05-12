@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.3.0
+## version: 0.3.1
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command

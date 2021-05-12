@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.3.0"
+VERSION="0.3.1"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -36,9 +36,9 @@ Current version: $VERSION\n
 CITE="Written by Jing Zhang PhD
 Contact: jing.zhang@sickkids.ca, jzhangcad@gmail.com
 To cite in your research:
-	Zhang J, Richardson DJ, Dunkley BT. 2020. 
-	Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. 
-	doi: 10.1038/s41598-020-62713-5"
+      Zhang J, Wong SM, Richardson DJ, Rakesh J, Dunkley BT. 2020. Predicting PTSD severity using longitudinal magnetoencephalography with a multi-step learning framework. Journal of Neuro Engineering. 17: 066013. doi: 10.1088/1741-2552/abc8d6.
+      Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5.
+      Zhang J, Hadj-Moussa H, Storey KB. 2016. Current progress of high-throughput microRNA differential expression analysis and random forest gene selection for model and non-model systems: an R implementation. J Integr Bioinform. 13: 306. doi: 10.1515/jib-2016-306."
 
 # below: some colours
 COLOUR_YELLOW="\033[1;33m"

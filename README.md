@@ -1,13 +1,20 @@
 # meg_application
 
-A bash application for automating machine learning analysis for MEG connection data
+Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection data
 
 Please cite the following if you are to use this application:
 
-      Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5
+      Zhang J, Wong SM, Richardson DJ, Rakesh J, Dunkley BT. 2020. Predicting PTSD severity using longitudinal magnetoencephalography with a multi-step learning framework. Journal of Neuro Engineering. 17: 066013. doi: 10.1088/1741-2552/abc8d6.
+      Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5.
+      Zhang J, Hadj-Moussa H, Storey KB. 2016. Current progress of high-throughput microRNA differential expression analysis and random forest gene selection for model and non-model systems: an R implementation. J Integr Bioinform. 13: 306. doi: 10.1515/jib-2016-306.
+
 
 ------ Version History ------
 ```
+    - 0.3.1 (May.12.2021)
+        - More citations added
+        - Version bumped to 0.3.1
+        
     - 0.3.0 (March.28.2021)
         - General updates
           - Naive data clasification module: connectivity_predict.sh predict_class.sh
