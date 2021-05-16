@@ -17,9 +17,12 @@ Please cite the following if you are to use this application:
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
-        - Version bumped to 0.3.2     
         - Bug fixes
-
+    (ADDED)
+        - Updates to modelling modules
+          - AUC scores now included in .RData modle files
+        - Version bumped to 0.3.2
+        
     - 0.3.1 (May.12.2021)
         - More citations added
         - Version bumped to 0.3.1

@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.3.1
+## version: 0.3.2
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -500,7 +500,7 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 #                            check.names = FALSE)
 write.csv(file = "ml_training.csv", training, row.names = FALSE)
 write.csv(file = "ml_test.csv", test, row.names = FALSE)
-save(list = c("svm_m", "svm_m_cv", "svm_nested_cv", "svm_rf_selected_features", "svm_training", "svm_test"),
+save(list = c("svm_m", "svm_m_cv", "svm_nested_cv", "svm_rf_selected_features", "svm_training", "svm_test", "rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
      file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 
 

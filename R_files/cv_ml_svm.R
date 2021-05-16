@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
-## version: 0.3.1
+## version: 0.3.2
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
@@ -400,9 +400,10 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
 #                            check.names = FALSE)
-save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv", "svm_m_cv"),
+# save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv", "svm_m_cv"),
+#      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
+save(list = c("svm_m", "svm_m_cv", "svm_nested_cv", "svm_rf_selected_features", "rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc"),
      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
-
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
