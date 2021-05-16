@@ -20,9 +20,9 @@ Please cite the following if you are to use this application:
         - Bug fixes
     (ADDED)
         - Updates to modelling modules
-          - AUC scores now included in .RData modle files
+          - AUC scores now included in .RData model files
         - Version bumped to 0.3.2
-        
+
     - 0.3.1 (May.12.2021)
         - More citations added
         - Version bumped to 0.3.1
