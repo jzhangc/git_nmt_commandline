@@ -43,7 +43,7 @@ nsamples <- nrow(raw_csv)
 sampleid <- raw_csv[, SAMPLEID_VAR]
 
 # ------ process the mat file ------
-raw_sample_dfm <- data.frame(sampleid = sampleid, raw_csv[, !names(raw_csv) %in% SAMPLEID_VAR], 
+raw_sample_dfm <- data.frame(sampleid = sampleid, raw_csv[, !names(raw_csv) %in% SAMPLEID_VAR, drop = FALSE], 
                              row.names = NULL, check.names = FALSE)
 
 # ------ export and clean up the mess --------

@@ -59,6 +59,10 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   names(sync.value) <- pair
   sync.value
 }
+if (is.null(nrow(raw_sample))){  # one entry only
+  raw_sample_dfm <- data.frame(as.list(raw_sample))
+  names(raw_sample_dfm) <- names(raw_sample)  
+}
 raw_sample_dfm <- data.frame(sampleid = sampleid, raw_sample, row.names = NULL, check.names = FALSE)
 
 # ------ export and clean up the mess --------
