@@ -1,4 +1,4 @@
-# meg_application
+# Neuro-ML-tools (NMT)
 
 Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection data
 
