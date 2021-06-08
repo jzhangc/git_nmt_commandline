@@ -8,9 +8,8 @@ Please cite the following if you are to use this application:
       Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5.
       Zhang J, Hadj-Moussa H, Storey KB. 2016. Current progress of high-throughput microRNA differential expression analysis and random forest gene selection for model and non-model systems: an R implementation. J Integr Bioinform. 13: 306. doi: 10.1515/jib-2016-306.
 
+## Version History
 
------- Version History ------
-```
     - 0.3.2
     (ICEBOX)
         - General updates
@@ -178,4 +177,3 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
-```
