@@ -1,4 +1,4 @@
-# meg_application
+# Neuro-ML-tools (NMT)
 
 Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection data
 
@@ -8,9 +8,22 @@ Please cite the following if you are to use this application:
       Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5.
       Zhang J, Hadj-Moussa H, Storey KB. 2016. Current progress of high-throughput microRNA differential expression analysis and random forest gene selection for model and non-model systems: an R implementation. J Integr Bioinform. 13: 306. doi: 10.1515/jib-2016-306.
 
+## Version History
 
------- Version History ------
-```
+    - 0.3.2
+    (ICEBOX)
+        - General updates
+          - Overall optimization
+          - A memory check module to ensure the stability
+          - Node file length check added for univariate.R and reg_univariate.R
+        - Bug fixes
+    (ADDED)
+        - Updates to modelling modules
+          - AUC scores now included in .RData model files
+        - Updates to prediction modules
+          - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
+        - Version bumped to 0.3.2
+
     - 0.3.1 (May.12.2021)
         - More citations added
         - Version bumped to 0.3.1
@@ -164,4 +177,3 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
-```

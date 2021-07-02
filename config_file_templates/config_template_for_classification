@@ -71,7 +71,7 @@ sig_pca_biplot_ellipse_conf=0.9
 
 # ------ Settings for SVM machine learning analysis ------
 # -- General settings --
-cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
+cpu_cluster="PSOCK"  # for parallel computing only, options are "FORK" or "PSOCK"
 
 # -- Data processing --
 training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0

@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: pred_dat_process_2d.R
 ## purpose: load and process 2d file for prediction
-## version: 0.3.1
+## version: 0.3.2
 
 ## flags from Rscript
 args <- commandArgs(trailingOnly = TRUE)
@@ -30,9 +30,8 @@ setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
 # ------ load mat file ------
 # setwd("/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/")
-# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat"
+# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/predict_3d.mat"
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-
 
 # ------ load annotation file (meta data) ------
 if (! SAMPLEID_VAR %in% names(raw_csv)) {
@@ -43,7 +42,7 @@ nsamples <- nrow(raw_csv)
 sampleid <- raw_csv[, SAMPLEID_VAR]
 
 # ------ process the mat file ------
-raw_sample_dfm <- data.frame(sampleid = sampleid, raw_csv[, !names(raw_csv) %in% SAMPLEID_VAR], 
+raw_sample_dfm <- data.frame(sampleid = sampleid, raw_csv[, !names(raw_csv) %in% SAMPLEID_VAR, drop = FALSE], 
                              row.names = NULL, check.names = FALSE)
 
 # ------ export and clean up the mess --------
