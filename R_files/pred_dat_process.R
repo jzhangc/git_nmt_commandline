@@ -32,13 +32,16 @@ setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
 # ------ load mat file ------
 # setwd("/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/")
-# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat"
+# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/predict_3d.mat"
 raw <- readMat(MAT_FILE)
 raw <- raw[[1]]
 raw_dim <- dim(raw)
 
 # ------ load annotation file (meta data) ------
+# ANNOT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/sample_annotation.csv"
+# SAMPLEID_VAR <- "sampleid"
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
+
 if (!all(SAMPLEID_VAR %in% names(annot))) {
   cat("none_existent")
   quit()
@@ -63,7 +66,7 @@ if (is.null(nrow(raw_sample))){  # one entry only
   raw_sample_dfm <- data.frame(as.list(raw_sample))
   names(raw_sample_dfm) <- names(raw_sample)  
 }
-raw_sample_dfm <- data.frame(sampleid = sampleid, raw_sample, row.names = NULL, check.names = FALSE)
+raw_sample_dfm <- data.frame(sampleid = sampleid, raw_sample_dfm, row.names = NULL, check.names = FALSE)
 
 # ------ export and clean up the mess --------
 ## export to results files if needed

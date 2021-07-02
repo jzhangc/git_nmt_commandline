@@ -30,9 +30,8 @@ setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
 # ------ load mat file ------
 # setwd("/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/")
-# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat"
+# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/predict_3d.mat"
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-
 
 # ------ load annotation file (meta data) ------
 if (! SAMPLEID_VAR %in% names(raw_csv)) {
