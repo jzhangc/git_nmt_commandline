@@ -15,7 +15,7 @@ Please cite the following if you are to use this application:
           - AUC scores now included in .RData model files
         - Updates to prediction modules
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
-        - Type fixes
+        - Typo fixes
         - Version bumped to 0.3.2
 
     - 0.3.1 (May.12.2021)
