@@ -15,6 +15,7 @@ Please cite the following if you are to use this application:
           - AUC scores now included in .RData model files
         - Updates to prediction modules
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
+        - Type fixes
         - Version bumped to 0.3.2
 
     - 0.3.1 (May.12.2021)
@@ -23,7 +24,7 @@ Please cite the following if you are to use this application:
         
     - 0.3.0 (March.28.2021)
         - General updates
-          - Naive data clasification module: connectivity_predict.sh predict_class.sh
+          - Naive data classification module: connectivity_predict.sh predict_class.sh
           - Users now can designate config files via "-m" flag for all modules
             - config file template can be found in application folder as a reference
           - All the 2D commands renamed to "train.sh" format:
@@ -33,14 +34,14 @@ Please cite the following if you are to use this application:
               cv_connectivity_ml_reg_2d.sh -> cv_train_reg.sh
           - Non-nested CV without FS analysis added to all modules
           - Additional flag check added to all sh files
-          - Fixed the "invalide ncomp" issue
-          - Fixed a bug where parellel computing always uses the max number of cores
+          - Fixed the "invalid ncomp" issue
+          - Fixed a bug where parallel computing always uses the max number of cores
           - Other bug fixes 
         
         - Updates to classification modules
           - Additional analysis added to ml_svm.R and cv_ml_svm.R
-            - Additonal display options added to train, connectivity, cv_train and cv_connectivity 
-              commands to accomodate the above
+            - Additional display options added to train, connectivity, cv_train and cv_connectivity 
+              commands to accommodate the above
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
           - Error handling substantially updated            
 
@@ -61,11 +62,11 @@ Please cite the following if you are to use this application:
             - cv_connectivity_ml_reg_2d.sh
 
         - General updates
-          - A separate univariate analysis now integrated to the CV process for all modules. and skippable
+          - A separate univariate analysis now integrated to the CV process for all modules. and skipable
           - The existing univariate analysis now mandatory for all modules
-          - Univariate prior knowlege flag -k added to all modules
+          - Univariate prior knowledge flag -k added to all modules
           - Random state added to all modules
-          - CV-SVM-rRF-FS heatmap lables fixed for all moduels
+          - CV-SVM-rRF-FS heatmap lables fixed for all modules
           - Error handling added to rRF-FS plotting
           - Citation added
         
@@ -96,7 +97,7 @@ Please cite the following if you are to use this application:
         - Updates to connectivity_ml.sh
           - Unsorted annotation file support
           - Resampling is now stratified
-          - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+          - Error handling added for supervised hierarchical clustering analysis when only one significant result found
           - Small formatting fix for univariate module
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
           - A bug fixed for the display messaging order
@@ -106,7 +107,7 @@ Please cite the following if you are to use this application:
           - Unsorted annotation file support
           - Resampling is now stratified
           - Small formatting fix for univariate module
-          - Error handling added for supervised hierarchical clustering analysis when only one significant resutl found
+          - Error handling added for supervised hierarchical clustering analysis when only one significant result found
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
           - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
         

@@ -710,7 +710,7 @@ r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$rffs_htmap_keysize" "$rffs_htmap_key_xlab" "$rffs_htmap_key_ylab" \
 "$rffs_htmap_margin" "$rffs_htmap_width" "$rffs_htmap_height" \
 "$CVUNI" "$log2_trans" "$uni_fdr" "$uni_alpha" \
-"$random_state"
+"$random_state" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
