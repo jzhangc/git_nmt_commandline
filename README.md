@@ -21,6 +21,7 @@ Please cite the following if you are to use this application:
     (ADDED)
         - Updates to the regression module
           - Typo fixes for error messages
+          - A bug fixed where train_reg.sh fails to read default config values
 
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules

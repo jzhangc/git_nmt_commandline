@@ -394,9 +394,9 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_htmap_keysize=1.5
 	sig_htmap_key_xlab="Z score"
 	sig_htmap_key_ylab="Count"
-	htmap_margin="c(4, 8)"
-	htmap_width=6
-	htmap_height=5
+	sig_htmap_margin="c(4, 8)"
+	sig_htmap_width=6
+	sig_htmap_height=5
 	cpu_cluster="FORK"
 	training_percentage=0.8
 	svm_cv_centre_scale=TRUE

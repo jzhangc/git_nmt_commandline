@@ -1,0 +1,9 @@
+# ------ Sickkids work Windows machine ------
+
+# ------ JZ iMac ------
+# classification
+./cv_connectivity_ml_2d.sh \
+-i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/0.data/kristina_mtbi_meg_data/combined_power/kristina_mtbi_delta_power.csv" \
+-s "subjectid" -g "groupid" \
+-c "mTBI-control" \
+-o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/kristina_mtbi_meg/2.results/power/delta" -p 6
