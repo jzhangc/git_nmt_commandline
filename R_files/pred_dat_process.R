@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: pred_dat_process.R
 ## purpose: load and process mat file for prediction
-## version: 0.3.2
+## version: 0.3.3
 ## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
 
 ## flags from Rscript
@@ -28,7 +28,7 @@ RES_OUT_DIR <- args[5]
 
 ###### R script --------
 # ------ set the output directory as the working directory ------
-setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
+setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load mat file ------
 # setwd("/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/")
@@ -62,9 +62,9 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   names(sync.value) <- pair
   sync.value
 }
-if (is.null(nrow(raw_sample))){  # one entry only
+if (is.null(nrow(raw_sample))) { # one entry only
   raw_sample_dfm <- data.frame(as.list(raw_sample))
-  names(raw_sample_dfm) <- names(raw_sample)  
+  names(raw_sample_dfm) <- names(raw_sample)
 } else {
   raw_sample_dfm <- raw_sample
 }

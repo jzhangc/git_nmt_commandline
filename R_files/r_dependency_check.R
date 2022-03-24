@@ -1,7 +1,7 @@
 ######### general info --------
 ## name: r_dependency_check.R
 ## purpose: check all the dependent pacakges for running the follow-up R scripts
-## version: 0.3.2
+## version: 0.3.3
 
 ######### variables --------
 ## -- sys variables --
@@ -13,16 +13,19 @@ JZ_PKG <- c("RBioFS", "RBioArray")
 # -- check and install pacakges --
 cat("CRAN package(s)\n")
 for (i in CRAN_PKG) {
-  cat(paste0("\t", i, "..." ))
+  cat(paste0("\t", i, "..."))
   if (!requireNamespace(i, quietly = TRUE)) {
     cat("not found. \n\tAttempt to install from CRAN...")
-    tryCatch({
-      install.packages(i)
-      cat("done\n\n")
-    }, error = function(e){
-      cat("failed\n\n")
-      quit(status = 1)
-    })
+    tryCatch(
+      {
+        install.packages(i)
+        cat("done\n\n")
+      },
+      error = function(e) {
+        cat("failed\n\n")
+        quit(status = 1)
+      }
+    )
   } else {
     cat("ok\n")
   }
@@ -31,17 +34,20 @@ for (i in CRAN_PKG) {
 cat("\n")
 cat("GitHub package(s)\n")
 for (i in JZ_PKG) {
-  cat(paste0("\t", i, "..." ))
+  cat(paste0("\t", i, "..."))
   if (!requireNamespace(i, quietly = TRUE)) {
     cat("not found. \n\tAttempt to install from GitHub...")
     if (!requireNamespace(i)) {
-      tryCatch({
-        devtools::install_github(paste0("jzhangc/git_", i, "/", i), repos = BiocManager::repositories(), ref = "beta")
-        cat("done\n\n")
-      }, error = function(e) {
-        cat("fail\n\n")
-        quit(status = 1)
-      })
+      tryCatch(
+        {
+          devtools::install_github(paste0("jzhangc/git_", i, "/", i), repos = BiocManager::repositories(), ref = "beta")
+          cat("done\n\n")
+        },
+        error = function(e) {
+          cat("fail\n\n")
+          quit(status = 1)
+        }
+      )
     }
   } else {
     cat("ok\n")

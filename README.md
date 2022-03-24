@@ -18,6 +18,9 @@ Please cite the following if you are to use this application:
           - Node file length check added for univariate.R and reg_univariate.R
         - Bug fixes
         - Version bumped to 0.3.3
+    (ADDED)
+        - Updates to the regression module
+          - Typo fixes for error messages
 
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules

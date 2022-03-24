@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.3.2
+## version: 0.3.3
 
 ## test from Rscript
 args <- commandArgs()

@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: pred_classif.R
 ## purpose: load and process mat file for prediction
-## version: 0.3.2
+## version: 0.3.3
 ## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
 
 ## flags from Rscript

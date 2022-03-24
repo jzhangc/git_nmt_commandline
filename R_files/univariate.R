@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.3.2
+## version: 0.3.3
 
 ## test from Rscript
 args <- commandArgs()
@@ -16,8 +16,8 @@ require(RBioFS)
 
 ###### sys variables --------
 # ------ file name variables ------
-DAT_FILE <- args[6]  # 2D file
-MAT_FILE_NO_EXT <- args[7]  # from the raw mat file, for naming export data
+DAT_FILE <- args[6] # 2D file
+MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 NODE_FILE <- args[8]
 NODE_ID_VAR <- args[61]
 REGION_NAME_VAR <- args[62]
@@ -31,7 +31,7 @@ RES_OUT_DIR <- args[9]
 LOG2_TRANS <- eval(parse(text = args[10]))
 HTMAP_TEXTSIZE_COL <- as.numeric(args[11])
 HTMAP_TEXTANGLE_COL <- as.numeric(args[12])
-HTMAP_LAB_ROW <-eval(parse(text = args[13]))
+HTMAP_LAB_ROW <- eval(parse(text = args[13]))
 HTMAP_TEXTSIZE_ROW <- as.numeric(args[14])
 HTMAP_KEYSIZE <- as.numeric(args[15])
 HTMAP_KEY_XLAB <- args[16]
@@ -93,7 +93,7 @@ NO_SIG_WARNING_FIT <- FALSE
 
 ###### R script --------
 # ------ set the output directory as the working directory ------
-setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
+setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load and processed (from raw mat file) data files ------
 raw_sample_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
@@ -131,7 +131,7 @@ sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
-connections <- foreach(i = as.character(rawlist$genes$pair), .combine = "c") %do% {  # import node info
+connections <- foreach(i = as.character(rawlist$genes$pair), .combine = "c") %do% { # import node info
   ids <- unlist(strsplit(i, "_"))
   region1 <- node[, REGION_NAME_VAR][node[, NODE_ID_VAR] %in% ids[1]]
   region2 <- node[, REGION_NAME_VAR][node[, NODE_ID_VAR] %in% ids[2]]
@@ -146,51 +146,57 @@ normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quant
 # ------ all connections clustering analysis -------
 # -- hclust --
 if (HTMAP_LAB_ROW) {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_all"),
-                     fltlist = normdata, n = "all", fct = y, sampleName = idx$sample,
-                     genesymbolOnly = FALSE,
-                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "connections",
-                     cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
-                     keysize = HTMAP_KEYSIZE,
-                     key.xlab = HTMAP_KEY_XLAB,
-                     key.ylab = HTMAP_KEY_YLAB,
-                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
-                     margin = HTMAP_MARGIN)
+  rbioarray_hcluster(
+    plotName = paste0(MAT_FILE_NO_EXT, "_hclust_all"),
+    fltlist = normdata, n = "all", fct = y, sampleName = idx$sample,
+    genesymbolOnly = FALSE,
+    trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+    srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+    key.title = "", dataProbeVar = "connections",
+    cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
+    keysize = HTMAP_KEYSIZE,
+    key.xlab = HTMAP_KEY_XLAB,
+    key.ylab = HTMAP_KEY_YLAB,
+    plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+    margin = HTMAP_MARGIN
+  )
 } else {
-  rbioarray_hcluster(plotName = paste0(MAT_FILE_NO_EXT, "_hclust_all"),
-                     fltlist = normdata, n = "all", fct = y, sampleName = idx$sample,
-                     genesymbolOnly = FALSE,
-                     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-                     srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
-                     key.title = "", dataProbeVar = "connections", labRow = FALSE,
-                     cexCol = HTMAP_TEXTSIZE_COL, cexRow= HTMAP_TEXTSIZE_ROW,
-                     keysize = HTMAP_KEYSIZE,
-                     key.xlab = HTMAP_KEY_XLAB,
-                     key.ylab = HTMAP_KEY_YLAB,
-                     plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
-                     margin = HTMAP_MARGIN)
+  rbioarray_hcluster(
+    plotName = paste0(MAT_FILE_NO_EXT, "_hclust_all"),
+    fltlist = normdata, n = "all", fct = y, sampleName = idx$sample,
+    genesymbolOnly = FALSE,
+    trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+    srtCol = HTMAP_TEXTANGLE_COL, offsetCol = 0,
+    key.title = "", dataProbeVar = "connections", labRow = FALSE,
+    cexCol = HTMAP_TEXTSIZE_COL, cexRow = HTMAP_TEXTSIZE_ROW,
+    keysize = HTMAP_KEYSIZE,
+    key.xlab = HTMAP_KEY_XLAB,
+    key.ylab = HTMAP_KEY_YLAB,
+    plotWidth = HTMAP_WIDTH, plotHeight = HTMAP_HEIGHT,
+    margin = HTMAP_MARGIN
+  )
 }
 
 # -- PCA --
 pca_all <- data.frame(normdata$targets[, c("group", "sample")], t(normdata$E), stringsAsFactors = FALSE, check.names = FALSE, row.names = NULL)
-rbioFS_PCA(input = pca_all,
-           sampleIDVar = "sample", groupIDVar = "group",
-           scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-           boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-           biplot = TRUE, biplot.comps = PCA_PC, biplot.Title = NULL,
-           biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE,
-           biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-           biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-           biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = PCA_BIPLOT_ELLIPSE_CONF,
-           biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-           biplot.loadingplot = FALSE, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-           biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-           biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-           biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-           fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-           verbose = FALSE)
+rbioFS_PCA(
+  input = pca_all,
+  sampleIDVar = "sample", groupIDVar = "group",
+  scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
+  boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
+  biplot = TRUE, biplot.comps = PCA_PC, biplot.Title = NULL,
+  biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE,
+  biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
+  biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+  biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = PCA_BIPLOT_ELLIPSE_CONF,
+  biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
+  biplot.loadingplot = FALSE, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
+  biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+  biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+  biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
+  fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+  verbose = FALSE
+)
 
 
 # ------ univariate analysis ------
@@ -198,50 +204,55 @@ rbioFS_PCA(input = pca_all,
 design <- model.matrix(~ 0 + y)
 colnames(design) <- levels(y)
 contra_string <- unlist(strsplit(CONTRAST, split = ","))
-contra_string <- gsub(" ", "", contra_string, fixed = TRUE)  # remove all the white space
+contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
 # NOTE: below: use do.call to unpack arguments for makeContrasts()
 contra <- do.call(makeContrasts, c(as.list(contra_string), levels = as.list(parse(text = "design"))))
 
 # -- Stats --
-if (UNI_FDR){
+if (UNI_FDR) {
   sig.method <- "fdr"
 } else {
   sig.method <- "none"
 }
 
-tryCatch(rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
-                      fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
-                      weights = normdata$ArrayWeight,
-                      plot = TRUE, geneName = TRUE, genesymbolVar = "connections",
-                      topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
-                      padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
-                      ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
-                      plotTitle = NULL, xLabel = "log2(fold change)",
-                      yLabel = "-log10(p value)", symbolSize = VOLCANO_SYMBOL_SIZE,
-                      sigColour = VOLCANO_SIG_COLOUR, nonsigColour = VOLCANO_NONSIG_COLOUR,
-                      xTxtSize = VOLCANO_X_TEXT_SIZE, yTxtSize = VOLCANO_Y_TEXT_SIZE,
-                      plotWidth = VOLCANO_WIDTH, plotHeight = VOLCANO_HEIGHT,
-                      parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE),
-         warning = function(w) {
-           if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
-           rbioarray_DE(objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
-                        fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
-                        weights = normdata$ArrayWeight,
-                        plot = TRUE, geneName = TRUE, genesymbolVar = "connections",
-                        topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
-                        padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
-                        ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
-                        plotTitle = NULL, xLabel = "log2(fold change)",
-                        yLabel = "-log10(p value)", symbolSize = VOLCANO_SYMBOL_SIZE,
-                        sigColour = VOLCANO_SIG_COLOUR, nonsigColour = VOLCANO_NONSIG_COLOUR,
-                        xTxtSize = VOLCANO_X_TEXT_SIZE, yTxtSize = VOLCANO_Y_TEXT_SIZE,
-                        plotWidth = VOLCANO_WIDTH, plotHeight = VOLCANO_HEIGHT,
-                        parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE)
-         })
+tryCatch(rbioarray_DE(
+  objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
+  fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
+  weights = normdata$ArrayWeight,
+  plot = TRUE, geneName = TRUE, genesymbolVar = "connections",
+  topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
+  padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
+  ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
+  plotTitle = NULL, xLabel = "log2(fold change)",
+  yLabel = "-log10(p value)", symbolSize = VOLCANO_SYMBOL_SIZE,
+  sigColour = VOLCANO_SIG_COLOUR, nonsigColour = VOLCANO_NONSIG_COLOUR,
+  xTxtSize = VOLCANO_X_TEXT_SIZE, yTxtSize = VOLCANO_Y_TEXT_SIZE,
+  plotWidth = VOLCANO_WIDTH, plotHeight = VOLCANO_HEIGHT,
+  parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE
+),
+warning = function(w) {
+  if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
+  rbioarray_DE(
+    objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
+    fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
+    weights = normdata$ArrayWeight,
+    plot = TRUE, geneName = TRUE, genesymbolVar = "connections",
+    topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
+    padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
+    ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
+    plotTitle = NULL, xLabel = "log2(fold change)",
+    yLabel = "-log10(p value)", symbolSize = VOLCANO_SYMBOL_SIZE,
+    sigColour = VOLCANO_SIG_COLOUR, nonsigColour = VOLCANO_NONSIG_COLOUR,
+    xTxtSize = VOLCANO_X_TEXT_SIZE, yTxtSize = VOLCANO_Y_TEXT_SIZE,
+    plotWidth = VOLCANO_WIDTH, plotHeight = VOLCANO_HEIGHT,
+    parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE
+  )
+}
+)
 
 
 # -- Univariate analysis results export --
-DE_summary  <- as.data.frame(get(paste0(MAT_FILE_NO_EXT, "_DE_summary")))
+DE_summary <- as.data.frame(get(paste0(MAT_FILE_NO_EXT, "_DE_summary")))
 names(DE_summary) <- c("comparison", "p-value.threshold", "fold.change.threshold", "sig", "non-sig")
 
 # -- sig clustering --
@@ -252,30 +263,34 @@ for (i in 1:length(get(paste0(MAT_FILE_NO_EXT, "_DE")))) {
     NO_SIG_WARNING <- TRUE
   } else if (DE_summary[i, "sig"] == 1) {
     ONE_SIG_WARNING <- TRUE
-  }else {
+  } else {
     de_groups <- unlist(strsplit(de_names[i], "-"))
     de_groups <- gsub("(", "", de_groups, fixed = TRUE)
     de_groups <- gsub(")", "", de_groups, fixed = TRUE)
     de_sample_idx <- which(normdata$targets$group %in% de_groups)
-    super_cluster_data <- list(E = normdata$E[, de_sample_idx], genes = normdata$genes,
-                               targets = normdata$targets[de_sample_idx, ])
-    rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_DE_",de_names[i]),
-                             fltDOI = super_cluster_data, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
-                             DE.sig.method = sig.method, FC = UNI_FOLD_CHANGE, DE.sig.p = UNI_ALPHA,
-                             clust = "complete",
-                             ctrlProbe = FALSE,
-                             fct = y, dataProbeVar = "pair",
-                             rowLabel = TRUE,
-                             annot = super_cluster_data$genes, annotProbeVar = "pair", genesymbolVar = "connections",
-                             sampleName = super_cluster_data$targets$sample,
-                             trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
-                             key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
-                             cexCol = SIG_HTMAP_TEXTSIZE_COL, cexRow = SIG_HTMAP_TEXTSIZE_ROW,
-                             srtCol = SIG_HTMAP_TEXTANGLE_COL,
-                             key.xlab = SIG_HTMAP_KEY_XLAB, key.ylab = SIG_HTMAP_KEY_YLAB,
-                             margin = SIG_HTMAP_MARGIN,
-                             plotWidth = SIG_HTMAP_WIDTH, plotHeight = SIG_HTMAP_HEIGHT,
-                             verbose = FALSE)
+    super_cluster_data <- list(
+      E = normdata$E[, de_sample_idx], genes = normdata$genes,
+      targets = normdata$targets[de_sample_idx, ]
+    )
+    rbioarray_hcluster_super(
+      plotName = paste0(MAT_FILE_NO_EXT, "_DE_", de_names[i]),
+      fltDOI = super_cluster_data, dfmDE = get(paste0(MAT_FILE_NO_EXT, "_DE"))[[i]],
+      DE.sig.method = sig.method, FC = UNI_FOLD_CHANGE, DE.sig.p = UNI_ALPHA,
+      clust = "complete",
+      ctrlProbe = FALSE,
+      fct = y, dataProbeVar = "pair",
+      rowLabel = TRUE,
+      annot = super_cluster_data$genes, annotProbeVar = "pair", genesymbolVar = "connections",
+      sampleName = super_cluster_data$targets$sample,
+      trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
+      key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
+      cexCol = SIG_HTMAP_TEXTSIZE_COL, cexRow = SIG_HTMAP_TEXTSIZE_ROW,
+      srtCol = SIG_HTMAP_TEXTANGLE_COL,
+      key.xlab = SIG_HTMAP_KEY_XLAB, key.ylab = SIG_HTMAP_KEY_YLAB,
+      margin = SIG_HTMAP_MARGIN,
+      plotWidth = SIG_HTMAP_WIDTH, plotHeight = SIG_HTMAP_HEIGHT,
+      verbose = FALSE
+    )
   }
 }
 
@@ -284,8 +299,8 @@ fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))
 names(fit_dfm)[2] <- "pair"
 
 if (length(contra_string) == 1) {
-  if (UNI_FDR){
-    if (FDR_FAIL_WARNING){
+  if (UNI_FDR) {
+    if (FDR_FAIL_WARNING) {
       pcutoff <- UNI_ALPHA
     } else {
       pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val <= UNI_ALPHA)])
@@ -295,11 +310,12 @@ if (length(contra_string) == 1) {
   }
   sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
 } else {
-  if (UNI_FDR){
+  if (UNI_FDR) {
     pcutoff <- tryCatch(max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)]),
-                        warning = function(w){
-                          NULL
-                        })
+      warning = function(w) {
+        NULL
+      }
+    )
     if (is.null(pcutoff)) {
       sig_pairs_fit <- character(0)
     } else {
@@ -315,22 +331,24 @@ if (length(sig_pairs_fit) <= 1) {
   NO_SIG_WARNING_FIT <- TRUE
 } else {
   pca_sig <- pca_all[, names(pca_all) %in% c("group", "sample", sig_pairs_fit), drop = FALSE]
-  rbioFS_PCA(input = pca_sig,
-            sampleIDVar = "sample", groupIDVar = "group",
-            scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-            boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-            biplot = TRUE, biplot.comps = SIG_PCA_PC, biplot.Title = NULL,
-            biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE,
-            biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-            biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-            biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SIG_PCA_BIPLOT_ELLIPSE_CONF,
-            biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-            biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-            biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-            biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-            biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-            fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-            verbose = FALSE)
+  rbioFS_PCA(
+    input = pca_sig,
+    sampleIDVar = "sample", groupIDVar = "group",
+    scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
+    boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
+    biplot = TRUE, biplot.comps = SIG_PCA_PC, biplot.Title = NULL,
+    biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE,
+    biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
+    biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+    biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SIG_PCA_BIPLOT_ELLIPSE_CONF,
+    biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
+    biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
+    biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+    biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+    biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
+    fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+    verbose = FALSE
+  )
 }
 
 ####### clean up the mess and export --------
@@ -388,16 +406,16 @@ if (NO_SIG_WARNING) {
   cat(paste0("\t", MAT_FILE_NO_EXT, "_", de_names, "_hclust_sig.pdf\n"))
 }
 cat("\n")
-if (NO_SIG_WARNING_FIT){
-  if (length(contra_string) == 1){
-      cat("NO significant reuslts found in univariate analysis results, no PCA needed. \n")
+if (NO_SIG_WARNING_FIT) {
+  if (length(contra_string) == 1) {
+    cat("NO significant reuslts found in univariate analysis results, no PCA needed. \n")
   } else {
     cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
   }
 } else {
-    cat("PCA results saved to: \n")
-    cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
-    cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
+  cat("PCA results saved to: \n")
+  cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
+  cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
 }
 # if (length(contra_string) == 1){
 #   if (NO_SIG_WARNING_FIT) {
@@ -412,4 +430,3 @@ if (NO_SIG_WARNING_FIT){
 #     cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
 #   }
 # }
-

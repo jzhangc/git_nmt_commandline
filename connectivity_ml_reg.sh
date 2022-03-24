@@ -5,7 +5,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.3.2"
+VERSION="0.3.3"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -670,7 +670,7 @@ echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$group_summary\n"

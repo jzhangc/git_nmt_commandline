@@ -1,7 +1,7 @@
 ###### general info --------
 ## name: cv_ml_plsda_eval.R
 ## purpose: plsda modelling to evaluating SVM results for "cv only" methods
-## version: 0.3.2
+## version: 0.3.3
 
 ## flags from Rscript
 # NOTE: the order of the flags depends on the Rscript command
