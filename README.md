@@ -17,25 +17,32 @@ Please cite the following if you are to use this application:
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
         - Bug fixes
-        - Version bumped to 0.3.3
     (ADDED)
         - General updates
           - Data NA check added for the 2D modules
+
         - Updates to the regression module
           - Typo fixes for error messages
           - A bug fixed where train_reg.sh fails to read default config values
 
+        - Version bumped to 0.3.3
+
+
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules
           - AUC scores now included in .RData model files
+
         - Updates to prediction modules
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
+
         - Typo fixes
         - Version bumped to 0.3.2
+
 
     - 0.3.1 (May.12.2021)
         - More citations added
         - Version bumped to 0.3.1
+
         
     - 0.3.0 (March.28.2021)
         - General updates
