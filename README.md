@@ -18,7 +18,6 @@ Please cite the following if you are to use this application:
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
 
         - Typo fixes
-
         - Version bumped to 0.3.2
 
 
