@@ -10,27 +10,23 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.3.3
-    (ICEBOX)
-        - General updates
-          - Overall optimization
-          - A memory check module to ensure the stability
-          - Node file length check added for univariate.R and reg_univariate.R
-        - Bug fixes
-        - Version bumped to 0.3.3
-
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules
           - AUC scores now included in .RData model files
+
         - Updates to prediction modules
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
+
         - Typo fixes
+
         - Version bumped to 0.3.2
+
 
     - 0.3.1 (May.12.2021)
         - More citations added
         - Version bumped to 0.3.1
-        
+
+
     - 0.3.0 (March.28.2021)
         - General updates
           - Naive data classification module: connectivity_predict.sh predict_class.sh
@@ -53,6 +49,7 @@ Please cite the following if you are to use this application:
               commands to accommodate the above
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
           - Error handling substantially updated            
+
 
     - 0.2.1 (June.10.2020)        
         - General updates
