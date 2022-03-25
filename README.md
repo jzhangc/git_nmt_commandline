@@ -19,6 +19,8 @@ Please cite the following if you are to use this application:
         - Bug fixes
         - Version bumped to 0.3.3
     (ADDED)
+        - General updates
+          - Data NA check added for the 2D modules
         - Updates to the regression module
           - Typo fixes for error messages
           - A bug fixed where train_reg.sh fails to read default config values

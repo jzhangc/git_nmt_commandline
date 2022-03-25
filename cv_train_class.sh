@@ -700,6 +700,9 @@ echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
+elif [ "$group_summary" == "na_values" ]; then
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
 else
 	echo -e "$group_summary\n"
 fi

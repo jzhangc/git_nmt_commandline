@@ -33,6 +33,10 @@ if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(raw_csv))) {
   cat("none_existent")
   quit()
 }
+if (length(which(!complete.cases(raw_csv))) > 0) {
+  cat("na_values")
+  quit()
+}
 sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR]))
 sampleid <- raw_csv[, SAMPLEID_VAR]
 
