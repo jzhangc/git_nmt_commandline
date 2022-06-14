@@ -1,7 +1,6 @@
 ###### general info --------
 ## name: reg_input_dat_process_2d.R
 ## purpose: load and process 2d data file for regression
-## version: 0.3.3
 
 ## flags from Rscript
 args <- commandArgs()

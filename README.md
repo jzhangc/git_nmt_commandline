@@ -20,12 +20,19 @@ Please cite the following if you are to use this application:
     (ADDED)
         - General updates
           - Data NA check added for the 2D modules
+          - Modelilng speed improvement for all SVM modules
+          - Data center_scaling added to PLS modules
+          - Error handling improvement for PLS modules
 
         - Updates to the regression module
           - Typo fixes for error messages
           - A bug fixed where train_reg.sh fails to read default config values
 
+        - Other updates
+          - Individual R file version tracking removed
+
         - Version bumped to 0.3.3
+
 
 
     - 0.3.2 (July.1.2021)

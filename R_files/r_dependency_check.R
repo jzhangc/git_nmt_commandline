@@ -1,7 +1,6 @@
 ######### general info --------
 ## name: r_dependency_check.R
 ## purpose: check all the dependent pacakges for running the follow-up R scripts
-## version: 0.3.3
 
 ######### variables --------
 ## -- sys variables --

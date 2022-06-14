@@ -1,7 +1,6 @@
 ###### general info --------
 ## name: pred_dat_process_2d.R
 ## purpose: load and process 2d file for prediction
-## version: 0.3.3
 
 ## flags from Rscript
 args <- commandArgs(trailingOnly = TRUE)
