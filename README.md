@@ -17,10 +17,12 @@ Please cite the following if you are to use this application:
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
         - Bug fixes
+
     (ADDED)
         - General updates
           - Data NA check added for the 2D modules
           - Modelilng speed improvement for all SVM modules
+          - SFS plotting temporarily disabled due to the new parallel implementation
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
 

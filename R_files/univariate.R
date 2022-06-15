@@ -130,6 +130,9 @@ sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
+# free memory
+rm(x, E, pair, sample)
+
 connections <- foreach(i = as.character(rawlist$genes$pair), .combine = "c") %do% { # import node info
   ids <- unlist(strsplit(i, "_"))
   region1 <- node[, REGION_NAME_VAR][node[, NODE_ID_VAR] %in% ids[1]]
@@ -141,6 +144,10 @@ rawlist$genes$connections <- connections
 
 ## Normalization
 normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
+
+# free memory
+rm(rawlist)
+
 
 # ------ all connections clustering analysis -------
 # -- hclust --
@@ -350,12 +357,19 @@ if (length(sig_pairs_fit) <= 1) {
   )
 }
 
+# free memory
+rm(pca_all)
+
 ####### clean up the mess and export --------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
 x_ml <- t(normdata$E)[, sig_pairs_fit]
+
+# free memory
+rm(normdata)
+
 ml_dfm <- data.frame(sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
 

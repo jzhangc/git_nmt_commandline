@@ -54,6 +54,10 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   names(sync.value) <- pair
   sync.value
 }
+
+# free memory
+rm(raw, annot)
+
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 # raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_sample, row.names = NULL)
 raw_sample_dfm <- data.frame(sampleid = sampleid, group = sample_group, raw_sample, row.names = NULL)
@@ -67,6 +71,9 @@ names(raw_sample_dfm_wo_uni)[2] <- "y"
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
+
+# free memory
+rm(raw_sample_dfm, raw_sample_dfm_wo_uni)
 
 ## set up additional variables for cat
 group_summary <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do%
