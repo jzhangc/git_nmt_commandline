@@ -136,7 +136,7 @@ tryCatch(
   {
     nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
     nested_cv_y <- ml_dfm$y
-    svm_nested_cv <- rbioClass_svm_ncv_fs_v2(
+    svm_nested_cv <- rbioClass_svm_ncv_fs(
       x = nested_cv_x,
       y = nested_cv_y,
       univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
@@ -160,36 +160,36 @@ tryCatch(
     cat(paste0("\n\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n"))
   }
 )
-# cat("\n\n------ SFS plot error messages ------\n")  # plotting temporarily disabled due to new parallel implementation
-# for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
-#   tryCatch(
-#     {
-#       rbioFS_rf_SFS_plot(
-#         object = get(paste0("svm_nested_iter_", i, "_SFS")),
-#         n = "all",
-#         plot.file.title = paste0("svm_nested_iter_", i),
-#         plot.title = NULL,
-#         plot.titleSize = 10, plot.symbolSize = 2, plot.errorbar = c("sem"),
-#         plot.errorbarWidth = 0.2, plot.fontType = "sans",
-#         plot.xLabel = "Features",
-#         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-#         plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#         plot.xAngle = 0,
-#         plot.xhAlign = 0.5, plot.xvAlign = 0.5,
-#         plot.xTickItalic = FALSE, plot.xTickBold = FALSE,
-#         plot.yLabel = "OOB error rate",
-#         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#         plot.yTickItalic = FALSE, plot.yTickBold = FALSE,
-#         plot.rightsideY = TRUE,
-#         plot.Width = SVM_ROC_WIDTH,
-#         plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
-#       )
-#     },
-#     error = function(e) {
-#       cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
-#     }
-#   )
-# }
+cat("\n\n------ SFS plot error messages ------\n")  # plotting temporarily disabled due to new parallel implementation
+for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
+  tryCatch(
+    {
+      rbioFS_rf_SFS_plot(
+        object = get(paste0("svm_nested_iter_", i, "_SFS")),
+        n = "all",
+        plot.file.title = paste0("svm_nested_iter_", i),
+        plot.title = NULL,
+        plot.titleSize = 10, plot.symbolSize = 2, plot.errorbar = c("sem"),
+        plot.errorbarWidth = 0.2, plot.fontType = "sans",
+        plot.xLabel = "Features",
+        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
+        plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+        plot.xAngle = 0,
+        plot.xhAlign = 0.5, plot.xvAlign = 0.5,
+        plot.xTickItalic = FALSE, plot.xTickBold = FALSE,
+        plot.yLabel = "OOB error rate",
+        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+        plot.yTickItalic = FALSE, plot.yTickBold = FALSE,
+        plot.rightsideY = TRUE,
+        plot.Width = SVM_ROC_WIDTH,
+        plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
+      )
+    },
+    error = function(e) {
+      cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
+    }
+  )
+}
 sink()
 svm_rf_selected_features <- svm_nested_cv$selected.features
 rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing

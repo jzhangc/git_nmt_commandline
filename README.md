@@ -23,7 +23,6 @@ Please cite the following if you are to use this application:
           - Memory management improvement started to be implemented, more to come
           - Data NA check added for the 2D modules
           - Modelilng speed improvement for all SVM modules
-          - SFS plotting temporarily disabled due to the new parallel implementation
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
 
