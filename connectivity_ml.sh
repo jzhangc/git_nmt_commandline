@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # --- iniitate internal system variables ---
-VERSION="0.3.3b4"
+VERSION="0.3.3b5"
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
@@ -60,7 +60,6 @@ R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R p
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
-
 
 # --- flag check and flag variables (unfinished) ---
 # initiate mandatory variable check variable. initial value 1 (false)

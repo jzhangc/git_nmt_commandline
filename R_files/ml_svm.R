@@ -216,8 +216,8 @@ sink()
 # ------ SVM modelling ------
 # sub set the training/test data using the selected features
 if (input_n_total_features == 1) {
-  svm_training <- training[, !names(ml_dfm) %in% 'sampleid']
-  svm_test <- test[, !names(ml_dfm) %in% 'sampleid']
+  svm_training <- training[, !names(training) %in% 'sampleid']
+  svm_test <- test[, !names(test) %in% 'sampleid']
 } else {
   svm_training <- training[, c("y", svm_rf_selected_features)]
   svm_test <- test[, c("y", svm_rf_selected_features)]
@@ -248,6 +248,11 @@ svm_m_cv <- rbioClass_svm_cv(
 sink()
 
 # permuation test and plotting
+if (input_n_total_features == 1 && SVM_PERM_METHOD == 'by_feature_per_y') {
+  cat('WARNING: SVM_PERM_METHOD == \'by_feature_per_y\' not valid with only one selected features. Set to \'by_y\'.\n')
+  SVM_PERM_METHOD <- 'by_y'
+}
+
 rbioClass_svm_perm(
   object = svm_m, perm.method = SVM_PERM_METHOD, nperm = SVM_PERM_N,
   parallelComputing = PSETTING, clusterType = CPU_CLUSTER,

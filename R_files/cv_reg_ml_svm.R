@@ -110,76 +110,80 @@ setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-# ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
-# training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)  # use ceiling to maximize the training set size
-# training <- ml_dfm_randomized[1:training_n, ]
-# training_sampleid <- training$sampleid
-# training <- training[, -1]  # remove sampleid
-# test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
-# test <- test[, -1]  # remove sampleid
+input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c('sampleid', 'y'), drop = FALSE])
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
-nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
-nested_cv_y <- ml_dfm$y
-svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
-  x = nested_cv_x,
-  y = nested_cv_y,
-  center.scale = SVM_CV_CENTRE_SCALE,
-  univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
-  uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
-  kernel = SVM_CV_KERNEL,
-  cross.k = SVM_CV_CROSS_K,
-  tune.method = SVM_CV_TUNE_METHOD,
-  tune.cross.k = SVM_CV_TUNE_CROSS_K,
-  tune.boot.n = SVM_CV_TUNE_BOOT_N,
-  fs.method = "rf",
-  rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
-  fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
-  cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
-  parallelComputing = PSETTING, n_cores = CORES,
-  clusterType = CPU_CLUSTER,
-  verbose = TRUE
-)
-sink()
-svm_rf_selected_features <- svm_nested_cv_fs$selected.features
-rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
-
-# plot SFS results
-for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
-  tryCatch(
-    {
-      rbioFS_rf_SFS_plot(
-        object = get(paste0("svm_nested_iter_", i, "_SFS")),
-        n = "all",
-        plot.file.title = paste0("svm_nested_iter_", i),
-        plot.title = NULL,
-        plot.titleSize = 10, plot.symbolSize = 2, plot.errorbar = c("sem"),
-        plot.errorbarWidth = 0.2, plot.fontType = "sans",
-        plot.xLabel = "Features",
-        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-        plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-        plot.xAngle = 0,
-        plot.xhAlign = 0.5, plot.xvAlign = 0.5,
-        plot.xTickItalic = FALSE, plot.xTickBold = FALSE,
-        plot.yLabel = "OOB error rate",
-        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-        plot.yTickItalic = FALSE, plot.yTickBold = FALSE,
-        plot.rightsideY = TRUE,
-        plot.Width = SVM_ROC_WIDTH,
-        plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
-      )
-    },
-    error = function(e) {
-      cat(paste0(e, "\n"))
-    }
+if (input_n_total_features == 1) {
+  cat('WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis')
+  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% 'y', drop = FALSE])
+  rffs_selected_dfm <- ml_dfm
+} else {
+  nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
+  nested_cv_y <- ml_dfm$y
+  svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
+    x = nested_cv_x,
+    y = nested_cv_y,
+    center.scale = SVM_CV_CENTRE_SCALE,
+    univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
+    uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
+    kernel = SVM_CV_KERNEL,
+    cross.k = SVM_CV_CROSS_K,
+    tune.method = SVM_CV_TUNE_METHOD,
+    tune.cross.k = SVM_CV_TUNE_CROSS_K,
+    tune.boot.n = SVM_CV_TUNE_BOOT_N,
+    fs.method = "rf",
+    rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
+    fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
+    cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
+    parallelComputing = PSETTING, n_cores = CORES,
+    clusterType = CPU_CLUSTER,
+    verbose = TRUE
   )
+  sink()
+  svm_rf_selected_features <- svm_nested_cv_fs$selected.features
+  rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
+
+  # plot SFS results
+  for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
+    tryCatch(
+      {
+        rbioFS_rf_SFS_plot(
+          object = get(paste0("svm_nested_iter_", i, "_SFS")),
+          n = "all",
+          plot.file.title = paste0("svm_nested_iter_", i),
+          plot.title = NULL,
+          plot.titleSize = 10, plot.symbolSize = 2, plot.errorbar = c("sem"),
+          plot.errorbarWidth = 0.2, plot.fontType = "sans",
+          plot.xLabel = "Features",
+          plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
+          plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+          plot.xAngle = 0,
+          plot.xhAlign = 0.5, plot.xvAlign = 0.5,
+          plot.xTickItalic = FALSE, plot.xTickBold = FALSE,
+          plot.yLabel = "OOB error rate",
+          plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+          plot.yTickItalic = FALSE, plot.yTickBold = FALSE,
+          plot.rightsideY = TRUE,
+          plot.Width = SVM_ROC_WIDTH,
+          plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
+        )
+      },
+      error = function(e) {
+        cat(paste0(e, "\n"))
+      }
+    )
+  }
 }
 
 # ------ SVM modelling ------
 # set up modelling data using the selected features
-final_svr_data <- ml_dfm[, c("y", svm_rf_selected_features)]
+if (input_n_total_features == 1) {
+  final_svr_data <- ml_dfm[, !names(ml_dfm) %in% 'sampleid']
+} else {
+  final_svr_data <- ml_dfm[, c("y", svm_rf_selected_features)]
+}
 
 # modelling
 svm_m <- rbioClass_svm(
@@ -201,8 +205,12 @@ svm_m_cv <- rbioClass_svm_cv(
   verbose = TRUE
 )
 
-
 # permuation test and plotting
+if (SVM_PERM_METHOD != 'by_y') {
+  cat('WARNING: SVM_PERM_METHOD can only be \'by_y\' for regression. Proceed as such.\n')
+  SVM_PERM_METHOD <- 'by_y'
+}
+
 rbioClass_svm_perm(
   object = svm_m, perm.method = SVM_PERM_METHOD, nperm = SVM_PERM_N,
   parallelComputing = PSETTING, clusterType = CPU_CLUSTER,
@@ -225,25 +233,6 @@ sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Permutation test ------\n")
 svm_m_perm
 sink()
-
-# # ROC-AUC
-# if (any(SVM_ROC_THRESHOLD < 0) || any(SVM_ROC_THRESHOLD > max(svm_m$inputY))) {
-#   SVM_ROC_THRESHOLD_OUT_OF_RANGE <- TRUE
-#   SVM_ROC_THRESHOLD <- round(median(svm_m$inputY))
-#   }
-
-# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-# cat("------ ROC-AUC ------\n")
-# rbioClass_svm_roc_auc(object = svm_m, newdata = svm_test[, -1], newdata.y = svm_test$y,
-#                       y.threshold = SVM_ROC_THRESHOLD,
-#                       center.scale.newdata = SVM_CV_CENTRE_SCALE,
-#                       plot.smooth = SVM_ROC_SMOOTH,
-#                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-#                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#                       plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-#                       verbose = FALSE)
-# sink()
 
 
 # hcluster after nested CV: all data

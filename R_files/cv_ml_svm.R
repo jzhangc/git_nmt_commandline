@@ -246,7 +246,7 @@ svm_m_cv <- rbioClass_svm_cv(
 sink()
 
 # permuation test and plotting
-if (ncol(ml_dfm[, !names(ml_dfm) %in% c('sampleid', 'y'), drop = FALSE]) == 1 && SVM_PERM_METHOD == 'by_feature_per_y') {
+if (input_n_total_features == 1 && SVM_PERM_METHOD == 'by_feature_per_y') {
   cat('WARNING: SVM_PERM_METHOD == \'by_feature_per_y\' not valid with only one selected features. Set to \'by_y\'.\n')
   SVM_PERM_METHOD <- 'by_y'
 }
