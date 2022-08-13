@@ -123,7 +123,7 @@ sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
 nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
 nested_cv_y <- ml_dfm$y
-svm_nested_cv <- rbioClass_svm_ncv_fs(
+svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
   x = nested_cv_x,
   y = nested_cv_y,
   center.scale = SVM_CV_CENTRE_SCALE,
@@ -143,7 +143,7 @@ svm_nested_cv <- rbioClass_svm_ncv_fs(
   verbose = TRUE
 )
 sink()
-svm_rf_selected_features <- svm_nested_cv$selected.features
+svm_rf_selected_features <- svm_nested_cv_fs$selected.features
 rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
 # plot SFS results
@@ -304,7 +304,7 @@ write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = 
 
 svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
 save(
-  list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv", "svm_m_cv"),
+  list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
@@ -331,7 +331,7 @@ cat("Training set percentage: ", TRAINING_PERCENTAGE, "\n")
 cat("\n\n")
 cat("SVM nested cross validation with rRF-FS\n")
 cat("-------------------------------------\n")
-svm_nested_cv
+svm_nested_cv_fs
 cat("\n\n")
 cat("Clustering analysis: SVM training data upon nested CV\n")
 cat("-------------------------------------\n")

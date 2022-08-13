@@ -27,7 +27,7 @@ Please cite the following if you are to use this application:
           - Error handling improvement for PLS modules
 
         - Updates to the classification module 
-          - Added more error handling in cv_ml_svm.R
+          - Added more error handling in cv_ml_svm.R and ml_svm.R
           - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
 
         - Updates to the regression module
@@ -36,6 +36,7 @@ Please cite the following if you are to use this application:
 
         - Other updates
           - Individual R file version tracking removed
+          - Various syntax updates
 
         - Version bumped to 0.3.3
 
