@@ -306,7 +306,12 @@ final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
 for (i in 1:length(final_cv_auc)) {
   out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
   for (j in 1:length(svm_m_cv_svm_cv_roc_auc)) {
-    out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+    tryCatch({
+      out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+    }, error=function(e){
+      cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n")
+      out[j] <- NA
+      })
   }
   final_cv_auc[[i]] <- out
 }
@@ -321,6 +326,7 @@ for (i in 1:length(svm_m_cv_svm_cv_roc_auc)) { # set up group names for display
   )
   if (skip_to_next) {
     next
+    cat(paste0("WARNING: svm_m_cv_svm_cv_roc_auc[[", i, "]]\n"))
   } else {
     break
   }
@@ -375,7 +381,7 @@ tryCatch(
     )
   },
   error = function(e) {
-    cat("PCA failed. Check the data. \n")
+    cat("ERROR: PCA failed. Check the data. \n")
   }
 )
 sink()
@@ -432,10 +438,10 @@ tryCatch(
     }
   },
   error = function(e) {
-    cat("hclustering failed..skipped.\n")
+    cat("WARNING: hclustering failed..skipped.\n")
   },
   warining = function(w) {
-    cat("hclustering failed..skipped.\n")
+    cat("WARNING: hclustering failed..skipped.\n")
   }
 )
 sink()

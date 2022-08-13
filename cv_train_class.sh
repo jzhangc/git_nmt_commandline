@@ -753,7 +753,7 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- set up variables for output ml data file
 echo -e "\n"
-dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 if [ $KFLAG -eq 1 ]; then
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 else

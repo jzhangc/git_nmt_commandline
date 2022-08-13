@@ -26,6 +26,10 @@ Please cite the following if you are to use this application:
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
 
+        - Updates to the classification module 
+          - Added more error handling in cv_ml_svm.R
+          - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
+
         - Updates to the regression module
           - Typo fixes for error messages
           - A bug fixed where train_reg.sh fails to read default config values
