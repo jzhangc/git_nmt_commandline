@@ -95,7 +95,7 @@ else
 			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 			exit 0
 			;;
-		--version)
+		-v|--version)
 			echo -e "Current version: $VERSION\n"
 			exit 0
 			;;

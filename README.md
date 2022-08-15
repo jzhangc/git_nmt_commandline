@@ -25,6 +25,7 @@ Please cite the following if you are to use this application:
           - Modelilng speed improvement for all SVM modules
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
+          - To show version number, the shorterned "-v" flag added for all modules
 
         - Updates to the classification module
           - Added single input feature compatibility 
