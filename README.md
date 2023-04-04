@@ -16,6 +16,8 @@ Please cite the following if you are to use this application:
           - Overall optimization
           - A memory check module to ensure the stability
           - Node file length check added for univariate.R and reg_univariate.R
+          - A NMT version without feature selection
+          - Compatibility of missing data
         - Bug fixes
 
     (ADDED)
