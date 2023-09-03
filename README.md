@@ -47,7 +47,6 @@ Please cite the following if you are to use this application:
         - Version bumped to 0.3.3
 
 
-
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules
           - AUC scores now included in .RData model files
