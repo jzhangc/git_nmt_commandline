@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.3.3
+    - 0.4.0
     (ICEBOX)
         - General updates
           - Overall optimization
@@ -21,6 +21,8 @@ Please cite the following if you are to use this application:
         - Bug fixes
 
     (ADDED)
+        - New "no FS" version of the toolbox added: model only
+
         - General updates
           - Memory management improvement started to be implemented, more to come
           - Data NA check added for the 2D modules
@@ -39,12 +41,13 @@ Please cite the following if you are to use this application:
           - Added more error handling in cv_reg_ml_svm.R and reg_ml_svm.R
           - Typo fixes for error messages
           - A bug fixed where train_reg.sh fails to read default config values
+          - A bug fixed where SFS plotting not included in the "_svm_results.txt" file
 
         - Other updates
           - Individual R file version tracking removed
           - Various syntax updates
 
-        - Version bumped to 0.3.3
+        - Version bumped to 0.4.0
 
 
     - 0.3.2 (July.1.2021)

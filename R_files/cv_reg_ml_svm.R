@@ -110,14 +110,14 @@ setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c('sampleid', 'y'), drop = FALSE])
+input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
 if (input_n_total_features == 1) {
-  cat('WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis')
-  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% 'y', drop = FALSE])
+  cat("WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis")
+  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% "y", drop = FALSE])
   rffs_selected_dfm <- ml_dfm
 } else {
   nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
@@ -141,7 +141,6 @@ if (input_n_total_features == 1) {
     clusterType = CPU_CLUSTER,
     verbose = TRUE
   )
-  sink()
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
@@ -171,16 +170,17 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0(e, "\n"))
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
       }
     )
   }
 }
+sink()
 
 # ------ SVM modelling ------
 # set up modelling data using the selected features
 if (input_n_total_features == 1) {
-  final_svr_data <- ml_dfm[, !names(ml_dfm) %in% 'sampleid']
+  final_svr_data <- ml_dfm[, !names(ml_dfm) %in% "sampleid"]
 } else {
   final_svr_data <- ml_dfm[, c("y", svm_rf_selected_features)]
 }
@@ -206,9 +206,9 @@ svm_m_cv <- rbioClass_svm_cv(
 )
 
 # permuation test and plotting
-if (SVM_PERM_METHOD != 'by_y') {
-  cat('WARNING: SVM_PERM_METHOD can only be \'by_y\' for regression. Proceed as such.\n')
-  SVM_PERM_METHOD <- 'by_y'
+if (SVM_PERM_METHOD != "by_y") {
+  cat("WARNING: SVM_PERM_METHOD can only be 'by_y' for regression. Proceed as such.\n")
+  SVM_PERM_METHOD <- "by_y"
 }
 
 rbioClass_svm_perm(

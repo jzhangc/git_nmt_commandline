@@ -128,14 +128,14 @@ setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c('sampleid', 'y'), drop = FALSE])
+input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
 if (input_n_total_features == 1) {
-  cat('WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis')
-  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% 'y', drop = FALSE])
+  cat("WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis")
+  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% "y", drop = FALSE])
   rffs_selected_dfm <- ml_dfm
 } else {
   tryCatch(
@@ -172,7 +172,7 @@ if (input_n_total_features == 1) {
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
   # plotting for rRF-FS
-  cat("\n\n------ SFS plot error messages ------\n")  # plotting temporarily disabled due to new parallel implementation
+  cat("\n\n------ SFS plot error messages ------\n") # plotting temporarily disabled due to new parallel implementation
   for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
     tryCatch(
       {
@@ -216,7 +216,7 @@ sink()
 # ------ SVM modelling ------
 # sub set the training/test data using the selected features
 if (input_n_total_features == 1) {
-  final_svm_data <- ml_dfm[, !names(ml_dfm) %in% 'sampleid']
+  final_svm_data <- ml_dfm[, !names(ml_dfm) %in% "sampleid"]
 } else {
   final_svm_data <- ml_dfm[, c("y", svm_rf_selected_features)]
 }
@@ -246,9 +246,9 @@ svm_m_cv <- rbioClass_svm_cv(
 sink()
 
 # permuation test and plotting
-if (input_n_total_features == 1 && SVM_PERM_METHOD == 'by_feature_per_y') {
-  cat('WARNING: SVM_PERM_METHOD == \'by_feature_per_y\' not valid with only one selected features. Set to \'by_y\'.\n')
-  SVM_PERM_METHOD <- 'by_y'
+if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
+  cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
+  SVM_PERM_METHOD <- "by_y"
 }
 
 rbioClass_svm_perm(
@@ -337,12 +337,15 @@ final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
 for (i in 1:length(final_cv_auc)) {
   out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
   for (j in 1:length(svm_m_cv_svm_cv_roc_auc)) {
-    tryCatch({
-      out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
-    }, error=function(e){
-      cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n")
-      out[j] <- NA
-      })
+    tryCatch(
+      {
+        out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+      },
+      error = function(e) {
+        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n")
+        out[j] <- NA
+      }
+    )
   }
   final_cv_auc[[i]] <- out
 }
