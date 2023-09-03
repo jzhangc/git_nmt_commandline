@@ -453,141 +453,141 @@ tryCatch(
     cat("PCA on training data failed. Check the data. \n")
   }
 )
-# below: FS PCA on all data
-pca_svm_rffs_all_samples <- data.frame(
-  row_num = 1:nrow(rffs_selected_dfm), rffs_selected_dfm[, !colnames(rffs_selected_dfm) %in% "sampleid"],
-  check.names = FALSE
-)
+# # below: FS PCA on all data
+# pca_svm_rffs_all_samples <- data.frame(
+#   row_num = 1:nrow(rffs_selected_dfm), rffs_selected_dfm[, !colnames(rffs_selected_dfm) %in% "sampleid"],
+#   check.names = FALSE
+# )
 
-tryCatch(
-  {
-    rbioFS_PCA(
-      input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar = "y",
-      scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-      boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-      biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
-      biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-      biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-      biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
-      biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-      biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-      biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-      biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-      fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-      verbose = FALSE
-    )
-  },
-  error = function(e) {
-    cat("PCA on all data failed. try with less PCs. \n")
-  }
-)
+# tryCatch(
+#   {
+#     rbioFS_PCA(
+#       input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar = "y",
+#       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
+#       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
+#       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
+#       biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
+#       biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+#       biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
+#       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
+#       biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
+#       biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+#       biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
+#       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+#       verbose = FALSE
+#     )
+#   },
+#   error = function(e) {
+#     cat("PCA on all data failed. try with less PCs. \n")
+#   }
+# )
 sink()
 
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("\n\n------ hcluster error messages ------\n")
-# hcluster after nested CV: all data
-rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
-normdata_crosscv <- list(
-  E = t(rffs_selected_E),
-  genes = data.frame(ProbeName = seq(ncol(rffs_selected_E)), pair = colnames(rffs_selected_E)),
-  targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
-  ArrayWeight = NULL
-)
+# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+# cat("\n\n------ hcluster error messages ------\n")
+# # hcluster after nested CV: all data
+# rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
+# normdata_crosscv <- list(
+#   E = t(rffs_selected_E),
+#   genes = data.frame(ProbeName = seq(ncol(rffs_selected_E)), pair = colnames(rffs_selected_E)),
+#   targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
+#   ArrayWeight = NULL
+# )
 
-tryCatch(
-  {
-    if (HTMAP_LAB_ROW) {
-      rbioarray_hcluster(
-        plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-        fltlist = normdata_crosscv, n = "all",
-        fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-        ColSideCol = TRUE,
-        sampleName = normdata_crosscv$targets$sample,
-        genesymbolOnly = FALSE,
-        trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-        srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-        key.title = "", dataProbeVar = "pair",
-        cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-        keysize = RFFS_HTMAP_KEYSIZE,
-        key.xlab = RFFS_HTMAP_KEY_XLAB,
-        key.ylab = RFFS_HTMAP_KEY_YLAB,
-        plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-        margin = RFFS_HTMAP_MARGIN
-      )
-    } else {
-      rbioarray_hcluster(
-        plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-        fltlist = normdata_crosscv, n = "all",
-        fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-        ColSideCol = TRUE,
-        sampleName = normdata_crosscv$targets$sample,
-        genesymbolOnly = FALSE,
-        trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-        srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-        key.title = "", dataProbeVar = "pair", labRow = FALSE,
-        cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-        keysize = RFFS_HTMAP_KEYSIZE,
-        key.xlab = RFFS_HTMAP_KEY_XLAB,
-        key.ylab = RFFS_HTMAP_KEY_YLAB,
-        plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-        margin = RFFS_HTMAP_MARGIN
-      )
-    }
-  },
-  error = function(e) {
-    cat("hclustering failed..skipped.\n")
-  },
-  warining = function(w) {
-    cat("hclustering failed..skipped.\n")
-  }
-)
-sink()
+# tryCatch(
+#   {
+#     if (HTMAP_LAB_ROW) {
+#       rbioarray_hcluster(
+#         plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
+#         fltlist = normdata_crosscv, n = "all",
+#         fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
+#         ColSideCol = TRUE,
+#         sampleName = normdata_crosscv$targets$sample,
+#         genesymbolOnly = FALSE,
+#         trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+#         srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
+#         key.title = "", dataProbeVar = "pair",
+#         cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
+#         keysize = RFFS_HTMAP_KEYSIZE,
+#         key.xlab = RFFS_HTMAP_KEY_XLAB,
+#         key.ylab = RFFS_HTMAP_KEY_YLAB,
+#         plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+#         margin = RFFS_HTMAP_MARGIN
+#       )
+#     } else {
+#       rbioarray_hcluster(
+#         plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
+#         fltlist = normdata_crosscv, n = "all",
+#         fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
+#         ColSideCol = TRUE,
+#         sampleName = normdata_crosscv$targets$sample,
+#         genesymbolOnly = FALSE,
+#         trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+#         srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
+#         key.title = "", dataProbeVar = "pair", labRow = FALSE,
+#         cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
+#         keysize = RFFS_HTMAP_KEYSIZE,
+#         key.xlab = RFFS_HTMAP_KEY_XLAB,
+#         key.ylab = RFFS_HTMAP_KEY_YLAB,
+#         plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+#         margin = RFFS_HTMAP_MARGIN
+#       )
+#     }
+#   },
+#   error = function(e) {
+#     cat("hclustering failed..skipped.\n")
+#   },
+#   warining = function(w) {
+#     cat("hclustering failed..skipped.\n")
+#   }
+# )
+# sink()
 
-# hcluster after nested CV: training data
-svm_training_E <- svm_training[, -1]
-normdata_crosscv_training <- list(
-  E = t(svm_training_E),
-  genes = data.frame(ProbeName = seq(ncol(svm_training_E)), pair = colnames(svm_training_E)),
-  targets = data.frame(id = seq(nrow(training)), sample = training_sampleid),
-  ArrayWeight = NULL
-)
-if (HTMAP_LAB_ROW) {
-  rbioarray_hcluster(
-    plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-    fltlist = normdata_crosscv_training, n = "all",
-    fct = factor(svm_training$y, levels = unique(svm_training$y)),
-    ColSideCol = TRUE,
-    sampleName = normdata_crosscv_training$targets$sample,
-    genesymbolOnly = FALSE,
-    trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-    srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-    key.title = "", dataProbeVar = "pair",
-    cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-    keysize = RFFS_HTMAP_KEYSIZE,
-    key.xlab = RFFS_HTMAP_KEY_XLAB,
-    key.ylab = RFFS_HTMAP_KEY_YLAB,
-    plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-    margin = RFFS_HTMAP_MARGIN
-  )
-} else {
-  rbioarray_hcluster(
-    plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-    fltlist = normdata_crosscv_training, n = "all",
-    fct = factor(svm_training$y, levels = unique(svm_training$y)),
-    ColSideCol = TRUE,
-    sampleName = normdata_crosscv_training$targets$sample,
-    genesymbolOnly = FALSE,
-    trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-    srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-    key.title = "", dataProbeVar = "pair", labRow = FALSE,
-    cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-    keysize = RFFS_HTMAP_KEYSIZE,
-    key.xlab = RFFS_HTMAP_KEY_XLAB,
-    key.ylab = RFFS_HTMAP_KEY_YLAB,
-    plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-    margin = RFFS_HTMAP_MARGIN
-  )
-}
+# # hcluster after nested CV: training data
+# svm_training_E <- svm_training[, -1]
+# normdata_crosscv_training <- list(
+#   E = t(svm_training_E),
+#   genes = data.frame(ProbeName = seq(ncol(svm_training_E)), pair = colnames(svm_training_E)),
+#   targets = data.frame(id = seq(nrow(training)), sample = training_sampleid),
+#   ArrayWeight = NULL
+# )
+# if (HTMAP_LAB_ROW) {
+#   rbioarray_hcluster(
+#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
+#     fltlist = normdata_crosscv_training, n = "all",
+#     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+#     ColSideCol = TRUE,
+#     sampleName = normdata_crosscv_training$targets$sample,
+#     genesymbolOnly = FALSE,
+#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
+#     key.title = "", dataProbeVar = "pair",
+#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
+#     keysize = RFFS_HTMAP_KEYSIZE,
+#     key.xlab = RFFS_HTMAP_KEY_XLAB,
+#     key.ylab = RFFS_HTMAP_KEY_YLAB,
+#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+#     margin = RFFS_HTMAP_MARGIN
+#   )
+# } else {
+#   rbioarray_hcluster(
+#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
+#     fltlist = normdata_crosscv_training, n = "all",
+#     fct = factor(svm_training$y, levels = unique(svm_training$y)),
+#     ColSideCol = TRUE,
+#     sampleName = normdata_crosscv_training$targets$sample,
+#     genesymbolOnly = FALSE,
+#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
+#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
+#     key.title = "", dataProbeVar = "pair", labRow = FALSE,
+#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
+#     keysize = RFFS_HTMAP_KEYSIZE,
+#     key.xlab = RFFS_HTMAP_KEY_XLAB,
+#     key.ylab = RFFS_HTMAP_KEY_YLAB,
+#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
+#     margin = RFFS_HTMAP_MARGIN
+#   )
+# }
 
 ####### clean up the mess and export --------
 ## variables for display
