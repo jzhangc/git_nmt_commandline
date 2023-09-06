@@ -34,6 +34,7 @@ Please cite the following if you are to use this application:
         - Updates to the classification module
           - Added single input feature compatibility 
           - Added more error handling in cv_ml_svm.R and ml_svm.R
+          - Updated the file name suffix to "_plsda_roc_auc_test.txt" for the plsda analysis output file
           - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
 
         - Updates to the regression module

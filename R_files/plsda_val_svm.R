@@ -209,8 +209,8 @@ error = function(w) {
 )
 
 
-# ROC-AUC
-sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), append = TRUE)
+# ROC-AUC on the same test data used for SVM
+sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_roc_roc_test.txt"), append = TRUE)
 cat("------ ROC-AUC ------\n")
 rbioClass_plsda_roc_auc(
   object = plsda_m_optim,
@@ -288,7 +288,7 @@ cat("\n\n")
 cat("PLS-DA ROC-AUC\n")
 cat("-------------------------------------\n")
 cat("NOTE: PLS-DA ROC-Auc is based on the test set used in SVM ROC-AUC analysis.\n")
-cat("NOTE: Check the PLS-DA results file ", paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), " for AUC values.\n")
+cat("NOTE: Check the PLS-DA test data ROC-AUC results file ", paste0(MAT_FILE_NO_EXT, "_plsda_roc_auc_test.txt"), " for AUC values.\n")
 cat("PLS-DA ROC figure saved to file: plsda_m_optim.plsda.roc.pdf\n")
 cat("\n\n")
 cat("PLS-DA VIP (variable importance) plot\n")
