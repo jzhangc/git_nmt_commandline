@@ -293,9 +293,9 @@ output_for_dl <- rffs_selected_dfm
 
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
 
-svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
+svm_training <- ml_dfm
 save(
-  list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
+  list = c("svm_m", "svm_training", "svm_m_cv"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 

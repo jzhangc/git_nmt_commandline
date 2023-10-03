@@ -414,45 +414,45 @@ rbioClass_svm_roc_auc(
 )
 sink()
 
-# -- PCA --
-if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
-  SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
-  cat("PCA: set PCs greater than selected features. Proceed with PC = number of features\n")
-}
+# # -- PCA --
+# if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
+#   SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
+#   cat("PCA: set PCs greater than selected features. Proceed with PC = number of features\n")
+# }
 
-if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
-  SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
-  cat("PCA: set PCs greater than input features. Proceed with PC = number of features\n")
-}
+# if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
+#   SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
+#   cat("PCA: set PCs greater than input features. Proceed with PC = number of features\n")
+# }
 
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("\n\n------ PCA error messages ------\n")
+# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+# cat("\n\n------ PCA error messages ------\n")
 
-# FS PCA on training
-pca_svm_rffs_training <- data.frame(row_num = 1:nrow(svm_training), svm_training, check.names = FALSE)
+# # FS PCA on training
+# pca_svm_rffs_training <- data.frame(row_num = 1:nrow(svm_training), svm_training, check.names = FALSE)
 
-tryCatch(
-  {
-    rbioFS_PCA(
-      input = pca_svm_rffs_training, sampleIDVar = "row_num", groupIDVar = "y",
-      scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-      boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-      biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
-      biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-      biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-      biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
-      biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-      biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-      biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-      biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-      fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-      verbose = FALSE
-    )
-  },
-  error = function(e) {
-    cat("PCA on training data failed. Check the data. \n")
-  }
-)
+# tryCatch(
+#   {
+#     rbioFS_PCA(
+#       input = pca_svm_rffs_training, sampleIDVar = "row_num", groupIDVar = "y",
+#       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
+#       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
+#       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
+#       biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
+#       biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+#       biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
+#       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
+#       biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
+#       biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+#       biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
+#       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+#       verbose = FALSE
+#     )
+#   },
+#   error = function(e) {
+#     cat("PCA on training data failed. Check the data. \n")
+#   }
+# )
 # # below: FS PCA on all data
 # pca_svm_rffs_all_samples <- data.frame(
 #   row_num = 1:nrow(rffs_selected_dfm), rffs_selected_dfm[, !colnames(rffs_selected_dfm) %in% "sampleid"],
@@ -608,7 +608,7 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 write.csv(file = "ml_training.csv", training, row.names = FALSE)
 write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(
-  list = c("svm_m", "svm_m_cv", "svm_nested_cv_fs", "svm_rf_selected_features", "svm_training", "svm_test", "rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
+  list = c("svm_m", "svm_m_cv", "svm_training", "svm_test", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 

@@ -362,12 +362,12 @@ y_randomized <- data.frame(
   `Randomized group labels` = ml_dfm_randomized$y,
   check.names = FALSE
 )
-output_for_dl <- ml_dfm[, c("sampleid", "y", svm_rf_selected_features)]
+output_for_dl <- ml_dfm
 
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
 save(
-  list = c("svm_m", "svm_rf_selected_features", "svm_training", "svm_test", "svm_nested_cv_fs", "svm_m_cv"),
+  list = c("svm_m", "svm_training", "svm_test", "svm_m_cv"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 

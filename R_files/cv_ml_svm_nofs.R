@@ -492,9 +492,9 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 #                            check.names = FALSE)
 # save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
 #      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
-svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
+svm_training <- ml_dfm
 save(
-  list = c("svm_m", "svm_m_cv", "svm_training", "svm_nested_cv_fs", "svm_rf_selected_features", "rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc"),
+  list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
