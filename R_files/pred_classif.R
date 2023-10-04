@@ -80,8 +80,8 @@ if (PSETTING) {
                       export.name = rownames(x[i, ]),
                       plot.Width = PIE_WIDTH, plot.Height = PIE_HEIGHT,
                       verbose = FALSE)
-  stopCluster(cl)
   }
+  stopCluster(cl)
 } else {
   dummy <- foreach(i = 1:nrow(x), .packages = "RBioFS") %do% {
     rbioClass_svm_predcit(object = svm_m,

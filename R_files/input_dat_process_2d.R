@@ -40,15 +40,15 @@ sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR
 sampleid <- raw_csv[, SAMPLEID_VAR]
 
 
-# ------ process the mat file with the mata data ------
+# ------ process the file with the mata data ------
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 group <- sample_group
 raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
 # raw_sample_dfm_wo_uni <- data.frame(y = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 # names(raw_sample_dfm_wo_uni)[-1] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
-raw_sample_dfm_wo_uni <- raw_sample_dfm
-names(raw_sample_dfm_wo_uni)[2] <- "y"
+# raw_sample_dfm_wo_uni <- raw_sample_dfm
+# names(raw_sample_dfm_wo_uni)[2] <- "y"
 
 # free memory
 rm(raw_csv)
@@ -56,10 +56,9 @@ rm(raw_csv)
 ####### export and clean up the mess --------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
-write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
 
 # free memory
-rm(raw_sample_dfm, raw_sample_dfm_wo_uni)
+rm(raw_sample_dfm)
 
 ## set up additional variables for cat
 group_summary <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do%
