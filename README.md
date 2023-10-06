@@ -43,6 +43,9 @@ Please cite the following if you are to use this application:
           - Typo fixes for error messages
           - A bug fixed where train_reg.sh fails to read default config values
           - A bug fixed where SFS plotting not included in the "_svm_results.txt" file
+        
+        - Updates to the prediction module
+          - A bug fixed where the prediction module does not work properly
 
         - Other updates
           - Individual R file version tracking removed

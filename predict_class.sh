@@ -375,10 +375,10 @@ echo -e "=======================================================================
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "\n\tData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-if [ "$mat_dim" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+if [ "$nsamples_to_pred" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the annotation information. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
-elif [ "$mat_dim" == "unequal_length" ]; then
+elif [ "$nsamples_to_pred" == "unequal_length" ]; then
 	echo -e "${COLOUR_RED}\nERROR: annotation information not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
