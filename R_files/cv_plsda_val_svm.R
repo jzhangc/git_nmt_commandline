@@ -114,21 +114,22 @@ y <- svm_m$inputY
 
 # inital modelling and ncomp optimization
 plsda_m <- tryCatch(rbioClass_plsda(
-  x = x, y = y,
-  ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-  segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
-  method = "oscorespls", verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioClass_plsda(
     x = x, y = y,
-    ncomp = 1,
-    validation = PLSDA_VALIDATION, maxit = 10000,
-    segments = PLSDA_VALIDATION_SEGMENT,
+    ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
+    segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
     method = "oscorespls", verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioClass_plsda(
+      x = x, y = y,
+      ncomp = 1,
+      validation = PLSDA_VALIDATION, maxit = 10000,
+      segments = PLSDA_VALIDATION_SEGMENT,
+      method = "oscorespls", verbose = FALSE
+    )
+  }
 )
 
 rbioClass_plsda_ncomp_select(plsda_m,
@@ -142,23 +143,23 @@ rbioClass_plsda_ncomp_select(plsda_m,
 
 ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected)) # get the maximum ncomp needed
 plsda_m_optim <- tryCatch(rbioClass_plsda(
-  x = x, y = y,
-  ncomp = ncomp_select, validation = PLSDA_VALIDATION,
-  segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
-  method = "oscorespls", verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioClass_plsda(
     x = x, y = y,
-    ncomp = 1,
-    validation = PLSDA_VALIDATION, maxit = 200,
-    segments = PLSDA_VALIDATION_SEGMENT,
+    ncomp = ncomp_select, validation = PLSDA_VALIDATION,
+    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
     method = "oscorespls", verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioClass_plsda(
+      x = x, y = y,
+      ncomp = 1,
+      validation = PLSDA_VALIDATION, maxit = 200,
+      segments = PLSDA_VALIDATION_SEGMENT,
+      method = "oscorespls", verbose = FALSE
+    )
+  }
 )
-
 
 # permutation test
 if (length(unique(table(svm_m$inputY))) > 1) { # if to use adjCV depending on if the data is balanced
@@ -194,19 +195,20 @@ tryCatch(rbioClass_plsda_scoreplot(
   plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
 ),
 error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioClass_plsda_scoreplot(
-    object = plsda_m_optim, comps = 1,
-    plot.sampleLabel.type = "none",
-    plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
-    plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-    plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-    plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-    plot.rightsideY = PCA_RIGHTSIDE_Y,
-    plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-    plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
-  )
-}
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioClass_plsda_scoreplot(
+      object = plsda_m_optim, comps = 1,
+      plot.sampleLabel.type = "none",
+      plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
+      plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+      plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+      plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+      plot.rightsideY = PCA_RIGHTSIDE_Y,
+      plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+      plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
+    )
+  }
 )
 
 
@@ -230,34 +232,49 @@ error = function(w) {
 # sink()
 
 # VIP plot
-rbioFS_plsda_vip(
-  object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
-  vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
-  boot.n = PLSDA_VIP_BOOT_N, plot = FALSE,
-  boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,
-  verbose = FALSE
+tryCatch(
+  rbioFS_plsda_vip(
+    object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
+    vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
+    boot.n = PLSDA_VIP_BOOT_N, plot = FALSE,
+    boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,
+    verbose = FALSE
+  ),
+  error = function(e) {
+    warning(e)
+  }
 )
-rbioFS_plsda_vip_plot(
-  vip_obj = plsda_m_optim_plsda_vip,
-  plot.errorbar = PLSDA_VIP_PLOT_ERRORBAR,
-  plot.errorbarWidth = PLSDA_VIP_PLOT_ERRORBAR_WIDTH,
-  plot.errorbarLblSize = PLSDA_VIP_PLOT_ERRORBAR_LABEL_SIZE,
-  plot.xAngle = PLSDA_VIP_PLOT_X_TEXTANGLE,
-  plot.xLabelSize = PLSDA_VIP_PLOT_X_LABEL_SIZE,
-  plot.xTickLblSize = PLSDA_VIP_PLOT_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = PLSDA_VIP_PLOT_Y_LABEL_SIZE,
-  plot.yTickLblSize = PLSDA_VIP_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = PLSDA_VIP_PLOT_WIDTH,
-  plot.Height = PLSDA_VIP_PLOT_HEIGHT,
-  verbose = FALSE
+
+tryCatch(
+  rbioFS_plsda_vip_plot(
+    vip_obj = plsda_m_optim_plsda_vip,
+    plot.errorbar = PLSDA_VIP_PLOT_ERRORBAR,
+    plot.errorbarWidth = PLSDA_VIP_PLOT_ERRORBAR_WIDTH,
+    plot.errorbarLblSize = PLSDA_VIP_PLOT_ERRORBAR_LABEL_SIZE,
+    plot.xAngle = PLSDA_VIP_PLOT_X_TEXTANGLE,
+    plot.xLabelSize = PLSDA_VIP_PLOT_X_LABEL_SIZE,
+    plot.xTickLblSize = PLSDA_VIP_PLOT_X_TICK_LABEL_SIZE,
+    plot.yLabelSize = PLSDA_VIP_PLOT_Y_LABEL_SIZE,
+    plot.yTickLblSize = PLSDA_VIP_PLOT_Y_TICK_LABEL_SIZE,
+    plot.Width = PLSDA_VIP_PLOT_WIDTH,
+    plot.Height = PLSDA_VIP_PLOT_HEIGHT,
+    verbose = FALSE
+  ),
+  error = function(e) {
+    warning(e)
+  }
 )
 
 ####### clean up the mess and export --------
 ## variables for display
 
 ## export to results files if needed
-save(list = c("plsda_m_optim"), file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsda_model.Rdata"))
-
+tryCatch(
+  save(list = c("plsda_m_optim"), file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsda_model.Rdata"))  ,
+  error = function(e) {
+    warning(e)
+  }
+)
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

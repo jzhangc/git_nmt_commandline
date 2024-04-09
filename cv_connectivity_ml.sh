@@ -390,7 +390,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $random_state || -z $log2_trans || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $pca_scale_data || -z $pca_centre_data || -z $pca_pc \
 	|| -z $pca_biplot_samplelabel_type || -z $pca_biplot_samplelabel_size || -z $pca_biplot_symbol_size \
@@ -437,6 +437,7 @@ if [ $CONF_CHECK -eq 1 ]; then
   # set the values back to default
 	random_state=0
 	log2_trans=TRUE
+	uni_analysis=FALSE
 	htmap_textsize_col=0.7
 	htmap_textangle_col=90
 	htmap_lab_row=FALSE
@@ -580,6 +581,7 @@ echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
 echo -e "\nData processing"
 echo -e "\tlog2_trans=$log2_trans"
+echo -e "\tunianalysis=$uni_analysis"
 echo -e "\nClustering analysis for all connections"
 echo -e "\thtmap_textsize_col=$htmap_textsize_col"
 echo -e "\thtmap_textangle_col=$htmap_textangle_col"
@@ -786,6 +788,7 @@ r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
 "$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
 "$NODE_ID" "$REGION_NAME" \
+"$uni_analysis" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log

@@ -114,49 +114,56 @@ y <- svm_m$inputY
 
 # inital modelling and ncomp optimization
 plsda_m <- tryCatch(rbioClass_plsda(
-  x = x, y = y,
-  ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-  segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
-  method = "oscorespls", verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioClass_plsda(
     x = x, y = y,
-    ncomp = 1,
-    validation = PLSDA_VALIDATION, maxit = 200,
-    segments = PLSDA_VALIDATION_SEGMENT,
+    ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
+    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
     method = "oscorespls", verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioClass_plsda(
+      x = x, y = y,
+      ncomp = 1,
+      validation = PLSDA_VALIDATION, maxit = 200,
+      segments = PLSDA_VALIDATION_SEGMENT,
+      method = "oscorespls", verbose = FALSE
+    )
+  }
 )
 
-rbioClass_plsda_ncomp_select(plsda_m,
-  ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
-  randomization.alpha = 0.05,
-  plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
-  plot.Width = 80 * length(unique(svm_training$y)),
-  plot.Height = 100,
-  plot.yLabel = "RMSEP", verbose = FALSE
+tryCatch(
+  rbioClass_plsda_ncomp_select(plsda_m,
+    ncomp.selection.method = PLSDA_NCOMP_SELECT_METHOD, randomization.nperm = 999,
+    randomization.alpha = 0.05,
+    plot.SymbolSize = PLSDA_NCOMP_SELECT_PLOT_SYMBOL_SIZE, plot.legendSize = PLSDA_NCOMP_SELECT_PLOT_LEGEND_SIZE,
+    plot.Width = 80 * length(unique(svm_training$y)),
+    plot.Height = 100,
+    plot.yLabel = "RMSEP", verbose = FALSE
+  ),
+  error = function(e) {
+    warning(e)
+  }
 )
 
 ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected)) # get the maximum ncomp needed
 plsda_m_optim <- tryCatch(rbioClass_plsda(
-  x = x, y = y,
-  ncomp = ncomp_select, validation = PLSDA_VALIDATION,
-  segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
-  method = "oscorespls", verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioClass_plsda(
     x = x, y = y,
-    ncomp = 1,
-    validation = PLSDA_VALIDATION, maxit = 200,
-    segments = PLSDA_VALIDATION_SEGMENT,
+    ncomp = ncomp_select, validation = PLSDA_VALIDATION,
+    segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
     method = "oscorespls", verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioClass_plsda(
+      x = x, y = y,
+      ncomp = 1,
+      validation = PLSDA_VALIDATION, maxit = 200,
+      segments = PLSDA_VALIDATION_SEGMENT,
+      method = "oscorespls", verbose = FALSE
+    )
+  }
 )
 
 # permutation test
@@ -165,37 +172,37 @@ if (length(unique(table(svm_training$y))) > 1) { # if to use adjCV depending on 
 } else {
   is_adj_cv <- FALSE
 }
-rbioClass_plsda_perm(
-  object = plsda_m_optim, perm.method = PLSDA_PERM_METHOD, nperm = PLSDA_PERM_N,
-  adjCV = is_adj_cv,
-  perm.plot = FALSE,
-  parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
-  verbose = FALSE
+tryCatch(
+  rbioClass_plsda_perm(
+    object = plsda_m_optim, perm.method = PLSDA_PERM_METHOD, nperm = PLSDA_PERM_N,
+    adjCV = is_adj_cv,
+    perm.plot = FALSE,
+    parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
+    verbose = FALSE
+  ),
+  error = function(e){
+    warning(e)
+  }
 )
-rbioUtil_perm_plot(
-  perm_res = plsda_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PLOT_SYMBOL_SIZE,
-  plot.legendSize = PLSDA_PERM_PLOT_LEGEND_SIZE,
-  plot.xLabelSize = PLSDA_PERM_PLOT_X_LABEL_SIZE, plot.xTickLblSize = PLSDA_PERM_PLOT_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = PLSDA_PERM_PLOT_Y_LABEL_SIZE, plot.yTickLblSize = PLSDA_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  verbose = FALSE
+
+tryCatch(
+  rbioUtil_perm_plot(
+    perm_res = plsda_m_optim_perm, plot.SymbolSize = PLSDA_PERM_PLOT_SYMBOL_SIZE,
+    plot.legendSize = PLSDA_PERM_PLOT_LEGEND_SIZE,
+    plot.xLabelSize = PLSDA_PERM_PLOT_X_LABEL_SIZE, plot.xTickLblSize = PLSDA_PERM_PLOT_X_TICK_LABEL_SIZE,
+    plot.yLabelSize = PLSDA_PERM_PLOT_Y_LABEL_SIZE, plot.yTickLblSize = PLSDA_PERM_PLOT_Y_TICK_LABEL_SIZE,
+    verbose = FALSE
+  ),
+  error = function(e){
+    warning(e)
+  }
 )
+
+
 
 # score plot
 tryCatch(rbioClass_plsda_scoreplot(
-  object = plsda_m_optim, comps = 1:ncomp_select,
-  plot.sampleLabel.type = "none",
-  plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
-  plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-  plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-  plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-  plot.rightsideY = PCA_RIGHTSIDE_Y,
-  plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-  plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioClass_plsda_scoreplot(
-    object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
+    object = plsda_m_optim, comps = 1:ncomp_select,
     plot.sampleLabel.type = "none",
     plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
     plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
@@ -204,60 +211,93 @@ error = function(w) {
     plot.rightsideY = PCA_RIGHTSIDE_Y,
     plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
     plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    warning(e)
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    rbioClass_plsda_scoreplot(
+      object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
+      plot.sampleLabel.type = "none",
+      plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
+      plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+      plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+      plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+      plot.rightsideY = PCA_RIGHTSIDE_Y,
+      plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+      plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
+    )
+  }
 )
-
 
 # ROC-AUC on the same test data used for SVM
 sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_roc_roc_test.txt"), append = TRUE)
 cat("------ ROC-AUC ------\n")
-rbioClass_plsda_roc_auc(
-  object = plsda_m_optim,
-  newdata = svm_test[, -1],
-  newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
-  center.newdata = TRUE,
-  plot.smooth = PLSDA_ROC_SMOOTH,
-  plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-  plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
-  plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = 80 * plsda_m_optim$ncomp,
-  plot.Height = 100,
-  verbose = TRUE
+tryCatch(
+  rbioClass_plsda_roc_auc(
+    object = plsda_m_optim,
+    newdata = svm_test[, -1],
+    newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
+    center.newdata = TRUE,
+    plot.smooth = PLSDA_ROC_SMOOTH,
+    plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+    plot.legendSize = SVM_ROC_LEGEND_SIZE,
+    plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
+    plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+    plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
+    plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+    plot.Width = 80 * plsda_m_optim$ncomp,
+    plot.Height = 100,
+    verbose = TRUE
+  ),
+  error = function(e){
+    warning(e)
+  }
+)
+# VIP plot
+tryCatch(
+  rbioFS_plsda_vip(
+    object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
+    vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
+    boot.n = PLSDA_VIP_BOOT_N, plot = FALSE,
+    boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,
+    verbose = FALSE
+  ),
+  error = function(e){
+    warning(e)
+  }
+)
+
+tryCatch(
+rbioFS_plsda_vip_plot(
+    vip_obj = plsda_m_optim_plsda_vip,
+    plot.errorbar = PLSDA_VIP_PLOT_ERRORBAR,
+    plot.errorbarWidth = PLSDA_VIP_PLOT_ERRORBAR_WIDTH,
+    plot.errorbarLblSize = PLSDA_VIP_PLOT_ERRORBAR_LABEL_SIZE,
+    plot.xAngle = PLSDA_VIP_PLOT_X_TEXTANGLE,
+    plot.xLabelSize = PLSDA_VIP_PLOT_X_LABEL_SIZE,
+    plot.xTickLblSize = PLSDA_VIP_PLOT_X_TICK_LABEL_SIZE,
+    plot.yLabelSize = PLSDA_VIP_PLOT_Y_LABEL_SIZE,
+    plot.yTickLblSize = PLSDA_VIP_PLOT_Y_TICK_LABEL_SIZE,
+    plot.Width = PLSDA_VIP_PLOT_WIDTH,
+    plot.Height = PLSDA_VIP_PLOT_HEIGHT,
+    verbose = FALSE
+  ),
+  error = function(e){
+    warning(e)
+  }
 )
 sink()
-
-# VIP plot
-rbioFS_plsda_vip(
-  object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
-  vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
-  boot.n = PLSDA_VIP_BOOT_N, plot = FALSE,
-  boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,
-  verbose = FALSE
-)
-rbioFS_plsda_vip_plot(
-  vip_obj = plsda_m_optim_plsda_vip,
-  plot.errorbar = PLSDA_VIP_PLOT_ERRORBAR,
-  plot.errorbarWidth = PLSDA_VIP_PLOT_ERRORBAR_WIDTH,
-  plot.errorbarLblSize = PLSDA_VIP_PLOT_ERRORBAR_LABEL_SIZE,
-  plot.xAngle = PLSDA_VIP_PLOT_X_TEXTANGLE,
-  plot.xLabelSize = PLSDA_VIP_PLOT_X_LABEL_SIZE,
-  plot.xTickLblSize = PLSDA_VIP_PLOT_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = PLSDA_VIP_PLOT_Y_LABEL_SIZE,
-  plot.yTickLblSize = PLSDA_VIP_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = PLSDA_VIP_PLOT_WIDTH,
-  plot.Height = PLSDA_VIP_PLOT_HEIGHT,
-  verbose = FALSE
-)
 
 ####### clean up the mess and export --------
 ## variables for display
 
 ## export to results files if needed
-save(list = c("plsda_m_optim"), file = paste0(MAT_FILE_NO_EXT, "_final_plsda_model.Rdata"))
+tryCatch(
+  save(list = c("plsda_m_optim"), file = paste0(MAT_FILE_NO_EXT, "_final_plsda_model.Rdata")),
+  error = function(e){
+    warning(e)
+  }
+)
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

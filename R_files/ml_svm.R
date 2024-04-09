@@ -296,18 +296,18 @@ if (input_n_total_features == 1) {
 
       rffs_nested_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
       for (i in 1:length(rffs_nested_cv_auc)) {
-        out <- vector(length = length(svm_nested_cv_svm_nestedcv_roc_auc))
-        for (j in 1:length(svm_nested_cv_svm_nestedcv_roc_auc)) {
-          out[j] <- svm_nested_cv_svm_nestedcv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+        out <- vector(length = length(svm_nested_cv_fs_svm_nestedcv_roc_auc))
+        for (j in 1:length(svm_nested_cv_fs_svm_nestedcv_roc_auc)) {
+          out[j] <- svm_nested_cv_fs_svm_nestedcv_roc_auc[[j]]$svm.roc_object[[i]]$auc
         }
         rffs_nested_cv_auc[[i]] <- out
       }
 
-      for (i in 1:length(svm_nested_cv_svm_nestedcv_roc_auc)) { # set up group names for display
+      for (i in 1:length(svm_nested_cv_fs_svm_nestedcv_roc_auc)) { # set up group names for display
         skip_to_next <- FALSE
         nested_cv_names <- tryCatch(
           {
-            names(svm_nested_cv_svm_nestedcv_roc_auc[[i]]$svm.roc_object)
+            names(svm_nested_cv_fs_svm_nestedcv_roc_auc[[i]]$svm.roc_object)
           },
           error = function(e) skip_to_next <<- TRUE
         )
