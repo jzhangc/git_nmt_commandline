@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.4.0
+    - 0.4.0 and beyond
     (ICEBOX)
         - General updates
           - Overall optimization
@@ -18,6 +18,9 @@ Please cite the following if you are to use this application:
           - Node file length check added for univariate.R and reg_univariate.R
           - A NMT version without feature selection
           - Compatibility of missing data
+        - Additional classification/regression final models
+          - RF
+          - XGB
         - Bug fixes
 
     (ADDED)
