@@ -18,6 +18,7 @@ Please cite the following if you are to use this application:
           - Node file length check added for univariate.R and reg_univariate.R
           - A NMT version without feature selection
           - Compatibility of missing data
+          - FS only module
         - Additional classification/regression final models
           - RF
           - XGB
