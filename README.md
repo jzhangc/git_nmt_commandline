@@ -18,7 +18,6 @@ Please cite the following if you are to use this application:
           - Node file length check added for univariate.R and reg_univariate.R
           - A NMT version without feature selection
           - Compatibility of missing data
-          - FS only module
         - Additional classification/regression final models
           - RF
           - XGB
@@ -38,6 +37,8 @@ Please cite the following if you are to use this application:
           - When "log2translog2_trans=FALSE", the toolbox now would skip quantile normalization
           - For the 2D modules, new filter is now in place to remove all the singular value columns
           - For the 2D modules, the toolbox will now automatically apply 0-1 re-scale
+          - A FS bar graph is now automatically generated for the modules with FS
+            - Currently, the graph settings are fixed. However, users can go into the model file and re-plot the graph using R pacakge RBioFS
 
         - Updates to the classification module
           - Added single input feature compatibility 

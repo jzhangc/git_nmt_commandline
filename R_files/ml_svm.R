@@ -592,6 +592,12 @@ test_y <- factor(test$y, levels = unique(test$y))
 test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
+## FS count plot
+rbioUtil_fscount_plot(svm_nested_cv_fs,
+                      export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
+                      plot.yLabelSize = 20, plot.xLabelSize = 20,
+                      plot.Width = 170, plot.Height = 150)
+
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
 #                            check.names = FALSE)

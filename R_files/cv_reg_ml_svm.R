@@ -283,6 +283,12 @@ if (HTMAP_LAB_ROW) {
 }
 
 ####### clean up the mess and export --------
+## FS count plot
+rbioUtil_fscount_plot(svm_nested_cv_fs,
+                      export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
+                      plot.yLabelSize = 20, plot.xLabelSize = 20,
+                      plot.Width = 170, plot.Height = 150)
+
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 
@@ -296,7 +302,6 @@ save(
   list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
-
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
