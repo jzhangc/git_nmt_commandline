@@ -19,8 +19,8 @@ Please cite the following if you are to use this application:
           - A NMT version without feature selection
           - Compatibility of missing data
         - Additional classification/regression final models
-          - RF
-          - XGB
+          - RF: VI is included as one of the default outputs
+          - XGB: VI is included as one of the default outputs
         - Bug fixes
 
     (ADDED)
