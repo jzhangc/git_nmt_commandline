@@ -214,7 +214,7 @@ if (input_n_total_features == 1) {
 sink()
 
 # ------ SVM modelling ------
-# sub set the training/test data using the selected features
+# -- sub set the training/test data using the selected features --
 if (input_n_total_features == 1) {
   svm_training <- training[, !names(training) %in% 'sampleid']
   svm_test <- test[, !names(test) %in% 'sampleid']
@@ -224,7 +224,7 @@ if (input_n_total_features == 1) {
 }
 training_sampleid <- training$sampleid
 
-# modelling
+# -- modelling --
 svm_m <- rbioClass_svm(
   x = svm_training[, -1, drop = FALSE], y = factor(svm_training$y, levels = unique(svm_training$y)),
   center.scale = SVM_CV_CENTRE_SCALE, kernel = SVM_CV_KERNEL,
@@ -276,7 +276,7 @@ cat("\n\n------ Permutation test results display ------\n")
 svm_m_perm
 sink()
 
-# ROC-AUC
+# -- ROC-AUC --
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ ROC-AUC results display ------\n")
 if (input_n_total_features == 1) {
@@ -330,6 +330,7 @@ if (input_n_total_features == 1) {
 
 cat("\n")
 cat("-- On final CV models --\n")
+# cv roc-auc
 rbioClass_svm_cv_roc_auc(svm_m_cv,
   plot.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
@@ -339,6 +340,15 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
   verbose = FALSE
 )
 
+# mean cv auc with interporlation
+rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+  plot.legendSize = SVM_ROC_LEGEND_SIZE,
+  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+  verbose = FALSE)
+
+# final cv auc
 final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
 for (i in 1:length(final_cv_auc)) {
   out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
