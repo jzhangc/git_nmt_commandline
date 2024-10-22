@@ -227,7 +227,8 @@ if (UNI_ANALYSIS) {
     sig.method <- "none"
   }
 
-  tryCatch(rbioarray_DE(
+  tryCatch(
+    rbioarray_DE(
       objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
       fltlist = normdata, annot = normdata$genes, design = design, contra = contra,
       weights = normdata$ArrayWeight,
@@ -369,7 +370,7 @@ if (UNI_ANALYSIS) {
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
-x_ml <- t(normdata$E)[, sig_pairs_fit]
+# x_ml <- t(normdata$E)[, sig_pairs_fit]
 
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
