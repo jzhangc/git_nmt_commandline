@@ -10,10 +10,10 @@
 # -- connectivity files --
 ./connectivity_ml.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/freq_4.mtbi_new_aec.mat" \
--a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/annot_new_aec.csv" \
+-a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/annot_new_50.csv" \
 -s "sampleid" -g "groupid" -c "mtbi-control" \
 -n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/AAL90_labels_zahra_ver.csv" \
--m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification"
+-m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
 -d "node_id" -r "region" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/test" -u -p 6
 
