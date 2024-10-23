@@ -375,7 +375,7 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
 } else {
-  ml_dfm <- t(normdata$E)
+  x_ml <- t(normdata$E)
 }
 
 ml_dfm <- data.frame(sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
