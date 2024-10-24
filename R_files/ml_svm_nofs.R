@@ -278,60 +278,11 @@ cat("\n\n------ Permutation test results display ------\n")
 svm_m_perm
 sink()
 
-# ROC-AUC
+# ------ ROC-AUC ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ ROC-AUC results display ------\n")
-# if (input_n_total_features == 1) {
-#   cat("WARNING: no need for ROC for CV-rRF-FS-SVM models with only one input feature.")
-# } else {
-#   cat("-- On CV-SVM-rRF-FS models --\n")
-#   tryCatch(
-#     {
-#       rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
-#         plot.smooth = SVM_ROC_SMOOTH,
-#         plot.legendSize = SVM_ROC_LEGEND_SIZE,
-#         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-#         verbose = FALSE
-#       )
-
-#       rffs_nested_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
-#       for (i in 1:length(rffs_nested_cv_auc)) {
-#         out <- vector(length = length(svm_nested_cv_svm_nestedcv_roc_auc))
-#         for (j in 1:length(svm_nested_cv_svm_nestedcv_roc_auc)) {
-#           out[j] <- svm_nested_cv_svm_nestedcv_roc_auc[[j]]$svm.roc_object[[i]]$auc
-#         }
-#         rffs_nested_cv_auc[[i]] <- out
-#       }
-
-#       for (i in 1:length(svm_nested_cv_svm_nestedcv_roc_auc)) { # set up group names for display
-#         skip_to_next <- FALSE
-#         nested_cv_names <- tryCatch(
-#           {
-#             names(svm_nested_cv_svm_nestedcv_roc_auc[[i]]$svm.roc_object)
-#           },
-#           error = function(e) skip_to_next <<- TRUE
-#         )
-#         if (skip_to_next) {
-#           next
-#         } else {
-#           break
-#         }
-#       }
-#       names(rffs_nested_cv_auc) <- nested_cv_names
-
-#       for (i in 1:length(rffs_nested_cv_auc)) {
-#         cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[i]]), "\n"))
-#         cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[i]]), "\n"))
-#       }
-#     },
-#     error = function(e) cat("CV-rRF-FS-SVM results incomplete. ROC-AUC for CV-SVM-rRF-FS models skipped.\n")
-#   )
-# }
-# cat("\n")
-
 cat("-- On final CV models --\n")
+# cv roc-auc
 rbioClass_svm_cv_roc_auc(svm_m_cv,
   plot.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
@@ -341,6 +292,15 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
   verbose = FALSE
 )
 
+# mean cv auc with interporlation
+rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+  plot.legendSize = SVM_ROC_LEGEND_SIZE,
+  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+  verbose = FALSE)
+
+# final cv auc
 final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
 for (i in 1:length(final_cv_auc)) {
   out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
@@ -391,16 +351,6 @@ rbioClass_svm_roc_auc(
   verbose = FALSE
 )
 cat("-- On holdout test data --\n")
-# center_scale_newdata <- t((t(svm_test[,-1]) - svm_m$center.scaledX$meanX)/svm_m$center.scaledX$columnSD)
-# rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_test",
-#                       newdata = center_scale_newdata, newdata.label = svm_test$y,
-#                       center.scale.newdata = FALSE,
-#                       plot.smooth = SVM_ROC_SMOOTH,
-#                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-#                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#                       plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-#                       verbose = FALSE)
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_test",
   newdata = svm_test[, -1], newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
@@ -413,181 +363,6 @@ rbioClass_svm_roc_auc(
   verbose = FALSE
 )
 sink()
-
-# # -- PCA --
-# if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
-#   SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
-#   cat("PCA: set PCs greater than selected features. Proceed with PC = number of features\n")
-# }
-
-# if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
-#   SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
-#   cat("PCA: set PCs greater than input features. Proceed with PC = number of features\n")
-# }
-
-# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-# cat("\n\n------ PCA error messages ------\n")
-
-# # FS PCA on training
-# pca_svm_rffs_training <- data.frame(row_num = 1:nrow(svm_training), svm_training, check.names = FALSE)
-
-# tryCatch(
-#   {
-#     rbioFS_PCA(
-#       input = pca_svm_rffs_training, sampleIDVar = "row_num", groupIDVar = "y",
-#       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-#       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-#       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
-#       biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-#       biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-#       biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
-#       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-#       biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-#       biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-#       biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-#       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-#       verbose = FALSE
-#     )
-#   },
-#   error = function(e) {
-#     cat("PCA on training data failed. Check the data. \n")
-#   }
-# )
-# # below: FS PCA on all data
-# pca_svm_rffs_all_samples <- data.frame(
-#   row_num = 1:nrow(rffs_selected_dfm), rffs_selected_dfm[, !colnames(rffs_selected_dfm) %in% "sampleid"],
-#   check.names = FALSE
-# )
-
-# tryCatch(
-#   {
-#     rbioFS_PCA(
-#       input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar = "y",
-#       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-#       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-#       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
-#       biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-#       biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-#       biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
-#       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-#       biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-#       biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-#       biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-#       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-#       verbose = FALSE
-#     )
-#   },
-#   error = function(e) {
-#     cat("PCA on all data failed. try with less PCs. \n")
-#   }
-# )
-sink()
-
-# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-# cat("\n\n------ hcluster error messages ------\n")
-# # hcluster after nested CV: all data
-# rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
-# normdata_crosscv <- list(
-#   E = t(rffs_selected_E),
-#   genes = data.frame(ProbeName = seq(ncol(rffs_selected_E)), pair = colnames(rffs_selected_E)),
-#   targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
-#   ArrayWeight = NULL
-# )
-
-# tryCatch(
-#   {
-#     if (HTMAP_LAB_ROW) {
-#       rbioarray_hcluster(
-#         plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-#         fltlist = normdata_crosscv, n = "all",
-#         fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-#         ColSideCol = TRUE,
-#         sampleName = normdata_crosscv$targets$sample,
-#         genesymbolOnly = FALSE,
-#         trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#         srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#         key.title = "", dataProbeVar = "pair",
-#         cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#         keysize = RFFS_HTMAP_KEYSIZE,
-#         key.xlab = RFFS_HTMAP_KEY_XLAB,
-#         key.ylab = RFFS_HTMAP_KEY_YLAB,
-#         plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#         margin = RFFS_HTMAP_MARGIN
-#       )
-#     } else {
-#       rbioarray_hcluster(
-#         plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-#         fltlist = normdata_crosscv, n = "all",
-#         fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-#         ColSideCol = TRUE,
-#         sampleName = normdata_crosscv$targets$sample,
-#         genesymbolOnly = FALSE,
-#         trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#         srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#         key.title = "", dataProbeVar = "pair", labRow = FALSE,
-#         cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#         keysize = RFFS_HTMAP_KEYSIZE,
-#         key.xlab = RFFS_HTMAP_KEY_XLAB,
-#         key.ylab = RFFS_HTMAP_KEY_YLAB,
-#         plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#         margin = RFFS_HTMAP_MARGIN
-#       )
-#     }
-#   },
-#   error = function(e) {
-#     cat("hclustering failed..skipped.\n")
-#   },
-#   warining = function(w) {
-#     cat("hclustering failed..skipped.\n")
-#   }
-# )
-# sink()
-
-# # hcluster after nested CV: training data
-# svm_training_E <- svm_training[, -1]
-# normdata_crosscv_training <- list(
-#   E = t(svm_training_E),
-#   genes = data.frame(ProbeName = seq(ncol(svm_training_E)), pair = colnames(svm_training_E)),
-#   targets = data.frame(id = seq(nrow(training)), sample = training_sampleid),
-#   ArrayWeight = NULL
-# )
-# if (HTMAP_LAB_ROW) {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-#     fltlist = normdata_crosscv_training, n = "all",
-#     fct = factor(svm_training$y, levels = unique(svm_training$y)),
-#     ColSideCol = TRUE,
-#     sampleName = normdata_crosscv_training$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair",
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# } else {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-#     fltlist = normdata_crosscv_training, n = "all",
-#     fct = factor(svm_training$y, levels = unique(svm_training$y)),
-#     ColSideCol = TRUE,
-#     sampleName = normdata_crosscv_training$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair", labRow = FALSE,
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# }
 
 ####### clean up the mess and export --------
 ## variables for display
