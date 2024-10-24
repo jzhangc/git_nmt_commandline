@@ -285,6 +285,7 @@ if (input_n_total_features == 1) {
   cat("-- On CV-SVM-rRF-FS models --\n")
   tryCatch(
     {
+      # nested cv roc-auc
       rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
         plot.smooth = SVM_ROC_SMOOTH,
         plot.legendSize = SVM_ROC_LEGEND_SIZE,
@@ -323,14 +324,24 @@ if (input_n_total_features == 1) {
         cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[i]]), "\n"))
         cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[i]]), "\n"))
       }
+
+      # nested cv mean roc-auc
+      rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
+        plot.smooth = SVM_ROC_SMOOTH,
+        plot.legendSize = SVM_ROC_LEGEND_SIZE,
+        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+        verbose = FALSE
+      )
     },
-    error = function(e) cat("CV-rRF-FS-SVM results incomplete. ROC-AUC for CV-SVM-rRF-FS models skipped.\n")
+    error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
   )
 }
 
 cat("\n")
 cat("-- On final CV models --\n")
-# cv roc-auc
+# cv on mean roc-auc
 rbioClass_svm_cv_roc_auc(svm_m_cv,
   plot.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
