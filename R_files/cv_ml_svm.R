@@ -331,9 +331,7 @@ if (input_n_total_features == 1) {
         verbose = FALSE
       )
     },
-    error = function(e) {
-      cat("CV-rRF-FS-SVM results incomplete. ROC-AUC for CV-SVM-rRF-FS models skipped.\n")
-      error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
+    error = function(e) error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
   )
 }
 
