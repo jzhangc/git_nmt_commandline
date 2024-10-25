@@ -206,14 +206,6 @@ if (input_n_total_features == 1) {
 }
 sink()
 
-# if (input_n_total_features == 1) {
-#   svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% 'y', drop = FALSE])
-#   rffs_selected_dfm <- ml_dfm
-# } else {
-#   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
-#   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
-# }
-
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
 if (input_n_total_features == 1) {
@@ -246,7 +238,7 @@ svm_m_cv <- rbioClass_svm_cv(
 )
 sink()
 
-# -- permuation test and plotting --
+# ------ permuation test and plotting ------
 if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
   cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -275,7 +267,7 @@ cat("\n\n------ Permutation test results display ------\n")
 svm_m_perm
 sink()
 
-# -- ROC-AUC --
+# ------ ROC-AUC ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ ROC-AUC results display ------\n")
 if (input_n_total_features == 1) {
@@ -407,18 +399,21 @@ rbioClass_svm_roc_auc(
 )
 sink()
 
+# ------ PCA & clustering ------
+# -- PCA --
 # below: FS PCA on all data
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ PCA error messages ------\n")
+if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
+  SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
+  cat("PCA: set PCs greater than selected features. Proceed with PC = number of features\n")
+}
+
 pca_svm_rffs_all_samples <- data.frame(
   row_num = 1:nrow(rffs_selected_dfm), rffs_selected_dfm[, !colnames(rffs_selected_dfm) %in% "sampleid"],
   check.names = FALSE
 )
 
-if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
-  SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
-  cat("PCA: set PCs greater than selected features. Proceed with PC = number of features\n")
-}
 tryCatch(
   {
     rbioFS_PCA(
@@ -446,7 +441,8 @@ sink()
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ hcluster error messages ------\n")
-# hcluster after nested CV: all data
+
+# -- hcluster after nested CV: all data --
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
 normdata_crosscv <- list(
   E = t(rffs_selected_E),
@@ -505,7 +501,7 @@ tryCatch(
 sink()
 
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## variables for display
 orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%

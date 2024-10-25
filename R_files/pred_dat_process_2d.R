@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: pred_dat_process_2d.R
 ## purpose: load and process 2d file for prediction
 
@@ -7,11 +7,11 @@ args <- commandArgs(trailingOnly = TRUE)
 # print(args)
 
 
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(R.matlab) # to read .mat files
 
-###### sys variables --------
+# ------sys variables --------
 # --- file name variables ---
 CSV_2D_FILE <- args[1]
 CSV_2D_FILE_NO_EXT <- args[2]
@@ -23,7 +23,6 @@ SAMPLEID_VAR <- args[3]
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[4]
 
-###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 

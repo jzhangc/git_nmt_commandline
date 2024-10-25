@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: reg_input_dat_process_2d.R
 ## purpose: load and process 2d data file for regression
 
@@ -6,10 +6,10 @@
 args <- commandArgs()
 # print(args)
 
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
 
-###### sys variables --------
+# ------ sys variables ------
 # --- file name variables ---
 CSV_2D_FILE <- args[6]
 CSV_2D_FILE_NO_EXT <- args[7]
@@ -24,7 +24,6 @@ RES_OUT_DIR <- args[10]
 SAMPLEID_VAR <- args[8]
 Y_VAR <- args[9]
 
-###### R script --------
 # ------ load 2d file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 if (!all(c(SAMPLEID_VAR, Y_VAR) %in% names(raw_csv))) {

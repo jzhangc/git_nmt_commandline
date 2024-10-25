@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
 
@@ -7,22 +7,22 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(RBioArray)
 require(foreach)
 require(parallel)
 require(limma)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables ------
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -364,7 +364,7 @@ rbioClass_svm_roc_auc(
 )
 sink()
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## variables for display
 orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%

@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: pred_dat_process.R
 ## purpose: load and process mat file for prediction
 ## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
@@ -7,25 +7,23 @@
 args <- commandArgs(trailingOnly = TRUE)
 # print(args)
 
-
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(R.matlab) # to read .mat files
 
-###### sys variables --------
-# --- file name variables ---
+# ------ sys variables ------
+# -- file name variables --
 MAT_FILE <- args[1]
 MAT_FILE_NO_EXT <- args[2]
 
-# --- mata data input variables ---
+# -- mata data input variables --
 ANNOT_FILE <- args[3]
 SAMPLEID_VAR <- args[4]
 
-# --- directory variables ---
+# -- directory variables --
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[5]
 
-###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 

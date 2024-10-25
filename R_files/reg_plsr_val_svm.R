@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: cv_reg_plsr_val_svm.R
 ## purpose: plsr modelling to evaluating SVR results
 
@@ -7,24 +7,24 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(foreach)
 require(parallel)
 
-###### sys variables --------
-# ------ warning flags ------
+# -- sys variables --
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 MODEL_FILE <- args[6] # SVM MODEL R file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
-# ------ processing varaibles ------
+# -- processing varaibles --
 # NOTE: convert string to expression using eval(parse(text = "string"))
 # -- from flags --
 PSETTING <- eval(parse(text = args[9]))
@@ -95,8 +95,7 @@ PLSDA_VIP_PLOT_HEIGHT <- as.numeric(args[61])
 # random state
 RANDOM_STATE <- as.numeric(args[62])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available -------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -235,7 +234,7 @@ rbioFS_plsda_vip_plot(
   verbose = FALSE
 )
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## variables for display
 
 ## export to results files if needed

@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: mat_process.R
 ## purpose: load and process mat files
 
@@ -6,12 +6,12 @@
 args <- commandArgs()
 # print(args)
 
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(RBioFS)
 require(R.matlab) # to read .mat files
 
-###### sys variables --------
+# ------ sys variables --------
 # --- file name variables ---
 CSV_2D_FILE <- args[6]
 CSV_2D_FILE_NO_EXT <- args[7]
@@ -22,11 +22,10 @@ CSV_2D_FILE_NO_EXT <- args[7]
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[10]
 
-# --- mata data input variables ---
+# -- mata data input variables --
 SAMPLEID_VAR <- args[8]
 GROUP_VAR <- args[9]
 
-###### R script --------
 # ------ load file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(raw_csv))) {
@@ -59,7 +58,7 @@ names(raw_sample_dfm_wo_uni)[2] <- "y"
 # free memory
 rm(raw_csv)
 
-####### export and clean up the mess --------
+# ------ export and clean up the mess ------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)

@@ -7,21 +7,21 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(foreach)
 require(parallel)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables ------
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 MODEL_FILE <- args[6] # SVM MODEL R file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -95,8 +95,7 @@ PLSDA_VIP_PLOT_HEIGHT <- as.numeric(args[61])
 # random state
 RANDOM_STATE <- as.numeric(args[62])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -148,7 +147,7 @@ plsr_m_optim <- tryCatch(rbioReg_plsr(
   segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
   method = "oscorespls", verbose = FALSE
 ),
-error = function(w) {
+error = function(e) {
   assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
   rbioReg_plsr(
     x = x, y = y,
@@ -161,7 +160,7 @@ error = function(w) {
 }
 )
 
-# permutation test
+# ------ permutation test ------
 if (length(unique(table(svm_m$inputY))) > 1) { # if to use adjCV depending on if the data is balanced
   is_adj_cv <- TRUE
 } else {
@@ -213,7 +212,7 @@ rbioUtil_perm_plot(
 #                         verbose = TRUE)
 # sink()
 
-# VIP plot
+# ------ VIP plot ------
 rbioReg_plsr_vip(
   object = plsr_m_optim, comps = 1:plsr_m_optim$ncomp,
   vip.alpha = PLSDA_VIP_ALPHA, bootstrap = PLSDA_VIP_BOOT,
@@ -236,7 +235,7 @@ rbioFS_plsda_vip_plot(
   verbose = FALSE
 )
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## variables for display
 
 ## export to results files if needed

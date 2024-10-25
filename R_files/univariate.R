@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
 
@@ -6,25 +6,25 @@
 args <- commandArgs()
 # print(args)
 
-### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(limma)
 require(edgeR)
 require(RBioArray)
 require(RBioFS)
 
-###### sys variables --------
-# ------ file name variables ------
+# ------ sys variables --------
+# -- file name variables --
 DAT_FILE <- args[6] # 2D file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 NODE_FILE <- args[8]
 NODE_ID_VAR <- args[61]
 REGION_NAME_VAR <- args[62]
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[9]
 
-# ------ processing varaibles ------
+# -- processing varaibles --
 # NOTE: convert string to expression using eval(parse(text = "string"))
 # -- (from config file) --
 LOG2_TRANS <- eval(parse(text = args[10]))
@@ -86,13 +86,12 @@ UNI_ANALYSIS <- eval(parse(text = args[63]))
 # -- from flags --
 CONTRAST <- args[38]
 
-# ------ warning flags ------
+# -- warning flags --
 if (UNI_FDR) FDR_FAIL_WARNING <- FALSE
 NO_SIG_WARNING <- FALSE
 ONE_SIG_WARNING <- FALSE
 NO_SIG_WARNING_FIT <- FALSE
 
-###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
@@ -365,7 +364,7 @@ if (UNI_ANALYSIS) {
   }
 }
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export --------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 

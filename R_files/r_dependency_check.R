@@ -1,15 +1,13 @@
-######### general info --------
+# ------ general info ------
 ## name: r_dependency_check.R
 ## purpose: check all the dependent pacakges for running the follow-up R scripts
 
-######### variables --------
+# ------ variables ------
 ## -- sys variables --
 CRAN_PKG <- c("devtools", "BiocManager", "R.matlab", "ggrepel", "foreach", "doParallel", "parallel", "splines")
 JZ_PKG <- c("RBioFS", "RBioArray")
 
-
-######## R script ------
-# -- check and install pacakges --
+# ------ check and install pacakges ------
 cat("CRAN package(s)\n")
 for (i in CRAN_PKG) {
   cat(paste0("\t", i, "..."))
@@ -54,5 +52,5 @@ for (i in JZ_PKG) {
 }
 
 
-# # -- clean up the mess from pathview --
+# ------ clean up the mess from pathview ------
 suppressMessages(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i, CRAN_PKG, JZ_PKG)) # pathview

@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: cv_ml_plsda_eval.R
 ## purpose: plsda modelling to evaluating SVM results for "cv only" methods
 
@@ -7,21 +7,21 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(foreach)
 require(parallel)
 
-###### sys variables --------
-# ------ warning flags ------
+# -- sys variables --
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 MODEL_FILE <- args[6] # SVM MODEL R file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -161,7 +161,7 @@ plsda_m_optim <- tryCatch(rbioClass_plsda(
   }
 )
 
-# permutation test
+# ------ permutation test ------
 if (length(unique(table(svm_m$inputY))) > 1) { # if to use adjCV depending on if the data is balanced
   is_adj_cv <- TRUE
 } else {
@@ -182,7 +182,7 @@ rbioUtil_perm_plot(
   verbose = FALSE
 )
 
-# score plot
+# ------ score plot ------
 tryCatch(rbioClass_plsda_scoreplot(
   object = plsda_m_optim, comps = 1:ncomp_select,
   plot.sampleLabel.type = "none",
@@ -231,7 +231,7 @@ error = function(w) {
 #                         verbose = TRUE)
 # sink()
 
-# VIP plot
+# ------ VIP plot ------
 tryCatch(
   rbioFS_plsda_vip(
     object = plsda_m_optim, comps = 1:plsda_m_optim$ncomp,
@@ -265,7 +265,7 @@ tryCatch(
   }
 )
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## variables for display
 
 ## export to results files if needed

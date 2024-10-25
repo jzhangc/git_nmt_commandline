@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: ml_plsda_eval.R
 ## purpose: plada modelling to evaluating SVM results
 
@@ -7,21 +7,21 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(foreach)
 require(parallel)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables ------
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 MODEL_FILE <- args[6] # SVM MODEL R file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -95,7 +95,6 @@ PLSDA_VIP_PLOT_HEIGHT <- as.numeric(args[61])
 # random state
 RANDOM_STATE <- as.numeric(args[62])
 
-###### R script --------
 # ------ set random state if available
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
@@ -119,9 +118,9 @@ plsda_m <- tryCatch(rbioClass_plsda(
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
     method = "oscorespls", verbose = FALSE
   ),
-  error = function(w) {
+  error = function(e) {
     assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-    warning(w)
+    warning(e)
     rbioClass_plsda(
       x = x, y = y,
       ncomp = 1,
@@ -166,7 +165,7 @@ plsda_m_optim <- tryCatch(rbioClass_plsda(
   }
 )
 
-# permutation test
+# ------ permutation test ------
 if (length(unique(table(svm_training$y))) > 1) { # if to use adjCV depending on if the training set is balanced
   is_adj_cv <- TRUE
 } else {
@@ -200,7 +199,7 @@ tryCatch(
 
 
 
-# score plot
+# ------ score plot ------
 tryCatch(rbioClass_plsda_scoreplot(
     object = plsda_m_optim, comps = 1:ncomp_select,
     plot.sampleLabel.type = "none",
@@ -212,7 +211,7 @@ tryCatch(rbioClass_plsda_scoreplot(
     plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
     plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
   ),
-  error = function(w) {
+  error = function(e) {
     warning(e)
     assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda_scoreplot(
@@ -229,7 +228,7 @@ tryCatch(rbioClass_plsda_scoreplot(
   }
 )
 
-# ROC-AUC on the same test data used for SVM
+# ------ ROC-AUC on the same test data used for SVM ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_roc_roc_test.txt"), append = TRUE)
 cat("------ ROC-AUC ------\n")
 tryCatch(
@@ -288,7 +287,7 @@ rbioFS_plsda_vip_plot(
 )
 sink()
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## variables for display
 
 ## export to results files if needed

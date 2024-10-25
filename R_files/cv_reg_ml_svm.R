@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
 
@@ -7,7 +7,7 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(RBioArray)
 require(foreach)
@@ -15,16 +15,16 @@ require(parallel)
 require(limma)
 require(splines)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables ------
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 SVM_ROC_THRESHOLD_OUT_OF_RANGE <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables -- 
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -99,8 +99,7 @@ UNI_ALPHA <- as.numeric(args[59])
 # random state
 RANDOM_STATE <- as.numeric(args[60])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -205,7 +204,7 @@ svm_m_cv <- rbioClass_svm_cv(
   verbose = TRUE
 )
 
-# permuation test and plotting
+# ------ permuation test and plotting ------
 if (SVM_PERM_METHOD != "by_y") {
   cat("WARNING: SVM_PERM_METHOD can only be 'by_y' for regression. Proceed as such.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -235,7 +234,7 @@ svm_m_perm
 sink()
 
 
-# hcluster after nested CV: all data
+# ------ hcluster after nested CV: all data ------
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
 normdata_crosscv <- list(
   E = t(rffs_selected_E),
@@ -282,7 +281,7 @@ if (HTMAP_LAB_ROW) {
   )
 }
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export --------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
                       export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 

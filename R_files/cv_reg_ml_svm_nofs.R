@@ -1,4 +1,4 @@
-###### general info --------
+###### general info ------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
 
@@ -7,7 +7,7 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+######  load libraries ------
 require(RBioFS)
 require(RBioArray)
 require(foreach)
@@ -15,19 +15,19 @@ require(parallel)
 require(limma)
 require(splines)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables ------
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 SVM_ROC_THRESHOLD_OUT_OF_RANGE <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
-# ------ processing varaibles ------
+# -- processing varaibles --
 # NOTE: convert string to expression using eval(parse(text = "string"))
 # -- from flags --
 PSETTING <- eval(parse(text = args[9]))
@@ -99,8 +99,7 @@ UNI_ALPHA <- as.numeric(args[59])
 # random state
 RANDOM_STATE <- as.numeric(args[60])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -207,7 +206,7 @@ svm_m_cv <- rbioClass_svm_cv(
   verbose = TRUE
 )
 
-# permuation test and plotting
+# ------ permuation test and plotting ------
 if (SVM_PERM_METHOD != "by_y") {
   cat("WARNING: SVM_PERM_METHOD can only be 'by_y' for regression. Proceed as such.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -236,55 +235,7 @@ cat("\n\n------ Permutation test ------\n")
 svm_m_perm
 sink()
 
-
-# # hcluster after nested CV: all data
-# rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
-# normdata_crosscv <- list(
-#   E = t(rffs_selected_E),
-#   genes = data.frame(ProbeName = seq(ncol(rffs_selected_E)), pair = colnames(rffs_selected_E)),
-#   targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
-#   ArrayWeight = NULL
-# )
-
-# if (HTMAP_LAB_ROW) {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-#     fltlist = normdata_crosscv, n = "all",
-#     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-#     ColSideCol = FALSE,
-#     sampleName = normdata_crosscv$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair",
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# } else {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-#     fltlist = normdata_crosscv, n = "all",
-#     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-#     ColSideCol = FALSE,
-#     sampleName = normdata_crosscv$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair", labRow = FALSE,
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# }
-
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 

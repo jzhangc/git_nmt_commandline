@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
 
@@ -7,7 +7,7 @@
 args <- commandArgs()
 # print(args)
 
-######  load libraries --------
+# ------  load libraries ------
 require(RBioFS)
 require(RBioArray)
 require(foreach)
@@ -15,19 +15,19 @@ require(parallel)
 require(limma)
 require(splines)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables ------
+# -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 SVM_ROC_THRESHOLD_OUT_OF_RANGE <- FALSE
 
-# ------ file name variables ------
+# -- file name variables --
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
-# ------ processing varaibles ------
+# -- processing varaibles --
 # NOTE: convert string to expression using eval(parse(text = "string"))
 # -- from flags --
 PSETTING <- eval(parse(text = args[9]))
@@ -99,7 +99,6 @@ UNI_ALPHA <- as.numeric(args[59])
 # random state
 RANDOM_STATE <- as.numeric(args[60])
 
-###### R script --------
 # ------ set random state if available
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
@@ -338,7 +337,7 @@ if (HTMAP_LAB_ROW) {
 }
 
 
-####### clean up the mess and export --------
+# ------ clean up the mess and export ------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
                       export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
