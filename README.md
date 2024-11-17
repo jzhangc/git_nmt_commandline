@@ -21,6 +21,7 @@ Please cite the following if you are to use this application:
         - Additional classification/regression final models
           - RF: VI is included as one of the default outputs
           - XGB: VI is included as one of the default outputs
+        - Version number sourced from a single file
         - Bug fixes
 
     (ADDED)
