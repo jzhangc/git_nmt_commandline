@@ -6,8 +6,11 @@
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
+# load zzz config file
+source ./zzz
 # --- iniitate internal system variables ---
-VERSION="0.4.0b11"
+# VERSION="0.4.0b11"
+VERSION=$VERSION
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
 UNAMESTR=`uname`  # use `uname` variable to detect OS type
