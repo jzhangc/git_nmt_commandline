@@ -18,9 +18,10 @@ Please cite the following if you are to use this application:
           - Node file length check added for univariate.R and reg_univariate.R
           - A NMT version without feature selection
           - Compatibility of missing data
+          - Add VI for the final model(s): additional models see below
         - Additional classification/regression final models
-          - RF: VI is included as one of the default outputs
-          - XGB: VI is included as one of the default outputs
+          - RF
+          - XGB
         - Bug fixes
 
     (ADDED)
