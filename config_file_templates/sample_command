@@ -1,48 +1,25 @@
 # ------ classification ------
 # -- 2d file --
 ./train_class.sh \
--i "/Users/jingzhang/Desktop/nmt_demo/test_data/test_data_classification.csv" \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/freq_4_beta_power.csv" \
 -s "subjectid" -g "groupid" \
 -c "mTBI-control" \
--m "/Users/jingzhang/Desktop/nmt_demo/test_app/config_file_templates/config_template_for_classification" \
--o "/Users/jingzhang/Desktop/nmt_demo/results" -p 6
+-m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results" -p 10
 
 # -- connectivity files --
 ./connectivity_ml.sh \
--i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/freq_4.mtbi_new_aec.mat" \
--a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/annot_new_50.csv" \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat" \
+-a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
 -s "sampleid" -g "groupid" -c "mtbi-control" \
--n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/AAL90_labels_zahra_ver.csv" \
+-n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
 -m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
 -d "node_id" -r "region" \
--o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/test" -u -p 6
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -u -p 10
 
-# ./connectivity_ml.sh \
-# -i "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/0.data/ptsd_classification_mat/pre_controlthen_pre_ptsd_90WPLI_4-7.mat" \
-# -a "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/raw/annot.csv" \
-# -s "subjectid" -g "group" \
-# -n "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
-# -m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification"
-# -d "node_id" -r "region" \
-# -c "ptsd-control" \
-# -o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u
-
-# -- regression --
-./train_reg.sh \
--i "/Users/jingzhang/Desktop/nmt_demo/test_data/test_data_regression.csv" \
--s "subjectid" -y "outcome" \
--m "/Users/jingzhang/Desktop/nmt_demo/test_app/config_file_templates/config_template_for_reg" \
--o "/Users/jingzhang/Desktop/nmt_demo/results" -p 10
-
-# -- real data --
-./train_reg.sh \
--i "/Users/jingzhang/Desktop/nmt_demo/test_data/shirt_comf_noblanks_coded.csv" \
--s "subjectid" -y "shirt_comf" \
--m "/Users/jingzhang/Desktop/nmt_demo/test_app/config_file_templates/config_template_for_reg" \
--o "/Users/jingzhang/Desktop/nmt_demo/results" -p 18
-
-./train_reg.sh \
--i "/Users/jingzhang/Desktop/nmt_demo/test_data/shirt_comf_noblanks_coded.csv" \
--s "subjectid" -y "shirt_comf" \
--m "/Users/jingzhang/Desktop/nmt_demo/test_app/config_file_templates/config_template_for_reg" \
--o "/Users/jingzhang/Desktop/nmt_demo/results" -p 18
+# # -- regression --
+# ./train_reg.sh \
+# -i "/Users/jingzhang/Desktop/nmt_demo/test_data/test_data_regression.csv" \
+# -s "subjectid" -y "outcome" \
+# -m "/Users/jingzhang/Desktop/nmt_demo/test_app/config_file_templates/config_template_for_reg" \
+# -o "/Users/jingzhang/Desktop/nmt_demo/results" -p 10
