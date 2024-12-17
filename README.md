@@ -36,7 +36,7 @@ Please cite the following if you are to use this application:
           - Error handling improvement for PLS modules
           - To show version number, the shorterned "-v" flag added for all modules
           - New "uni_analysis=TRUE/FALSE" option added to the config file and the toolbox so that univariate analysis can be skipped
-          - When "log2translog2_trans=FALSE", the toolbox now would skip quantile normalization
+          - When "log2_trans=FALSE", the toolbox now would skip quantile normalization
           - For the 2D modules, new filter is now in place to remove all the singular value columns
           - For the 2D modules, the toolbox will now automatically apply 0-1 re-scale
           - A FS bar graph is now automatically generated for the modules with FS
