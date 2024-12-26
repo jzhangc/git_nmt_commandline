@@ -50,7 +50,6 @@ expand_path() {
   printf '%s\n' "${result%:}"
 }
 
-
 # function to check dependencies
 check_dependency (){
   echo -en "Rscript..."

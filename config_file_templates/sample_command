@@ -15,7 +15,7 @@
 -n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
 -m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
 -d "node_id" -r "region" \
--o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -u -p 10
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -u -p 12
 
 # # -- regression --
 # ./train_reg.sh \
@@ -39,3 +39,13 @@
 -c "mTBI-control" \
 -m ~/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification \
 -o /Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results -p 12
+
+
+./cv_connectivity_ml.sh \
+-i ~/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat \
+-a /Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-n ./data/1_conn/AAL90_labels_zahra_ver.csv \
+-m ~/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification \
+-d "node_id" -r "region" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -u -p 12
