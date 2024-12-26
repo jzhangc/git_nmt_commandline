@@ -36,13 +36,13 @@ Please cite the following if you are to use this application:
           - Error handling improvement for PLS modules
           - To show version number, the shorterned "-v" flag added for all modules
           - New "uni_analysis=TRUE/FALSE" option added to the config file and the toolbox so that univariate analysis can be skipped
-          - When "log2_trans=FALSE", the toolbox now would skip quantile normalization
+          - log2_trans set to FALSE as the default value for all the modules
+            - When "log2_trans=FALSE", the toolbox now would skip quantile normalization
           - For the 2D modules, new filter is now in place to remove all the singular value columns
           - For the 2D modules, the toolbox will now automatically apply 0-1 re-scale
           - A FS bar graph is now automatically generated for the modules with FS
             - Currently, the graph settings are fixed. However, users can go into the model file and re-plot the graph using R pacakge RBioFS
           - Relative path support added for all the modules
-          - log2_trans set to FALSE as the default value for all the modules
           - Version number sourced from a single file
 
         - Updates to the classification module
