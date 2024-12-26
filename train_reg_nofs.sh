@@ -4,10 +4,11 @@
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
-# load zzz config file
+# load utils and zzz config file
+source ./utils
 source ./zzz
+
 # --- iniitate internal system variables ---
-# VERSION="0.4.0b11"
 VERSION=$VERSION
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
@@ -103,7 +104,13 @@ else
 				CORES=$OPTARG
 				;;
 			i)
-				RAW_FILE=$OPTARG  # file with full path and extension
+				if [[ $OPTARG == *"~"* ]]; then
+				    RAW_FILE=$(expand_path $OPTARG)
+				else
+				    RAW_FILE=$(get_abs_filename $OPTARG)
+				fi
+
+				# RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
@@ -126,7 +133,13 @@ else
 				YFLAG=0
 				;;
 			m)
-				CONFIG_FILE=$OPTARG  # file with full path and extension
+				if [[ $OPTARG == *"~"* ]]; then
+				    CONFIG_FILE=$(expand_path $OPTARG)
+				else
+				    CONFIG_FILE=$(get_abs_filename $OPTARG)
+				fi
+
+				# CONFIG_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$CONFIG_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
@@ -136,7 +149,13 @@ else
 				fi
 				;;
 			o)
-				OUT_DIR=$OPTARG
+				if [[ $OPTARG == *"~"* ]]; then
+				    OUT_DIR=$(expand_path $OPTARG)
+				else
+				    OUT_DIR=$(get_abs_filename $OPTARG)
+				fi
+
+				# OUT_DIR=$OPTARG
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.
