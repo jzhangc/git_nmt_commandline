@@ -26,7 +26,7 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input 2D .csv file with full path.\n
+-i <file>: Input 2D .csv file.\n
 -s <string>: Sample ID variable name.\n
 -g <string>: Group ID variable name.\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
@@ -34,7 +34,7 @@ Current version: $VERSION\n
 [OPTIONS]: Optional\n
 -k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
--m <CONFIG>: Optoinal configuration file with full path. NOTE: If no config file is supplied, the default settings are used. \n
+-m <CONFIG>: Optoinal configuration file. NOTE: If no config file is supplied, the default settings are used. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE="Written by Jing Zhang PhD

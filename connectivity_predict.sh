@@ -5,10 +5,11 @@
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
-# load zzz config file
+# load utils and zzz config file
+source ./utils
 source ./zzz
+
 # --- iniitate internal system variables ---
-# VERSION="0.4.0b11"
 VERSION=$VERSION
 CURRENT_DAY=$(date +%d-%b-%Y)
 PLATFORM="Unknown UNIX or UNIX-like system"
@@ -26,7 +27,7 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input .mat file with full path. Make sure to have 3 dimensions, even if only one matrix: MxNx1\n
+-i <file>: Input .mat file. Make sure to have 3 dimensions, even if only one matrix: MxNx1\n
 -a <file>: Sample annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
 -s <string>: Sample ID variable name from -a file.\n
 -l <file>: Input .RData SVM model file with full path. \n
@@ -99,7 +100,13 @@ else
 				CORES=$OPTARG
 				;;
 			i)
-				RAW_FILE=$OPTARG  # file with full path and extension
+				if [[ $OPTARG == *"~"* ]]; then
+				    RAW_FILE=$(expand_path $OPTARG)
+				else
+				    RAW_FILE=$(get_abs_filename $OPTARG)
+				fi	
+
+				# RAW_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
@@ -114,7 +121,13 @@ else
 				IFLAG=0
 				;;
 			a)
-				ANNOT_FILE=$OPTARG
+				if [[ $OPTARG == *"~"* ]]; then
+					ANNOT_FILE=$(expand_path $OPTARG)
+				else
+					ANNOT_FILE=$(get_abs_filename $OPTARG)
+				fi	
+
+				# ANNOT_FILE=$OPTARG
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
@@ -134,7 +147,13 @@ else
 				SFLAG=0
 				;;
 			l)
-				MODEL_FILE=$OPTARG
+				if [[ $OPTARG == *"~"* ]]; then
+					MODEL_FILE=$(expand_path $OPTARG)
+				else
+					MODEL_FILE=$(get_abs_filename $OPTARG)
+				fi
+
+				# MODEL_FILE=$OPTARG
 				if ! [ -f "$MODEL_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -l SVM model file not found.${NO_COLOUR}\n" >&2
@@ -150,7 +169,13 @@ else
 				LFLAG=0
 				;;
 			m)
-				CONFIG_FILE=$OPTARG  # file with full path and extension
+				if [[ $OPTARG == *"~"* ]]; then
+				    CONFIG_FILE=$(expand_path $OPTARG)
+				else
+				    CONFIG_FILE=$(get_abs_filename $OPTARG)
+				fi
+
+				# CONFIG_FILE=$OPTARG  # file with full path and extension
 				if ! [ -f "$CONFIG_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
@@ -160,7 +185,13 @@ else
 				fi
 				;;
 			o)
-				OUT_DIR=$OPTARG
+				if [[ $OPTARG == *"~"* ]]; then
+				    OUT_DIR=$(expand_path $OPTARG)
+				else
+				    OUT_DIR=$(get_abs_filename $OPTARG)
+				fi
+
+				# OUT_DIR=$OPTARG
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.
@@ -189,81 +220,81 @@ if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||  $LFLAG -eq 1 ]]; then
 	exit 1
 fi
 
-# ------ functions ------
-# function to check dependencies
-check_dependency (){
-	echo -en "Rscript..."
-	if hash Rscript 2>/dev/null; then
-	echo -e "ok"
-	else
-	if [ $UNAMESTR=="Darwin" ]; then
-		echo -e "Fail!"
-		echo -e "\t-------------------------------------"
-		echo -en "\t\tChecking Homebrew..."
-		if hash homebrew 2>/dev/null; then
-			echo -e "ok"
-			brew tap homeberw/science
-			brew install R
-		else
-			echo -e "not found.\n"
-			echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
-			exit 1
-		fi
-	elif [ $UNAMESTR=="Linux" ]; then
-		echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
-			exit 1
-	fi
-	fi
-}
+# # ------ functions ------
+# # function to check dependencies
+# check_dependency (){
+# 	echo -en "Rscript..."
+# 	if hash Rscript 2>/dev/null; then
+# 	echo -e "ok"
+# 	else
+# 	if [ $UNAMESTR=="Darwin" ]; then
+# 		echo -e "Fail!"
+# 		echo -e "\t-------------------------------------"
+# 		echo -en "\t\tChecking Homebrew..."
+# 		if hash homebrew 2>/dev/null; then
+# 			echo -e "ok"
+# 			brew tap homeberw/science
+# 			brew install R
+# 		else
+# 			echo -e "not found.\n"
+# 			echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
+# 			exit 1
+# 		fi
+# 	elif [ $UNAMESTR=="Linux" ]; then
+# 		echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+# 			exit 1
+# 	fi
+# 	fi
+# }
 
-# function to check the program program files
-required_file_check(){
-	# usage:
-	# ARR=(1 2 3)
-	# file_check "${ARR[@]}"
-	arr=("$@") # this is how you call the input arry from the function argument
-	for i in ${arr[@]}; do
-	echo -en "\t$i..."
-	if [ -f ./R_files/$i ]; then
-		echo -e "ok"
-	else
-		echo -e "not found"
-		echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
-		exit 1
-	fi
-	done
-}
+# # function to check the program program files
+# required_file_check(){
+# 	# usage:
+# 	# ARR=(1 2 3)
+# 	# file_check "${ARR[@]}"
+# 	arr=("$@") # this is how you call the input arry from the function argument
+# 	for i in ${arr[@]}; do
+# 	echo -en "\t$i..."
+# 	if [ -f ./R_files/$i ]; then
+# 		echo -e "ok"
+# 	else
+# 		echo -e "not found"
+# 		echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
+# 		exit 1
+# 	fi
+# 	done
+# }
 
-# timing function
-# from: https://www.shellscript.sh/tips/hms/
-hms(){
-  # Convert Seconds to Hours, Minutes, Seconds
-  # Optional second argument of "long" makes it display
-  # the longer format, otherwise short format.
-  local SECONDS H M S MM H_TAG M_TAG S_TAG
-  SECONDS=${1:-0}
-  let S=${SECONDS}%60
-  let MM=${SECONDS}/60 # Total number of minutes
-  let M=${MM}%60
-  let H=${MM}/60
+# # timing function
+# # from: https://www.shellscript.sh/tips/hms/
+# hms(){
+#   # Convert Seconds to Hours, Minutes, Seconds
+#   # Optional second argument of "long" makes it display
+#   # the longer format, otherwise short format.
+#   local SECONDS H M S MM H_TAG M_TAG S_TAG
+#   SECONDS=${1:-0}
+#   let S=${SECONDS}%60
+#   let MM=${SECONDS}/60 # Total number of minutes
+#   let M=${MM}%60
+#   let H=${MM}/60
 
-  if [ "$2" == "long" ]; then
-    # Display "1 hour, 2 minutes and 3 seconds" format
-    # Using the x_TAG variables makes this easier to translate; simply appending
-    # "s" to the word is not easy to translate into other languages.
-    [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
-    [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
-    [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
-    [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
-    [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
-    printf "%d %s\n" $S "${S_TAG}"
-  else
-    # Display "01h02m03s" format
-    [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
-    [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
-    printf "%02d%s\n" $S "s"
-  fi
-}
+#   if [ "$2" == "long" ]; then
+#     # Display "1 hour, 2 minutes and 3 seconds" format
+#     # Using the x_TAG variables makes this easier to translate; simply appending
+#     # "s" to the word is not easy to translate into other languages.
+#     [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
+#     [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
+#     [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
+#     [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
+#     [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
+#     printf "%d %s\n" $S "${S_TAG}"
+#   else
+#     # Display "01h02m03s" format
+#     [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
+#     [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
+#     printf "%02d%s\n" $S "s"
+#   fi
+# }
 
 # ------ script ------
 # --- start time ---

@@ -28,11 +28,11 @@ Current version: $VERSION\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input .mat file with full path.\n
--a <file>: Sample annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
+-i <file>: Input .mat file.\n
+-a <file>: Sample annotation file (i.e. sample meta data). Needs to be a .csv file.\n
 -s <string>: Sample ID variable name from -a file.\n
 -g <string>: Group ID variable name from -a file.\n
--n <file>: Node annotation file with full path. Needs to be a .csv file. \n
+-n <file>: Node annotation file. Needs to be a .csv file. \n
 -d <string>: Node ID (digitized) variable name from -n file. \n
 -r <string>: Regional annotation variable name from -n file. \n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
@@ -137,7 +137,13 @@ else
 				IFLAG=0
 				;;
 			a)
-				ANNOT_FILE=$OPTARG
+				if [[ $OPTARG == *"~"* ]]; then
+					ANNOT_FILE=$(expand_path $OPTARG)
+				else
+					ANNOT_FILE=$(get_abs_filename $OPTARG)
+				fi	
+
+				# ANNOT_FILE=$OPTARG
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
@@ -161,7 +167,13 @@ else
 				GFLAG=0
 				;;
 			n)
-				NODE_FILE=$OPTARG
+				if [[ $OPTARG == *"~"* ]]; then
+					NODE_FILE=$(expand_path $OPTARG)
+				else
+					NODE_FILE=$(get_abs_filename $OPTARG)
+				fi	
+
+				# NODE_FILE=$OPTARG
 				if ! [ -f "$NODE_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -n node annotation file not found.${NO_COLOUR}\n" >&2
