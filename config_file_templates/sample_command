@@ -5,7 +5,7 @@
 -s "subjectid" -g "groupid" \
 -c "mTBI-control" \
 -m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
--o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results" -p 10
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results" -p 12
 
 # -- connectivity files --
 ./connectivity_ml.sh \

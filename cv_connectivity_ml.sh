@@ -439,7 +439,7 @@ if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
 	random_state=0
-	log2_trans=TRUE
+	log2_trans=FALSE
 	uni_analysis=FALSE
 	htmap_textsize_col=0.7
 	htmap_textangle_col=90
