@@ -4,7 +4,7 @@
 #
 VERSION="0.4.0b15"
 CITE="Written by Jing Zhang PhD
-Contact: jing.zhang@sickkids.ca, jzhangcad@gmail.com
+Contact: jzhangcad@gmail.com
 To cite in your research: 	
       Zhang J, Wong SM, Richardson DJ, Rakesh J, Dunkley BT. 2020. Predicting PTSD severity using longitudinal magnetoencephalography with a multi-step learning framework. Journal of Neuro Engineering. 17: 066013. doi: 10.1088/1741-2552/abc8d6.
       Zhang J, Richardson DJ, Dunkley BT. 2020. Classifying post-traumatic stress disorder using the magnetoencephalographic connectome and machine learning. Scientific Reports. 10(1):5937. doi: 10.1038/s41598-020-62713-5.
