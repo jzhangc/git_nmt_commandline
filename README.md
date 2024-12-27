@@ -43,7 +43,6 @@ Please cite the following if you are to use this application:
           - A FS bar graph is now automatically generated for the modules with FS
             - Currently, the graph settings are fixed. However, users can go into the model file and re-plot the graph using R pacakge RBioFS
           - Relative path support added for all the modules
-          - Better code organization with application version, citation and common utilities files
 
         - Updates to the classification module
           - Added single input feature compatibility 
@@ -65,6 +64,7 @@ Please cite the following if you are to use this application:
         - Other updates
           - Individual R file version tracking removed
           - Various syntax updates
+          - Better code organization with application version, citation and common utilities files
 
 
     - 0.3.2 (July.1.2021)
