@@ -1,39 +1,135 @@
 #!/usr/bin/env bash
-# both $1 and $2 are absolute paths beginning with /
-# returns relative path to $2/$target from $1/$source
-source=$1
-target=$2
+# File name: utils
+# Description: utility functions and variables
+#
+# get absolute file path
+get_abs_filename() {
+  # $1 : relative filename
+  filename=$1
+  parentdir=$(dirname "${filename}")
 
-common_part=$source # for now
-result="" # for now
+  if [ -d "${filename}" ]; then
+    echo "$(cd "${filename}" && pwd)"
+  elif [ -d "${parentdir}" ]; then
+    echo "$(cd "${parentdir}" && pwd)/$(basename "${filename}")"
+  fi
+}
 
-while [[ "${target#$common_part}" == "${target}" ]]; do
-    # no match, means that candidate common part is not correct
-    # go up one level (reduce common part)
-    common_part="$(dirname $common_part)"
-    # and record that we went back, with correct / handling
-    if [[ -z $result ]]; then
-        result=".."
-    else
-        result="../$result"
+# expand path if containing tilde "~"
+expand_path() {
+  local path
+  local -a pathElements resultPathElements
+  IFS=':' read -r -a pathElements <<<"$1"
+  : "${pathElements[@]}"
+  for path in "${pathElements[@]}"; do
+    : "$path"
+    case $path in
+      "~+"/*)
+        path=$PWD/${path#"~+/"}
+        ;;
+      "~-"/*)
+        path=$OLDPWD/${path#"~-/"}
+        ;;
+      "~"/*)
+        path=$HOME/${path#"~/"}
+        ;;
+      "~"*)
+        username=${path%%/*}
+        username=${username#"~"}
+        IFS=: read -r _ _ _ _ _ homedir _ < <(getent passwd "$username")
+        if [[ $path = */* ]]; then
+          path=${homedir}/${path#*/}
+        else
+          path=$homedir
+        fi
+        ;;
+    esac
+    resultPathElements+=( "$path" )
+  done
+  local result
+  printf -v result '%s:' "${resultPathElements[@]}"
+  printf '%s\n' "${result%:}"
+}
+
+path_resolve(){
+  if [[ $1 == *"~"* ]]; then
+    echo $(expand_path $1)
+  else
+    echo $(get_abs_filename $1)
+  fi
+} 
+
+# function to check dependencies
+check_dependency(){
+  echo -en "Rscript..."
+  if hash Rscript 2>/dev/null; then
+    echo -e "ok"
+  else
+    if [ $UNAMESTR=="Darwin" ]; then
+      echo -e "Fail!"
+      echo -e "\t-------------------------------------"
+      echo -en "\t\tChecking Homebrew..."
+        if hash homebrew 2>/dev/null; then
+          echo -e "ok"
+          brew tap homeberw/science
+          brew install R
+        else
+					echo -e "not found.\n"
+          echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
+					exit 1
+        fi
+    elif [ $UNAMESTR=="Linux" ]; then
+      echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+			exit 1
     fi
-done
+  fi
+}
 
-if [[ $common_part == "/" ]]; then
-    # special case for root (no common path)
-    result="$result/"
-fi
+# function to check the program program files
+required_file_check(){
+	# usage:
+	# ARR=(1 2 3)
+	# file_check "${ARR[@]}"
+  arr=("$@") # this is how you call the input arry from the function argument
+  for i in ${arr[@]}; do
+    echo -en "\t$i..."
+    if [ -f ./R_files/$i ]; then
+      echo -e "ok"
+    else
+      echo -e "not found"
+      echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
+      exit 1
+    fi
+  done
+}
 
-# since we now have identified the common part,
-# compute the non-common part
-forward_part="${target#$common_part}"
+# timing function
+# from: https://www.shellscript.sh/tips/hms/
+hms(){
+  # Convert Seconds to Hours, Minutes, Seconds
+  # Optional second argument of "long" makes it display
+  # the longer format, otherwise short format.
+  local SECONDS H M S MM H_TAG M_TAG S_TAG
+  SECONDS=${1:-0}
+  let S=${SECONDS}%60
+  let MM=${SECONDS}/60 # Total number of minutes
+  let M=${MM}%60
+  let H=${MM}/60
 
-# and now stick all parts together
-if [[ -n $result ]] && [[ -n $forward_part ]]; then
-    result="$result$forward_part"
-elif [[ -n $forward_part ]]; then
-    # extra slash removal
-    result="${forward_part:1}"
-fi
-
-echo $result
+  if [ "$2" == "long" ]; then
+    # Display "1 hour, 2 minutes and 3 seconds" format
+    # Using the x_TAG variables makes this easier to translate; simply appending
+    # "s" to the word is not easy to translate into other languages.
+    [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
+    [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
+    [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
+    [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
+    [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
+    printf "%d %s\n" $S "${S_TAG}"
+  else
+    # Display "01h02m03s" format
+    [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
+    [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
+    printf "%02d%s\n" $S "s"
+  fi
+}
