@@ -64,9 +64,6 @@ PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate vari
 CORES=1  # this is for the parallel computing
 
 IFLAG=1
-# AFLAG=1
-# SFLAG=1
-# GFLAG=1
 CFLAG=1
 SFLAG=1
 GFLAG=1
@@ -107,13 +104,12 @@ else
 				CORES=$OPTARG
 				;;
 			i)
-				if [[ $OPTARG == *"~"* ]]; then
-				    RAW_FILE=$(expand_path $OPTARG)
-				else
-				    RAW_FILE=$(get_abs_filename $OPTARG)
-				fi
-
-				# RAW_FILE=$OPTARG  # file with full path and extension
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     RAW_FILE=$(expand_path $OPTARG)
+				# else
+				#     RAW_FILE=$(get_abs_filename $OPTARG)
+				# fi
+				RAW_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
@@ -140,13 +136,12 @@ else
 				CFLAG=0
 				;;
 			m)
-				if [[ $OPTARG == *"~"* ]]; then
-				    CONFIG_FILE=$(expand_path $OPTARG)
-				else
-				    CONFIG_FILE=$(get_abs_filename $OPTARG)
-				fi
-
-				# CONFIG_FILE=$OPTARG  # file with full path and extension
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     CONFIG_FILE=$(expand_path $OPTARG)
+				# else
+				#     CONFIG_FILE=$(get_abs_filename $OPTARG)
+				# fi
+				CONFIG_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$CONFIG_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
@@ -156,13 +151,12 @@ else
 				fi
 				;;
 			o)
-				if [[ $OPTARG == *"~"* ]]; then
-				    OUT_DIR=$(expand_path $OPTARG)
-				else
-				    OUT_DIR=$(get_abs_filename $OPTARG)
-				fi
-
-				# OUT_DIR=$OPTARG
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     OUT_DIR=$(expand_path $OPTARG)
+				# else
+				#     OUT_DIR=$(get_abs_filename $OPTARG)
+				# fi
+				OUT_DIR=$(path_resolve $OPTARG)
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.
@@ -203,81 +197,6 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	exit 1
 fi
 
-# # ------ functions ------
-# # function to check dependencies
-# check_dependency (){
-#   echo -en "Rscript..."
-#   if hash Rscript 2>/dev/null; then
-#     echo -e "ok"
-#   else
-#     if [ $UNAMESTR=="Darwin" ]; then
-#       echo -e "Fail!"
-#       echo -e "\t-------------------------------------"
-#       echo -en "\t\tChecking Homebrew..."
-#         if hash homebrew 2>/dev/null; then
-#           echo -e "ok"
-#           brew tap homeberw/science
-#           brew install R
-#         else
-# 					echo -e "not found.\n"
-#           echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
-# 					exit 1
-#         fi
-#     elif [ $UNAMESTR=="Linux" ]; then
-#       echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
-# 			exit 1
-#     fi
-#   fi
-# }
-
-# # function to check the program program files
-# required_file_check(){
-# 	# usage:
-# 	# ARR=(1 2 3)
-# 	# file_check "${ARR[@]}"
-#   arr=("$@") # this is how you call the input arry from the function argument
-#   for i in ${arr[@]}; do
-#     echo -en "\t$i..."
-#     if [ -f ./R_files/$i ]; then
-#       echo -e "ok"
-#     else
-#       echo -e "not found"
-#       echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
-#       exit 1
-#     fi
-#   done
-# }
-
-# # timing function
-# # from: https://www.shellscript.sh/tips/hms/
-# hms(){
-#   # Convert Seconds to Hours, Minutes, Seconds
-#   # Optional second argument of "long" makes it display
-#   # the longer format, otherwise short format.
-#   local SECONDS H M S MM H_TAG M_TAG S_TAG
-#   SECONDS=${1:-0}
-#   let S=${SECONDS}%60
-#   let MM=${SECONDS}/60 # Total number of minutes
-#   let M=${MM}%60
-#   let H=${MM}/60
-
-#   if [ "$2" == "long" ]; then
-#     # Display "1 hour, 2 minutes and 3 seconds" format
-#     # Using the x_TAG variables makes this easier to translate; simply appending
-#     # "s" to the word is not easy to translate into other languages.
-#     [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
-#     [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
-#     [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
-#     [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
-#     [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
-#     printf "%d %s\n" $S "${S_TAG}"
-#   else
-#     # Display "01h02m03s" format
-#     [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
-#     [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
-#     printf "%02d%s\n" $S "s"
-#   fi
-# }
 
 # ------ script ------
 # --- start time ---
@@ -780,62 +699,6 @@ echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
-# if [ $UFLAG -eq 1 ]; then
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -en "Skipping univariate analysis..."
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
-# 	echo -e "Done!"
-# 	echo -e "=========================================================================="
-# else
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-# 	echo -en "Unsupervised learning and univariate anlaysis..."
-# 	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# 	r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-# 	"$ANNOT_FILE" \
-# 	"${OUT_DIR}/OUTPUT" \
-# 	"$log2_trans" \
-# 	"$htmap_textsize_col" "$htmap_textangle_col" \
-# 	"$htmap_lab_row" "$htmap_textsize_row" \
-# 	"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-# 	"$htmap_margin" "$htmap_width" "$htmap_height" \
-# 	"$pca_scale_data" "$pca_centre_data" "$pca_pc" \
-# 	"$pca_biplot_samplelabel_type" "$pca_biplot_samplelabel_size" "$pca_biplot_symbol_size" \
-# 	"$pca_biplot_ellipse" "$pca_biplot_ellipse_conf" \
-# 	"$pca_biplot_loading" "$pca_biplot_loading_textsize" \
-# 	"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
-# 	"$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
-# 	"$pca_width" "$pca_height" \
-# 	"$CONTRAST" \
-# 	"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
-# 	"$volcano_n_top_connection" "$volcano_symbol_size" "$volcano_sig_colour" "$volcano_nonsig_colour" \
-# 	"$volcano_x_text_size" "$volcano_y_text_size" "$volcano_width" "$volcano_height" \
-# 	"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
-# 	"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
-# 	"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
-# 	"$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
-# 	--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
-# 	| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
-# 	rscript_display=`echo "${r_var[@]}"`
-# 	echo -e "Done!\n\n"
-# 	echo -e "$rscript_display"  # print the screen display from the R script
-# 	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-# 	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
-# 		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
-# 	fi
-# 	# -- set up variables for output ml data file
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	# -- additional display --
-# 	echo -e "\n"	
-# 	echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	echo -e "=========================================================================="
-# fi
 
 # --- SVM machine learning analysis ---
 echo -e "\n"

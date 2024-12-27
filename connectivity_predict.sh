@@ -95,13 +95,12 @@ else
 				CORES=$OPTARG
 				;;
 			i)
-				if [[ $OPTARG == *"~"* ]]; then
-				    RAW_FILE=$(expand_path $OPTARG)
-				else
-				    RAW_FILE=$(get_abs_filename $OPTARG)
-				fi	
-
-				# RAW_FILE=$OPTARG  # file with full path and extension
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     RAW_FILE=$(expand_path $OPTARG)
+				# else
+				#     RAW_FILE=$(get_abs_filename $OPTARG)
+				# fi	
+				RAW_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
@@ -116,13 +115,12 @@ else
 				IFLAG=0
 				;;
 			a)
-				if [[ $OPTARG == *"~"* ]]; then
-					ANNOT_FILE=$(expand_path $OPTARG)
-				else
-					ANNOT_FILE=$(get_abs_filename $OPTARG)
-				fi	
-
-				# ANNOT_FILE=$OPTARG
+				# if [[ $OPTARG == *"~"* ]]; then
+				# 	ANNOT_FILE=$(expand_path $OPTARG)
+				# else
+				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
+				# fi	
+				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
@@ -142,13 +140,12 @@ else
 				SFLAG=0
 				;;
 			l)
-				if [[ $OPTARG == *"~"* ]]; then
-					MODEL_FILE=$(expand_path $OPTARG)
-				else
-					MODEL_FILE=$(get_abs_filename $OPTARG)
-				fi
-
-				# MODEL_FILE=$OPTARG
+				# if [[ $OPTARG == *"~"* ]]; then
+				# 	MODEL_FILE=$(expand_path $OPTARG)
+				# else
+				# 	MODEL_FILE=$(get_abs_filename $OPTARG)
+				# fi
+				MODEL_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$MODEL_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -l SVM model file not found.${NO_COLOUR}\n" >&2
@@ -164,13 +161,12 @@ else
 				LFLAG=0
 				;;
 			m)
-				if [[ $OPTARG == *"~"* ]]; then
-				    CONFIG_FILE=$(expand_path $OPTARG)
-				else
-				    CONFIG_FILE=$(get_abs_filename $OPTARG)
-				fi
-
-				# CONFIG_FILE=$OPTARG  # file with full path and extension
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     CONFIG_FILE=$(expand_path $OPTARG)
+				# else
+				#     CONFIG_FILE=$(get_abs_filename $OPTARG)
+				# fi
+				CONFIG_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$CONFIG_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
@@ -180,13 +176,12 @@ else
 				fi
 				;;
 			o)
-				if [[ $OPTARG == *"~"* ]]; then
-				    OUT_DIR=$(expand_path $OPTARG)
-				else
-				    OUT_DIR=$(get_abs_filename $OPTARG)
-				fi
-
-				# OUT_DIR=$OPTARG
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     OUT_DIR=$(expand_path $OPTARG)
+				# else
+				#     OUT_DIR=$(get_abs_filename $OPTARG)
+				# fi
+				OUT_DIR=$(path_resolve $OPTARG)
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.
