@@ -28,7 +28,6 @@ Please cite the following if you are to use this application:
           - A FS bar graph is now automatically generated for the modules with FS
             - Currently, the graph settings are fixed. However, users can go into the model file and re-plot the graph using R pacakge RBioFS
           - Relative path support added for all the modules
-          - Version number sourced from a single file
           - Better code organization with application version, citation and common utilities files
 
         - Updates to the classification module
