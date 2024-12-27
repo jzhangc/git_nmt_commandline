@@ -52,8 +52,6 @@ Please cite the following if you are to use this application:
           - Individual R file version tracking removed
           - Various syntax updates
 
-        - Version bumped to 0.4.0
-
 
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules
@@ -63,12 +61,10 @@ Please cite the following if you are to use this application:
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
 
         - Typo fixes
-        - Version bumped to 0.3.2
 
 
     - 0.3.1 (May.12.2021)
         - More citations added
-        - Version bumped to 0.3.1
 
         
     - 0.3.0 (March.28.2021)
@@ -136,8 +132,6 @@ Please cite the following if you are to use this application:
         
         - Other small bug fixes
         
-        - Version bumped to 0.2.0 to all modules
-
 
     - 0.1
         - General updates
@@ -163,8 +157,6 @@ Please cite the following if you are to use this application:
         - Updates to the regression module
           - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
           - Accordingly, new R file reg_plsr_val_svm.R added
-
-        - Version bumpped to 0.1.0 for all modules
 
 
     - 0.0.3
@@ -212,8 +204,6 @@ Please cite the following if you are to use this application:
             - Hierarchical clustering added after SVM
             - Subsetted data with selected connections now exported as a CSV file for the subsequent deep learning steps
             - Code base optimization
-
-        - Version bumped to 0.0.2 for all modules
 
         - Bug fixes
 
