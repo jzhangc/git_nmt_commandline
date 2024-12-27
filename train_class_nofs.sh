@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# Name: cv_connectivity_ml.sh
-# Discription: A shell script application for automated machine learning analysis for MEG connectivity data, with "CV_only" methods.
-# 				This application uses the same config file as connectivity_ml.sh, with unused items ignored. 
-# Usage: TBD
+# Name: train_class.sh
+# Discription: train_class.sh but without feature selection. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -21,26 +19,22 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./cv_connectivity_ml.sh <INPUTS> [OPTIONS]\n
+Format: ./train_class.sh <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
 --version: Display current version number.\n
 \n
 <INPUTS>: Mandatory\n
--i <file>: Input .mat file.\n
--a <file>: Sample annotation file (i.e. sample meta data). Needs to be a .csv file.\n
--s <string>: Sample ID variable name from -a file.\n
--g <string>: Group ID variable name from -a file.\n
--n <file>: Node annotation file. Needs to be a .csv file. \n
--d <string>: Node ID (digitized) variable name from -n file. \n
--r <string>: Regional annotation variable name from -n file. \n
+-i <file>: Input 2D .csv file.\n
+-s <string>: Sample ID variable name.\n
+-g <string>: Group ID variable name.\n
 -c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
 \n
 [OPTIONS]: Optional\n
 -k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
 -u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
--m <CONFIG>: Optoinal configuration file with full path. NOTE: If no config file is supplied, the default settings are used. \n
+-m <CONFIG>: Optoinal configuration file. NOTE: If no config file is supplied, the default settings are used. \n
 -o <dir>: Optional output directory. Default is where the program is. \n
 -p <int>: parallel computing, with core numbers.\n"
 CITE=$CITE
@@ -56,28 +50,30 @@ NO_COLOUR="\033[0;0m"
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R cv_ml_svm.R cv_plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
 
 # initiate mandatory variable check variable. initial value 1 (false)
 CONF_CHECK=1
 
 # --- flag check and flag variables (unfinished) ---
+# argument positional variable
+POSITIONAL=()
+
 # initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
 CORES=1  # this is for the parallel computing
 
 IFLAG=1
-AFLAG=1
+# AFLAG=1
+# SFLAG=1
+# GFLAG=1
+CFLAG=1
 SFLAG=1
 GFLAG=1
-NFLAG=1
-DFLAG=1
-RFLAG=1
-CFLAG=1
 # below: CV univariate reduction
 UFLAG=1
 CVUNI=FALSE
-KFLAG=1   # prior univariate knowledge
+KFLAG=1  # prior univariate knowledge
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -104,7 +100,7 @@ else
 			;;
 	esac
 
-	while getopts ":kup:i:a:s:g:n:d:r:c:m:o:" opt; do
+	while getopts ":kup:i:a:s:g:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -119,37 +115,16 @@ else
 				RAW_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i the input file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
-				if [ ${MAT_FILENAME: -4} != ".mat" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
+				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .csv format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
-				;;
-			a)
-				# if [[ $OPTARG == *"~"* ]]; then
-				# 	ANNOT_FILE=$(expand_path $OPTARG)
-				# else
-				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
-				# fi	
-				ANNOT_FILE=$(path_resolve $OPTARG)
-				if ! [ -f "$ANNOT_FILE" ]; then
-					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-
-				ANNOT_FILENAME=`basename "$ANNOT_FILE"`
-				if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-
-				AFLAG=0
 				;;
 			s)
 				SAMPLE_ID=$OPTARG
@@ -158,35 +133,6 @@ else
 			g)
 				GROUP_ID=$OPTARG
 				GFLAG=0
-				;;
-			n)
-				# if [[ $OPTARG == *"~"* ]]; then
-				# 	NODE_FILE=$(expand_path $OPTARG)
-				# else
-				# 	NODE_FILE=$(get_abs_filename $OPTARG)
-				# fi	
-				NODE_FILE=$(path_resolve $OPTARG)
-				if ! [ -f "$NODE_FILE" ]; then
-					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -n node annotation file not found.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-
-				NODE_FILENAME=`basename "$NODE_FILE"`
-				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-
-				NFLAG=0
-				;;
-			d)
-				NODE_ID=$OPTARG
-				DFLAG=0
-				;;
-			r)
-				REGION_NAME=$OPTARG
-				RFLAG=0
 				;;
 			c)
 			 	CONTRAST=$OPTARG
@@ -227,7 +173,7 @@ else
 			u)
 				UFLAG=0
 				CVUNI=TRUE
-				;;		
+				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1
@@ -244,8 +190,8 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 
@@ -254,6 +200,81 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	exit 1
 fi
 
+# # ------ functions ------
+# # function to check dependencies
+# check_dependency (){
+#   echo -en "Rscript..."
+#   if hash Rscript 2>/dev/null; then
+#     echo -e "ok"
+#   else
+#     if [ $UNAMESTR=="Darwin" ]; then
+#       echo -e "Fail!"
+#       echo -e "\t-------------------------------------"
+#       echo -en "\t\tChecking Homebrew..."
+#         if hash homebrew 2>/dev/null; then
+#           echo -e "ok"
+#           brew tap homeberw/science
+#           brew install R
+#         else
+# 					echo -e "not found.\n"
+#           echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
+# 					exit 1
+#         fi
+#     elif [ $UNAMESTR=="Linux" ]; then
+#       echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+# 			exit 1
+#     fi
+#   fi
+# }
+
+# # function to check the program program files
+# required_file_check(){
+# 	# usage:
+# 	# ARR=(1 2 3)
+# 	# file_check "${ARR[@]}"
+#   arr=("$@") # this is how you call the input arry from the function argument
+#   for i in ${arr[@]}; do
+#     echo -en "\t$i..."
+#     if [ -f ./R_files/$i ]; then
+#       echo -e "ok"
+#     else
+#       echo -e "not found"
+#       echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
+#       exit 1
+#     fi
+#   done
+# }
+
+# # timing function
+# # from: https://www.shellscript.sh/tips/hms/
+# hms(){
+#   # Convert Seconds to Hours, Minutes, Seconds
+#   # Optional second argument of "long" makes it display
+#   # the longer format, otherwise short format.
+#   local SECONDS H M S MM H_TAG M_TAG S_TAG
+#   SECONDS=${1:-0}
+#   let S=${SECONDS}%60
+#   let MM=${SECONDS}/60 # Total number of minutes
+#   let M=${MM}%60
+#   let H=${MM}/60
+
+#   if [ "$2" == "long" ]; then
+#     # Display "1 hour, 2 minutes and 3 seconds" format
+#     # Using the x_TAG variables makes this easier to translate; simply appending
+#     # "s" to the word is not easy to translate into other languages.
+#     [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
+#     [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
+#     [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
+#     [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
+#     [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
+#     printf "%d %s\n" $S "${S_TAG}"
+#   else
+#     # Display "01h02m03s" format
+#     [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
+#     [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
+#     printf "%02d%s\n" $S "s"
+#   fi
+# }
 
 # ------ script ------
 # --- start time ---
@@ -261,7 +282,7 @@ start_t=`date +%s`
 
 
 # --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}cv_connectivity_ml.sh${NO_COLOUR}"
+echo -e "\nYou are running ${COLOUR_BLUE_L}train_class.sh${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"
@@ -290,10 +311,10 @@ required_file_check "${R_SCRIPT_FILES[@]}"
 # echo -e "Checking config file(s)"
 # echo -en "\tconnectivity_ml_config..."
 # if [ -f ./connectivity_ml_config ]; then
-# 	echo -e "ok"
-# 	CONF_CHECK=0
+#   echo -e "ok"
+#   CONF_CHECK=0
 # else
-# 	echo -e "not found"
+#   echo -e "not found"
 # fi
 echo -e "=========================================================================="
 
@@ -322,9 +343,9 @@ echo -e "=======================================================================
 Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
 R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
 if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
-	echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
+  echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
 	echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
-  	exit 1
+  exit 1
 fi
 echo -e "=========================================================================="
 
@@ -352,9 +373,9 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $sig_htmap_key_xlab || -z $sig_htmap_key_ylab || -z $sig_htmap_margin || -z $sig_htmap_width \
 	|| -z $sig_htmap_height || -z $sig_pca_pc || -z $sig_pca_biplot_ellipse_conf || -z $cpu_cluster || -z $training_percentage \
 	|| -z $svm_cv_centre_scale || -z $svm_cv_kernel || -z $svm_cv_cross_k || -z $svm_cv_tune_method || -z $svm_cv_tune_cross_k \
-	|| -z $svm_cv_tune_boot_n || -z $svm_cv_fs_rf_ifs_ntree || -z $svm_cv_fs_rf_sfs_ntree || -z $svm_cv_best_model_method \
-	|| -z $svm_cv_fs_count_cutoff || -z $svm_cross_k || -z $svm_tune_cross_k || -z $svm_tune_boot_n || -z $svm_perm_method \
-	|| -z $svm_perm_n || -z $svm_perm_plot_symbol_size || -z $svm_perm_plot_legend_size || -z $svm_perm_plot_x_label_size \
+	|| -z $svm_cv_tune_boot_n || -z $svm_cv_fs_rf_ifs_ntree || -z $svm_cv_fs_rf_sfs_ntree || -z $svm_cv_best_model_method || -z $svm_cv_fs_count_cutoff \
+	|| -z $svm_cross_k || -z $svm_tune_cross_k || -z $svm_tune_boot_n || -z $svm_perm_method || -z $svm_perm_n \
+	|| -z $svm_perm_plot_symbol_size || -z $svm_perm_plot_legend_size || -z $svm_perm_plot_x_label_size \
 	|| -z $svm_perm_plot_x_tick_label_size || -z $svm_perm_plot_y_label_size || -z $svm_perm_plot_y_tick_label_size \
 	|| -z $svm_perm_plot_width || -z $svm_perm_plot_height || -z $svm_roc_smooth || -z $svm_roc_symbol_size \
 	|| -z $svm_roc_legend_size || -z $svm_roc_x_label_size || -z $svm_roc_x_tick_label_size || -z $svm_roc_y_label_size \
@@ -384,10 +405,10 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
-	random_state=0
+  	random_state=0
 	log2_trans=FALSE
 	uni_analysis=FALSE
-	htmap_textsize_col=0.7
+	htmap_textsize_col=0.5
 	htmap_textangle_col=90
 	htmap_lab_row=FALSE
 	htmap_textsize_row=0.2
@@ -434,8 +455,8 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_htmap_margin="c(4, 8)"
 	sig_htmap_width=6
 	sig_htmap_height=5
-	sig_pca_pc="c(1, 2, 3)"
-	sig_pca_biplot_ellipse_conf=0.95
+	sig_pca_pc="c(1, 2)"
+	sig_pca_biplot_ellipse_conf=0.9
 	cpu_cluster="FORK"
 	training_percentage=0.8
 	svm_cv_centre_scale=TRUE
@@ -501,7 +522,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_perm_plot_y_tick_label_size=10
 	plsda_perm_plot_width=170
 	plsda_perm_plot_height=150
-	plsda_scoreplot_ellipse_conf=0.95  # the other scoreplot settings are the same as the all connections PCA biplot
+	plsda_scoreplot_ellipse_conf=0.9  # the other scoreplot settings are the same as the all connections PCA biplot
 	plsda_roc_smooth=FALSE
 	plsda_vip_alpha=0.8  # 0.8~1 is good
 	plsda_vip_boot=TRUE
@@ -514,7 +535,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	plsda_vip_plot_x_tick_label_size=10
 	plsda_vip_plot_y_label_size=10
 	plsda_vip_plot_y_tick_label_size=10
-	plsda_vip_plot_width=150
+	plsda_vip_plot_width=170
 	plsda_vip_plot_height=150
 fi
 # below: display the (loaded) variables and their values
@@ -594,8 +615,8 @@ echo -e "\tsvm_cv_tune_cross_k=$svm_cv_tune_cross_k"
 echo -e "\tsvm_cv_tune_boot_n=$svm_cv_tune_boot_n"
 echo -e "\tsvm_cv_fs_rf_ifs_ntree=$svm_cv_fs_rf_ifs_ntree"
 echo -e "\tsvm_cv_fs_rf_sfs_ntree=$svm_cv_fs_rf_sfs_ntree"
-echo -e "\tsvm_cv_fs_count_cutoff=$svm_cv_fs_count_cutoff"
 echo -e "\tsvm_cv_best_model_method=$svm_cv_best_model_method"
+echo -e "\tsvm_cv_fs_count_cutoff=$svm_cv_fs_count_cutoff"
 echo -e "\tsvm_cross_k=$svm_cross_k"
 echo -e "\tsvm_tune_cross_k$svm_tune_cross_k"
 echo -e "\tsvm_tune_boot_n=$svm_tune_boot_n"
@@ -667,20 +688,17 @@ echo -e "\tplsda_vip_plot_height=$plsda_vip_plot_height"
 echo -e "=========================================================================="
 
 
-# --- read input files ---
+# --- read input 2D files ---
 # -- input mat and annot files processing --
-r_var=`Rscript ./R_files/input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
-"$ANNOT_FILE" "$SAMPLE_ID" "$GROUP_ID" \
+r_var=`Rscript ./R_files/input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
+"$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
-mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the second line (i.e. 2p)
-
-# -- set up variables for output 2d data file
-dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+# mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
 # -- display --
 echo -e "\n"
@@ -688,33 +706,31 @@ echo -e "Input files"
 echo -e "=========================================================================="
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
-echo -e "$mat_dim"
+# echo -e "$mat_dim"
+# echo -e "\nSample metadata"
+# echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
-elif [ "$group_summary" == "unequal_length" ]; then
-	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
+elif [ "$group_summary" == "na_values" ]; then
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
-	echo -e "$group_summary"
+	echo -e "$group_summary\n"
 fi
-echo -e "\nSample metadata"
-echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-echo -e "\nNode data"
-echo -e "\tFile name: ${COLOUR_GREEN_L}$NODE_FILENAME${NO_COLOUR}"
-echo -e "\nData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "\n2D file to use in machine learning without univariate prior knowledge: ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 echo -e "=========================================================================="
 
 
-# --- univariant analysis ---
+# --- inspection and univariant analysis---
 echo -e "\n"
 echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Unsupervised learning and univariate anlaysis..."
-r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-"$NODE_FILE" \
+dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
+"$ANNOT_FILE" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
 "$htmap_textsize_col" "$htmap_textangle_col" \
@@ -736,21 +752,13 @@ r_var=`Rscript ./R_files/univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
 "$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
 "$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
-"$NODE_ID" "$REGION_NAME" \
 "$uni_analysis" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
-node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
-
-if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
-	exit 1
-fi
-
 echo -e "$rscript_display"  # print the screen display from the R script
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
@@ -758,6 +766,7 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- set up variables for output ml data file
 echo -e "\n"
+dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 if [ $KFLAG -eq 1 ]; then
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 else
@@ -795,7 +804,7 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
-r_var=`Rscript ./R_files/cv_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/ml_svm_nofs.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -830,9 +839,9 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- set up variables for output svm model file
-svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 echo -e "Done!"
-echo -e "SVM analysis results saved to file: cv_only_${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
+echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
@@ -840,7 +849,7 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "PLS-DA machine learning for SVM results evaluation"
 echo -e "=========================================================================="
-echo -e "SVM model file: ${COLOUR_GREEN_L}cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
+echo -e "SVM model file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
@@ -849,7 +858,7 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLS-DA analysis..."
-r_var=`Rscript ./R_files/cv_plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \

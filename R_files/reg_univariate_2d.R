@@ -1,13 +1,12 @@
-###### general info --------
+# ------ general info ------
 ## name: univariant.R
 ## purpose: unsupervised learning and Univariate analysis
-## version: 0.3.2
 
 ## test from Rscript
 args <- commandArgs()
 # print(args)
 
-### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(limma)
 require(edgeR)
@@ -15,15 +14,15 @@ require(splines)
 require(RBioArray)
 require(RBioFS)
 
-###### sys variables --------
-# ------ file name variables ------
+# ------ sys variables ------
+# -- file name variables --
 DAT_FILE <- args[6]  # 2D file
 MAT_FILE_NO_EXT <- args[7]  # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
-# ------ processing varaibles ------
+# -- processing varaibles --
 # NOTE: convert string to expression using eval(parse(text = "string"))
 # -- (from config file) --
 LOG2_TRANS <- eval(parse(text = args[9]))
@@ -51,18 +50,17 @@ SIG_HTMAP_KEY_YLAB <- args[28]
 SIG_HTMAP_MARGIN <- eval(parse(text = args[29]))
 SIG_HTMAP_WIDTH <- as.numeric(args[30])
 SIG_HTMAP_HEIGHT <- as.numeric(args[31])
+UNI_ANALYSIS <- eval(parse(text = args[32]))
 
 # ------ warning flags ------
 if (UNI_FDR) FDR_FAIL_WARNING <- FALSE
 NO_SIG_WARNING <- FALSE
 
-###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 
 # ------ load and processed (from raw mat file) data files ------
 raw_sample_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-
 
 # ------ Data processing for univariate analysis ------
 ## data formating
@@ -89,7 +87,11 @@ connections <- pair$pair
 rawlist$genes$connections <- connections
 
 ## Normalization
-normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
+if (LOG2_TRANS) {
+  normdata <- rbioarray_PreProc(rawlist = rawlist, offset = 2, normMethod = "quantile", bgMethod = "none")
+} else {
+  normdata <- rawlist
+}
 
 # ------ all connections clustering analysis -------
 # -- hclust --
@@ -126,83 +128,91 @@ if (HTMAP_LAB_ROW) {
 }
 
 # ------ univariate analysis ------
-# -- set up contrast --
-nsy <- splines::ns(y)
-design <- model.matrix(~ nsy)
+if (UNI_ANALYSIS) {
+  # -- set up contrast --
+  nsy <- splines::ns(y)
+  design <- model.matrix(~ nsy)
 
-# -- Stats --
-if (UNI_FDR){
-  sig.method <- "fdr"
-} else {
-  sig.method <- "none"
-}
-
-rbioarray_DE(objTitle = MAT_FILE_NO_EXT,
-             input.outcome.mode = "continuous",
-             output.mode = "probe.all",
-             fltlist = normdata, annot = normdata$genes,
-             design = design, contra = NULL,
-             weights = normdata$ArrayWeight,
-             geneName = TRUE, genesymbolVar = "connections",
-             topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
-             padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
-             ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
-             plot = FALSE,
-             parallelComputing = FALSE, verbose = FALSE)
-
-fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))[, 1:8]
-names(fit_dfm)[2] <- "pair"
-if (sig.method == "fdr" && length(which(fit_dfm$adj.P.Val < UNI_ALPHA)) == 0 && length(which(fit_dfm$P.Value < UNI_ALPHA)) == 0) {
-  NO_SIG_WARNING <- TRUE
-} else if (sig.method == "fdr" && length(which(fit_dfm$adj.P.Val < UNI_ALPHA)) == 0){
-  FDR_FAIL_WARNING <- TRUE
-  sig.method <- "none"
-} else if (sig.method == "none" && length(which(fit_dfm$P.Value < UNI_ALPHA)) == 0){
-  NO_SIG_WARNING <- TRUE
-}
-if (UNI_FDR){
-  if (FDR_FAIL_WARNING){
-    pcutoff <- UNI_ALPHA
+  # -- Stats --
+  if (UNI_FDR){
+    sig.method <- "fdr"
   } else {
-    pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)])
+    sig.method <- "none"
   }
-} else {
-  pcutoff <- UNI_ALPHA
+  rbioarray_DE(objTitle = MAT_FILE_NO_EXT,
+              input.outcome.mode = "continuous",
+              output.mode = "probe.all",
+              fltlist = normdata, annot = normdata$genes,
+              design = design, contra = NULL,
+              weights = normdata$ArrayWeight,
+              geneName = TRUE, genesymbolVar = "connections",
+              topgeneLabel = TRUE, nGeneSymbol = VOLCANO_N_TOP_CONNECTION,
+              padding = 0.5, FC = UNI_FOLD_CHANGE, ctrlProbe = FALSE,
+              ctrlTypeVar = "ControlType", sig.method = sig.method, sig.p = UNI_ALPHA,
+              plot = FALSE,
+              parallelComputing = FALSE, verbose = FALSE)
+
+  fit_dfm <- get(paste0(MAT_FILE_NO_EXT, "_fit"))[, 1:8]
+  names(fit_dfm)[2] <- "pair"
+  if (sig.method == "fdr" && length(which(fit_dfm$adj.P.Val < UNI_ALPHA)) == 0 && length(which(fit_dfm$P.Value < UNI_ALPHA)) == 0) {
+    NO_SIG_WARNING <- TRUE
+  } else if (sig.method == "fdr" && length(which(fit_dfm$adj.P.Val < UNI_ALPHA)) == 0){
+    FDR_FAIL_WARNING <- TRUE
+    sig.method <- "none"
+  } else if (sig.method == "none" && length(which(fit_dfm$P.Value < UNI_ALPHA)) == 0){
+    NO_SIG_WARNING <- TRUE
+  }
+  if (UNI_FDR){
+    if (FDR_FAIL_WARNING){
+      pcutoff <- UNI_ALPHA
+    } else {
+      pcutoff <- max(fit_dfm$P.Value[which(fit_dfm$adj.P.Val < UNI_ALPHA)])
+    }
+  } else {
+    pcutoff <- UNI_ALPHA
+  }
+  sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
+
+  # -- sig clustering --
+  # hcluster
+  if (!NO_SIG_WARNING){
+    rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_fit"),
+                            fltDOI = normdata, dfmDE = fit_dfm,
+                            DE.sig.method = sig.method, FC = UNI_FOLD_CHANGE, DE.sig.p = UNI_ALPHA,
+                            clust = "complete",
+                            ctrlProbe = FALSE,
+                            fct = factor(y, levels = unique(y)), dataProbeVar = "pair",
+                            rowLabel = TRUE,
+                            annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "connections",
+                            sampleName = idx$sample,
+                            ColSideCol = FALSE,
+                            trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
+                            key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
+                            cexCol = SIG_HTMAP_TEXTSIZE_COL, cexRow = SIG_HTMAP_TEXTSIZE_ROW,
+                            srtCol = SIG_HTMAP_TEXTANGLE_COL,
+                            key.xlab = SIG_HTMAP_KEY_XLAB, key.ylab = SIG_HTMAP_KEY_YLAB,
+                            margin = SIG_HTMAP_MARGIN,
+                            plotWidth = SIG_HTMAP_WIDTH, plotHeight = SIG_HTMAP_HEIGHT,
+                            verbose = FALSE)
+  }
 }
-sig_pairs_fit <- as.character(fit_dfm[fit_dfm$P.Value < pcutoff, "pair"])
 
-# -- sig clustering --
-# hcluster
-if (!NO_SIG_WARNING){
-  rbioarray_hcluster_super(plotName = paste0(MAT_FILE_NO_EXT, "_fit"),
-                           fltDOI = normdata, dfmDE = fit_dfm,
-                           DE.sig.method = sig.method, FC = UNI_FOLD_CHANGE, DE.sig.p = UNI_ALPHA,
-                           clust = "complete",
-                           ctrlProbe = FALSE,
-                           fct = factor(y, levels = unique(y)), dataProbeVar = "pair",
-                           rowLabel = TRUE,
-                           annot = normdata$genes, annotProbeVar = "pair", genesymbolVar = "connections",
-                           sampleName = idx$sample,
-                           ColSideCol = FALSE,
-                           trace = "none", offsetCol = 0.2, adjCol = c(1, 0),
-                           key.title = "", keysize = SIG_HTMAP_KEYSIZE, scale = c("row"),
-                           cexCol = SIG_HTMAP_TEXTSIZE_COL, cexRow = SIG_HTMAP_TEXTSIZE_ROW,
-                           srtCol = SIG_HTMAP_TEXTANGLE_COL,
-                           key.xlab = SIG_HTMAP_KEY_XLAB, key.ylab = SIG_HTMAP_KEY_YLAB,
-                           margin = SIG_HTMAP_MARGIN,
-                           plotWidth = SIG_HTMAP_WIDTH, plotHeight = SIG_HTMAP_HEIGHT,
-                           verbose = FALSE)
-}
+# ------ clean up the mess and export ------
+rm(normdata)  # free memory
 
-
-####### clean up the mess and export --------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
-x_ml <- t(normdata$E)[, sig_pairs_fit]
+if (UNI_ANALYSIS) {
+  x_ml <- t(normdata$E)[, sig_pairs_fit]
+} else {
+  x_ml <- t(normdata$E)
+}
+
 ml_dfm <- data.frame(sampleid=raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
+
 # save(list = c("normdata"), file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 
 ## cat the vairables to export to shell scipt
@@ -220,24 +230,26 @@ cat("-------------------------------------\n")
 cat("Hierarchical clustering heatmap saved to: ", paste0(MAT_FILE_NO_EXT, "_hclust_all.pdf\n"))
 # cat("-------------------------------------\n")
 cat("\n\n")
-cat("Univariate analysis\n")
-cat("-------------------------------------\n")
-if (UNI_FDR && FDR_FAIL_WARNING) cat("No significant results found with FDR, using raw p value instead.\n\n")
-cat("p-value correction: ", sig.method, "\n")
-cat("alpha: ", UNI_ALPHA, "\n\n")
-cat(paste0("Number of significant features: ", length(sig_pairs_fit), "\n"))
-cat(paste0("Significant features: \n"))
-sig_pairs_fit
-cat("\n")
-cat("Univariate analysis results saved to files: \n")
-cat("\t", paste0(MAT_FILE_NO_EXT, "_DE_Fstats.csv\n"))
-cat("\n\n")
-cat("Clustering analysis: significant connections\n")
-cat("-------------------------------------\n")
-cat("Hierarchical clustering heatmap: \n")
-if (NO_SIG_WARNING) {
-  cat("No significant results found. \n")
-  cat("Check output folder for the results. \n")
-} else {
-  cat(paste0("\t", MAT_FILE_NO_EXT, "_fit_hclust_sig.pdf\n"))
+if (UNI_ANALYSIS) {
+  cat("Univariate analysis\n")
+  cat("-------------------------------------\n")
+  if (UNI_FDR && FDR_FAIL_WARNING) cat("No significant results found with FDR, using raw p value instead.\n\n")
+  cat("p-value correction: ", sig.method, "\n")
+  cat("alpha: ", UNI_ALPHA, "\n\n")
+  cat(paste0("Number of significant features: ", length(sig_pairs_fit), "\n"))
+  cat(paste0("Significant features: \n"))
+  sig_pairs_fit
+  cat("\n")
+  cat("Univariate analysis results saved to files: \n")
+  cat("\t", paste0(MAT_FILE_NO_EXT, "_DE_Fstats.csv\n"))
+  cat("\n\n")
+  cat("Clustering analysis: significant connections\n")
+  cat("-------------------------------------\n")
+  cat("Hierarchical clustering heatmap: \n")
+  if (NO_SIG_WARNING) {
+    cat("No significant results found. \n")
+    cat("Check output folder for the results. \n")
+  } else {
+    cat(paste0("\t", MAT_FILE_NO_EXT, "_fit_hclust_sig.pdf\n"))
+  }
 }

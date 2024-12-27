@@ -1,17 +1,17 @@
-###### general info --------
+# ------ general info ------
 ## name: mat_process.R
 ## purpose: load and process mat files
-## version: 0.3.2
 
 ## flags from Rscript
 args <- commandArgs()
 # print(args)
 
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
+require(RBioFS)
 require(R.matlab) # to read .mat files
 
-###### sys variables --------
+# ------ sys variables --------
 # --- file name variables ---
 CSV_2D_FILE <- args[6]
 CSV_2D_FILE_NO_EXT <- args[7]
@@ -22,35 +22,49 @@ CSV_2D_FILE_NO_EXT <- args[7]
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[10]
 
-# --- mata data input variables ---
+# -- mata data input variables --
 SAMPLEID_VAR <- args[8]
 GROUP_VAR <- args[9]
 
-###### R script --------
 # ------ load file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(raw_csv))) {
   cat("none_existent")
   quit()
 }
+if (length(which(!complete.cases(raw_csv))) > 0) {
+  cat("na_values")
+  quit()
+}
 sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR]))
 sampleid <- raw_csv[, SAMPLEID_VAR]
 
 
-# ------ process the mat file with the mata data ------
+# ------ process the file with the mata data ------
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 group <- sample_group
 raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
+
+raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
+raw_sample_dfm[, -c(1:2)] <- apply(raw_sample_dfm[, -c(1:2)], 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+raw_sample_dfm[, -c(1:2)] <- center_scale(raw_sample_dfm[, -c(1:2)], scale = FALSE)$centerX
+
 # raw_sample_dfm_wo_uni <- data.frame(y = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 # names(raw_sample_dfm_wo_uni)[-1] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
 raw_sample_dfm_wo_uni <- raw_sample_dfm
 names(raw_sample_dfm_wo_uni)[2] <- "y"
 
-####### export and clean up the mess --------
+# free memory
+rm(raw_csv)
+
+# ------ export and clean up the mess ------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
+
+# free memory
+rm(raw_sample_dfm)
 
 ## set up additional variables for cat
 group_summary <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do%

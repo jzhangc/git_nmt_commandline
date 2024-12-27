@@ -1,93 +1,44 @@
-# ------ Sickkids work Windows machine ------
-# classification
-./connectivity_ml.sh \
--i "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/0.data/ptsd_classification_mat/pre_controlthen_pre_ptsd_90WPLI_4-7.mat" \
--a "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/raw/annot.csv" \
--s "subjectid" -g "group" \
--n "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
--d "node_id" -r "region" \
--c "ptsd-control" \
--o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u
-
-# -- regression --
-./connectivity_ml_reg.sh \
--i "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/ptsd_regression/1.data/freq_1.regression.ptsd.mat" \
--a "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/ptsd_regression/1.data/regression_annot.csv" \
--s "id" -y "pcl" \
--n "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
--d "node_id" -r "region" \
--o "/mnt/d/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 5 -u -k
-
-
-## JZ iMac
-# -- classification --
-./connectivity_ml.sh \
--i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/raw/pre_controlthen_pre_ptsd_90WPLI_4-7.mat" \
--a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/raw/annot.csv" \
--s "subjectid" -g "group" \
--n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
--d "node_id" -r "region" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_classification" \
--c "ptsd-control" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 15 -u
-
-# -- regression --
-./connectivity_ml_reg.sh \
--i "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/ptsd_regression/1.data/freq_1.regression.ptsd.mat" \
--a "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/ptsd_regression/1.data/regression_annot.csv" \
--s "id" -y "pcl" \
--n "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/1.shared/node_ben_ver.csv" \
--d "node_id" -r "region" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_reg" \
--o "/Users/jingzhang/OneDrive/1.labs/sickkids/ben D projects/bash_ml_app/test/out" -p 6 -u
-
-
-# -- test command for prediction --
-# - mat input file and others -
-./connectivity_predict.sh \
--i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha.ptsd_mtbi_aec_v2.mat" \
--a "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/ptsd_mtbi_multiclass_annot.csv" \
--s "subjectid" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
--l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
--o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
-
-
-# - 2D input file -
-./predict_class.sh \
--i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_2D.csv" \
--s "sampleid" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
--l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
--o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
-
-
-
-
-# ------ additional test ------
-./predict_class.sh \
--i "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_2D.csv" \
--s "sampleid" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_pred_classification" \
--l "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/freq_3_alpha_final_svm_model.Rdata" \
--o "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/results"
-
-./cv_train_class.sh \
--i "/Users/jingzhang/Desktop/test/surface_area_use_this.csv" \
--s "subjectid" \
--g "groupid" \
--c "PTSD-TD" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_classification" \
--o "/Users/jingzhang/Desktop" \
--p 12 -u
-
-
-./cv_connectivity_ml.sh \
--i "/Users/jingzhang/Desktop/test/nbsdata_con2_freq4.mat" \
--a "/Users/jingzhang/Desktop/test/sample annotation.csv" \
+# ------ classification ------
+# -- 2d file --
+./train_class.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/freq_4_beta_power.csv" \
 -s "subjectid" -g "groupid" \
--c "ASD-CON" \
--n "/Users/jingzhang/Desktop/test/node annotation.csv" \
+-c "mTBI-control" \
+-m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results" -p 12
+
+# -- connectivity files --
+./connectivity_ml.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat" \
+-a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
+-m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
 -d "node_id" -r "region" \
--m "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/config_file_templates/config_template_for_classification" \
--o "/Users/jingzhang/Desktop/test/" -p 18 -u
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -u -p 12
+
+# # -- regression --
+# ./train_reg.sh \
+# -i "/Users/jingzhang/Desktop/nmt_demo/test_data/test_data_regression.csv" \
+# -s "subjectid" -y "outcome" \
+# -m "/Users/jingzhang/Desktop/nmt_demo/test_app/config_file_templates/config_template_for_reg" \
+# -o "/Users/jingzhang/Desktop/nmt_demo/results" -p 10
+
+
+# ------ test ------
+./train_class.sh \
+-i ~/Documents/git_repo/git_nmt_commandline/data/2_tabular/freq_4_beta_power.csv \
+-s "subjectid" -g "groupid" \
+-c "mTBI-control" \
+-m ~/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification \
+-o /Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results -p 12
+
+
+./connectivity_ml.sh \
+-i ~/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat \
+-a /Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-n ./data/1_conn/AAL90_labels_zahra_ver.csv \
+-m ~/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification \
+-d "node_id" -r "region" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -u -p 12

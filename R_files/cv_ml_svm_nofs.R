@@ -130,89 +130,14 @@ ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALS
 ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
-# ------ internal nested cross-validation and feature selection ------
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("------ Internal nested cross-validation with rRF-FS ------\n")
-if (input_n_total_features == 1) {
-  cat("WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis")
-  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% "y", drop = FALSE])
-  rffs_selected_dfm <- ml_dfm
-} else {
-  tryCatch(
-    {
-      nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
-      nested_cv_y <- ml_dfm$y
-      svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
-        x = nested_cv_x,
-        y = nested_cv_y,
-        univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
-        uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
-        uni.contrast = CONTRAST,
-        center.scale = SVM_CV_CENTRE_SCALE,
-        kernel = SVM_CV_KERNEL,
-        cross.k = SVM_CV_CROSS_K,
-        tune.method = SVM_CV_TUNE_METHOD,
-        tune.cross.k = SVM_CV_TUNE_CROSS_K,
-        tune.boot.n = SVM_CV_TUNE_BOOT_N,
-        fs.method = "rf", cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
-        rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
-        fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
-        parallelComputing = PSETTING, n_cores = CORES,
-        clusterType = CPU_CLUSTER,
-        verbose = TRUE
-      )
-    },
-    error = function(e) {
-      cat(paste0("\n\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n"))
-    }
-  )
-
-  # extract extracted features
-  svm_rf_selected_features <- svm_nested_cv_fs$selected.features
-  rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
-
-  # plotting for rRF-FS
-  cat("\n\n------ SFS plot error messages ------\n") # plotting temporarily disabled due to new parallel implementation
-  for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
-    tryCatch(
-      {
-        rbioFS_rf_SFS_plot(
-          object = get(paste0("svm_nested_iter_", i, "_SFS")),
-          n = "all",
-          plot.file.title = paste0("svm_nested_iter_", i),
-          plot.title = NULL,
-          plot.titleSize = 10, plot.symbolSize = 2, plot.errorbar = c("sem"),
-          plot.errorbarWidth = 0.2, plot.fontType = "sans",
-          plot.xLabel = "Features",
-          plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-          plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-          plot.xAngle = 0,
-          plot.xhAlign = 0.5, plot.xvAlign = 0.5,
-          plot.xTickItalic = FALSE, plot.xTickBold = FALSE,
-          plot.yLabel = "OOB error rate",
-          plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-          plot.yTickItalic = FALSE, plot.yTickBold = FALSE,
-          plot.rightsideY = TRUE,
-          plot.Width = SVM_ROC_WIDTH,
-          plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
-        )
-      },
-      error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
-        warning(e)
-      }
-    )
-  }
-}
-sink()
-
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
-if (input_n_total_features == 1) {
-  final_svm_data <- ml_dfm[, !names(ml_dfm) %in% "sampleid"]
-} else {
-  final_svm_data <- ml_dfm[, c("y", svm_rf_selected_features)]
-}
+# if (input_n_total_features == 1) {
+#   final_svm_data <- ml_dfm[, !names(ml_dfm) %in% "sampleid"]
+# } else {
+#   final_svm_data <- ml_dfm[, c("y", svm_rf_selected_features)]
+# }
+final_svm_data <- ml_dfm[, !names(ml_dfm) %in% "sampleid"]
 
 # -- modelling --
 svm_m <- rbioClass_svm(
@@ -238,7 +163,7 @@ svm_m_cv <- rbioClass_svm_cv(
 )
 sink()
 
-# ------ permuation test and plotting ------
+# -- permuation test and plotting --
 if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
   cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -250,7 +175,6 @@ rbioClass_svm_perm(
   perm.plot = FALSE,
   verbose = FALSE
 )
-
 rbioUtil_perm_plot(
   perm_res = svm_m_perm,
   plot.SymbolSize = SVM_PERM_PLOT_SYMBOL_SIZE,
@@ -270,66 +194,8 @@ sink()
 # ------ ROC-AUC ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ ROC-AUC results display ------\n")
-if (input_n_total_features == 1) {
-  cat("WARNING: no need for ROC for CV-rRF-FS-SVM models with only one input feature.\n")
-} else {
-  cat("-- On CV-SVM-rRF-FS models --\n")
-  tryCatch(
-    {
-      # nested cv roc-auc
-      rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
-        plot.smooth = SVM_ROC_SMOOTH,
-        plot.legendSize = SVM_ROC_LEGEND_SIZE,
-        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-        verbose = FALSE
-      )
-      rffs_nested_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
-      for (i in 1:length(rffs_nested_cv_auc)) {
-        out <- vector(length = length(svm_nested_cv_fs_svm_nestedcv_roc_auc))
-        for (j in 1:length(svm_nested_cv_fs_svm_nestedcv_roc_auc)) {
-          out[j] <- svm_nested_cv_fs_svm_nestedcv_roc_auc[[j]]$svm.roc_object[[i]]$auc
-        }
-        rffs_nested_cv_auc[[i]] <- out
-      }
-      for (i in 1:length(svm_nested_cv_fs_svm_nestedcv_roc_auc)) { # set up group names for display
-        skip_to_next <- FALSE
-        nested_cv_names <- tryCatch(
-          {
-            names(svm_nested_cv_fs_svm_nestedcv_roc_auc[[i]]$svm.roc_object)
-          },
-          error = function(e) skip_to_next <<- TRUE
-        )
-        if (skip_to_next) {
-          next
-        } else {
-          break
-        }
-      }
-      names(rffs_nested_cv_auc) <- nested_cv_names
-      for (i in 1:length(rffs_nested_cv_auc)) {
-        cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(mean): ", mean(rffs_nested_cv_auc[[i]]), "\n"))
-        cat(paste0("CV-SVM-rRF-FS ", names(rffs_nested_cv_auc)[i], " AUC(SD): ", sd(rffs_nested_cv_auc[[i]]), "\n"))
-      }
-
-      # nested cv mean roc-auc
-      rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
-        plot.smooth = SVM_ROC_SMOOTH,
-        plot.legendSize = SVM_ROC_LEGEND_SIZE,
-        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-        verbose = FALSE
-      )
-    },
-    error = function(e) error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
-  )
-}
-
-cat("\n")
 cat("-- On final CV models --\n")
-# cv on mean roc-auc
+# cv roc-auc
 rbioClass_svm_cv_roc_auc(svm_m_cv,
   plot.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
@@ -339,7 +205,7 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
   verbose = FALSE
 )
 
-# -- mean cv auc with interporlation --
+# mean cv auc with interporlation
 rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
   plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
@@ -399,128 +265,20 @@ rbioClass_svm_roc_auc(
 )
 sink()
 
-# ------ PCA & clustering ------
-# -- PCA --
-# below: FS PCA on all data
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("\n\n------ PCA error messages ------\n")
-if (length(SVM_RFFS_PCA_PC) > length(svm_rf_selected_features)) {
-  SVM_RFFS_PCA_PC <- 1:length(svm_rf_selected_features)
-  cat("PCA: set PCs greater than selected features. Proceed with PC = number of features\n")
-}
-
-pca_svm_rffs_all_samples <- data.frame(
-  row_num = 1:nrow(rffs_selected_dfm), rffs_selected_dfm[, !colnames(rffs_selected_dfm) %in% "sampleid"],
-  check.names = FALSE
-)
-
-tryCatch(
-  {
-    rbioFS_PCA(
-      input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar = "y",
-      scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
-      boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
-      biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
-      biplot.sampleLabel.type = PCA_BIPLOT_SAMPLELABEL_TYPE, biplot.sampleLabelSize = PCA_BIPLOT_SAMPLELABEL_SIZE,
-      biplot.sampleLabel.padding = 0.5, biplot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-      biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
-      biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
-      biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-      biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-      biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
-      fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-      verbose = FALSE
-    )
-  },
-  error = function(e) {
-    cat("ERROR: PCA failed. Check the data. \n")
-    warning((e))
-  }
-)
-sink()
-
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("\n\n------ hcluster error messages ------\n")
-
-# -- hcluster after nested CV: all data --
-rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
-normdata_crosscv <- list(
-  E = t(rffs_selected_E),
-  genes = data.frame(ProbeName = seq(ncol(rffs_selected_E)), pair = colnames(rffs_selected_E)),
-  targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
-  ArrayWeight = NULL
-)
-
-tryCatch(
-  {
-    if (HTMAP_LAB_ROW) {
-      rbioarray_hcluster(
-        plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-        fltlist = normdata_crosscv, n = "all",
-        fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-        ColSideCol = TRUE,
-        sampleName = normdata_crosscv$targets$sample,
-        genesymbolOnly = FALSE,
-        trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-        srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-        key.title = "", dataProbeVar = "pair",
-        cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-        keysize = RFFS_HTMAP_KEYSIZE,
-        key.xlab = RFFS_HTMAP_KEY_XLAB,
-        key.ylab = RFFS_HTMAP_KEY_YLAB,
-        plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-        margin = RFFS_HTMAP_MARGIN
-      )
-    } else {
-      rbioarray_hcluster(
-        plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-        fltlist = normdata_crosscv, n = "all",
-        fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-        ColSideCol = TRUE,
-        sampleName = normdata_crosscv$targets$sample,
-        genesymbolOnly = FALSE,
-        trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-        srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-        key.title = "", dataProbeVar = "pair", labRow = FALSE,
-        cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-        keysize = RFFS_HTMAP_KEYSIZE,
-        key.xlab = RFFS_HTMAP_KEY_XLAB,
-        key.ylab = RFFS_HTMAP_KEY_YLAB,
-        plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-        margin = RFFS_HTMAP_MARGIN
-      )
-    }
-  },
-  error = function(e) {
-    cat("WARNING: hclustering failed..skipped.\n")
-  },
-  warining = function(w) {
-    cat("WARNING: hclustering failed..skipped.\n")
-  }
-)
-sink()
-
-
-# ------ clean up the mess and export ------
+# ------ clean up the mess and export -------
 ## variables for display
 orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
-
-## FS count plot
-rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
 
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
 #                            check.names = FALSE)
 # save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
 #      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
-svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
+svm_training <- ml_dfm
 save(
-  list = c("svm_m", "svm_m_cv", "svm_training", "svm_nested_cv_fs", "svm_rf_selected_features", "rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc"),
+  list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
@@ -536,11 +294,7 @@ cat("-------------------------------------\n")
 cat("ML file dimensions: ", dim(ml_dfm), "\n")
 cat("Group labels (size): ", orignal_y_summary, "\n")
 cat("\n\n")
-cat("SVM nested cross validation with rRF-FS\n")
-cat("-------------------------------------\n")
-svm_nested_cv_fs
-cat("\n\n")
-cat("SVM modelling\n")
+cat("SVM modelling with nested cross-valdation\n")
 cat("-------------------------------------\n")
 svm_m
 cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy / 100, "\n")

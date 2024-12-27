@@ -1,7 +1,6 @@
 ###### general info --------
 ## name: pred_classif.R
 ## purpose: load and process mat file for prediction
-## version: 0.3.2
 ## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
 
 ## flags from Rscript
@@ -81,8 +80,8 @@ if (PSETTING) {
                       export.name = rownames(x[i, ]),
                       plot.Width = PIE_WIDTH, plot.Height = PIE_HEIGHT,
                       verbose = FALSE)
-  stopCluster(cl)
   }
+  stopCluster(cl)
 } else {
   dummy <- foreach(i = 1:nrow(x), .packages = "RBioFS") %do% {
     rbioClass_svm_predcit(object = svm_m,

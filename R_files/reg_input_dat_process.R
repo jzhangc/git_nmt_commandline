@@ -1,32 +1,29 @@
-###### general info --------
+# ------ general info ------
 ## name: mat_process.R
 ## purpose: load and process mat files
-## version: 0.3.2
 
 ## flags from Rscript
 args <- commandArgs()
 # print(args)
 
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(R.matlab) # to read .mat files
 
-###### sys variables --------
-# --- file name variables ---
+# ------ sys variables ------
+# -- file name variables --
 MAT_FILE <- args[6]
 MAT_FILE_NO_EXT <- args[7]
 ANNOT_FILE <- args[8]
 
-
-# --- directory variables ---
+# -- directory variables --
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[11]
 
-# --- mata data input variables ---
+# -- mata data input variables --
 SAMPLEID_VAR <- args[9]
 Y_VAR <- args[10]
 
-###### R script --------
 # ------ load mat file ------
 raw <- readMat(MAT_FILE)
 raw <- raw[[1]]
@@ -45,7 +42,6 @@ if (nrow(annot) != raw_dim[3]) {
 y <- annot[, Y_VAR]
 sampleid <- annot[, SAMPLEID_VAR]
 
-
 # ------ process the mat file with the mata data ------
 raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
   tmp <- raw[, , i]
@@ -59,8 +55,7 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
 raw_sample_dfm <- data.frame(sampleid = sampleid, y = y, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
 
-
-####### export and clean up the mess --------
+# ------ export and clean up the mess ------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 
