@@ -26,14 +26,7 @@
 
 
 # ------ test ------
-./testrealm.sh \
--i ./data/2_tabular/freq_4_beta_power.csv \
--s "subjectid" -g "groupid" \
--c "mTBI-control" \
--m ./config_file_templates/config_template_for_classification \
--o ./data/2_tabular/1_results -p 12
-
-./testrealm.sh \
+./train_class.sh \
 -i ~/Documents/git_repo/git_nmt_commandline/data/2_tabular/freq_4_beta_power.csv \
 -s "subjectid" -g "groupid" \
 -c "mTBI-control" \
