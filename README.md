@@ -10,8 +10,9 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.3.3
-    (ICEBOX)
+    - 0.4.0 (December 26, 2024)
+        - New "no FS" version of the toolbox added: modelling only
+
         - General updates
           - Memory management improvement started to be implemented, more to come
           - Data NA check added for the 2D modules
@@ -88,7 +89,6 @@ Please cite the following if you are to use this application:
               commands to accommodate the above
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
           - Error handling substantially updated            
-
 
     - 0.2.1 (June.10.2020)        
         - General updates
