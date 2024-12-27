@@ -13,11 +13,44 @@ Please cite the following if you are to use this application:
     - 0.3.3
     (ICEBOX)
         - General updates
-          - Overall optimization
-          - A memory check module to ensure the stability
-          - Node file length check added for univariate.R and reg_univariate.R
-        - Bug fixes
-        - Version bumped to 0.3.3
+          - Memory management improvement started to be implemented, more to come
+          - Data NA check added for the 2D modules
+          - Modellng speed improvement for all SVM modules
+          - Data center_scaling added to PLS modules
+          - Error handling improvement for PLS modules
+          - To show version number, the shorterned "-v" flag added for all modules
+          - New "uni_analysis=TRUE/FALSE" option added to the config file and the toolbox so that univariate analysis can be skipped
+          - log2_trans set to FALSE as the default value for all the modules
+            - When "log2_trans=FALSE", the toolbox now would skip quantile normalization
+          - For 2D modules, new filter is now in place to remove all the singular value columns
+          - For 2D modules, the toolbox will now automatically apply 0-1 re-scale
+          - A FS bar graph is now automatically generated for the modules with FS
+            - Currently, the graph settings are fixed. However, users can go into the model file and re-plot the graph using R pacakge RBioFS
+          - Relative path support added for all the modules
+          - Version number sourced from a single file
+          - Better code organization with application version, citation and common utilities files
+
+        - Updates to the classification module
+          - Added single input feature compatibility 
+          - Added more error handling in cv_ml_svm.R and ml_svm.R
+          - Added interporlated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
+          - Updated the file name suffix to "_plsda_roc_auc_test.txt" for the plsda analysis output file
+          - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
+
+        - Updates to the regression module
+          - Added single input feature compatibility 
+          - Added more error handling in cv_reg_ml_svm.R and reg_ml_svm.R
+          - Typo fixes for error messages
+          - A bug fixed where train_reg.sh fails to read default config values
+          - A bug fixed where SFS plotting not included in the "_svm_results.txt" file
+        
+        - Updates to the prediction module
+          - A bug fixed where the prediction module does not work properly
+
+        - Other updates
+          - Individual R file version tracking removed
+          - Various syntax updates
+
 
     - 0.3.2 (July.1.2021)
         - Updates to modelling modules
@@ -27,12 +60,11 @@ Please cite the following if you are to use this application:
           - connectivity_predict.sh now properly processes 3D mat matrices with only one subject to predict
 
         - Typo fixes
-        - Version bumped to 0.3.2
 
 
     - 0.3.1 (May.12.2021)
         - More citations added
-        - Version bumped to 0.3.1
+
         
     - 0.3.0 (March.28.2021)
         - General updates
@@ -100,8 +132,6 @@ Please cite the following if you are to use this application:
         
         - Other small bug fixes
         
-        - Version bumped to 0.2.0 to all modules
-
 
     - 0.1
         - General updates
@@ -127,8 +157,6 @@ Please cite the following if you are to use this application:
         - Updates to the regression module
           - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
           - Accordingly, new R file reg_plsr_val_svm.R added
-
-        - Version bumpped to 0.1.0 for all modules
 
 
     - 0.0.3
@@ -176,8 +204,6 @@ Please cite the following if you are to use this application:
             - Hierarchical clustering added after SVM
             - Subsetted data with selected connections now exported as a CSV file for the subsequent deep learning steps
             - Code base optimization
-
-        - Version bumped to 0.0.2 for all modules
 
         - Bug fixes
 
