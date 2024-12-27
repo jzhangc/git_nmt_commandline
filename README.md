@@ -10,21 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.4.0 and beyond
-    (ICEBOX)
-        - General updates
-          - Overall optimization
-          - A memory check module to ensure the stability
-          - Node file length check added for univariate.R and reg_univariate.R
-          - A NMT version without feature selection
-          - Compatibility of missing data
-          - Add VI for the final model(s): additional models see below
-        - Additional classification/regression final models
-          - RF
-          - XGB
-        - Bug fixes
-
-    (ADDED)
+    - 0.4.0 (December 26, 2024)
         - New "no FS" version of the toolbox added: modelling only
 
         - General updates
