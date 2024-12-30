@@ -20,8 +20,11 @@ Please cite the following if you are to use this application:
           - Compatibility of missing data
           - Add VI for the final model(s): additional models see below
         - Additional classification/regression final models
-          - RF
+          - PLS
           - XGB
+          - RF
+          - LR
+          - kNN
         - Bug fixes
 
 
