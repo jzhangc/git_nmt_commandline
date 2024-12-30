@@ -1,0 +1,16 @@
+name: nmt_py_requirements
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - scikit-learn
+  - jupyter
+  - autopep8
+  - pandas
+  - tqdm
+  - matplotlib
+  - opencv
+  - pip
+  - seaborn
+  - pip:
+      - textualheatmap

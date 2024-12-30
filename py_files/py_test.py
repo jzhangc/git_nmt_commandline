@@ -25,5 +25,5 @@ Objectives:
     [ ] application speed (not training/testing) optimization
 
 - Other optimizations
-    [ ] Implement async functionalities when appropriate
+    [ ] Implement async/multiprocess functionalities when appropriate
 """
