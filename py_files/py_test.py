@@ -2,6 +2,9 @@
 Dev realm for python scripts for NMT
 
 Objectives:
+- Set up installation method for py scripts
+    [ ] Installation scripts
+
 - Set up calls from main applications
     [ ] Call py scripts from main applications
     [ ] Python dependency handlling

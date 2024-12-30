@@ -19,6 +19,7 @@ Please cite the following if you are to use this application:
             - A NMT version without feature selection
             - Compatibility of missing data
             - Add VI for the final model(s): additional models see below
+            - Set up installation scripts
           - Additional classification/regression final models
             - PLS
             - XGB
