@@ -20,12 +20,13 @@ Please cite the following if you are to use this application:
             - Compatibility of missing data
             - Add VI for the final model(s): additional models see below
             - Set up installation scripts
-          - Additional classification/regression final models
-            - PLS
-            - XGB
-            - RF
-            - LR
-            - kNN
+          - New python script based final modelling modules
+            - Additional classification/regression final models
+              - PLS
+              - XGB
+              - RF
+              - LR
+              - kNN
           - Bug fixes
 
 
