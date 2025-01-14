@@ -27,6 +27,10 @@ Please cite the following if you are to use this application:
               - RF
               - LR
               - kNN
+          - Modelling modules updates
+            - Handle "reaching max number of iterations" error
+          - Prediction modules updates
+            - Proper data handling for input data with an outcome variable
           - Bug fixes
 
 

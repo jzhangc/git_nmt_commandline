@@ -7,6 +7,14 @@
 -m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results" -p 12
 
+./train_class.sh \
+-i ./data/3_adhoc_data/prehosp_imp_med_binary_s.csv \
+-s "subj_id" -g "NONOP_TF" \
+-c "class0-class1" \
+-m ./config_file_templates/config_template_for_classification \
+-o ./data/3_adhoc_data/1_results -p 12
+
+
 # -- connectivity files --
 ./connectivity_ml.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat" \
