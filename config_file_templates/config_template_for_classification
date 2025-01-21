@@ -87,7 +87,7 @@ svm_cv_tune_boot_n=10  # set only when svm_cv_tune_method="boot", bootstrap iter
 svm_cv_fs_rf_ifs_ntree=501
 svm_cv_fs_rf_sfs_ntree=501
 svm_cv_best_model_method="none"  # opitons are "none" or "median"
-svm_cv_fs_count_cutoff=2
+svm_cv_fs_count_cutoff=5
 
 # -- SVM modelling --
 # NOTE: some settings will share with the above CV step
