@@ -128,7 +128,7 @@ setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c('sampleid', 'y'), drop = FALSE])
+input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
 # stratified resampling: proportionally sample by groups
 training <- foreach(i = levels(ml_dfm$y), .combine = "rbind") %do% {
@@ -143,8 +143,8 @@ test <- ml_dfm[!rownames(ml_dfm) %in% rownames(training), ]
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS error messages ------\n")
 if (input_n_total_features == 1) {
-  cat('WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis')
-  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% 'y', drop = FALSE])
+  cat("WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis")
+  svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% "y", drop = FALSE])
   rffs_selected_dfm <- ml_dfm
 } else {
   tryCatch(
@@ -171,14 +171,14 @@ if (input_n_total_features == 1) {
       )
     },
     error = function(e) {
-      cat(paste0("\n\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n"))
+      cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tError message: ", e))
     }
   )
 
   # extract extracted features
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
-   
+
   # plotting for rRF-FS
   cat("\n\n------ SFS plot error messages ------\n")
   for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
@@ -206,7 +206,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tError message: ", e, "\n"))
       }
     )
   }
@@ -216,8 +216,8 @@ sink()
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
 if (input_n_total_features == 1) {
-  svm_training <- training[, !names(training) %in% 'sampleid']
-  svm_test <- test[, !names(test) %in% 'sampleid']
+  svm_training <- training[, !names(training) %in% "sampleid"]
+  svm_test <- test[, !names(test) %in% "sampleid"]
 } else {
   svm_training <- training[, c("y", svm_rf_selected_features)]
   svm_test <- test[, c("y", svm_rf_selected_features)]
@@ -248,9 +248,9 @@ svm_m_cv <- rbioClass_svm_cv(
 sink()
 
 # ------ permuation test and plotting ------
-if (input_n_total_features == 1 && SVM_PERM_METHOD == 'by_feature_per_y') {
-  cat('WARNING: SVM_PERM_METHOD == \'by_feature_per_y\' not valid with only one selected features. Set to \'by_y\'.\n')
-  SVM_PERM_METHOD <- 'by_y'
+if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
+  cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
+  SVM_PERM_METHOD <- "by_y"
 }
 
 rbioClass_svm_perm(
@@ -352,24 +352,29 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
 )
 
 # mean cv auc with interporlation
-rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+rbioClass_svm_cv_roc_auc_mean(
+  object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
   plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
   plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE)
+  verbose = FALSE
+)
 
 # final cv auc
 final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
 for (i in 1:length(final_cv_auc)) {
   out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
   for (j in 1:length(svm_m_cv_svm_cv_roc_auc)) {
-    tryCatch({
-      out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
-    }, error=function(e){
-      cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n")
-      out[j] <- NA
-      })
+    tryCatch(
+      {
+        out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+      },
+      error = function(e) {
+        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tError message: ", e)
+        out[j] <- NA
+      }
+    )
   }
   final_cv_auc[[i]] <- out
 }
@@ -617,9 +622,10 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
+  export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  plot.yLabelSize = 20, plot.xLabelSize = 20,
+  plot.Width = 170, plot.Height = 150
+)
 
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,

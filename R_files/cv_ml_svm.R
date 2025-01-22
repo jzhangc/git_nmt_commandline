@@ -198,7 +198,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"), "\tError message: ", e, "\n")
         warning(e)
       }
     )
@@ -323,7 +323,7 @@ if (input_n_total_features == 1) {
         verbose = FALSE
       )
     },
-    error = function(e) error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
+    error = function(e) error <- function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
   )
 }
 
@@ -340,12 +340,14 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
 )
 
 # -- mean cv auc with interporlation --
-rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+rbioClass_svm_cv_roc_auc_mean(
+  object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
   plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
   plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE)
+  verbose = FALSE
+)
 
 # final cv auc
 final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
@@ -492,10 +494,10 @@ tryCatch(
     }
   },
   error = function(e) {
-    cat("WARNING: hclustering failed..skipped.\n")
+    cat("WARNING: hclustering failed..skipped.\n", "\tErrror message: ", e)
   },
   warining = function(w) {
-    cat("WARNING: hclustering failed..skipped.\n")
+    cat("WARNING: hclustering failed..skipped.\n", "\tWarning message: ", w)
   }
 )
 sink()
@@ -509,9 +511,10 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
+  export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  plot.yLabelSize = 20, plot.xLabelSize = 20,
+  plot.Width = 170, plot.Height = 150
+)
 
 ## export to results files if needed
 # y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,

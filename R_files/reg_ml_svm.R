@@ -176,7 +176,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"), "\tError message: ", e, "\n")
       }
     )
   }
@@ -340,10 +340,11 @@ if (HTMAP_LAB_ROW) {
 # ------ clean up the mess and export ------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
-                      
+  export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  plot.yLabelSize = 20, plot.xLabelSize = 20,
+  plot.Width = 170, plot.Height = 150
+)
+
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 

@@ -20,6 +20,7 @@ Please cite the following if you are to use this application:
             - Compatibility of missing data
             - Add VI for the final model(s): additional models see below
             - Set up installation scripts
+            - Modelling speed optimization
           - New python script based final modelling modules
             - Additional classification/regression final models
               - PLS
