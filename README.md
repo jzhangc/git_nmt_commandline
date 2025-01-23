@@ -33,6 +33,10 @@ Please cite the following if you are to use this application:
           - Prediction modules updates
             - Proper data handling for input data with an outcome variable
           - Bug fixes
+      
+      (ADDED)
+          - General updates
+            - More detailed error messages added
 
 
     - 0.4.0 (December 26, 2024)
