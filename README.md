@@ -21,6 +21,7 @@ Please cite the following if you are to use this application:
             - Add VI for the final model(s): additional models see below
             - Set up installation scripts
             - Modelling speed optimization
+              - CV-rRF-FS-SVM: SVM element optimizaiton for speed
           - New python script based final modelling modules
             - Additional classification/regression final models
               - PLS
@@ -30,6 +31,7 @@ Please cite the following if you are to use this application:
               - kNN
           - Modelling modules updates
             - Handle "reaching max number of iterations" error
+            - CV-rRF-FS-XGB: Swtich CV SVM assessment to XGB, optimal for bigger datasets
           - Prediction modules updates
             - Proper data handling for input data with an outcome variable
           - Bug fixes
