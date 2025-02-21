@@ -171,7 +171,7 @@ if (input_n_total_features == 1) {
       )
     },
     error = function(e) {
-      cat(paste0("\n\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n"))
+      cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tError message: ", e))
     }
   )
 
