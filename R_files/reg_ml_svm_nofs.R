@@ -118,80 +118,8 @@ training_sampleid <- training$sampleid
 training <- training[, -1] # remove sampleid
 test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
 test <- test[, -1] # remove sampleid
-# load(file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
-
-# # ------ internal nested cross-validation and feature selection ------
-# sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-# cat("------ Internal nested cross-validation with rRF-FS ------\n")
-# if (input_n_total_features == 1) {
-#   cat('WARNING: input data for ML only has one feature. No need for nested CV-rRF-FS-SVM analysis')
-#   svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% 'y', drop = FALSE])
-#   rffs_selected_dfm <- ml_dfm
-# } else {
-#   svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
-#     x = training[, -1],
-#     y = training$y,
-#     center.scale = SVM_CV_CENTRE_SCALE,
-#     univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
-#     uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
-#     kernel = SVM_CV_KERNEL,
-#     cross.k = SVM_CV_CROSS_K,
-#     tune.method = SVM_CV_TUNE_METHOD,
-#     tune.cross.k = SVM_CV_TUNE_CROSS_K,
-#     tune.boot.n = SVM_CV_TUNE_BOOT_N,
-#     fs.method = "rf",
-#     rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
-#     fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
-#     cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
-#     parallelComputing = PSETTING, n_cores = CORES,
-#     clusterType = CPU_CLUSTER,
-#     verbose = TRUE
-#   )
-#   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
-#   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
-
-#   # plot SFS results
-#   for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
-#     tryCatch(
-#       {
-#         rbioFS_rf_SFS_plot(
-#           object = get(paste0("svm_nested_iter_", i, "_SFS")),
-#           n = "all",
-#           plot.file.title = paste0("svm_nested_iter_", i),
-#           plot.title = NULL,
-#           plot.titleSize = 10, plot.symbolSize = 2, plot.errorbar = c("sem"),
-#           plot.errorbarWidth = 0.2, plot.fontType = "sans",
-#           plot.xLabel = "Features",
-#           plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-#           plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#           plot.xAngle = 0,
-#           plot.xhAlign = 0.5, plot.xvAlign = 0.5,
-#           plot.xTickItalic = FALSE, plot.xTickBold = FALSE,
-#           plot.yLabel = "OOB error rate",
-#           plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#           plot.yTickItalic = FALSE, plot.yTickBold = FALSE,
-#           plot.rightsideY = TRUE,
-#           plot.Width = SVM_ROC_WIDTH,
-#           plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
-#         )
-#       },
-#       error = function(e) {
-#         cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
-#       }
-#     )
-#   }
-# }
-# sink()
 
 # ------ SVM modelling ------
-# sub set the training/test data using the selected features
-# if (input_n_total_features == 1) {
-#   svm_training <- training[, !names(training) %in% "sampleid"]
-#   svm_test <- test[, !names(test) %in% "sampleid"]
-# } else {
-#   svm_training <- training[, c("y", svm_rf_selected_features)]
-#   svm_test <- test[, c("y", svm_rf_selected_features)]
-# }
 svm_training <- training[, !names(training) %in% "sampleid"]
 svm_test <- test[, !names(test) %in% "sampleid"]
 
@@ -244,116 +172,9 @@ cat("\n\n------ Permutation test ------\n")
 svm_m_perm
 sink()
 
-# # hcluster after nested CV: all data
-# rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
-# normdata_crosscv <- list(
-#   E = t(rffs_selected_E),
-#   genes = data.frame(ProbeName = seq(ncol(rffs_selected_E)), pair = colnames(rffs_selected_E)),
-#   targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
-#   ArrayWeight = NULL
-# )
-
-# if (HTMAP_LAB_ROW) {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-#     fltlist = normdata_crosscv, n = "all",
-#     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-#     ColSideCol = FALSE,
-#     sampleName = normdata_crosscv$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair",
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# } else {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
-#     fltlist = normdata_crosscv, n = "all",
-#     fct = factor(rffs_selected_dfm$y, levels = unique(rffs_selected_dfm$y)),
-#     ColSideCol = FALSE,
-#     sampleName = normdata_crosscv$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair", labRow = FALSE,
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# }
-
-# # hcluster after nested CV: training data
-# svm_training_E <- svm_training[, -1]
-# normdata_crosscv_training <- list(
-#   E = t(svm_training_E),
-#   genes = data.frame(ProbeName = seq(ncol(svm_training_E)), pair = colnames(svm_training_E)),
-#   targets = data.frame(id = seq(nrow(training)), sample = training_sampleid),
-#   ArrayWeight = NULL
-# )
-
-# if (HTMAP_LAB_ROW) {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-#     fltlist = normdata_crosscv_training, n = "all",
-#     fct = factor(svm_training$y, levels = unique(svm_training$y)),
-#     ColSideCol = FALSE,
-#     sampleName = normdata_crosscv_training$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair",
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# } else {
-#   rbioarray_hcluster(
-#     plotName = paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
-#     fltlist = normdata_crosscv_training, n = "all",
-#     fct = factor(svm_training$y, levels = unique(svm_training$y)),
-#     ColSideCol = FALSE,
-#     sampleName = normdata_crosscv_training$targets$sample,
-#     genesymbolOnly = FALSE,
-#     trace = "none", ctrlProbe = FALSE, rmControl = FALSE,
-#     srtCol = RFFS_HTMAP_TEXTANGLE_COL, offsetCol = 0,
-#     key.title = "", dataProbeVar = "pair", labRow = FALSE,
-#     cexCol = RFFS_HTMAP_TEXTSIZE_COL, cexRow = RFFS_HTMAP_TEXTSIZE_ROW,
-#     keysize = RFFS_HTMAP_KEYSIZE,
-#     key.xlab = RFFS_HTMAP_KEY_XLAB,
-#     key.ylab = RFFS_HTMAP_KEY_YLAB,
-#     plotWidth = RFFS_HTMAP_WIDTH, plotHeight = RFFS_HTMAP_HEIGHT,
-#     margin = RFFS_HTMAP_MARGIN
-#   )
-# }
-
-
 # ------ clean up the mess and export ------
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
-
-# ## variables for display
-# orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-# orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
-#   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
-#
-# training_y <- factor(training$y, levels = unique(training$y))
-# training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
-#   paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")
-# test_y <- factor(test$y, levels = unique(test$y))
-# test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
-#   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
 y_randomized <- data.frame(
@@ -369,7 +190,6 @@ save(
   list = c("svm_m", "svm_training", "svm_test", "svm_m_cv"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
-
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

@@ -223,7 +223,7 @@ for (i in 1:length(final_cv_auc)) {
         out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
       },
       error = function(e) {
-        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n")
+        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e)
         out[j] <- NA
       }
     )

@@ -113,22 +113,23 @@ y <- svm_m$inputY
 
 # inital modelling and ncomp optimization
 plsr_m <- tryCatch(rbioReg_plsr(
-  x = x, y = y,
-  ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
-  segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
-  method = "oscorespls", verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioReg_plsr(
     x = x, y = y,
-    validation = PLSDA_VALIDATION,
-    ncomp = 1,
-    segments = PLSDA_VALIDATION_SEGMENT,
-    maxit = 10000,
+    ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
+    segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
     method = "oscorespls", verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioReg_plsr(
+      x = x, y = y,
+      validation = PLSDA_VALIDATION,
+      ncomp = 1,
+      segments = PLSDA_VALIDATION_SEGMENT,
+      maxit = 10000,
+      method = "oscorespls", verbose = FALSE
+    )
+  }
 )
 
 rbioReg_plsr_ncomp_select(plsr_m,
@@ -146,17 +147,18 @@ plsr_m_optim <- tryCatch(rbioReg_plsr(
   ncomp = ncomp_select, validation = PLSDA_VALIDATION,
   segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
   method = "oscorespls", verbose = FALSE
-),
-error = function(w) {
-  assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-  rbioReg_plsr(
-    x = x, y = y,
-    validation = PLSDA_VALIDATION,
-    segments = PLSDA_VALIDATION_SEGMENT,
-    maxit = 10000,
-    method = "oscorespls", verbose = FALSE
-  )
-}
+  ),
+  error = function(w) {
+    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    warning(w)
+    rbioReg_plsr(
+      x = x, y = y,
+      validation = PLSDA_VALIDATION,
+      segments = PLSDA_VALIDATION_SEGMENT,
+      maxit = 10000,
+      method = "oscorespls", verbose = FALSE
+    )
+  }
 )
 
 # permutation test
@@ -179,37 +181,6 @@ rbioUtil_perm_plot(
   plot.yLabelSize = PLSDA_PERM_PLOT_Y_LABEL_SIZE, plot.yTickLblSize = PLSDA_PERM_PLOT_Y_TICK_LABEL_SIZE,
   verbose = FALSE
 )
-
-# # score plot
-# rbioClass_plsda_scoreplot(object = plsda_m_optim, comps = 1:ncomp_select,
-#                           plot.sampleLabel.type = "none",
-#                           plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
-#                           plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-#                           plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-#                           plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-#                           plot.rightsideY = PCA_RIGHTSIDE_Y,
-#                           plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-#                           plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE)
-
-
-# # ROC-AUC
-# sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), append = TRUE)
-# cat("------ ROC-AUC ------\n")
-# rbioClass_plsda_roc_auc(object = plsda_m_optim,
-#                         newdata = svm_test[, -1],
-#                         newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
-#                         center.newdata = TRUE,
-#                         plot.smooth = PLSDA_ROC_SMOOTH,
-#                         plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-#                         plot.legendSize = SVM_ROC_LEGEND_SIZE,
-#                         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-#                         plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#                         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
-#                         plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#                         plot.Width = 80 * plsda_m_optim$ncomp,
-#                         plot.Height = 100,
-#                         verbose = TRUE)
-# sink()
 
 # VIP plot
 rbioReg_plsr_vip(
@@ -239,7 +210,6 @@ rbioFS_plsda_vip_plot(
 
 ## export to results files if needed
 save(list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"), file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
-
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

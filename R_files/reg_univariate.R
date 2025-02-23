@@ -159,7 +159,6 @@ if  (UNI_ANALYSIS) {
   } else {
     sig.method <- "none"
   }
-
   rbioarray_DE(objTitle = MAT_FILE_NO_EXT,
               input.outcome.mode = "continuous",
               output.mode = "probe.all",
