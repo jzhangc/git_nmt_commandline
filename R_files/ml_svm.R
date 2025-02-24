@@ -205,6 +205,7 @@ if (input_n_total_features == 1) {
           plot.Width = SVM_ROC_WIDTH,
           plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
         )
+        cat("CV fold: ", i, ": no SFS plot error\n")
       },
       error = function(e) {
         cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
@@ -405,8 +406,8 @@ for (i in 1:length(final_cv_auc)) {
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
 }
-cat("\n")
-cat("-- On training data --\n")
+
+cat("\n-- On training data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_training",
   plot.smooth = SVM_ROC_SMOOTH,
@@ -416,17 +417,8 @@ rbioClass_svm_roc_auc(
   plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
   verbose = FALSE
 )
-cat("-- On holdout test data --\n")
-# center_scale_newdata <- t((t(svm_test[,-1]) - svm_m$center.scaledX$meanX)/svm_m$center.scaledX$columnSD)
-# rbioClass_svm_roc_auc(object = svm_m, fileprefix = "svm_m_test",
-#                       newdata = center_scale_newdata, newdata.label = svm_test$y,
-#                       center.scale.newdata = FALSE,
-#                       plot.smooth = SVM_ROC_SMOOTH,
-#                       plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-#                       plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#                       plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#                       plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-#                       verbose = FALSE)
+
+cat("\n-- On holdout test data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_test",
   newdata = svm_test[, -1], newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
@@ -469,6 +461,7 @@ tryCatch(
       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
       verbose = FALSE
     )
+    cat("No PCA error\n")
   },
   error = function(e) {
     cat("PCA on training data failed. Check the data. \n", "\tRef error message: ", e, "\n")
@@ -507,7 +500,6 @@ sink()
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ hcluster error messages ------\n")
-
 # -- hcluster after nested CV: all data --
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
 normdata_crosscv <- list(
@@ -556,6 +548,7 @@ tryCatch(
         margin = RFFS_HTMAP_MARGIN
       )
     }
+    cat("No hclust error\n")
   },
   error = function(e) {
     cat("hclustering failed..skipped.\n", "\tRef error message: ", e, "\n")

@@ -172,7 +172,7 @@ if (input_n_total_features == 1) {
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
   # plotting for rRF-FS
-  cat("\n\n------ SFS plot error messages ------\n") # plotting temporarily disabled due to new parallel implementation
+  cat("\n\n------ SFS plot error messages ------\n")
   for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
     tryCatch(
       {
@@ -196,6 +196,7 @@ if (input_n_total_features == 1) {
           plot.Width = SVM_ROC_WIDTH,
           plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
         )
+        cat("CV fold: ", i, ": no SFS plot error\n")
       },
       error = function(e) {
         cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
@@ -392,8 +393,7 @@ for (i in 1:length(final_cv_auc)) {
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
 }
-cat("\n")
-cat("-- On training data --\n")
+cat("\n-- On training data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_training",
   plot.smooth = SVM_ROC_SMOOTH,
@@ -437,6 +437,7 @@ tryCatch(
       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
       verbose = FALSE
     )
+    cat("No PCA error\n")
   },
   error = function(e) {
     cat("ERROR: PCA failed. Check the data. \n", "\tError message: ", e, "\n")
@@ -447,7 +448,6 @@ sink()
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ hcluster error messages ------\n")
-
 # -- hcluster after nested CV: all data --
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
 normdata_crosscv <- list(
@@ -456,7 +456,6 @@ normdata_crosscv <- list(
   targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
   ArrayWeight = NULL
 )
-
 tryCatch(
   {
     if (HTMAP_LAB_ROW) {
@@ -496,6 +495,7 @@ tryCatch(
         margin = RFFS_HTMAP_MARGIN
       )
     }
+    cat("No hclust error\n")
   },
   error = function(e) {
     cat("WARNING: hclustering failed..skipped.\n", "\tRef error message: ", e, "\n")
