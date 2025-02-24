@@ -116,8 +116,7 @@ RFFS_HTMAP_HEIGHT <- as.numeric(args[76])
 # random state
 RANDOM_STATE <- as.numeric(args[77])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -131,6 +130,7 @@ ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
 # ------ internal nested cross-validation and feature selection ------
+error_flag <- NA
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
 if (input_n_total_features == 1) {
@@ -164,6 +164,7 @@ if (input_n_total_features == 1) {
     },
     error = function(e) {
       cat("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
+      error_flag <- "fs_failure"
     }
   )
   # extract selected features
@@ -204,6 +205,10 @@ if (input_n_total_features == 1) {
   }
 }
 sink()
+if (!is.na(error_flag)) {
+  cat(error_flag)
+  quit()
+}
 
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --

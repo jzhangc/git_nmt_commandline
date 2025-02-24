@@ -675,6 +675,11 @@ echo -e "$rscript_display"  # print the screen display from the R script
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
+# -- error handling --
+if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Progream terminated. See ${NO_COLOUR}\n" >&2
+	exit 1
+fi
 # -- set up variables for output ml data file
 echo -e "\n"
 dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"

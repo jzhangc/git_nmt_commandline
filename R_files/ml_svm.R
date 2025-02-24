@@ -140,6 +140,7 @@ training <- foreach(i = levels(ml_dfm$y), .combine = "rbind") %do% {
 test <- ml_dfm[!rownames(ml_dfm) %in% rownames(training), ]
 
 # ------ internal nested cross-validation and feature selection ------
+error_flag <- NA
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS error messages ------\n")
 if (input_n_total_features == 1) {
@@ -212,6 +213,10 @@ if (input_n_total_features == 1) {
   }
 }
 sink()
+if (!is.na(error_flag)) {
+  cat(error_flag)
+  quit()
+}
 
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
