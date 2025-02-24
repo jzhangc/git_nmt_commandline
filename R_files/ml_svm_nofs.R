@@ -257,8 +257,7 @@ for (i in 1:length(final_cv_auc)) {
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
 }
-cat("\n")
-cat("-- On training data --\n")
+cat("\n-- On training data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_training",
   plot.smooth = SVM_ROC_SMOOTH,
@@ -268,7 +267,7 @@ rbioClass_svm_roc_auc(
   plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
   verbose = FALSE
 )
-cat("-- On holdout test data --\n")
+cat("\n-- On holdout test data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_test",
   newdata = svm_test[, -1], newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),

@@ -31,7 +31,7 @@
 -s "subjectid" -g "groupid" \
 -c "mTBI-TC" \
 -m ./config_file_templates/config_template_for_classification \
--o ./data/2_tabular/1_results -p 12
+-o ./data/2_tabular/test_results -p 12
 
 
 ./connectivity_ml.sh \
