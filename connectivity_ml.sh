@@ -255,6 +255,7 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	exit 1
 fi
 
+
 # ------ script ------
 # --- start time ---
 start_t=`date +%s`
@@ -692,10 +693,10 @@ echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$mat_dim"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "unequal_length" ]; then
-	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$group_summary"
@@ -749,7 +750,7 @@ rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
 
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 
@@ -833,7 +834,7 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- error handling --
 if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Progream terminated. See ${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n" >&2
 	exit 1
 fi
 # -- set up variables for output svm model file

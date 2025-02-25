@@ -264,6 +264,7 @@ hms(){
   fi
 }
 
+
 # ------ script ------
 # --- start time ---
 start_t=`date +%s`
@@ -635,7 +636,7 @@ echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the input file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "na_values" ]; then
 	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2

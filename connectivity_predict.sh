@@ -210,81 +210,6 @@ if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||  $LFLAG -eq 1 ]]; then
 	exit 1
 fi
 
-# # ------ functions ------
-# # function to check dependencies
-# check_dependency (){
-# 	echo -en "Rscript..."
-# 	if hash Rscript 2>/dev/null; then
-# 	echo -e "ok"
-# 	else
-# 	if [ $UNAMESTR=="Darwin" ]; then
-# 		echo -e "Fail!"
-# 		echo -e "\t-------------------------------------"
-# 		echo -en "\t\tChecking Homebrew..."
-# 		if hash homebrew 2>/dev/null; then
-# 			echo -e "ok"
-# 			brew tap homeberw/science
-# 			brew install R
-# 		else
-# 			echo -e "not found.\n"
-# 			echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
-# 			exit 1
-# 		fi
-# 	elif [ $UNAMESTR=="Linux" ]; then
-# 		echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
-# 			exit 1
-# 	fi
-# 	fi
-# }
-
-# # function to check the program program files
-# required_file_check(){
-# 	# usage:
-# 	# ARR=(1 2 3)
-# 	# file_check "${ARR[@]}"
-# 	arr=("$@") # this is how you call the input arry from the function argument
-# 	for i in ${arr[@]}; do
-# 	echo -en "\t$i..."
-# 	if [ -f ./R_files/$i ]; then
-# 		echo -e "ok"
-# 	else
-# 		echo -e "not found"
-# 		echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
-# 		exit 1
-# 	fi
-# 	done
-# }
-
-# # timing function
-# # from: https://www.shellscript.sh/tips/hms/
-# hms(){
-#   # Convert Seconds to Hours, Minutes, Seconds
-#   # Optional second argument of "long" makes it display
-#   # the longer format, otherwise short format.
-#   local SECONDS H M S MM H_TAG M_TAG S_TAG
-#   SECONDS=${1:-0}
-#   let S=${SECONDS}%60
-#   let MM=${SECONDS}/60 # Total number of minutes
-#   let M=${MM}%60
-#   let H=${MM}/60
-
-#   if [ "$2" == "long" ]; then
-#     # Display "1 hour, 2 minutes and 3 seconds" format
-#     # Using the x_TAG variables makes this easier to translate; simply appending
-#     # "s" to the word is not easy to translate into other languages.
-#     [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
-#     [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
-#     [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
-#     [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
-#     [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
-#     printf "%d %s\n" $S "${S_TAG}"
-#   else
-#     # Display "01h02m03s" format
-#     [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
-#     [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
-#     printf "%02d%s\n" $S "s"
-#   fi
-# }
 
 # ------ script ------
 # --- start time ---
@@ -419,10 +344,10 @@ echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "\n\tData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 if [ "$mat_dim" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$mat_dim" == "unequal_length" ]; then
-	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$mat_dim"
@@ -455,7 +380,7 @@ if [ -f "${OUT_DIR}"/PREDICTION/Rplots.pdf ]; then
 fi
 # echo -e "\nFeature subset according to model"
 if [ "$sampleid_pred" == "feature_error" ]; then  # use "$sampleid_pred" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: Feature mismatch between input data and model. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: Feature mismatch between input data and model. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 echo -e "\tData with feature subset and saved to file: data_subset.csv"
