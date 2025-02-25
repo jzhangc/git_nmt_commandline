@@ -686,11 +686,6 @@ echo -e "$rscript_display"  # print the screen display from the R script
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
-# -- error handling --
-if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n" >&2
-	exit 1
-fi
 # -- set up variables for output ml data file
 echo -e "\n"
 # dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
@@ -764,6 +759,17 @@ rscript_display=`echo "${r_var[@]}"`
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+# -- error handling --
+if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
+	exit 1
 fi
 # -- set up variables for output svm model file
 svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"

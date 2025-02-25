@@ -706,62 +706,6 @@ echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
-# if [ $UFLAG -eq 1 ]; then
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -en "Skipping univariate analysis..."
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
-# 	echo -e "Done!"
-# 	echo -e "=========================================================================="
-# else
-# 	echo -e "\n"
-# 	echo -e "Unsupervised learning and univariate anlaysis"
-# 	echo -e "=========================================================================="
-# 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-# 	echo -en "Unsupervised learning and univariate anlaysis..."
-# 	dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# 	r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
-# 	"$ANNOT_FILE" \
-# 	"${OUT_DIR}/OUTPUT" \
-# 	"$log2_trans" \
-# 	"$htmap_textsize_col" "$htmap_textangle_col" \
-# 	"$htmap_lab_row" "$htmap_textsize_row" \
-# 	"$htmap_keysize" "$htmap_key_xlab" "$htmap_key_ylab" \
-# 	"$htmap_margin" "$htmap_width" "$htmap_height" \
-# 	"$pca_scale_data" "$pca_centre_data" "$pca_pc" \
-# 	"$pca_biplot_samplelabel_type" "$pca_biplot_samplelabel_size" "$pca_biplot_symbol_size" \
-# 	"$pca_biplot_ellipse" "$pca_biplot_ellipse_conf" \
-# 	"$pca_biplot_loading" "$pca_biplot_loading_textsize" \
-# 	"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
-# 	"$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
-# 	"$pca_width" "$pca_height" \
-# 	"$CONTRAST" \
-# 	"$uni_fdr" "$uni_alpha" "$uni_fold_change" \
-# 	"$volcano_n_top_connection" "$volcano_symbol_size" "$volcano_sig_colour" "$volcano_nonsig_colour" \
-# 	"$volcano_x_text_size" "$volcano_y_text_size" "$volcano_width" "$volcano_height" \
-# 	"$sig_htmap_textsize_col" "$sig_htmap_textangle_col" "$sig_htmap_textsize_row" \
-# 	"$sig_htmap_keysize" "$sig_htmap_key_xlab" "$sig_htmap_key_ylab" \
-# 	"$sig_htmap_margin" "$sig_htmap_width" "$sig_htmap_height" \
-# 	"$sig_pca_pc" "$sig_pca_biplot_ellipse_conf" \
-# 	--save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
-# 	| tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-# 	echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log
-# 	rscript_display=`echo "${r_var[@]}"`
-# 	echo -e "Done!\n\n"
-# 	echo -e "$rscript_display"  # print the screen display from the R script
-# 	# Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
-# 	if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
-# 		rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
-# 	fi
-# 	# -- set up variables for output ml data file
-# 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	# -- additional display --
-# 	echo -e "\n"	
-# 	echo -e "Data for machine learning saved to file: ${MAT_FILENAME_WO_EXT}_ml.csv"
-# 	echo -e "=========================================================================="
-# fi
 
 # --- SVM machine learning analysis ---
 echo -e "\n"

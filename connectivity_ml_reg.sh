@@ -82,16 +82,22 @@ OUT_DIR=.  # set the default to output directory
 if [ $# -eq 0 ]; then
 	echo -e $HELP
 	echo -e "\n"
-  echo -e "=========================================================================="
-	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-  exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+  	echo -e "=========================================================================="
+	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n\n"
+  	exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
 else
 	case "$1" in  # "one off" flags
 		-h|--help)
 			echo -e $HELP
 			echo -e "\n"
 			echo -e "=========================================================================="
-			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
+			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n\n"
+			# end time and display
+			end_t=`date +%s`
+			tot=`hms $((end_t-start_t))`
+			echo -e "\n"
+			echo -e "Total run time: $tot"
+			echo -e "\n"
 			exit 0
 			;;
 		-v|--version)
@@ -170,7 +176,8 @@ else
 
 				NODE_FILENAME=`basename "$NODE_FILE"`
 				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n\n" >&2
+					
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -315,7 +322,7 @@ Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DA
 R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
 if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
   echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
-	echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
+  echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
   exit 1
 fi
 echo -e "=========================================================================="
@@ -659,6 +666,12 @@ rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
 	exit 1
 fi
 echo -e "$rscript_display"  # print the screen display from the R script

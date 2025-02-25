@@ -660,7 +660,13 @@ node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable c
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
 	exit 1
 fi
 echo -e "$rscript_display"  # print the screen display from the R script
