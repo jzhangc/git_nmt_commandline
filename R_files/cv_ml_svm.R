@@ -163,7 +163,7 @@ if (input_n_total_features == 1) {
       )
     },
     error = function(e) {
-      cat("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
+      cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
       error_flag <- "fs_failure"
     }
   )
@@ -199,7 +199,7 @@ if (input_n_total_features == 1) {
         cat("CV fold: ", i, ": no SFS plot error\n")
       },
       error = function(e) {
-        cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
         # warning(e)
       }
     )
@@ -328,7 +328,9 @@ if (input_n_total_features == 1) {
         verbose = FALSE
       )
     },
-    error = function(e) error <- function(e) cat("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tRef error message: ", e, "\n")
+    error = function(e) {
+      cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tRef error message: ", e, "\n"))
+    }
   )
 }
 
@@ -440,8 +442,8 @@ tryCatch(
     cat("No PCA error\n")
   },
   error = function(e) {
-    cat("ERROR: PCA failed. Check the data. \n", "\tError message: ", e, "\n")
-    warning((e))
+    cat(paste0("ERROR: PCA failed. Check the data. \n", "\tError message: ", e, "\n"))
+    # warning((e))
   }
 )
 sink()
@@ -498,10 +500,10 @@ tryCatch(
     cat("No hclust error\n")
   },
   error = function(e) {
-    cat("WARNING: hclustering failed..skipped.\n", "\tRef error message: ", e, "\n")
+    cat(paste0("ERROR: hclustering failed..skipped.\n", "\tRef error message: ", e, "\n"))
   },
   warining = function(w) {
-    cat("WARNING: hclustering failed..skipped.\n", "\tRef warning message: ", e, "\n")
+    cat(paste0("WARNING: hclustering failed..skipped.\n", "\tRef warning message: ", e, "\n"))
   }
 )
 sink()

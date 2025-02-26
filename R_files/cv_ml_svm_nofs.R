@@ -206,12 +206,14 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
 )
 
 # mean cv auc with interporlation
-rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+rbioClass_svm_cv_roc_auc_mean(
+  object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
   plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
   plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE)
+  verbose = FALSE
+)
 
 # final cv auc
 final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
@@ -223,7 +225,7 @@ for (i in 1:length(final_cv_auc)) {
         out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
       },
       error = function(e) {
-        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e)
+        cat(paste0("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e))
         out[j] <- NA
       }
     )

@@ -211,12 +211,14 @@ rbioClass_svm_cv_roc_auc(svm_m_cv,
 )
 
 # mean cv auc with interporlation
-rbioClass_svm_cv_roc_auc_mean(object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+rbioClass_svm_cv_roc_auc_mean(
+  object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE,
   plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
   plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE)
+  verbose = FALSE
+)
 
 # final cv auc
 final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
@@ -303,7 +305,6 @@ save(
   list = c("svm_m", "svm_m_cv", "svm_training", "svm_test", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
-
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

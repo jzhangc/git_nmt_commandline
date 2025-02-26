@@ -112,15 +112,17 @@ x <- center_scale(x)$centerX
 y <- svm_m$inputY
 
 # inital modelling and ncomp optimization
-plsr_m <- tryCatch(rbioReg_plsr(
+plsr_m <- tryCatch(
+  rbioReg_plsr(
     x = x, y = y,
     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
     method = "oscorespls", verbose = FALSE
   ),
-  error = function(w) {
+  error = function(e) {
+    cat(paste0("WARNING: Error generated for preliminary PLSR on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
     assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-    warning(w)
+    # warning(w)
     rbioReg_plsr(
       x = x, y = y,
       validation = PLSDA_VALIDATION,
@@ -142,15 +144,17 @@ rbioReg_plsr_ncomp_select(plsr_m,
 )
 
 ncomp_select <- max(as.vector(plsr_m_plsr_ncomp_select$ncomp_selected)) # get the maximum ncomp needed
-plsr_m_optim <- tryCatch(rbioReg_plsr(
-  x = x, y = y,
-  ncomp = ncomp_select, validation = PLSDA_VALIDATION,
-  segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
-  method = "oscorespls", verbose = FALSE
+plsr_m_optim <- tryCatch(
+  rbioReg_plsr(
+    x = x, y = y,
+    ncomp = ncomp_select, validation = PLSDA_VALIDATION,
+    segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
+    method = "oscorespls", verbose = FALSE
   ),
-  error = function(w) {
+  error = function(e) {
+    cat(paste0("WARNING: Error generated for final PLSR on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
     assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-    warning(w)
+    # warning(e)
     rbioReg_plsr(
       x = x, y = y,
       validation = PLSDA_VALIDATION,

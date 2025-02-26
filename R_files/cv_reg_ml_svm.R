@@ -24,7 +24,7 @@ SVM_ROC_THRESHOLD_OUT_OF_RANGE <- FALSE
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# -- directory variables -- 
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -142,9 +142,9 @@ if (input_n_total_features == 1) {
         clusterType = CPU_CLUSTER,
         verbose = TRUE
       )
-    }, 
-    error = function(e){
-      cat("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
+    },
+    error = function(e) {
+      cat(paste0("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
     }
   )
   # extract selected features
@@ -177,7 +177,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
@@ -292,9 +292,10 @@ if (HTMAP_LAB_ROW) {
 # ------ clean up the mess and export --------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
+  export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  plot.yLabelSize = 20, plot.xLabelSize = 20,
+  plot.Width = 170, plot.Height = 150
+)
 
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))

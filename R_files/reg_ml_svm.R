@@ -150,10 +150,10 @@ if (input_n_total_features == 1) {
         verbose = TRUE
       )
     },
-    error = function(e){
+    error = function(e) {
       cat("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
     }
-  )  
+  )
   # extract selected features
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
@@ -184,7 +184,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
@@ -347,24 +347,13 @@ if (HTMAP_LAB_ROW) {
 # ------ clean up the mess and export ------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
-                      
+  export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  plot.yLabelSize = 20, plot.xLabelSize = 20,
+  plot.Width = 170, plot.Height = 150
+)
+
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
-
-# ## variables for display
-# orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-# orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
-#   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
-#
-# training_y <- factor(training$y, levels = unique(training$y))
-# training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
-#   paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")
-# test_y <- factor(test$y, levels = unique(test$y))
-# test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
-#   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
 y_randomized <- data.frame(

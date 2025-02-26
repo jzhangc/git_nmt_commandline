@@ -172,7 +172,8 @@ if (input_n_total_features == 1) {
       )
     },
     error = function(e) {
-      cat("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
+      cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
+      error_flag <- "fs_failure"
     }
   )
 
@@ -209,7 +210,6 @@ if (input_n_total_features == 1) {
       },
       error = function(e) {
         cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
-        error_flag <- "fs_failure"
       }
     )
   }
@@ -342,7 +342,7 @@ if (input_n_total_features == 1) {
         verbose = FALSE
       )
     },
-    error = function(e) cat("ROC-AUC for nested CV-SVM-rRF-FS generated error(s)\n", "\tRef error message: ", e, "\n")
+    error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s)\n", "\tRef error message: ", e, "\n"))
   )
 }
 
@@ -378,7 +378,7 @@ for (i in 1:length(final_cv_auc)) {
         out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
       },
       error = function(e) {
-        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e, "\n")
+        cat(paste0("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e, "\n"))
         out[j] <- NA
       }
     )
@@ -465,7 +465,7 @@ tryCatch(
     cat("No PCA error\n")
   },
   error = function(e) {
-    cat("PCA on training data failed. Check the data. \n", "\tRef error message: ", e, "\n")
+    cat(paste0("PCA on training data failed. Check the data. \n", "\tRef error message: ", e, "\n"))
   }
 )
 
@@ -494,7 +494,7 @@ tryCatch(
     )
   },
   error = function(e) {
-    cat("PCA on all data failed. try with less PCs.\n", "\tRef error message: ", e, "\n")
+    cat(paste0("PCA on all data failed. try with less PCs.\n", "\tRef error message: ", e, "\n"))
   }
 )
 sink()
@@ -552,10 +552,10 @@ tryCatch(
     cat("No hclust error\n")
   },
   error = function(e) {
-    cat("hclustering failed..skipped.\n", "\tRef error message: ", e, "\n")
+    cat(paste0("ERROR: hclustering failed. skipped.\n", "\tRef error message: ", e, "\n"))
   },
   warining = function(w) {
-    cat("hclustering failed..skipped.\n", "\tRef warning message: ", w, "\n")
+    cat(paste0("WARNING: hclustering warning generated.\n", "\tRef warning message: ", w, "\n"))
   }
 )
 sink()
