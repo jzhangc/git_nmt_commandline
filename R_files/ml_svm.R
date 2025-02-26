@@ -209,6 +209,7 @@ if (input_n_total_features == 1) {
       },
       error = function(e) {
         cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
+        error_flag <- "fs_failure"
       }
     )
   }
