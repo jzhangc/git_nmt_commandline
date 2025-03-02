@@ -24,7 +24,7 @@ SVM_ROC_THRESHOLD_OUT_OF_RANGE <- FALSE
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# -- directory variables -- 
+# -- directory variables --
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -119,27 +119,35 @@ if (input_n_total_features == 1) {
   svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% "y", drop = FALSE])
   rffs_selected_dfm <- ml_dfm
 } else {
-  nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
-  nested_cv_y <- ml_dfm$y
-  svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
-    x = nested_cv_x,
-    y = nested_cv_y,
-    center.scale = SVM_CV_CENTRE_SCALE,
-    univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
-    uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
-    kernel = SVM_CV_KERNEL,
-    cross.k = SVM_CV_CROSS_K,
-    tune.method = SVM_CV_TUNE_METHOD,
-    tune.cross.k = SVM_CV_TUNE_CROSS_K,
-    tune.boot.n = SVM_CV_TUNE_BOOT_N,
-    fs.method = "rf",
-    rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
-    fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
-    cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
-    parallelComputing = PSETTING, n_cores = CORES,
-    clusterType = CPU_CLUSTER,
-    verbose = TRUE
+  tryCatch(
+    {
+      nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
+      nested_cv_y <- ml_dfm$y
+      svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
+        x = nested_cv_x,
+        y = nested_cv_y,
+        center.scale = SVM_CV_CENTRE_SCALE,
+        univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
+        uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
+        kernel = SVM_CV_KERNEL,
+        cross.k = SVM_CV_CROSS_K,
+        tune.method = SVM_CV_TUNE_METHOD,
+        tune.cross.k = SVM_CV_TUNE_CROSS_K,
+        tune.boot.n = SVM_CV_TUNE_BOOT_N,
+        fs.method = "rf",
+        rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
+        fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
+        cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
+        parallelComputing = PSETTING, n_cores = CORES,
+        clusterType = CPU_CLUSTER,
+        verbose = TRUE
+      )
+    },
+    error = function(e) {
+      cat(paste0("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
+    }
   )
+  # extract selected features
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
@@ -169,7 +177,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"))
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
@@ -284,9 +292,10 @@ if (HTMAP_LAB_ROW) {
 # ------ clean up the mess and export --------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-                      export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"), 
-                      plot.yLabelSize = 20, plot.xLabelSize = 20,
-                      plot.Width = 170, plot.Height = 150)
+  export.name = paste0("cv_only_", MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  plot.yLabelSize = 20, plot.xLabelSize = 20,
+  plot.Width = 170, plot.Height = 150
+)
 
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))

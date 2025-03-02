@@ -128,25 +128,33 @@ if (input_n_total_features == 1) {
   svm_rf_selected_features <- names(ml_dfm[, !names(ml_dfm) %in% "y", drop = FALSE])
   rffs_selected_dfm <- ml_dfm
 } else {
-  svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
-    x = training[, -1],
-    y = training$y,
-    center.scale = SVM_CV_CENTRE_SCALE,
-    univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
-    uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
-    kernel = SVM_CV_KERNEL,
-    cross.k = SVM_CV_CROSS_K,
-    tune.method = SVM_CV_TUNE_METHOD,
-    tune.cross.k = SVM_CV_TUNE_CROSS_K,
-    tune.boot.n = SVM_CV_TUNE_BOOT_N,
-    fs.method = "rf",
-    rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
-    fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
-    cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
-    parallelComputing = PSETTING, n_cores = CORES,
-    clusterType = CPU_CLUSTER,
-    verbose = TRUE
+  tryCatch(
+    {
+      svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
+        x = training[, -1],
+        y = training$y,
+        center.scale = SVM_CV_CENTRE_SCALE,
+        univariate.fs = CVUNI, uni.log2trans = LOG2_TRANS,
+        uni.fdr = UNI_FDR, uni.alpha = UNI_ALPHA,
+        kernel = SVM_CV_KERNEL,
+        cross.k = SVM_CV_CROSS_K,
+        tune.method = SVM_CV_TUNE_METHOD,
+        tune.cross.k = SVM_CV_TUNE_CROSS_K,
+        tune.boot.n = SVM_CV_TUNE_BOOT_N,
+        fs.method = "rf",
+        rf.ifs.ntree = SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = SVM_CV_FS_RF_SFS_NTREE,
+        fs.count.cutoff = SVM_CV_FS_COUNT_CUTOFF,
+        cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
+        parallelComputing = PSETTING, n_cores = CORES,
+        clusterType = CPU_CLUSTER,
+        verbose = TRUE
+      )
+    },
+    error = function(e) {
+      cat("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
+    }
   )
+  # extract selected features
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
@@ -176,7 +184,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"), "\tError message: ", e, "\n")
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
@@ -336,7 +344,6 @@ if (HTMAP_LAB_ROW) {
   )
 }
 
-
 # ------ clean up the mess and export ------
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
@@ -347,18 +354,6 @@ rbioUtil_fscount_plot(svm_nested_cv_fs,
 
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
-
-# ## variables for display
-# orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
-# orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %do%
-#   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
-#
-# training_y <- factor(training$y, levels = unique(training$y))
-# training_summary <- foreach(i = 1:length(levels(training_y)), .combine = "c") %do%
-#   paste0(levels(training_y)[i], "(", summary(training_y)[i], ")")
-# test_y <- factor(test$y, levels = unique(test$y))
-# test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
-#   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
 y_randomized <- data.frame(
@@ -374,7 +369,6 @@ save(
   list = c("svm_m", "svm_rf_selected_features", "svm_training", "svm_test", "svm_nested_cv_fs", "svm_m_cv"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
-
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

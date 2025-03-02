@@ -113,7 +113,8 @@ x <- center_scale(x)$centerX
 y <- svm_m$inputY
 
 # inital modelling and ncomp optimization
-plsda_m <- tryCatch(rbioClass_plsda(
+plsda_m <- tryCatch(
+  rbioClass_plsda(
     x = x, y = y,
     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
@@ -142,7 +143,8 @@ rbioClass_plsda_ncomp_select(plsda_m,
 )
 
 ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected)) # get the maximum ncomp needed
-plsda_m_optim <- tryCatch(rbioClass_plsda(
+plsda_m_optim <- tryCatch(
+  rbioClass_plsda(
     x = x, y = y,
     ncomp = ncomp_select, validation = PLSDA_VALIDATION,
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
@@ -183,18 +185,19 @@ rbioUtil_perm_plot(
 )
 
 # ------ score plot ------
-tryCatch(rbioClass_plsda_scoreplot(
-  object = plsda_m_optim, comps = 1:ncomp_select,
-  plot.sampleLabel.type = "none",
-  plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
-  plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-  plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
-  plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
-  plot.rightsideY = PCA_RIGHTSIDE_Y,
-  plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
-  plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
-),
-error = function(w) {
+tryCatch(
+  rbioClass_plsda_scoreplot(
+    object = plsda_m_optim, comps = 1:ncomp_select,
+    plot.sampleLabel.type = "none",
+    plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
+    plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
+    plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+    plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+    plot.rightsideY = PCA_RIGHTSIDE_Y,
+    plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
+    plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
+  ),
+  error = function(w) {
     assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     warning(w)
     rbioClass_plsda_scoreplot(
@@ -211,26 +214,6 @@ error = function(w) {
   }
 )
 
-
-# # ROC-AUC
-# sink(file = paste0(MAT_FILE_NO_EXT, "_plsda_results.txt"), append = TRUE)
-# cat("------ ROC-AUC ------\n")
-# rbioClass_plsda_roc_auc(object = plsda_m_optim,
-#                         newdata = svm_test[, -1],
-#                         newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
-#                         center.newdata = TRUE,
-#                         plot.smooth = PLSDA_ROC_SMOOTH,
-#                         plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-#                         plot.legendSize = SVM_ROC_LEGEND_SIZE,
-#                         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE,
-#                         plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-#                         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
-#                         plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-#                         plot.Width = 80 * plsda_m_optim$ncomp,
-#                         plot.Height = 100,
-#                         verbose = TRUE)
-# sink()
-
 # ------ VIP plot ------
 tryCatch(
   rbioFS_plsda_vip(
@@ -241,7 +224,8 @@ tryCatch(
     verbose = FALSE
   ),
   error = function(e) {
-    warning(e)
+    cat(paste0("ERROR: PLS-DA VIP calculateion error generated\n", "\tRef error message: ", e, "\n"))
+    # cwarning(e)
   }
 )
 
@@ -261,7 +245,8 @@ tryCatch(
     verbose = FALSE
   ),
   error = function(e) {
-    warning(e)
+    cat(paste0("ERROR: PLS-DA VIP plot error generated\n", "\tRef error message: ", e, "\n"))
+    # warning(e)
   }
 )
 
@@ -270,9 +255,10 @@ tryCatch(
 
 ## export to results files if needed
 tryCatch(
-  save(list = c("plsda_m_optim"), file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsda_model.Rdata"))  ,
+  save(list = c("plsda_m_optim"), file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsda_model.Rdata")),
   error = function(e) {
-    warning(e)
+    cat(paste0("ERROR: PLS-DA model export error generated\n", "\tRef error message: ", e, "\n"))
+    # warning(e)
   }
 )
 

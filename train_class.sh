@@ -197,6 +197,7 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	exit 1
 fi
 
+
 # ------ script ------
 # --- start time ---
 start_t=`date +%s`
@@ -621,10 +622,10 @@ echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 # echo -e "\nSample metadata"
 # echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "na_values" ]; then
-	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$group_summary\n"
@@ -748,6 +749,17 @@ rscript_display=`echo "${r_var[@]}"`
 # Below: producing Rplots.pdf is a ggsave() problem (to be fixed by the ggplot2 dev): temporary workaround
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
+fi
+# -- error handling --
+if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
+	exit 1
 fi
 # -- set up variables for output svm model file
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"

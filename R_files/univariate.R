@@ -103,11 +103,6 @@ if (!all(c(NODE_ID_VAR, REGION_NAME_VAR) %in% names(node))) {
   cat("none_existent")
   quit()
 }
-# # below: add size/length check for node file
-# if (nrow(annot) != raw_dim[3]) {
-#   cat("unequal_length")
-#   quit()
-# }
 
 # ------ Data processing for univariate analysis ------
 ## data formating
@@ -243,6 +238,7 @@ if (UNI_ANALYSIS) {
       parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE
     ),
     warning = function(w) {
+      cat(paste0("WARNING: warning generated for univarate analysis with FDR seeting. FDR=FALSE.\n", "\tRef warning message: ", w, "\n"))
       if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
       rbioarray_DE(
         objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
@@ -265,7 +261,6 @@ if (UNI_ANALYSIS) {
   # -- Univariate analysis results export --
   DE_summary <- as.data.frame(get(paste0(MAT_FILE_NO_EXT, "_DE_summary")))
   names(DE_summary) <- c("comparison", "p-value.threshold", "fold.change.threshold", "sig", "non-sig")
-
 
   # -- sig clustering --
   # hcluster
@@ -444,17 +439,3 @@ if (UNI_ANALYSIS) {
     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
   }
 }
-
-# if (length(contra_string) == 1){
-#   if (NO_SIG_WARNING_FIT) {
-#     cat("NO significant reuslts found in F-stats results, no PCA needed. \n")
-#   } else {
-#     cat("PCA results saved to: \n")
-#     cat("\tbiplot: pca_sig.pca.biplot.pdf\n")
-#     cat("\tboxplot: pca_sig.pca.boxplot.pdf\n")
-#   }
-# } else {
-#   if (NO_SIG_WARNING_FIT) {
-#     cat("NO significant reuslts found in F-stats results, no PCA needed. Program terminated. \n")
-#   }
-# }

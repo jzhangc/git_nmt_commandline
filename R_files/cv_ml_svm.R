@@ -116,8 +116,7 @@ RFFS_HTMAP_HEIGHT <- as.numeric(args[76])
 # random state
 RANDOM_STATE <- as.numeric(args[77])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -131,6 +130,7 @@ ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
 # ------ internal nested cross-validation and feature selection ------
+error_flag <- NA
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS ------\n")
 if (input_n_total_features == 1) {
@@ -163,16 +163,16 @@ if (input_n_total_features == 1) {
       )
     },
     error = function(e) {
-      cat(paste0("\n\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n"))
+      cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
+      assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
     }
   )
-
-  # extract extracted features
+  # extract selected features
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
 
   # plotting for rRF-FS
-  cat("\n\n------ SFS plot error messages ------\n") # plotting temporarily disabled due to new parallel implementation
+  cat("\n\n------ SFS plot error messages ------\n")
   for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
     tryCatch(
       {
@@ -196,15 +196,23 @@ if (input_n_total_features == 1) {
           plot.Width = SVM_ROC_WIDTH,
           plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
         )
+        cat("CV fold: ", i, ": no SFS plot error\n")
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n"), "\tError message: ", e, "\n")
-        warning(e)
+        # below: has to add \n so cat does not output partial end of line sign: %
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
+        # warning(e)
       }
     )
   }
 }
 sink()
+# output to the shell script
+# has to add \n so cat does not output partial end of line sign: %
+if (!is.na(error_flag)) {
+  cat(error_flag)
+  quit()
+}
 
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
@@ -323,7 +331,7 @@ if (input_n_total_features == 1) {
         verbose = FALSE
       )
     },
-    error = function(e) error <- function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
+    error = function(e) error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tError message: ", e))
   )
 }
 
@@ -359,7 +367,7 @@ for (i in 1:length(final_cv_auc)) {
         out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
       },
       error = function(e) {
-        cat("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n")
+        cat(paste0("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e, "\n"))
         out[j] <- NA
       }
     )
@@ -388,8 +396,7 @@ for (i in 1:length(final_cv_auc)) {
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
   cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
 }
-cat("\n")
-cat("-- On training data --\n")
+cat("\n-- On training data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_training",
   plot.smooth = SVM_ROC_SMOOTH,
@@ -433,17 +440,17 @@ tryCatch(
       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
       verbose = FALSE
     )
+    cat("No PCA error\n")
   },
   error = function(e) {
-    cat("ERROR: PCA failed. Check the data. \n")
-    warning((e))
+    cat(paste0("ERROR: PCA failed. Check the data. \n", "\tError message: ", e, "\n"))
+    # warning((e))
   }
 )
 sink()
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ hcluster error messages ------\n")
-
 # -- hcluster after nested CV: all data --
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test
 normdata_crosscv <- list(
@@ -452,7 +459,6 @@ normdata_crosscv <- list(
   targets = data.frame(id = seq(nrow(rffs_selected_dfm)), sample = rffs_selected_dfm$sampleid),
   ArrayWeight = NULL
 )
-
 tryCatch(
   {
     if (HTMAP_LAB_ROW) {
@@ -492,12 +498,13 @@ tryCatch(
         margin = RFFS_HTMAP_MARGIN
       )
     }
+    cat("No hclust error\n")
   },
   error = function(e) {
-    cat("WARNING: hclustering failed..skipped.\n", "\tErrror message: ", e)
+    cat("WARNING: hclustering failed..skipped.\n")
   },
   warining = function(w) {
-    cat("WARNING: hclustering failed..skipped.\n", "\tWarning message: ", w)
+    cat("WARNING: hclustering failed..skipped.\n")
   }
 )
 sink()

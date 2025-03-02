@@ -82,16 +82,22 @@ OUT_DIR=.  # set the default to output directory
 if [ $# -eq 0 ]; then
 	echo -e $HELP
 	echo -e "\n"
-  echo -e "=========================================================================="
-	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-  exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+  	echo -e "=========================================================================="
+	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n\n"
+  	exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
 else
 	case "$1" in  # "one off" flags
 		-h|--help)
 			echo -e $HELP
 			echo -e "\n"
 			echo -e "=========================================================================="
-			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
+			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n\n"
+			# end time and display
+			end_t=`date +%s`
+			tot=`hms $((end_t-start_t))`
+			echo -e "\n"
+			echo -e "Total run time: $tot"
+			echo -e "\n"
 			exit 0
 			;;
 		-v|--version)
@@ -170,7 +176,8 @@ else
 
 				NODE_FILENAME=`basename "$NODE_FILE"`
 				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n\n" >&2
+					
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -246,81 +253,6 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	exit 1
 fi
 
-# # ------ functions ------
-# # function to check dependencies
-# check_dependency (){
-#   echo -en "Rscript..."
-#   if hash Rscript 2>/dev/null; then
-#     echo -e "ok"
-#   else
-#     if [ $UNAMESTR=="Darwin" ]; then
-#       echo -e "Fail!"
-#       echo -e "\t-------------------------------------"
-#       echo -en "\t\tChecking Homebrew..."
-#         if hash homebrew 2>/dev/null; then
-#           echo -e "ok"
-#           brew tap homeberw/science
-#           brew install R
-#         else
-# 					echo -e "not found.\n"
-#           echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
-# 					exit 1
-#         fi
-#     elif [ $UNAMESTR=="Linux" ]; then
-#       echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
-# 			exit 1
-#     fi
-#   fi
-# }
-
-# # function to check the program program files
-# required_file_check(){
-# 	# usage:
-# 	# ARR=(1 2 3)
-# 	# file_check "${ARR[@]}"
-#   arr=("$@") # this is how you call the input arry from the function argument
-#   for i in ${arr[@]}; do
-#     echo -en "\t$i..."
-#     if [ -f ./R_files/$i ]; then
-#       echo -e "ok"
-#     else
-#       echo -e "not found"
-#       echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
-#       exit 1
-#     fi
-#   done
-# }
-
-# # timing function
-# # from: https://www.shellscript.sh/tips/hms/
-# hms(){
-#   # Convert Seconds to Hours, Minutes, Seconds
-#   # Optional second argument of "long" makes it display
-#   # the longer format, otherwise short format.
-#   local SECONDS H M S MM H_TAG M_TAG S_TAG
-#   SECONDS=${1:-0}
-#   let S=${SECONDS}%60
-#   let MM=${SECONDS}/60 # Total number of minutes
-#   let M=${MM}%60
-#   let H=${MM}/60
-
-#   if [ "$2" == "long" ]; then
-#     # Display "1 hour, 2 minutes and 3 seconds" format
-#     # Using the x_TAG variables makes this easier to translate; simply appending
-#     # "s" to the word is not easy to translate into other languages.
-#     [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
-#     [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
-#     [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
-#     [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
-#     [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
-#     printf "%d %s\n" $S "${S_TAG}"
-#   else
-#     # Display "01h02m03s" format
-#     [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
-#     [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
-#     printf "%02d%s\n" $S "s"
-#   fi
-# }
 
 # ------ script ------
 # --- start time ---
@@ -390,7 +322,7 @@ Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DA
 R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
 if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
   echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
-	echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
+  echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
   exit 1
 fi
 echo -e "=========================================================================="
@@ -696,7 +628,7 @@ echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the -a annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 else
 	echo -e "$group_summary\n"
@@ -733,7 +665,13 @@ node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable c
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Progream terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
 	exit 1
 fi
 echo -e "$rscript_display"  # print the screen display from the R script
