@@ -10,6 +10,16 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
+    - 0.4.1
+      (ADDED)
+          - General updates
+            - More detailed error messages added
+            - Error handling updated with more explicit error messaging
+
+          - Modelling modules updates
+            - CV-rRF-FS-SVM step updated with fail error handling properties
+
+
     - 0.4.0 (December 26, 2024)
         - New "no FS" version of the toolbox added: modelling only
 
