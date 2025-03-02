@@ -159,7 +159,7 @@ rbioUtil_perm_plot(
 )
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("\n\n------ Permutation test ------\n")
+cat("------ Permutation test ------\n")
 svm_m_perm
 sink()
 

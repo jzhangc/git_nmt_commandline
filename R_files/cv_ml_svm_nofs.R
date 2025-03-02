@@ -151,7 +151,7 @@ svm_m <- rbioClass_svm(
 
 # -- CV modelling --
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
-cat("\n\n------ CV modelling ------\n")
+cat("------ CV modelling ------\n")
 # no fs only CV
 svm_m_cv <- rbioClass_svm_cv(
   x = final_svm_data[, -1], y = factor(final_svm_data$y, levels = unique(final_svm_data$y)),

@@ -112,7 +112,8 @@ x <- center_scale(x)$centerX
 y <- svm_m$inputY
 
 # inital modelling and ncomp optimization
-plsda_m <- tryCatch(rbioClass_plsda(
+plsda_m <- tryCatch(
+  rbioClass_plsda(
     x = x, y = y,
     ncomp = PLSDA_INIT_NCOMP, validation = PLSDA_VALIDATION,
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
@@ -146,7 +147,8 @@ tryCatch(
 )
 
 ncomp_select <- max(as.vector(plsda_m_plsda_ncomp_select$ncomp_selected)) # get the maximum ncomp needed
-plsda_m_optim <- tryCatch(rbioClass_plsda(
+plsda_m_optim <- tryCatch(
+  rbioClass_plsda(
     x = x, y = y,
     ncomp = ncomp_select, validation = PLSDA_VALIDATION,
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
@@ -179,7 +181,7 @@ tryCatch(
     parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
     verbose = FALSE
   ),
-  error = function(e){
+  error = function(e) {
     warning(e)
   }
 )
@@ -192,7 +194,7 @@ tryCatch(
     plot.yLabelSize = PLSDA_PERM_PLOT_Y_LABEL_SIZE, plot.yTickLblSize = PLSDA_PERM_PLOT_Y_TICK_LABEL_SIZE,
     verbose = FALSE
   ),
-  error = function(e){
+  error = function(e) {
     warning(e)
   }
 )
@@ -200,7 +202,8 @@ tryCatch(
 
 
 # ------ score plot ------
-tryCatch(rbioClass_plsda_scoreplot(
+tryCatch(
+  rbioClass_plsda_scoreplot(
     object = plsda_m_optim, comps = 1:ncomp_select,
     plot.sampleLabel.type = "none",
     plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
@@ -248,7 +251,7 @@ tryCatch(
     plot.Height = 100,
     verbose = TRUE
   ),
-  error = function(e){
+  error = function(e) {
     warning(e)
   }
 )
@@ -261,13 +264,13 @@ tryCatch(
     boot.parallelComputing = PSETTING, boot.n_cores = CORES, boot.clusterType = CPU_CLUSTER,
     verbose = FALSE
   ),
-  error = function(e){
+  error = function(e) {
     warning(e)
   }
 )
 
 tryCatch(
-rbioFS_plsda_vip_plot(
+  rbioFS_plsda_vip_plot(
     vip_obj = plsda_m_optim_plsda_vip,
     plot.errorbar = PLSDA_VIP_PLOT_ERRORBAR,
     plot.errorbarWidth = PLSDA_VIP_PLOT_ERRORBAR_WIDTH,
@@ -281,7 +284,7 @@ rbioFS_plsda_vip_plot(
     plot.Height = PLSDA_VIP_PLOT_HEIGHT,
     verbose = FALSE
   ),
-  error = function(e){
+  error = function(e) {
     warning(e)
   }
 )
@@ -293,7 +296,7 @@ sink()
 ## export to results files if needed
 tryCatch(
   save(list = c("plsda_m_optim"), file = paste0(MAT_FILE_NO_EXT, "_final_plsda_model.Rdata")),
-  error = function(e){
+  error = function(e) {
     warning(e)
   }
 )
