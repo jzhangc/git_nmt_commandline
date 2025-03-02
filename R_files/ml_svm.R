@@ -173,7 +173,8 @@ if (input_n_total_features == 1) {
     },
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
-      error_flag <- "fs_failure"
+      # below: has to add \n so cat does not output partial end of line sign: %
+      assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
     }
   )
 
@@ -209,12 +210,14 @@ if (input_n_total_features == 1) {
         cat("CV fold: ", i, ": no SFS plot error\n")
       },
       error = function(e) {
-        cat("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n")
+        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
 }
 sink()
+# output to the shell script
+# has to add \n so cat does not output partial end of line sign: %
 if (!is.na(error_flag)) {
   cat(error_flag)
   quit()
@@ -299,7 +302,8 @@ if (input_n_total_features == 1) {
         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-        verbose = FALSE)
+        verbose = FALSE
+      )
 
       rffs_nested_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
       for (i in 1:length(rffs_nested_cv_auc)) {
@@ -338,7 +342,8 @@ if (input_n_total_features == 1) {
         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-        verbose = FALSE)
+        verbose = FALSE
+      )
     },
     error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s)\n", "\tRef error message: ", e, "\n"))
   )

@@ -164,7 +164,7 @@ if (input_n_total_features == 1) {
     },
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
-      error_flag <- "fs_failure"
+      assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
     }
   )
   # extract selected features
@@ -199,6 +199,7 @@ if (input_n_total_features == 1) {
         cat("CV fold: ", i, ": no SFS plot error\n")
       },
       error = function(e) {
+        # below: has to add \n so cat does not output partial end of line sign: %
         cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
         # warning(e)
       }
@@ -206,6 +207,8 @@ if (input_n_total_features == 1) {
   }
 }
 sink()
+# output to the shell script
+# has to add \n so cat does not output partial end of line sign: %
 if (!is.na(error_flag)) {
   cat(error_flag)
   quit()
