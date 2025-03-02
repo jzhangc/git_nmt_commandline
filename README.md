@@ -39,6 +39,10 @@ Please cite the following if you are to use this application:
       (ADDED)
           - General updates
             - More detailed error messages added
+            - Error handling updated with more explicit error messaging
+
+          - Modelling modules updates
+            - CV-rRF-FS-SVM step updated with fail error handling properties
 
 
     - 0.4.0 (December 26, 2024)
