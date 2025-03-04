@@ -181,7 +181,17 @@ if (input_n_total_features == 1) {
   # extract selected features
   svm_rf_selected_features <- svm_nested_cv_fs$selected.features
   rffs_selected_dfm <- ml_dfm[, colnames(ml_dfm) %in% c("sampleid", "y", svm_rf_selected_features)] # training + testing
+}
+sink()
+# output to the shell script
+# has to add \n so cat does not output partial end of line sign: %
+if (!is.na(error_flag)) {
+  cat(error_flag)
+  quit()
+}
 
+sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+if (input_n_total_features > 1) {
   # plotting for rRF-FS
   cat("\n\n------ SFS plot error messages ------\n")
   for (i in 1:SVM_CV_CROSS_K) { # plot SFS curve
@@ -207,7 +217,7 @@ if (input_n_total_features == 1) {
           plot.Width = SVM_ROC_WIDTH,
           plot.Height = SVM_ROC_HEIGHT, verbose = FALSE
         )
-        cat("CV fold: ", i, ": no SFS plot error\n")
+        cat("CV fold ", i, ": no SFS plot error\n")
       },
       error = function(e) {
         cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
@@ -216,12 +226,6 @@ if (input_n_total_features == 1) {
   }
 }
 sink()
-# output to the shell script
-# has to add \n so cat does not output partial end of line sign: %
-if (!is.na(error_flag)) {
-  cat(error_flag)
-  quit()
-}
 
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
