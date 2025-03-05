@@ -288,7 +288,7 @@ cat("\n\n------ ROC-AUC results display ------\n")
 if (input_n_total_features == 1) {
   cat("WARNING: no need for ROC for CV-rRF-FS-SVM models with only one input feature.\n")
 } else {
-  cat("-- On CV-SVM-rRF-FS models --\n")
+  cat("-- On CV-SVM-rRF-FS (nested) models --\n")
   tryCatch(
     {
       # nested cv roc-auc
@@ -329,7 +329,26 @@ if (input_n_total_features == 1) {
       }
 
       # nested cv mean roc-auc
-      rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
+      rbioClass_svm_cv_roc_auc_mean(
+        object = svm_nested_cv_fs, roc.smooth = SVM_ROC_SMOOTH,
+        plot.legendSize = SVM_ROC_LEGEND_SIZE,
+        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+        verbose = FALSE
+      )
+      cat("\n")
+    },
+    error = function(e) {
+      cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tRef error message: ", e, "\n"))
+    }
+  )
+
+  tryCatch(
+    {
+      cat("-- On final CV models --\n")
+      # cv on mean roc-auc
+      rbioClass_svm_cv_roc_auc(svm_m_cv,
         plot.smooth = SVM_ROC_SMOOTH,
         plot.legendSize = SVM_ROC_LEGEND_SIZE,
         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
@@ -337,84 +356,70 @@ if (input_n_total_features == 1) {
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
         verbose = FALSE
       )
-    },
-    error = function(e) {
-      cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s) \n", "\tRef error message: ", e, "\n"))
-    }
-  )
-}
 
-cat("\n")
-cat("-- On final CV models --\n")
-# cv on mean roc-auc
-rbioClass_svm_cv_roc_auc(svm_m_cv,
-  plot.smooth = SVM_ROC_SMOOTH,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE
-)
+      # -- mean cv auc with interporlation --
+      rbioClass_svm_cv_roc_auc_mean(
+        object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
+        plot.legendSize = SVM_ROC_LEGEND_SIZE,
+        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+        verbose = FALSE
+      )
 
-# -- mean cv auc with interporlation --
-rbioClass_svm_cv_roc_auc_mean(
-  object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE
-)
-
-# final cv auc
-final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
-for (i in 1:length(final_cv_auc)) {
-  out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
-  for (j in 1:length(svm_m_cv_svm_cv_roc_auc)) {
-    tryCatch(
-      {
-        out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
-      },
-      error = function(e) {
-        cat(paste0("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e, "\n"))
-        out[j] <- NA
+      # final cv auc
+      final_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
+      for (i in 1:length(final_cv_auc)) {
+        out <- vector(length = length(svm_m_cv_svm_cv_roc_auc))
+        for (j in 1:length(svm_m_cv_svm_cv_roc_auc)) {
+          tryCatch(
+            {
+              out[j] <- svm_m_cv_svm_cv_roc_auc[[j]]$svm.roc_object[[i]]$auc
+            },
+            error = function(e) {
+              cat(paste0("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e, "\n"))
+              out[j] <- NA
+            }
+          )
+        }
+        final_cv_auc[[i]] <- out
       }
-    )
-  }
-  final_cv_auc[[i]] <- out
-}
 
-for (i in 1:length(svm_m_cv_svm_cv_roc_auc)) { # set up group names for display
-  skip_to_next <- FALSE
-  final_cv_names <- tryCatch(
-    {
-      names(svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object)
-    },
-    error = function(e) skip_to_next <<- TRUE
+      for (i in 1:length(svm_m_cv_svm_cv_roc_auc)) { # set up group names for display
+        skip_to_next <- FALSE
+        final_cv_names <- tryCatch(
+          {
+            names(svm_m_cv_svm_cv_roc_auc[[i]]$svm.roc_object)
+          },
+          error = function(e) skip_to_next <<- TRUE
+        )
+        if (skip_to_next) {
+          next
+          cat(paste0("WARNING: svm_m_cv_svm_cv_roc_auc[[", i, "]]\n"))
+        } else {
+          break
+        }
+      }
+      names(final_cv_auc) <- final_cv_names
+
+      for (i in 1:length(final_cv_auc)) {
+        cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
+        cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
+      }
+      cat("\n-- On training data --\n")
+      rbioClass_svm_roc_auc(
+        object = svm_m, fileprefix = "svm_m_training",
+        plot.smooth = SVM_ROC_SMOOTH,
+        plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+        verbose = FALSE
+      )
+    }, 
+    error = function(e) cat(paste0("ROC-AUC for final cv and final models generated error(s)\n", "\tRef error message: ", e, "\n"))
   )
-  if (skip_to_next) {
-    next
-    cat(paste0("WARNING: svm_m_cv_svm_cv_roc_auc[[", i, "]]\n"))
-  } else {
-    break
-  }
 }
-names(final_cv_auc) <- final_cv_names
-
-for (i in 1:length(final_cv_auc)) {
-  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
-  cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
-}
-cat("\n-- On training data --\n")
-rbioClass_svm_roc_auc(
-  object = svm_m, fileprefix = "svm_m_training",
-  plot.smooth = SVM_ROC_SMOOTH,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-  verbose = FALSE
-)
 sink()
 
 # ------ PCA & clustering ------
@@ -574,7 +579,7 @@ cat("\n\n")
 cat("CV: ROC-AUC\n")
 cat("-------------------------------------\n")
 cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
-cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
+cat("ROC figure saved to file (check SVM result file for AUC value):\n\tsvm_nested_cv_fs.cv_roc.GROUP.pdf, svm_nested_cv_fs.cv_roc_mean.pdf\n\tsvm_m_cv.cv_roc_mean.pdf, svm_m_cv.cv_roc.GROUPNAME.pdf\n\tsvm_m_training.svm.roc.pdf\n")
 cat("\n\n")
 cat("Clustering analysis\n")
 # cat("PCA on SVM selected pairs\n")
