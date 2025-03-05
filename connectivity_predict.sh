@@ -323,6 +323,7 @@ echo -e "=======================================================================
 
 # --- New data prediction ---
 # -- input mat and annot files processing --
+echo -e "--------------------- source script: pred_dat_process.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/pred_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" \
 "${OUT_DIR}/PREDICTION" \
@@ -363,7 +364,7 @@ echo -e "=======================================================================
 echo -e "Input model file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MODEL_FILENAME${NO_COLOUR}"
 echo -en "\nSVM predicting...\n"
-
+echo -e "--------------------- source script: pred_classif.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/pred_classif.R "$dat_2d_file" "$MODEL_FILE" \
 "${OUT_DIR}/PREDICTION" \
 "$newdata_centre_scale" "$probability_method" \
