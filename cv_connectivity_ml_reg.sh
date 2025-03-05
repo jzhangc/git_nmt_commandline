@@ -600,6 +600,7 @@ echo -e "=======================================================================
 
 # --- read input files ---
 # -- input mat and annot files processing --
+echo -e "--------------------- source script: reg_input_dat_process.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/reg_input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" "$Y_VAR" \
 "${OUT_DIR}/OUTPUT" \
@@ -638,6 +639,7 @@ echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
 echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 echo -en "Unsupervised learning and univariate anlaysis..."
+echo -e "--------------------- source script: reg_univariate.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/reg_univariate.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$log2_trans" \
@@ -713,6 +715,7 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "SVM machine learning analysis..."
+echo -e "--------------------- source script: cv_reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/cv_reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
@@ -763,6 +766,7 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLSR analysis..."
+echo -e "--------------------- source script: cv_reg_plsr_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/cv_reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
