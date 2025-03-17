@@ -10,8 +10,13 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
+    - 0.4.2
+          - General updates
+            - (a1) R script integrity check added 
+            - (a1) Application termination behaviour updated with early stop and messaging
+
+
     - 0.4.1
-      (ADDED)
           - General updates
             - More detailed error messages added
             - Error handling updated with more explicit error messaging
