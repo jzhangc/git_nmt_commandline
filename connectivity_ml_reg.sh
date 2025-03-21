@@ -618,6 +618,12 @@ mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first lin
 
 # -- set up variables for output 2d data file
 dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+# -- file check before next step --
+if ! [ -f "$dat_2d_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1  # exit 1: terminating with error
+fi
 
 # -- display --
 echo -e "\n"
@@ -688,6 +694,12 @@ if [ $KFLAG -eq 1 ]; then
 else
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 fi
+# -- file check before next step --
+if ! [ -f "$dat_ml_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1  # exit 1: terminating with error
+fi
 # -- additional display --
 echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2D.csv"
@@ -753,6 +765,12 @@ fi
 # fi
 # -- set up variables for output svm model file
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+# -- file check before next step --
+if ! [ -f "$svm_model_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1  # exit 1: terminating with error
+fi
 echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script

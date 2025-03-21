@@ -174,7 +174,8 @@ if (input_n_total_features == 1) {
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
       # below: has to add \n so cat does not output partial end of line sign: %
-      assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
+      error_flag <<- "fs_failure\n"  # use <<- to assign global vars
+      # assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
     }
   )
 

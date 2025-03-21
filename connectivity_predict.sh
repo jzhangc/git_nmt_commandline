@@ -336,6 +336,18 @@ nsamples_to_pred=`echo "${r_var[@]}" | sed -n "2p"`
 
 # -- set up variables for output 2d data file
 dat_2d_file="${OUT_DIR}/PREDICTION/${MAT_FILENAME_WO_EXT}_2D.csv"
+# -- file check before next step --
+if ! [ -f "$dat_2d_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
+	exit 1  # exit 1: terminating with error
+fi
 
 # -- display --
 echo -e "\n"
@@ -382,6 +394,12 @@ fi
 # echo -e "\nFeature subset according to model"
 if [ "$sampleid_pred" == "feature_error" ]; then  # use "$sampleid_pred" (quotations) to avid "too many arguments" error
 	echo -e "${COLOUR_RED}\nERROR: Feature mismatch between input data and model. Program terminated.${NO_COLOUR}\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
 	exit 1
 fi
 echo -e "\tData with feature subset and saved to file: data_subset.csv"
