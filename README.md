@@ -17,7 +17,7 @@ Please cite the following if you are to use this application:
             - Application messaging updated
 
 
-    - 0.4.1
+    - 0.4.1 (March 2, 2024)
           - General updates
             - More detailed error messages added
             - Error handling updated with more explicit error messaging
