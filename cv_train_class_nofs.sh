@@ -737,7 +737,7 @@ echo -e "=======================================================================
 
 # --- SVM machine learning analysis ---
 echo -e "\n"
-echo -e "SVM machine learning"
+echo -e "CV-SVM machine learning"
 echo -e "=========================================================================="
 echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
@@ -760,7 +760,7 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
-echo -en "SVM machine learning analysis..."
+echo -en "CV-SVM machine learning analysis..."
 echo -e "--------------------- source script: cv_ml_svm_nofs.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/cv_ml_svm_nofs.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
@@ -801,7 +801,7 @@ svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`

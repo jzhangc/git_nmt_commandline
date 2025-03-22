@@ -708,7 +708,7 @@ echo -e "=======================================================================
 
 # --- SVM machine learning analysis ---
 echo -e "\n"
-echo -e "SVM machine learning (regression)"
+echo -e "CV-rRF-FS-SVR machine learning (regression)"
 echo -e "=========================================================================="
 echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
@@ -731,7 +731,7 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
-echo -en "SVM machine learning analysis..."
+echo -en "CV-rRF-FS-SVR machine learning analysis..."
 echo -e "--------------------- source script: reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
@@ -768,7 +768,7 @@ svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVR analysis failed. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1  # exit 1: terminating with error
 fi
 echo -e "Done!"
