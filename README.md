@@ -11,19 +11,19 @@ Please cite the following if you are to use this application:
 ## Version History
 
     - 0.4.2
-          - General updates
-            - (a2) R script integrity check added 
-            - Application termination behaviour updated with early stop and messaging
-            - Application messaging updated
+        - General updates
+          - (a2) R script integrity check added 
+          - Application termination behaviour updated with early stop and messaging
+          - Application messaging updated
 
 
     - 0.4.1 (March 2, 2025)
-          - General updates
-            - More detailed error messages added
-            - Error handling updated with more explicit error messaging
+        - General updates
+          - More detailed error messages added
+          - Error handling updated with more explicit error messaging
 
-          - Modelling modules updates
-            - CV-rRF-FS-SVM step updated with fail error handling properties
+        - Modelling modules updates
+          - CV-rRF-FS-SVM step updated with fail error handling properties
 
 
     - 0.4.0 (December 26, 2024)
