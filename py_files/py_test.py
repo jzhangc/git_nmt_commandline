@@ -26,4 +26,9 @@ Objectives:
 
 - Other optimizations
     [ ] Implement async/multiprocess functionalities when appropriate
+
+
+LR: https://www.digitalocean.com/community/tutorials/logistic-regression-with-scikit-learn
+https://stackoverflow.com/questions/20894671/speeding-up-sklearn-logistic-regression
+
 """
