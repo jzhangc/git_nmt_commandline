@@ -552,22 +552,6 @@ echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add on
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 # mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
-# -- set up variables for output 2d data file
-dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# -- file check before next step --
-if ! [ -f "$dat_2d_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-fi
-
-
 # -- display --
 echo -e "\n"
 echo -e "Input files"
@@ -586,6 +570,21 @@ elif [ "$group_summary" == "na_values" ]; then
 fi
 echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
+
+# -- set up variables for output 2d data file
+dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+# -- file check before next step --
+if ! [ -f "$dat_2d_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
+	exit 1  # exit 1: terminating with error
+fi
 
 
 # --- inspection and univariant analysis ---
