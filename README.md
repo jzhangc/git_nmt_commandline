@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.4.2
+    - 0.4.2 (April 4, 2025)
         - General updates
           - Application termination behaviour updated with early stop and messaging
           - Application messaging updated
