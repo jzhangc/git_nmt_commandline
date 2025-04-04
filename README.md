@@ -12,7 +12,6 @@ Please cite the following if you are to use this application:
 
     - 0.4.2
         - General updates
-          - (a2) R script integrity check added 
           - Application termination behaviour updated with early stop and messaging
           - Application messaging updated
 
