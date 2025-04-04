@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.4.1 and beyond
+    - 0.4.3 and beyond
       (ICEBOX)
           - General updates
             - Overall optimization
@@ -36,13 +36,18 @@ Please cite the following if you are to use this application:
             - Proper data handling for input data with an outcome variable
           - Bug fixes
       
-      (ADDED)
-          - General updates
-            - More detailed error messages added
-            - Error handling updated with more explicit error messaging
 
-          - Modelling modules updates
-            - CV-rRF-FS-SVM step updated with fail error handling properties
+    - 0.4.2 (April 4, 2025)
+        - General updates
+          - Application termination behaviour updated with early stop and messaging
+          - Application messaging updated          
+          
+        - General updates
+          - More detailed error messages added
+          - Error handling updated with more explicit error messaging
+
+        - Modelling modules updates
+          - CV-rRF-FS-SVM step updated with fail error handling properties
 
 
     - 0.4.0 (December 26, 2024)

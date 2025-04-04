@@ -220,7 +220,8 @@ if (UNI_ANALYSIS) {
     ),
     warning = function(w) {
       cat(paste0("WARNING: warning generated for univarate analysis with FDR seeting. FDR=FALSE.\n", "\tRef warning message: ", w, "\n"))
-      if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
+      if (length(contra_string) == 1) FDR_FAIL_WARNING <<- TRUE  # use <<- to assign global vars
+      # if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
       rbioarray_DE(
         objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
         fltlist = normdata, annot = normdata$genes, design = design, contra = contra,

@@ -120,9 +120,10 @@ plsda_m <- tryCatch(
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 10000,
     method = "oscorespls", verbose = FALSE
   ),
-  error = function(w) {
-    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-    warning(w)
+  error = function(e) {
+    cat(paste0("Error generated for preliminary PLS-DA on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
+    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda(
       x = x, y = y,
       ncomp = 1,
@@ -150,9 +151,10 @@ plsda_m_optim <- tryCatch(
     segments = PLSDA_VALIDATION_SEGMENT, maxit = 200,
     method = "oscorespls", verbose = FALSE
   ),
-  error = function(w) {
-    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-    warning(w)
+  error = function(e) {
+    cat(paste0("Error generated for preliminary PLS-DA on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
+    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda(
       x = x, y = y,
       ncomp = 1,
@@ -197,9 +199,10 @@ tryCatch(
     plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
     plot.Width = PCA_WIDTH, plot.Height = PCA_HEIGHT, verbose = FALSE
   ),
-  error = function(w) {
-    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
-    warning(w)
+  error = function(e) {
+    cat(paste0("Error generated for preliminary PLS-DA on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
+    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda_scoreplot(
       object = plsda_m_optim, comps = 1,
       plot.sampleLabel.type = "none",

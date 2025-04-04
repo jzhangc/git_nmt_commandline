@@ -121,7 +121,8 @@ plsr_m <- tryCatch(
   ),
   error = function(e) {
     cat(paste0("WARNING: Error generated for preliminary PLSR on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioReg_plsr(
       x = x, y = y,
       ncomp = 1,
@@ -152,7 +153,8 @@ plsr_m_optim <- tryCatch(
   ),
   error = function(e) {
     cat(paste0("WARNING: Error generated for final PLSR on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
+    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioReg_plsr(
       x = x, y = y,
       ncomp = 1,

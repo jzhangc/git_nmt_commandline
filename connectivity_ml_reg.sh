@@ -534,7 +534,7 @@ echo -e "\tsvm_cv_fs_rf_sfs_ntree=$svm_cv_fs_rf_sfs_ntree"
 echo -e "\tsvm_cv_best_model_method=$svm_cv_best_model_method"
 echo -e "\tsvm_cv_fs_count_cutoff=$svm_cv_fs_count_cutoff"
 echo -e "\tsvm_cross_k=$svm_cross_k"
-echo -e "\tsvm_tune_cross_k$svm_tune_cross_k"
+echo -e "\tsvm_tune_cross_k=$svm_tune_cross_k"
 echo -e "\tsvm_tune_boot_n=$svm_tune_boot_n"
 echo -e "\tsvm_perm_method=$svm_perm_method"
 echo -e "\tsvm_perm_n=$svm_perm_n"
@@ -616,9 +616,6 @@ echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add on
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
-# -- set up variables for output 2d data file
-dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-
 # -- display --
 echo -e "\n"
 echo -e "Input files"
@@ -636,6 +633,15 @@ else
 fi
 echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
+
+# -- set up variables for output 2d data file
+dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
+# -- file check before next step --
+if ! [ -f "$dat_2d_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1  # exit 1: terminating with error
+fi
 
 
 # --- univariant analysis ---
@@ -688,6 +694,12 @@ if [ $KFLAG -eq 1 ]; then
 else
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 fi
+# -- file check before next step --
+if ! [ -f "$dat_ml_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1  # exit 1: terminating with error
+fi
 # -- additional display --
 echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
 echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2D.csv"
@@ -696,7 +708,7 @@ echo -e "=======================================================================
 
 # --- SVM machine learning analysis ---
 echo -e "\n"
-echo -e "SVM machine learning (regression)"
+echo -e "CV-rRF-FS-SVR machine learning (regression)"
 echo -e "=========================================================================="
 echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
@@ -719,7 +731,7 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
-echo -en "SVM machine learning analysis..."
+echo -en "CV-rRF-FS-SVR machine learning analysis..."
 echo -e "--------------------- source script: reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
@@ -753,6 +765,12 @@ fi
 # fi
 # -- set up variables for output svm model file
 svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+# -- file check before next step --
+if ! [ -f "$svm_model_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVR analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1  # exit 1: terminating with error
+fi
 echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
