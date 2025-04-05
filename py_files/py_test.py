@@ -19,6 +19,7 @@ Objectives:
 - Modelling
     [ ] Scikit-learn modelling
         [ ] Construct modelling pipeline
+            [ ] Logistic Regression
 
 - Application
     [ ] Construct commandline applications
@@ -32,3 +33,10 @@ LR: https://www.digitalocean.com/community/tutorials/logistic-regression-with-sc
 https://stackoverflow.com/questions/20894671/speeding-up-sklearn-logistic-regression
 
 """
+
+# ------ import modules ------
+import os
+import csv
+import pickle
+
+# ------ logger ------

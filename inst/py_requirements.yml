@@ -12,5 +12,7 @@ dependencies:
   - opencv
   - pip
   - seaborn
+  - pytorch
+  - torchvision
   - pip:
       - textualheatmap
