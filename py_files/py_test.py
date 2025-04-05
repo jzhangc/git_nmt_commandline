@@ -32,11 +32,16 @@ Objectives:
 LR: https://www.digitalocean.com/community/tutorials/logistic-regression-with-scikit-learn
 https://stackoverflow.com/questions/20894671/speeding-up-sklearn-logistic-regression
 
+
+Note:
+     install env: `conda env create -f ./inst/py_requirements.yml --prefix ./conda_env_nmt`
 """
 
 # ------ import modules ------
 import os
 import csv
 import pickle
+
+from sklearn.linear_model import LogisticRegression
 
 # ------ logger ------
