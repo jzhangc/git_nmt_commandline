@@ -5,7 +5,7 @@ Objectives:
 - Set up installation method for py scripts
     [ ] Installation scripts
 
-- Set up calls from main applications
+- Interface with the main applications
     [ ] Call py scripts from main applications
     [ ] Python dependency handlling
     [ ] Main sh functions to check py scripts and dependency integraty
@@ -16,10 +16,20 @@ Objectives:
     [ ] Call functions from helper py files
     [ ] Handling between R files and py files: data handle over
 
+- Initial setup
+    [ ] Working directory - interface from the main application
+    [ ] Results and logging directory - interface from the main application
+
+- Data processing
+    [ ] Data streaming for bigger datasets (? not sure if needed for sklearn)
+    [ ] Data scaling by default
+    [ ] Initial data inspections: PCA etc (?)
+
 - Modelling
     [ ] Scikit-learn modelling
         [ ] Construct modelling pipeline
-            [ ] Logistic Regression
+            [ ] Logistic Regression w SGD (stochastic gradient descent) training
+            [ ] SVM w SGD (stochastic gradient descent) training
 
 - Application
     [ ] Construct commandline applications
@@ -42,6 +52,17 @@ import os
 import csv
 import pickle
 
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 
 # ------ logger ------
+
+
+# ------ custom classes ------
+
+# ------ custom functions ------
+
+# ------ data ------
+
+
+# ------ test realm ------
+
