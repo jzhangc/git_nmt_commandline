@@ -30,6 +30,13 @@ Objectives:
         [ ] Construct modelling pipeline
             [ ] Logistic Regression w SGD (stochastic gradient descent) training
             [ ] SVM w SGD (stochastic gradient descent) training
+    [ ] Torch modelling
+    [ ] Metrics
+            
+- Visualizaiton functions
+    [ ] ROC-AUC
+    [ ] PR-AUC
+            
 
 - Application
     [ ] Construct commandline applications
@@ -49,8 +56,12 @@ Note:
 
 # ------ import modules ------
 import os
+import sys
 import csv
 import pickle
+import argparse
+import numpy as np
+import pandas as pd
 
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 
@@ -63,6 +74,7 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier
 
 # ------ data ------
 
+# ------ main scripts ------
 
 # ------ test realm ------
 
