@@ -414,6 +414,16 @@ if (input_n_total_features == 1) {
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
         verbose = FALSE
       )
+
+      rbioClass_svm_roc_auc_inter(
+        object = svm_m, fileprefix = "svm_m_training",
+        plot.smooth = SVM_ROC_SMOOTH,
+        plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
+        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
+        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
+        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+        verbose = FALSE
+      )
     },
     error = function(e) cat(paste0("ROC-AUC for final cv and final models generated error(s)\n", "\tRef error message: ", e, "\n"))
   )

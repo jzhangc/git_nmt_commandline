@@ -48,6 +48,7 @@ Please cite the following if you are to use this application:
 
         - Modelling modules updates
           - CV-rRF-FS-SVM step updated with fail error handling properties
+          - Classification modules updated with interporlated ROC curves
 
 
     - 0.4.0 (December 26, 2024)

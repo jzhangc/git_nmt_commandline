@@ -35,8 +35,7 @@ Objectives:
             
 - Visualizaiton functions
     [ ] ROC-AUC
-    [ ] PR-AUC
-            
+    [ ] PR-AUC            
 
 - Application
     [ ] Construct commandline applications
