@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.4.3 and beyond
+    - 0.5.x
       (ICEBOX)
           - General updates
             - Overall optimization
@@ -35,7 +35,11 @@ Please cite the following if you are to use this application:
           - Prediction modules updates
             - Proper data handling for input data with an outcome variable
           - Bug fixes
-      
+
+      (ADDED)
+          - Modelling modules updates
+            - Classification modules updated with interporlated ROC curves 
+
 
     - 0.4.2 (April 4, 2025)
         - General updates
@@ -48,7 +52,6 @@ Please cite the following if you are to use this application:
 
         - Modelling modules updates
           - CV-rRF-FS-SVM step updated with fail error handling properties
-          - Classification modules updated with interporlated ROC curves
 
 
     - 0.4.0 (December 26, 2024)
