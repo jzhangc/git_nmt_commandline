@@ -32,10 +32,20 @@ Objectives:
             [ ] SVM w SGD (stochastic gradient descent) training
     [ ] Torch modelling
     [ ] Metrics
+        [ ] Accuracy
+        [ ] RMSE/MSE
+        [ ] PR, ROC -> AUC
+        [ ] F1 (and/or generalized F metric)
+        [ ] SHAP feature importance
+        [ ] Fairness (?)
+        [ ] Benefits (?)
             
 - Visualizaiton functions
-    [ ] ROC-AUC
-    [ ] PR-AUC            
+    [ ] ROC-AUC w and wo interporlation
+        [ ] Multi-model curves
+    [ ] PR-AUC w and wo interporlation    
+        [ ] Multi-model curves    
+    [ ] SHAP plot for feature importance
 
 - Application
     [ ] Construct commandline applications
@@ -65,6 +75,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 
 # ------ logger ------
+
 
 
 # ------ custom classes ------

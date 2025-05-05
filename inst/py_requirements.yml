@@ -14,5 +14,7 @@ dependencies:
   - seaborn
   - pytorch
   - torchvision
+  - python == 3.10
+  - shap
   - pip:
       - textualheatmap
