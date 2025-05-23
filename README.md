@@ -23,15 +23,18 @@ Please cite the following if you are to use this application:
             - Modelling speed optimization
               - CV-rRF-FS-SVM: SVM element optimizaiton for speed
           - New python script based final modelling modules
-            - Additional classification/regression final models
+            - Classification/regression final models
               - PLS
               - XGB
               - RF
               - LR
               - kNN
+              - DNN
+            - Final model calibration functionality
           - Modelling modules updates
             - Handle "reaching max number of iterations" error
             - CV-rRF-FS-XGB: Swtich CV SVM assessment to XGB, optimal for bigger datasets
+            - SHAP value implementation
           - Prediction modules updates
             - Proper data handling for input data with an outcome variable
           - Bug fixes
