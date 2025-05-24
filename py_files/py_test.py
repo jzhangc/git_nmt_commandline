@@ -69,13 +69,15 @@ import sys
 import csv
 import pickle
 import argparse
+import shap
 import numpy as np
 import pandas as pd
+import sklearn as skl
 
-from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.linear_model import LogisticRegression, SGDClassifier, LinearRegression
+
 
 # ------ logger ------
-
 
 
 # ------ custom classes ------
@@ -87,4 +89,45 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier
 # ------ main scripts ------
 
 # ------ test realm ------
+X, y = shap.datasets.california(n_points=1000)
+X100 = shap.utils.sample(X, 100)
 
+model = LinearRegression()
+model.fit(X, y)
+
+for i in range(X.shape[1]):
+    print(f'{X.columns[i]} = {model.coef_[i].round(5)}')
+"""
+MedInc = 0.42563
+HouseAge = 0.01033
+AveRooms = -0.1161
+AveBedrms = 0.66385
+Population = 3e-05
+AveOccup = -0.26096
+Latitude = -0.46734
+Longitude = -0.46272
+"""
+
+
+"""
+shap.plots.partial_dependence(ind, model, 
+data, xmin='percentile(0)', 
+xmax='percentile(100)', npoints=None, 
+feature_names=None, hist=True, 
+model_expected_value=False, feature_expected_value=False, 
+shap_values=None, ylabel=None, ice=True, ace_opacity=1, 
+pd_opacity=1, pd_linewidth=2, ace_linewidth='auto',
+ax=None, show=True)
+"""
+shap.partial_dependence_plot(
+    "AveRooms",
+    model.predict,
+    X100,
+    ice=False,
+    model_expected_value=True,
+    feature_expected_value=True,
+)
+
+shap.partial_dependence_plot
+
+X.head(5)
