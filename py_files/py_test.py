@@ -75,7 +75,7 @@ import pandas as pd
 import sklearn as skl
 
 from sklearn.linear_model import LogisticRegression, SGDClassifier, LinearRegression
-
+from interpret import glassbox
 
 # ------ logger ------
 
@@ -89,9 +89,14 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier, LinearRegres
 # ------ main scripts ------
 
 # ------ test realm ------
+
+
+# ---- data: California housing price ----
 X, y = shap.datasets.california(n_points=1000)
 X100 = shap.utils.sample(X, 100)
+X.head(5)
 
+# ---- linear regression model ----
 model = LinearRegression()
 model.fit(X, y)
 
@@ -120,7 +125,7 @@ pd_opacity=1, pd_linewidth=2, ace_linewidth='auto',
 ax=None, show=True)
 """
 shap.partial_dependence_plot(
-    "AveRooms",
+    "HouseAge",
     model.predict,
     X100,
     ice=False,
@@ -128,6 +133,38 @@ shap.partial_dependence_plot(
     feature_expected_value=True,
 )
 
-shap.partial_dependence_plot
+# compute the SHAP values for the linear model
+explainer = shap.Explainer(model.predict, X100)
+shap_values = explainer(X)
 
-X.head(5)
+# make a standard partial dependence plot
+sample_ind = 20
+shap.partial_dependence_plot(
+    "HouseAge",
+    model.predict,
+    X100,
+    model_expected_value=True,
+    feature_expected_value=True,
+    ice=False,
+    shap_values=shap_values[sample_ind : sample_ind + 1, :],
+)
+
+shap.plots.scatter(shap_values[:, "Population"])
+
+
+# the waterfall_plot shows how we get from shap_values.base_values to model.predict(X)[sample_ind]
+shap.plots.waterfall(shap_values[sample_ind], max_display=14)
+
+# the beeswarm plot displays SHAP values for each feature across all examples,
+# with colors indicating how the SHAP values correlate with feature values
+shap.plots.beeswarm(shap_values)
+
+# ---- generalized additive regression (GAM) model ----
+"""
+GAM example: explainable boosting machine (EBM) 
+"""
+
+# fit a GAM model to the data
+model_ebm = glassbox.ExplainableBoostingRegressor(interactions=0)
+model_ebm.fit(X, y)
+

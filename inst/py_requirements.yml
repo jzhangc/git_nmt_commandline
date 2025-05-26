@@ -16,5 +16,7 @@ dependencies:
   - torchvision
   - python == 3.10
   - shap
+  - interpret
+  - plotly
   - pip:
       - textualheatmap
