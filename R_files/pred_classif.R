@@ -72,7 +72,7 @@ if (PSETTING) {
   cl <- makeCluster(CORES, type = CPU_CLUSTER)
   registerDoParallel(cl)
   dummy <- foreach(i = 1:nrow(x), .packages = "RBioFS") %dopar% {
-    rbioClass_svm_predcit(object = svm_m,
+    rbioClass_svm_predict(object = svm_m,
                           newdata = x[i,],
                           export.name = "pred_x", sampleID.vector = rownames(x[i, ]),
                           prob.method = PROBABILITY_METHOD, verbose = FALSE)
@@ -84,7 +84,7 @@ if (PSETTING) {
   stopCluster(cl)
 } else {
   dummy <- foreach(i = 1:nrow(x), .packages = "RBioFS") %do% {
-    rbioClass_svm_predcit(object = svm_m,
+    rbioClass_svm_predict(object = svm_m,
                           newdata = x[i,],
                           export.name = "pred_x", sampleID.vector = rownames(x[i, ]),
                           prob.method = "softmax", verbose = FALSE)
