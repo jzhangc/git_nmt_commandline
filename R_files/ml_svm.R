@@ -174,7 +174,7 @@ if (input_n_total_features == 1) {
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
       # below: has to add \n so cat does not output partial end of line sign: %
-      error_flag <<- "fs_failure\n"  # use <<- to assign global vars
+      error_flag <<- "fs_failure\n" # use <<- to assign global vars
       # assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
     }
   )
@@ -228,6 +228,7 @@ if (input_n_total_features > 1) {
 }
 sink()
 
+
 # ------ SVM modelling ------
 # -- sub set the training/test data using the selected features --
 if (input_n_total_features == 1) {
@@ -262,6 +263,7 @@ svm_m_cv <- rbioClass_svm_cv(
 )
 sink()
 
+
 # ------ permuation test and plotting ------
 if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
   cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
@@ -290,6 +292,7 @@ sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Permutation test results display ------\n")
 svm_m_perm
 sink()
+
 
 # ------ ROC-AUC ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -343,11 +346,13 @@ if (input_n_total_features == 1) {
       # nested cv mean roc-auc with interporlation
       rbioClass_svm_cv_roc_auc_mean(
         object = svm_nested_cv_fs, roc.smooth = SVM_ROC_SMOOTH,
+        object = svm_nested_cv_fs, roc.smooth = SVM_ROC_SMOOTH,
         plot.legendSize = SVM_ROC_LEGEND_SIZE,
         plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
         plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
         verbose = FALSE
+      )
       )
       cat("\n")
     },
@@ -449,23 +454,38 @@ if (input_n_total_features == 1) {
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
         verbose = FALSE
       )
-
-      rbioClass_svm_roc_auc_inter(
-        object = svm_m, fileprefix = "svm_m_test",
-        newdata = svm_test[, -1], newdata.label = factor(svm_test$y, levels = unique(svm_test$y)),
-        center.scale.newdata = SVM_CV_CENTRE_SCALE,
-        plot.smooth = SVM_ROC_SMOOTH,
-        plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-        plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-        plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-        plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
-        verbose = FALSE
-      )
-    },
+    }, 
     error = function(e) cat(paste0("ROC-AUC for final cv and final models generated error(s)\n", "\tRef error message: ", e, "\n"))
   )
 }
 sink()
+
+
+# ------ SHAP analysis ------
+sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+cat("\n\n------ Aggregated SHAP analysis messages ------\n")
+tryCatch(
+  {
+    shap_out <- rbioClass_svm_shap_aggregated(
+      model = svm_m, X = svm_test[, -1], bg_X = svm_training[, -1],
+      parallelComputing = PSETTING, clusterType = CPU_CLUSTER,
+      n_cores = CORES,
+      plot.type = "both", plot.n = Inf,
+      plot.filename.prefix = "prehosp_test",
+      plot.bee.colorscale = "D",
+      plot.xLabel = NULL, plot.yLabel = NULL, plot.yTickLblSize = 12,
+      plot.Width = 410, plot.Height = 255
+    )
+  },
+  error = function(e) {
+    cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
+  },
+  warining = function(w) {
+    cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
+  }
+)
+sink()
+
 
 # ------ PCA & clustering ------
 # -- PCA --
