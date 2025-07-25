@@ -353,7 +353,6 @@ if (input_n_total_features == 1) {
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
         verbose = FALSE
       )
-      )
       cat("\n")
     },
     error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s)\n", "\tRef error message: ", e, "\n"))
@@ -454,7 +453,7 @@ if (input_n_total_features == 1) {
         plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
         verbose = FALSE
       )
-    }, 
+    },
     error = function(e) cat(paste0("ROC-AUC for final cv and final models generated error(s)\n", "\tRef error message: ", e, "\n"))
   )
 }
