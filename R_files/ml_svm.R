@@ -470,7 +470,7 @@ tryCatch(
       parallelComputing = PSETTING, clusterType = CPU_CLUSTER,
       n_cores = CORES,
       plot.type = "both", plot.n = Inf,
-      plot.filename.prefix = "prehosp_test",
+      plot.filename.prefix = "svm_m",
       plot.bee.colorscale = "D",
       plot.xLabel = NULL, plot.yLabel = NULL, plot.yTickLblSize = 12,
       plot.Width = 410, plot.Height = 255
