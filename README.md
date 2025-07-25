@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.5.0 (April 4, 2025)
+    - 0.5.0
         - Modelling modules updates
           - SHAP value implementation
 
