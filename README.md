@@ -34,7 +34,6 @@ Please cite the following if you are to use this application:
           - Modelling modules updates
             - Handle "reaching max number of iterations" error
             - CV-rRF-FS-XGB: Swtich CV SVM assessment to XGB, optimal for bigger datasets
-            - SHAP value implementation
           - Prediction modules updates
             - Proper data handling for input data with an outcome variable
           - Bug fixes
@@ -42,6 +41,7 @@ Please cite the following if you are to use this application:
       (ADDED)
           - Modelling modules updates
             - Classification modules updated with interporlated ROC curves 
+            - SHAP value implementation
 
 
     - 0.4.2 (April 4, 2025)
