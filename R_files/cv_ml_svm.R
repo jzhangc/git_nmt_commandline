@@ -432,8 +432,9 @@ tryCatch(
   {
     shap_out <- rbioClass_svm_shap_aggregated(
       model = svm_m, X = svm_test[, -1], bg_X = svm_training[, -1],
-      parallelComputing = PSETTING, clusterType = CPU_CLUSTER,
+      parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES,
+      randomState = RANDOM_STATE, 
       plot.type = "both", plot.n = Inf,
       plot.filename.prefix = "svm_m",
       plot.bee.colorscale = "D",
