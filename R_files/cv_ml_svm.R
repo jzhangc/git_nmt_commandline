@@ -431,7 +431,7 @@ cat("\n\n------ Aggregated SHAP analysis messages ------\n")
 tryCatch(
   {
     shap_out <- rbioClass_svm_shap_aggregated(
-      model = svm_m, X = svm_test[, -1], bg_X = svm_training[, -1],
+      model = svm_m, X = svm_training[, -1], bg_X = svm_training[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES,
       randomState = RANDOM_STATE, 
