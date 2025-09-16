@@ -664,7 +664,7 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-  export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  export.name = paste0(MAT_FILE_NO_EXT),
   plot.yLabelSize = 20, plot.xLabelSize = 20,
   plot.Width = 170, plot.Height = 150
 )

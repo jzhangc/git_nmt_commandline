@@ -13,6 +13,9 @@ Please cite the following if you are to use this application:
     - 0.5.0
         - Modelling modules updates
           - SHAP value implementation
+        
+        - Update to SVM modules
+          - fscount plot name fixed
 
 
     - 0.4.2 (April 4, 2025)
