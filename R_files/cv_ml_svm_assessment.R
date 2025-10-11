@@ -264,7 +264,7 @@ setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 
 # ------ import svm models ------
-# ref to what is included in the svm model file: 
+# ref to what is included in the svm model file:
 # svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
 # save(
 #   list = c("svm_m", "svm_m_cv", "svm_training", "svm_nested_cv_fs", "svm_rf_selected_features", "rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc"),
@@ -454,7 +454,7 @@ tryCatch(
       model = svm_m, X = svm_training[, -1], bg_X = svm_training[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES,
-      randomState = RANDOM_STATE, 
+      randomState = RANDOM_STATE,
       plot.type = "both", plot.n = Inf,
       plot.filename.prefix = "svm_m",
       plot.bee.colorscale = "D",
@@ -608,20 +608,8 @@ if (CORE_OUT_OF_RANGE) {
   cat("WARNING: CPU core number out of range! Set to maximum cores - 1. \n")
   cat("-------------------------------------\n\n")
 }
-cat("ML data file summary\n")
+cat("CV SVM model file summary\n")
 cat("-------------------------------------\n")
-cat("ML file dimensions: ", dim(ml_dfm), "\n")
-cat("Group labels (size): ", orignal_y_summary, "\n")
-cat("\n\n")
-cat("SVM nested cross validation with rRF-FS\n")
-cat("-------------------------------------\n")
-svm_nested_cv_fs
-cat("\n\n")
-cat("SVM modelling\n")
-cat("-------------------------------------\n")
-svm_m
-cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy / 100, "\n")
-cat("Final SVM model saved to file: ", paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
 cat("\n\n")
 cat("SVM permutation test\n")
 cat("-------------------------------------\n")

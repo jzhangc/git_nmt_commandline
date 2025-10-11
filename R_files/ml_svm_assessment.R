@@ -699,7 +699,6 @@ save(
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_assessment.Rdata")
 )
 
-
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
 # cat("First five variable names: ", names(raw_sample_dfm)[1:5])
@@ -707,31 +706,8 @@ if (CORE_OUT_OF_RANGE) {
   cat("WARNING: CPU core number out of range! Set to maximum cores - 1. \n")
   cat("-------------------------------------\n\n")
 }
-cat("ML data file summary\n")
+cat("SVM model file summary\n")
 cat("-------------------------------------\n")
-cat("ML file dimensions: ", dim(ml_dfm), "\n")
-cat("Group labels (size): ", orignal_y_summary, "\n")
-cat("\n\n")
-cat("Label randomization\n")
-cat("-------------------------------------\n")
-cat("Training and test files saved to: ml_training.csv ml_test.csv\n")
-cat("\n\n")
-cat("Data split\n")
-cat("-------------------------------------\n")
-if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) cat("Invalid percentage. Use default instead.\n")
-cat("Training set percentage: ", TRAINING_PERCENTAGE, "\n")
-cat("Training set: ", training_summary, "\n")
-cat("test set: ", test_summary, "\n")
-cat("\n\n")
-cat("SVM nested cross validation with rRF-FS\n")
-cat("-------------------------------------\n")
-svm_nested_cv_fs
-cat("\n\n")
-cat("SVM modelling\n")
-cat("-------------------------------------\n")
-svm_m
-cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy / 100, "\n")
-cat("Final SVM model saved to file: ", paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
 cat("\n\n")
 cat("SVM permutation test\n")
 cat("-------------------------------------\n")
