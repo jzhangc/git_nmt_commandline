@@ -507,7 +507,9 @@ pca_svm_rffs_training <- data.frame(row_num = 1:nrow(svm_training), svm_training
 tryCatch(
   {
     rbioFS_PCA(
-      input = pca_svm_rffs_training, sampleIDVar = "row_num", groupIDVar = "y",
+      input = pca_svm_rffs_training, 
+      export.mode = "full", 
+      sampleIDVar = "row_num", groupIDVar = "y",
       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
@@ -525,6 +527,7 @@ tryCatch(
   },
   error = function(e) {
     cat(paste0("PCA on training data failed. Check the data. \n", "\tRef error message: ", e, "\n"))
+    pca_svm_rffs_training_pca_obj <- NULL
   }
 )
 
@@ -537,7 +540,9 @@ pca_svm_rffs_all_samples <- data.frame(
 tryCatch(
   {
     rbioFS_PCA(
-      input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar = "y",
+      input = pca_svm_rffs_all_samples, 
+      export.mode = "full", 
+      sampleIDVar = "row_num", groupIDVar = "y",
       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
@@ -554,6 +559,7 @@ tryCatch(
   },
   error = function(e) {
     cat(paste0("PCA on all data failed. try with less PCs.\n", "\tRef error message: ", e, "\n"))
+    pca_svm_rffs_all_samples_pca_obj <- NULL
   }
 )
 sink()
@@ -695,7 +701,7 @@ rbioUtil_fscount_plot(svm_nested_cv_fs,
 #   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 # )
 save(
-  list = c("rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
+  list = c("rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc", "pca_svm_rffs_training_pca_obj", "pca_svm_rffs_all_samples_pca_obj"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_assessment.Rdata")
 )
 
