@@ -352,7 +352,9 @@ pca_svm_rffs_all_samples <- data.frame(
 tryCatch(
   {
     rbioFS_PCA(
-      input = pca_svm_rffs_all_samples, sampleIDVar = "row_num", groupIDVar = "y",
+      input = pca_svm_rffs_all_samples, 
+      export.mode = "full", 
+      sampleIDVar = "row_num", groupIDVar = "y",
       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
       biplot = TRUE, biplot.comps = SVM_RFFS_PCA_PC, biplot.Title = NULL,
@@ -370,6 +372,7 @@ tryCatch(
   },
   error = function(e) {
     cat(paste0("ERROR: PCA failed. Check the data. \n", "\tError message: ", e, "\n"))
+    pca_svm_rffs_all_samples_pca_obj <- NULL
     # warning((e))
   }
 )
@@ -459,7 +462,7 @@ rbioUtil_fscount_plot(svm_nested_cv_fs,
 # )
 svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
 save(
-  list = c("rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc"),
+  list = c("rffs_nested_cv_auc", "final_cv_auc", "svm_m_training_svm_roc_auc", "pca_svm_rffs_all_samples_pca_obj"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_assessment.Rdata")
 )
 
