@@ -49,7 +49,7 @@ feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 
 # -- remove columns with only the same value --
-drop_cols <- names(feature_dat[, which(!vapply(feature_dat], function(x) length(unique(x)) > 1, logical(1L)))]) 
+drop_cols <- names(feature_dat[, which(!vapply(feature_dat, function(x) length(unique(x)) > 1, logical(1L)))]) 
 feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
 # raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
