@@ -45,17 +45,23 @@ sampleid <- raw_csv[, SAMPLEID_VAR]
 group <- sample_group
 raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
+feature_dat <- raw_sample_dfm[, -c(1:2)]
+id_dat <- raw_sample_dfm[, c(1:2)]
 
-raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
-raw_sample_dfm[, -c(1:2)] <- apply(raw_sample_dfm[, -c(1:2)], 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
-raw_sample_dfm[, -c(1:2)] <- center_scale(raw_sample_dfm[, -c(1:2)], scale = FALSE)$centerX
+# -- remove columns with only the same value --
+drop_cols <- names(feature_dat[, which(!vapply(feature_dat], function(x) length(unique(x)) > 1, logical(1L)))]) 
+feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
+# raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
-# raw_sample_dfm_wo_uni <- data.frame(y = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
-# names(raw_sample_dfm_wo_uni)[-1] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
-raw_sample_dfm_wo_uni <- raw_sample_dfm
-names(raw_sample_dfm_wo_uni)[2] <- "y"
+# -- data transformation --
+feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 
-# free memory
+# -- data output --
+raw_sample_dfm_wo_uni <- cbind(id_dat, feature_dat)
+names(raw_sample_dfm_wo_uni)[names(raw_sample_dfm_wo_uni) %in% "group"] <- "y"
+
+# -- free memory --
 rm(raw_csv)
 
 # ------ export and clean up the mess ------

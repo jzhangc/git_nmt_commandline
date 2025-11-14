@@ -467,8 +467,8 @@ tryCatch(
   {
     shap_out <- rbioClass_svm_shap_aggregated(
       model = svm_m, X = svm_test[, -1], bg_X = svm_training[, -1],
-      parallelComputing = PSETTING, clusterType = CPU_CLUSTER,
-      n_cores = CORES,
+      parallelComputing = PSETTING, clusterType = "PSOCK",
+      n_cores = CORES, randomState = RANDOM_STATE,
       plot.type = "both", plot.n = Inf,
       plot.filename.prefix = "svm_m",
       plot.bee.colorscale = "D",
@@ -674,7 +674,7 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-  export.name = paste0(MAT_FILE_NO_EXT, "_fscout_plot.pdf"),
+  export.name = paste0(MAT_FILE_NO_EXT),
   plot.yLabelSize = 20, plot.xLabelSize = 20,
   plot.Width = 170, plot.Height = 150
 )
