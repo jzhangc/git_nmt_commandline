@@ -48,18 +48,20 @@ names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEI
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 
-# below: remove columns with only the same value
-drop_cols <- names(feature_dat[, -c(1:2)][, which(!vapply(d[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L)))]) 
-raw_sample_dfm <- raw_sample_dfm[, !names(raw_sample_dfm) %in% drop_cols, drop = FALSE]
+# -- remove columns with only the same value --
+drop_cols <- names(feature_dat[, which(!vapply(feature_dat], function(x) length(unique(x)) > 1, logical(1L)))]) 
+feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
 # raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
+# -- data transformation --
 feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
 feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 
+# -- data output --
 raw_sample_dfm_wo_uni <- cbind(id_dat, feature_dat)
 names(raw_sample_dfm_wo_uni)[names(raw_sample_dfm_wo_uni) %in% "group"] <- "y"
 
-# free memory
+# -- free memory --
 rm(raw_csv)
 
 # ------ export and clean up the mess ------
