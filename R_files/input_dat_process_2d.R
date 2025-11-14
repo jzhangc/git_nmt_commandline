@@ -58,6 +58,8 @@ feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x))
 feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 
 # -- data output --
+raw_sample_dfm_output <- cbind(id_dat, feature_dat)
+
 raw_sample_dfm_wo_uni <- cbind(id_dat, feature_dat)
 names(raw_sample_dfm_wo_uni)[names(raw_sample_dfm_wo_uni) %in% "group"] <- "y"
 
@@ -66,7 +68,7 @@ rm(raw_csv)
 
 # ------ export and clean up the mess ------
 ## export to results files if needed
-write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
+write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
 
 # free memory
