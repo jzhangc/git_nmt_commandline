@@ -11,6 +11,9 @@ Please cite the following if you are to use this application:
 ## Version History
 
     - 0.5.0
+        - General updates
+          - A bug fixed where non-variance column remove would result in data column shift
+
         - Modelling modules updates
           - SHAP value implementation
         
