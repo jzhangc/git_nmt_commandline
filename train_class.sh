@@ -716,9 +716,10 @@ if ! [ -f "$dat_ml_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 # -- additional display --
-echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_w_uni.csv"
+echo -e "Data for machine learning saved to file (w univariate reduction): ${MAT_FILENAME_WO_EXT}_w_uni.csv"
 # echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
-echo -e "Data for machine learning wo univariate: ${MAT_FILENAME_WO_EXT}_2D.csv"
+echo -e "Data for machine learning wo univariate reduction: ${MAT_FILENAME_WO_EXT}_2D.csv"
+# echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "=========================================================================="
 
 

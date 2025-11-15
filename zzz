@@ -2,7 +2,7 @@
 # Description: version info etc
 # Usage: Adjust the values for the variables
 #
-VERSION="0.5.0a4"
+VERSION="0.5.0a5"
 CITE="Written by Jing Zhang PhD
 Contact: jzhangcad@gmail.com
 To cite in your research: 	
