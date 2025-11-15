@@ -40,16 +40,24 @@ sampleid <- raw_csv[, SAMPLEID_VAR]
 # ------ process the mat file with the mata data ------
 raw_sample_dfm <- data.frame(sampleid = sampleid, y = y, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, Y_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, Y_VAR)])
+feature_dat <- raw_sample_dfm[, -c(1:2)]
+id_dat <- raw_sample_dfm[, c(1:2)]
 
-raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
-raw_sample_dfm[, -c(1:2)] <- apply(raw_sample_dfm[, -c(1:2)], 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
-raw_sample_dfm[, -c(1:2)] <- center_scale(raw_sample_dfm[, -c(1:2)], scale = FALSE)$centerX
+# raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
+# raw_sample_dfm[, -c(1:2)] <- apply(raw_sample_dfm[, -c(1:2)], 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+# raw_sample_dfm[, -c(1:2)] <- center_scale(raw_sample_dfm[, -c(1:2)], scale = FALSE)$centerX
 
-# below: no need as regression data doesn't have a "group" variable
-# raw_sample_dfm_wo_uni <- data.frame(y = y, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
-# names(raw_sample_dfm_wo_uni)[-1] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
+# -- remove columns with only the same value --
+drop_cols <- names(feature_dat)[which(!vapply(feature_dat, function(x) length(unique(x)) > 1, logical(1L)))]
+feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
+# raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
-####### export and clean up the mess --------
+
+# -- data transformation --
+feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
+
+# ------ export and clean up the mess --------
 ## export to results files if needed
 write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 # write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)

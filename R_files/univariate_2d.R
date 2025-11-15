@@ -99,7 +99,8 @@ raw_sample_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.name
 # ------ Data processing for univariate analysis ------
 ## data formating
 x <- raw_sample_dfm[, -c(1:2)]
-y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
+y <- factor(raw_sample_dfm$y, levels = unique(raw_sample_dfm$y))
+# y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
 
 # if to log2 transform the data
 if (LOG2_TRANS) {
@@ -348,13 +349,19 @@ rm(pca_all)
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
+# if (UNI_ANALYSIS) {
+#   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
+#   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+# } else {
+#   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x, check.names = FALSE, stringsAsFactors = FALSE)
+# }
+# write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
+
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-} else {
-  ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x, check.names = FALSE, stringsAsFactors = FALSE)
-}
-write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
+  write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
+} 
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
