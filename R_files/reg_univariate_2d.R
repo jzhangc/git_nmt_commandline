@@ -4,7 +4,6 @@
 
 ## test from Rscript
 args <- commandArgs()
-# print(args)
 
 # ------ load libraries ------
 require(foreach)
@@ -15,16 +14,16 @@ require(RBioArray)
 require(RBioFS)
 
 # ------ sys variables ------
-# -- file name variables --
+# --- file name variables ---
 DAT_FILE <- args[6] # 2D file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# -- directory variables --
+# --- directory variables ---
 RES_OUT_DIR <- args[8]
 
-# -- processing varaibles --
+# ------ processing varaibles ------
 # NOTE: convert string to expression using eval(parse(text = "string"))
-# -- (from config file) --
+# --- (from config file) ---
 LOG2_TRANS <- eval(parse(text = args[9]))
 HTMAP_TEXTSIZE_COL <- as.numeric(args[10])
 HTMAP_TEXTANGLE_COL <- as.numeric(args[11])

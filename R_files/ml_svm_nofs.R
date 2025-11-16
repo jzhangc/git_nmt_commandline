@@ -15,19 +15,19 @@ require(parallel)
 require(limma)
 
 # ------ sys variables ------
-# -- warning flags --
+# --- warning flags ---
 CORE_OUT_OF_RANGE <- FALSE
 
-# -- file name variables --
+# --- file name variables ---
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# -- directory variables --
+# --- directory variables ---
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
 # NOTE: convert string to expression using eval(parse(text = "string"))
-# -- from flags --
+# --- from flags ---
 PSETTING <- eval(parse(text = args[9]))
 CORES <- as.numeric(args[10])
 if (PSETTING && CORES > parallel::detectCores()) {
@@ -35,7 +35,7 @@ if (PSETTING && CORES > parallel::detectCores()) {
   CORES <- parallel::detectCores() - 1
 }
 
-# -- (from config file) --
+# --- (from config file) ---
 CPU_CLUSTER <- args[11]
 TRAINING_PERCENTAGE <- as.numeric(args[12])
 if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) TRAINING_PERCENTAGE <- 0.8

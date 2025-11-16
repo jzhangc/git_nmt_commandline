@@ -14,19 +14,19 @@ require(RBioArray)
 require(RBioFS)
 
 # ------ sys variables --------
-# -- file name variables --
+# --- file name variables ---
 DAT_FILE <- args[6] # 2D file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 NODE_FILE <- args[8]
 NODE_ID_VAR <- args[61]
 REGION_NAME_VAR <- args[62]
 
-# -- directory variables --
+# --- directory variables ---
 RES_OUT_DIR <- args[9]
 
-# -- processing varaibles --
+# --- processing varaibles ---
 # NOTE: convert string to expression using eval(parse(text = "string"))
-# -- (from config file) --
+# --- (from config file) ---
 LOG2_TRANS <- eval(parse(text = args[10]))
 HTMAP_TEXTSIZE_COL <- as.numeric(args[11])
 HTMAP_TEXTANGLE_COL <- as.numeric(args[12])

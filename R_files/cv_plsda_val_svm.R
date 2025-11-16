@@ -12,7 +12,7 @@ require(RBioFS)
 require(foreach)
 require(parallel)
 
-# -- sys variables --
+# ------ sys variables ------
 # -- warning flags --
 CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE

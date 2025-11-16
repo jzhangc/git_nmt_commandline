@@ -12,15 +12,15 @@ require(foreach)
 require(R.matlab) # to read .mat files
 
 # ------ sys variables ------
-# -- file name variables --
+# --- file name variables ---
 MAT_FILE <- args[1]
 MAT_FILE_NO_EXT <- args[2]
 
-# -- mata data input variables --
+# --- mata data input variables ---
 ANNOT_FILE <- args[3]
 SAMPLEID_VAR <- args[4]
 
-# -- directory variables --
+# --- directory variables ---
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[5]
 
