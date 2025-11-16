@@ -25,7 +25,7 @@ htmap_height=5
 # -- PCA --
 pca_scale_data=TRUE
 pca_centre_data=TRUE
-pca_pc="c(1, 2)"
+pca_pc="c(1, 2, 3)"
 pca_biplot_samplelabel_type="none"  # options are "none", "direct" and "indirect"
 pca_biplot_samplelabel_size=2
 pca_biplot_symbol_size=5
@@ -67,7 +67,7 @@ sig_htmap_key_ylab="Count"
 sig_htmap_margin="c(4, 10)"
 sig_htmap_width=6
 sig_htmap_height=5
-sig_pca_pc="c(1, 2)"
+sig_pca_pc="c(1, 2, 3)"
 sig_pca_biplot_ellipse_conf=0.9
 
 # ------ Settings for SVM machine learning analysis ------
