@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.5.0
+    - 0.5.0 (Nov 16, 2025)
         - General updates
           - Reduced intermediate CSV file complexity
           - A bug fixed where non-variance column remove would result in data column shift
