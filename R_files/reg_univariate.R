@@ -4,7 +4,6 @@
 
 ## test from Rscript
 args <- commandArgs()
-# print(args)
 
 # ------ load libraries ------
 require(foreach)
