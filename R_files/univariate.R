@@ -123,7 +123,7 @@ if (LOG2_TRANS) {
 
 colnames(E) <- raw_sample_dfm$sampleid
 pair <- data.frame(ProbeName = seq(ncol(raw_sample_dfm) - 2), pair = colnames(raw_sample_dfm)[-c(1:2)])
-sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
+sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$y)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
@@ -184,10 +184,10 @@ if (HTMAP_LAB_ROW) {
 }
 
 # -- PCA --
-pca_all <- data.frame(normdata$targets[, c("group", "sample")], t(normdata$E), stringsAsFactors = FALSE, check.names = FALSE, row.names = NULL)
+pca_all <- data.frame(normdata$targets[, c("y", "sample")], t(normdata$E), stringsAsFactors = FALSE, check.names = FALSE, row.names = NULL)
 rbioFS_PCA(
   input = pca_all,
-  sampleIDVar = "sample", groupIDVar = "group",
+  sampleIDVar = "sample", groupIDVar = "y",
   scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
   boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
   biplot = TRUE, biplot.comps = PCA_PC, biplot.Title = NULL,
@@ -276,7 +276,7 @@ if (UNI_ANALYSIS) {
       de_groups <- unlist(strsplit(de_names[i], "-"))
       de_groups <- gsub("(", "", de_groups, fixed = TRUE)
       de_groups <- gsub(")", "", de_groups, fixed = TRUE)
-      de_sample_idx <- which(normdata$targets$group %in% de_groups)
+      de_sample_idx <- which(normdata$targets$y %in% de_groups)
       super_cluster_data <- list(
         E = normdata$E[, de_sample_idx], genes = normdata$genes,
         targets = normdata$targets[de_sample_idx, ]
@@ -339,10 +339,10 @@ if (UNI_ANALYSIS) {
   if (length(sig_pairs_fit) <= 1) {
     NO_SIG_WARNING_FIT <- TRUE
   } else {
-    pca_sig <- pca_all[, names(pca_all) %in% c("group", "sample", sig_pairs_fit), drop = FALSE]
+    pca_sig <- pca_all[, names(pca_all) %in% c("y", "sample", sig_pairs_fit), drop = FALSE]
     rbioFS_PCA(
       input = pca_sig,
-      sampleIDVar = "sample", groupIDVar = "group",
+      sampleIDVar = "sample", groupIDVar = "y",
       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
       biplot = TRUE, biplot.comps = SIG_PCA_PC, biplot.Title = NULL,
