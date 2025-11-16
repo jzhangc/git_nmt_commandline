@@ -704,7 +704,7 @@ echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 echo -e "\nNode data"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$NODE_FILENAME${NO_COLOUR}"
 echo -e "\nData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-echo -e "\n2D file to use in machine learning without univariate prior knowledge: ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+# echo -e "\n2D file to use in machine learning without univariate prior knowledge: ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 echo -e "=========================================================================="
 
 # -- set up variables for output 2d data file
@@ -776,9 +776,11 @@ fi
 # -- set up variables for output ml data file
 echo -e "\n"
 if [ $KFLAG -eq 1 ]; then
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+	# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 else
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+	# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_uni.csv"
 fi
 # -- file check before next step --
 if ! [ -f "$dat_ml_file" ]; then
@@ -787,8 +789,9 @@ if ! [ -f "$dat_ml_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 # -- additional display --
-echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
-echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
+echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_w_uni.csv"
+# echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
+echo -e "Data for machine learning wo univariate: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
@@ -799,10 +802,12 @@ echo -e "=======================================================================
 echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
 	echo -e "OFF"
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
+	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
 else
 	echo -e "ON"
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_uni.csv${NO_COLOUR}"
 fi 
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
