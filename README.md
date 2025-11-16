@@ -13,6 +13,7 @@ Please cite the following if you are to use this application:
     - 0.5.x
       (ICEBOX)
           - General updates
+          - Reduced intermediate CSV file complexity
             - Overall optimization
             - A memory check module to ensure the stability
             - Node file length check added for univariate.R and reg_univariate.R
