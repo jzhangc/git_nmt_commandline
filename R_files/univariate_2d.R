@@ -99,7 +99,8 @@ raw_sample_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.name
 # ------ Data processing for univariate analysis ------
 ## data formating
 x <- raw_sample_dfm[, -c(1:2)]
-y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
+y <- factor(raw_sample_dfm$y, levels = unique(raw_sample_dfm$y))
+# y <- factor(raw_sample_dfm$group, levels = unique(raw_sample_dfm$group))
 
 # if to log2 transform the data
 if (LOG2_TRANS) {
@@ -113,7 +114,8 @@ if (LOG2_TRANS) {
 
 colnames(E) <- raw_sample_dfm$sampleid
 pair <- data.frame(ProbeName = seq(ncol(raw_sample_dfm) - 2), pair = colnames(raw_sample_dfm)[-c(1:2)])
-sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
+# sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$group)
+sample <- paste0(raw_sample_dfm$sampleid, "_", raw_sample_dfm$y)
 idx <- data.frame(raw_sample_dfm[, c(1:2)], sample = sample)
 rawlist <- list(E = E, genes = pair, targets = idx)
 
@@ -165,10 +167,10 @@ if (HTMAP_LAB_ROW) {
 }
 
 # -- PCA --
-pca_all <- data.frame(normdata$targets[, c("group", "sample")], t(normdata$E), stringsAsFactors = FALSE, check.names = FALSE, row.names = NULL)
+pca_all <- data.frame(normdata$targets[, c("y", "sample")], t(normdata$E), stringsAsFactors = FALSE, check.names = FALSE, row.names = NULL)
 rbioFS_PCA(
   input = pca_all,
-  sampleIDVar = "sample", groupIDVar = "group",
+  sampleIDVar = "sample", groupIDVar = "y",
   scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
   boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
   biplot = TRUE, biplot.comps = PCA_PC, biplot.Title = NULL,
@@ -256,7 +258,7 @@ if (UNI_ANALYSIS) {
       de_groups <- unlist(strsplit(de_names[i], "-"))
       de_groups <- gsub("(", "", de_groups, fixed = TRUE)
       de_groups <- gsub(")", "", de_groups, fixed = TRUE)
-      de_sample_idx <- which(normdata$targets$group %in% de_groups)
+      de_sample_idx <- which(normdata$targets$y %in% de_groups)
       super_cluster_data <- list(
         E = normdata$E[, de_sample_idx], genes = normdata$genes,
         targets = normdata$targets[de_sample_idx, ]
@@ -318,10 +320,10 @@ if (UNI_ANALYSIS) {
   if (length(sig_pairs_fit) <= 1) {
     NO_SIG_WARNING_FIT <- TRUE
   } else {
-    pca_sig <- pca_all[, names(pca_all) %in% c("group", "sample", sig_pairs_fit)]
+    pca_sig <- pca_all[, names(pca_all) %in% c("y", "sample", sig_pairs_fit)]
     rbioFS_PCA(
       input = pca_sig,
-      sampleIDVar = "sample", groupIDVar = "group",
+      sampleIDVar = "sample", groupIDVar = "y",
       scaleData = PCA_SCALE_DATA, centerData = PCA_CENTRE_DATA, boxplot = TRUE,
       boxplot.Title = NULL, boxplot.Width = PCA_WIDTH, boxplot.Height = PCA_HEIGHT,
       biplot = TRUE, biplot.comps = SIG_PCA_PC, biplot.Title = NULL,
@@ -348,13 +350,19 @@ rm(pca_all)
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
 ## export to results files if needed
+# if (UNI_ANALYSIS) {
+#   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
+#   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+# } else {
+#   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x, check.names = FALSE, stringsAsFactors = FALSE)
+# }
+# write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
+
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-} else {
-  ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x, check.names = FALSE, stringsAsFactors = FALSE)
-}
-write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
+  write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
+} 
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
