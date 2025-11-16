@@ -54,4 +54,4 @@ write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sa
 
 # ------ display messages so far ------
 # cat the variables to export to shell script
-cat("\tSamples to predict: ", nsamples, "\n") # line 2: input mat file dimension
+cat("\tSamples to predict: ", nsamples, "\n") # line 1: input mat file dimension

@@ -348,22 +348,17 @@ rm(pca_all)
 ## clean up the mess from Pathview
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
-## export to results files if needed
-# if (UNI_ANALYSIS) {
-#   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
-#   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-# } else {
-#   ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x, check.names = FALSE, stringsAsFactors = FALSE)
-# }
-# write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
-
+# -- export to results files if needed --
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
-  ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-  write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
-} 
+} else {
+  x_ml <- t(normdata$E)
+}
+ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
 
-## cat the vairables to export to shell scipt
+
+# ------ cat the vairables to export to shell scipt ------
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
 # cat("First five variable names: ", names(raw_sample_dfm)[1:5])
 cat("2D data file summary\n")

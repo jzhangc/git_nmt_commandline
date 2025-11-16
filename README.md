@@ -13,6 +13,12 @@ Please cite the following if you are to use this application:
     - 0.5.0 (Nov 16, 2025)
         - General updates
           - Reduced intermediate CSV file complexity
+          - Default randome_state set to 1
+
+        - Data processing modules updates
+          - For 2D modules, Z-score standardization (mean=0, SD=1) setting added into the config file: zscore_standardization
+            - When FALSE, the application only scale the data to 0-1 (min-max normalization)
+          - Data file unique class/value check added for training data processing modules
           - A bug fixed where non-variance column remove would result in data column shift
 
         - Modelling modules updates

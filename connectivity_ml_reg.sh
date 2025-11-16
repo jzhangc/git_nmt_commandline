@@ -377,7 +377,7 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
-	random_state=0
+	random_state=1
 	log2_trans=FALSE
 	uni_analysis=FALSE
 	htmap_textsize_col=0.5
@@ -614,23 +614,31 @@ r_var=`Rscript ./R_files/reg_input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_E
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "unequal_length" ]; then
+	echo -e "${COLOUR_RED}\nERROR: annotation file failed to match mat file sample length (third dimension value). Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "na_values" ]; then
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "single_value" ]; then
+	echo -e "${COLOUR_RED}\nERROR: only single value detected in the outcome variable of the annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
 mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
 # -- display --
 echo -e "\n"
 echo -e "Input files"
 echo -e "=========================================================================="
-echo -e "Input data file"
+echo -e "Input data files"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$mat_dim"
 echo -e "\nSample metadata"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
-	exit 1
-else
-	echo -e "$group_summary\n"
-fi
+echo -e "$group_summary\n"
 echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 

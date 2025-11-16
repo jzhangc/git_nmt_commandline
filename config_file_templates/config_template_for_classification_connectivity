@@ -6,9 +6,8 @@
 random_state=1 # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
-zscore_standardization=TRUE
 log2_trans=TRUE
-uni_analysis=FALSE
+uni_analysis=TRUE
 
 # ------ Settings for all-connection clustering analysis ------
 # -- Hierarchical clustering --

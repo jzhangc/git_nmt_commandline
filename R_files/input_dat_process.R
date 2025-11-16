@@ -38,6 +38,15 @@ if (nrow(annot) != raw_dim[3]) {
   cat("unequal_length")
   quit()
 }
+if (any(is.na(unique(annot[, GROUP_VAR])))) {
+  cat("na_values")
+  quit()
+}
+if (length(unique(annot[, GROUP_VAR])) == 1) {
+  cat("single_value")
+  quit()
+}
+
 sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
 sampleid <- annot[, SAMPLEID_VAR]
 

@@ -349,7 +349,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $random_state || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $zscore_standardization || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $uni_fdr || -z $uni_alpha || -z $uni_fold_change \
 	|| -z $sig_htmap_textsize_col || -z $sig_htmap_textangle_col || -z $sig_htmap_textsize_row || -z $sig_htmap_keysize \
@@ -388,7 +388,8 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
-  	random_state=0
+  	random_state=1
+	zscore_standardization=TRUE
 	log2_trans=FALSE
 	uni_analysis=FALSE
 	htmap_textsize_col=0.5
@@ -504,6 +505,7 @@ fi
 echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
 echo -e "\nData processing"
+echo -e "\tzscore_standardization=$zscore_standardization"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\tunianalysis=$uni_analysis"
 echo -e "\nClustering analysis for all connections"
@@ -615,17 +617,27 @@ echo -e "=======================================================================
 
 
 # --- read input 2D files ---
-# -- input mat and annot files processing --
+# -- input file processing --
 echo -e "--------------------- source script: reg_input_dat_process_2d.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/reg_input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" "$Y_VAR" \
 "${OUT_DIR}/OUTPUT" \
+"$zscore_standardization" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
-# mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the input file. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "na_values" ]; then
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "single_value" ]; then
+	echo -e "${COLOUR_RED}\nERROR: only single value detected in the outcome variable. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
 
 # -- display --
 echo -e "\n"
@@ -633,16 +645,7 @@ echo -e "Input files"
 echo -e "=========================================================================="
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
-echo -e "$mat_dim"
-echo -e "\nSample metadata"
-echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -y variables not found in the input file. Program terminated.${NO_COLOUR}\n" >&2
-	exit 1
-elif [ "$group_summary" == "na_values" ]; then
-	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+echo -e "$group_summary\n"
 echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 

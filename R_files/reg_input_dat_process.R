@@ -39,6 +39,15 @@ if (nrow(annot) != raw_dim[3]) {
   cat("unequal_length")
   quit()
 }
+if (any(is.na(unique(annot[, Y_VAR])))) {
+  cat("na_values")
+  quit()
+}
+if (length(unique(annot[, Y_VAR])) == 1) {
+  cat("single_value")
+  quit()
+}
+
 y <- annot[, Y_VAR]
 sampleid <- annot[, SAMPLEID_VAR]
 
@@ -60,4 +69,4 @@ colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
 
 ## cat the vairables to export to shell scipt
-cat("\tMat file dimensions: ", raw_dim, "\n") # line 2: input mat file dimension
+cat("\tMat file dimensions: ", raw_dim, "\n") # line 1: input mat file dimension
