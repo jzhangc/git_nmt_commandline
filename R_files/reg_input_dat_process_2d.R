@@ -68,4 +68,4 @@ write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sa
 # write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
 
 ## cat the vairables to export to shell scipt
-cat("\tMat file dimensions (w annot vars): ", raw_dim, "\n") # line 1: input dat file dimension
+cat("\tInput file dimensions (w annot vars): ", raw_dim, "\n") # line 1: input dat file dimension

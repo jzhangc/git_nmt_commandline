@@ -99,4 +99,4 @@ group_summary <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do
 
 ## cat the vairables to export to shell scipt
 cat("\tSample groups (size): ", group_summary, "\n") # line 1: input raw_csv file groupping info
-cat("\tMat file dimensions (w annot vars): ", raw_dim, "\n") # line 2: input dat file dimension
+cat("\tInput file dimensions (w annot vars): ", raw_dim, "\n") # line 2: input dat file dimension
