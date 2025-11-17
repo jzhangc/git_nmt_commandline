@@ -426,6 +426,10 @@ if [ $CONF_CHECK -eq 1 ]; then
 else
   echo -e "Variables loaded from the config file:"
 fi
+if  [ $KFLAG -eq 0 ] && [ $uni_analysis == FALSE ]; then
+	echo -e "${COLOUR_YELLOW}WARNING: when -k is set, uni_analysis automatically set to TRUE.${NO_COLOUR}\n"
+	uni_analysis=TRUE
+fi
 # below: place loaders
 echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
@@ -625,7 +629,7 @@ echo -e "\n"
 if [ $KFLAG -eq 1 ]; then
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 else
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_uni.csv"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_prior.csv"
 	# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 fi
 # -- file check before next step --
@@ -642,9 +646,9 @@ if ! [ -f "$dat_ml_file" ]; then
 fi
 # -- additional display --
 # echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
-echo -e "Data for machine learning saved to file (w univariate reduction): ${MAT_FILENAME_WO_EXT}_w_uni.csv"
+echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_w_prior.csv"
 # echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
-echo -e "Data for machine learning wo univariate reduction: ${MAT_FILENAME_WO_EXT}_2D.csv"
+echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 # --- SVM machine learning analysis ---
@@ -657,7 +661,7 @@ if [ $KFLAG -eq 1 ]; then
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 else
 	echo -e "ON"
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_uni.csv${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
 	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
 fi 
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "

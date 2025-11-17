@@ -9,7 +9,7 @@ random_state=1 # 0 is FALSE, or a >0 random integer
 minmax_norm=FALSE
 zscore_standardization=FALSE
 log2_trans=TRUE
-uni_analysis=TRUE
+uni_analysis=FALSE
 
 # ------ Settings for all-connection clustering analysis ------
 # -- Hierarchical clustering --

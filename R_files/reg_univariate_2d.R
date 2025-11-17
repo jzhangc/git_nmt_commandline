@@ -217,7 +217,7 @@ if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)
 }
 ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
+write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_prior.csv"), ml_dfm, row.names = FALSE)
 
 # save(list = c("normdata"), file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 

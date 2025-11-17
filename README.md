@@ -16,6 +16,7 @@ Please cite the following if you are to use this application:
           - Default randome_state set to 1
           - Default log2_trans and uni_analysis both set to TRUE for connectivity modules
           - Contrast group check added for classification modules
+          - Config file uni_analysis automatically set to TRUE when -k is set
 
         - Data processing modules updates
           - Z-score standardization (mean=0, SD=1) setting added into the config files: zscore_standardization

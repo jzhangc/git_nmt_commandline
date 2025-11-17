@@ -527,6 +527,10 @@ if [ $CONF_CHECK -eq 1 ]; then
 else
   echo -e "Variables loaded from the config file:"
 fi
+if  [ $KFLAG -eq 0 ] && [ $uni_analysis == FALSE ]; then
+	echo -e "${COLOUR_YELLOW}WARNING: when -k is set, uni_analysis automatically set to TRUE.${NO_COLOUR}\n"
+	uni_analysis=TRUE
+fi
 # below: place loaders
 echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
@@ -534,7 +538,7 @@ echo -e "\nData processing"
 echo -e "\tminmax_norm=$minmax_norm"
 echo -e "\tzscore_standardization=$zscore_standardization"
 echo -e "\tlog2_trans=$log2_trans"
-echo -e "\tunianalysis=$uni_analysis"
+echo -e "\tuni_analysis=$uni_analysis"
 echo -e "\nClustering analysis for all connections"
 echo -e "\thtmap_textsize_col=$htmap_textsize_col"
 echo -e "\thtmap_textangle_col=$htmap_textangle_col"
@@ -794,7 +798,7 @@ echo -e "\n"
 if [ $KFLAG -eq 1 ]; then
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 else
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_uni.csv"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_prior.csv"
 fi
 # -- file check before next step --
 if ! [ -f "$dat_ml_file" ]; then
@@ -809,8 +813,8 @@ if ! [ -f "$dat_ml_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 # -- additional display --
-echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_w_uni.csv"
-echo -e "Data for machine learning wo univariate: ${MAT_FILENAME_WO_EXT}_2D.csv"
+echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_w_prior.csv"
+echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
@@ -824,7 +828,7 @@ if [ $KFLAG -eq 1 ]; then
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
 else
 	echo -e "ON"
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_uni.csv${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
 fi 
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
