@@ -24,6 +24,7 @@ RES_OUT_DIR <- args[10]
 SAMPLEID_VAR <- args[8]
 GROUP_VAR <- args[9]
 ZSCORE_STAND <- args[11]
+CONTRAST <- args[12]
 
 # ------ load file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
@@ -41,9 +42,17 @@ if (length(unique(raw_csv[, GROUP_VAR])) == 1) {
   cat("single_value")
   quit()
 }
-
 sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR]))
 sampleid <- raw_csv[, SAMPLEID_VAR]
+
+contra_string <- unlist(strsplit(CONTRAST, split = ","))
+contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
+pasted_contrast <- paste0(contra_string, collapse = "-")
+contrast_group <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
+if (!all(contrast_group  %in% as.character(unique(raw_csv[, GROUP_VAR])))) {
+  cat("contrast_none_existent")
+  quit()
+}
 
 
 # ------ process the file with the mata data ------

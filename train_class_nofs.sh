@@ -622,6 +622,7 @@ r_var=`Rscript ./R_files/input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EX
 "$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
 "$zscore_standardization" \
+"$CONTRAST" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -636,8 +637,9 @@ elif [ "$group_summary" == "na_values" ]; then
 elif [ "$group_summary" == "single_value" ]; then
 	echo -e "${COLOUR_RED}\nERROR: only single class detected in the outcome variable. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
-else
-	echo -e "$group_summary\n"
+elif [ "$group_summary" == "contrast_none_existent" ]; then
+	echo -e "${COLOUR_RED}\nERROR: contrast groups not matching input data groups. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
 fi
 dat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 

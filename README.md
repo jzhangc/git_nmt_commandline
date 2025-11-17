@@ -15,6 +15,7 @@ Please cite the following if you are to use this application:
           - Reduced intermediate CSV file complexity
           - Default randome_state set to 1
           - Default log2_trans and uni_analysis both set to TRUE for connectivity modules
+          - Contrast group check added for classification modules
 
         - Data processing modules updates
           - For 2D modules, Z-score standardization (mean=0, SD=1) setting added into the config file: zscore_standardization

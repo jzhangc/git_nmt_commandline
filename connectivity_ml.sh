@@ -676,6 +676,7 @@ echo -e "--------------------- source script: input_dat_process.R --------------
 r_var=`Rscript ./R_files/input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
+"$CONTRAST" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -692,6 +693,9 @@ elif [ "$group_summary" == "na_values" ]; then
 	exit 1
 elif [ "$group_summary" == "single_value" ]; then
 	echo -e "${COLOUR_RED}\nERROR: only single class detected in the outcome variable of the annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "contrast_none_existent" ]; then
+	echo -e "${COLOUR_RED}\nERROR: contrast groups not matching input data groups. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the second line (i.e. 2p)

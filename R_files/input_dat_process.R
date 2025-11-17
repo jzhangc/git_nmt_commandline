@@ -22,6 +22,7 @@ RES_OUT_DIR <- args[11]
 # --- mata data input variables ---
 SAMPLEID_VAR <- args[9]
 GROUP_VAR <- args[10]
+CONTRAST <- args[12]
 
 # ------ load mat file ------
 raw <- readMat(MAT_FILE)
@@ -46,9 +47,17 @@ if (length(unique(annot[, GROUP_VAR])) == 1) {
   cat("single_value")
   quit()
 }
-
 sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
 sampleid <- annot[, SAMPLEID_VAR]
+
+contra_string <- unlist(strsplit(CONTRAST, split = ","))
+contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
+pasted_contrast <- paste0(contra_string, collapse = "-")
+contrast_group <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
+if (!all(contrast_group  %in% as.character(unique(annot[, GROUP_VAR])))) {
+  cat("contrast_none_existent")
+  quit()
+}
 
 
 # ------ process the mat file with the mata data ------
