@@ -9,6 +9,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # ------ load libraries ------
 require(foreach)
+require(RBioFS)
 require(R.matlab) # to read .mat files
 
 # ------sys variables --------

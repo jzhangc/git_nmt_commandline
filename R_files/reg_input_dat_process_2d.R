@@ -8,6 +8,7 @@ args <- commandArgs()
 
 # ------ load libraries ------
 require(foreach)
+require(RBioFS)
 
 # ------ sys variables ------
 # --- file name variables ---
