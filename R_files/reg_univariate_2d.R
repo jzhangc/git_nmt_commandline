@@ -4,7 +4,6 @@
 
 ## test from Rscript
 args <- commandArgs()
-# print(args)
 
 # ------ load libraries ------
 require(foreach)
@@ -15,16 +14,16 @@ require(RBioArray)
 require(RBioFS)
 
 # ------ sys variables ------
-# -- file name variables --
+# --- file name variables ---
 DAT_FILE <- args[6] # 2D file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# -- directory variables --
+# --- directory variables ---
 RES_OUT_DIR <- args[8]
 
-# -- processing varaibles --
+# ------ processing varaibles ------
 # NOTE: convert string to expression using eval(parse(text = "string"))
-# -- (from config file) --
+# --- (from config file) ---
 LOG2_TRANS <- eval(parse(text = args[9]))
 HTMAP_TEXTSIZE_COL <- as.numeric(args[10])
 HTMAP_TEXTANGLE_COL <- as.numeric(args[11])
@@ -208,28 +207,21 @@ if (UNI_ANALYSIS) {
 # ------ clean up the mess and export ------
 rm(normdata) # free memory
 
-## clean up the mess from Pathview
+# -- clean up the mess from Pathview --
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
-## export to results files if needed
-# if (UNI_ANALYSIS) {
-#   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
-# } else {
-#   x_ml <- t(normdata$E)
-# }
-
-# ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-# write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
-
+# -- export to results files if needed --
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
-  ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-  write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
+} else {
+  x_ml <- t(normdata$E)
 }
+ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_prior.csv"), ml_dfm, row.names = FALSE)
 
 # save(list = c("normdata"), file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 
-## cat the vairables to export to shell scipt
+# ------ cat the vairables to export to shell scipt ------
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
 # cat("First five variable names: ", names(raw_sample_dfm)[1:5])
 cat("2D data file summary\n")

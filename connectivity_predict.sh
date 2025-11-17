@@ -331,6 +331,15 @@ r_var=`Rscript ./R_files/pred_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 | tee -a "${OUT_DIR}"/PREDICTION_LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
+if [ "$mat_dim" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$mat_dim" == "unequal_length" ]; then
+	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+else
+	echo -e "$mat_dim"
+fi
 mat_dim=`echo "${r_var[@]}" | sed -n "1p"`  # pipe to sed to print the second line (i.e. 1p)
 nsamples_to_pred=`echo "${r_var[@]}" | sed -n "2p"`
 
@@ -341,15 +350,6 @@ echo -e "=======================================================================
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "\n\tData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-if [ "$mat_dim" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the -a annotation file. Program terminated.${NO_COLOUR}\n" >&2
-	exit 1
-elif [ "$mat_dim" == "unequal_length" ]; then
-	echo -e "${COLOUR_RED}\nERROR: -a annotation file not matching -i input file sample length. Program terminated.${NO_COLOUR}\n" >&2
-	exit 1
-else
-	echo -e "$mat_dim"
-fi
 echo -e "\nSample annotation"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 echo -e "$nsamples_to_pred"

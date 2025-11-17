@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: cv_reg_plsr_val_svm.R
 ## purpose: plsr modelling to evaluating SVR results for "cv only" methods
 
@@ -7,26 +7,26 @@
 args <- commandArgs()
 # print(args)
 
-# ------  load libraries ------
+# ------ load libraries ------
 require(RBioFS)
 require(foreach)
 require(parallel)
 
 # ------ sys variables ------
-# -- warning flags --
+# --- warning flags ---
 CORE_OUT_OF_RANGE <- FALSE
 NCOMP_WARNING <- FALSE
 
-# -- file name variables --
+# --- file name variables ---
 MODEL_FILE <- args[6] # SVM MODEL R file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# -- directory variables --
+# --- directory variables ---
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
 # NOTE: convert string to expression using eval(parse(text = "string"))
-# -- from flags --
+# -- from flags ---
 PSETTING <- eval(parse(text = args[9]))
 CORES <- as.numeric(args[10])
 if (PSETTING && CORES > parallel::detectCores()) {
@@ -34,7 +34,7 @@ if (PSETTING && CORES > parallel::detectCores()) {
   CORES <- parallel::detectCores() - 1
 }
 
-# -- (from config file) --
+# --- (from config file) ---
 CPU_CLUSTER <- args[11]
 
 PLSDA_VALIDATION <- args[12]

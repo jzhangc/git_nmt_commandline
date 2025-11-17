@@ -289,7 +289,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $random_state || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $zscore_standardization || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $pca_scale_data || -z $pca_centre_data || -z $pca_pc \
 	|| -z $pca_biplot_samplelabel_type || -z $pca_biplot_samplelabel_size || -z $pca_biplot_symbol_size \
@@ -334,7 +334,8 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
-  	random_state=0
+  	random_state=1
+	zscore_standardization=TRUE
 	log2_trans=FALSE
 	uni_analysis=FALSE
 	htmap_textsize_col=0.7
@@ -475,10 +476,15 @@ if [ $CONF_CHECK -eq 1 ]; then
 else
   echo -e "Variables loaded from the config file:"
 fi
+if  [ $KFLAG -eq 0 ] && [ $uni_analysis == FALSE ]; then
+	echo -e "${COLOUR_YELLOW}WARNING: when -k is set, uni_analysis automatically set to TRUE.${NO_COLOUR}\n"
+	uni_analysis=TRUE
+fi
 # below: place loaders
 echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
 echo -e "\nData processing"
+echo -e "\tzscore_standardization=$zscore_standardization"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\tunianalysis=$uni_analysis"
 echo -e "\nClustering analysis for all connections"
@@ -623,12 +629,27 @@ echo -e "--------------------- source script: input_dat_process_2d.R -----------
 r_var=`Rscript ./R_files/input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" "$GROUP_ID" \
 "${OUT_DIR}/OUTPUT" \
+"$zscore_standardization" \
+"$CONTRAST" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
-# mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
+if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "na_values" ]; then
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "single_value" ]; then
+	echo -e "${COLOUR_RED}\nERROR: only single class detected in the outcome variable. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$group_summary" == "contrast_none_existent" ]; then
+	echo -e "${COLOUR_RED}\nERROR: contrast groups not matching input data groups. Program terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
+dat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
 # -- display --
 echo -e "\n"
@@ -636,20 +657,10 @@ echo -e "Input files"
 echo -e "=========================================================================="
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
-# echo -e "$mat_dim"
-# echo -e "\nSample metadata"
-# echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
-if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
-	exit 1
-elif [ "$group_summary" == "na_values" ]; then
-	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
-	exit 1
-else
-	echo -e "$group_summary\n"
-fi
+echo -e "$group_summary\n"
+echo -e "\nSample metadata"
+echo -e "$mat_dim"
 echo -e "\nData processed and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-# echo -e "\n2D file to use in machine learning without univariate prior knowledge: ${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 echo -e "=========================================================================="
 
 # -- set up variables for output 2d data file
@@ -712,13 +723,10 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- set up variables for output ml data file
 echo -e "\n"
-# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 if [ $KFLAG -eq 1 ]; then
-	# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv"
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 else
-	# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
-	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_uni.csv"
+	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_prior.csv"
 fi
 # -- file check before next step --
 if ! [ -f "$dat_ml_file" ]; then
@@ -733,10 +741,8 @@ if ! [ -f "$dat_ml_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 # -- additional display --
-echo -e "Data for machine learning saved to file (w univariate reduction): ${MAT_FILENAME_WO_EXT}_w_uni.csv"
-# echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
-echo -e "Data for machine learning wo univariate reduction: ${MAT_FILENAME_WO_EXT}_2D.csv"
-# echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
+echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_w_prior.csv"
+echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
 
@@ -748,11 +754,9 @@ echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
 	echo -e "OFF"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D.csv${NO_COLOUR}"
-	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_2D_wo_uni.csv${NO_COLOUR}"
 else
 	echo -e "ON"
-	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
-	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_uni.csv${NO_COLOUR}"
+	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
 fi 
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
