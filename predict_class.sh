@@ -308,6 +308,13 @@ r_var=`Rscript ./R_files/pred_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT
 | tee -a "${OUT_DIR}"/PREDICTION_LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
+if [ "$nsamples_to_pred" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the annotation information. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+elif [ "$nsamples_to_pred" == "unequal_length" ]; then
+	echo -e "${COLOUR_RED}\nERROR: annotation information not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
+	exit 1
+fi
 nsamples_to_pred=`echo "${r_var[@]}" | sed -n "1p"`
 
 
@@ -319,13 +326,6 @@ echo -e "=======================================================================
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "\n\tData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-if [ "$nsamples_to_pred" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or variable not found in the annotation information. Progream terminated.${NO_COLOUR}\n" >&2
-	exit 1
-elif [ "$nsamples_to_pred" == "unequal_length" ]; then
-	echo -e "${COLOUR_RED}\nERROR: annotation information not matching -i input file sample length. Progream terminated.${NO_COLOUR}\n" >&2
-	exit 1
-fi
 echo -e "\nSample annotation"
 echo -e "$nsamples_to_pred"
 echo -e "=========================================================================="

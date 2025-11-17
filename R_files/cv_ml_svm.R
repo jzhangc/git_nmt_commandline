@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info --------
 ## name: ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
 
@@ -14,15 +14,15 @@ require(foreach)
 require(parallel)
 require(limma)
 
-###### sys variables --------
-# ------ warning flags ------
+# ------ sys variables --------
+# --- warning flags ---
 CORE_OUT_OF_RANGE <- FALSE
 
-# ------ file name variables ------
+# --- file name variables ---
 DAT_FILE <- args[6] # ML file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
-# ------ directory variables ------
+# --- directory variables ---
 RES_OUT_DIR <- args[8]
 
 # ------ processing varaibles ------
@@ -431,7 +431,7 @@ cat("\n\n------ Aggregated SHAP analysis messages ------\n")
 tryCatch(
   {
     shap_out <- rbioClass_svm_shap_aggregated(
-      model = svm_m, X = svm_training[, -1], bg_X = svm_training[, -1],
+      model = svm_m, X = final_svm_data[, -1], bg_X = final_svm_data[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES,
       randomState = RANDOM_STATE, 

@@ -15,8 +15,6 @@ require(R.matlab) # to read .mat files
 # --- file name variables ---
 CSV_2D_FILE <- args[6]
 CSV_2D_FILE_NO_EXT <- args[7]
-# ANNOT_FILE <- args[8]
-
 
 # --- directory variables ---
 # FIG_OUT_DIR
@@ -25,9 +23,13 @@ RES_OUT_DIR <- args[10]
 # -- mata data input variables --
 SAMPLEID_VAR <- args[8]
 GROUP_VAR <- args[9]
+ZSCORE_STAND <- args[11]
+CONTRAST <- args[12]
 
 # ------ load file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
+raw_dim <- dim(raw_csv)
+
 if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(raw_csv))) {
   cat("none_existent")
   quit()
@@ -36,14 +38,27 @@ if (length(which(!complete.cases(raw_csv))) > 0) {
   cat("na_values")
   quit()
 }
+if (length(unique(raw_csv[, GROUP_VAR])) == 1) {
+  cat("single_value")
+  quit()
+}
 sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR]))
 sampleid <- raw_csv[, SAMPLEID_VAR]
+
+contra_string <- unlist(strsplit(CONTRAST, split = ","))
+contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
+pasted_contrast <- paste0(contra_string, collapse = "-")
+contrast_group <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
+if (!all(contrast_group  %in% as.character(unique(raw_csv[, GROUP_VAR])))) {
+  cat("contrast_none_existent")
+  quit()
+}
 
 
 # ------ process the file with the mata data ------
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 group <- sample_group
-raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
+raw_sample_dfm <- data.frame(sampleid = sampleid, y = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
@@ -55,16 +70,13 @@ feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
 
 # -- data transformation --
 feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
-feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
+if (ZSCORE_STAND) {
+  feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
+}
 
 # -- data output --
 raw_sample_dfm_output <- cbind(id_dat, feature_dat)
-names(raw_sample_dfm_output)[names(raw_sample_dfm_output) %in% "group"] <- "y"
-
-##: below: no need to replicate the same data with different col names
-# raw_sample_dfm_wo_uni <- cbind(id_dat, feature_dat)
-# names(raw_sample_dfm_wo_uni)[names(raw_sample_dfm_wo_uni) %in% "group"] <- "y"
-# write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
+# names(raw_sample_dfm_output)[names(raw_sample_dfm_output) %in% "group"] <- "y"
 
 # -- free memory --
 rm(raw_csv)
@@ -82,4 +94,4 @@ group_summary <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do
 
 ## cat the vairables to export to shell scipt
 cat("\tSample groups (size): ", group_summary, "\n") # line 1: input raw_csv file groupping info
-# cat("\tMat file dimensions: ", raw_dim, "\n") # line 2: input mat file dimension
+cat("\tInput file dimensions (w annot vars): ", raw_dim, "\n") # line 2: input dat file dimension

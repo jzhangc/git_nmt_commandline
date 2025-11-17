@@ -1,4 +1,4 @@
-###### general info --------
+# ------ general info ------
 ## name: pred_classif.R
 ## purpose: load and process mat file for prediction
 ## Make sure to have 3 dimensions for the mat data, even when there is only one matrix, e.g. 90x90x1
@@ -7,14 +7,14 @@
 args <- commandArgs(trailingOnly = TRUE)
 # print(args)
 
-###### load libraries --------
+# ------ load libraries ------
 require(foreach)
 require(RBioFS)
 require(R.matlab) # to read .mat files
 require(parallel)
 require(doParallel)
 
-###### sys variables --------
+# ------ sys variables ------
 # --- file name variables ---
 DAT_FILE <- args[1] 
 
@@ -42,7 +42,6 @@ CPU_CLUSTER <- args[8]
 PIE_WIDTH <- as.numeric(args[9])
 PIE_HEIGHT <- as.numeric(args[10])
 
-###### R script --------
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR)  # the folder that all the results will be exports to
 

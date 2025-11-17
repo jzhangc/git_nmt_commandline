@@ -4,7 +4,6 @@
 
 ## test from Rscript
 args <- commandArgs()
-# print(args)
 
 # ------ load libraries ------
 require(foreach)
@@ -14,19 +13,19 @@ require(RBioArray)
 require(RBioFS)
 
 # ------ sys variables --------
-# -- file name variables --
+# --- file name variables ---
 DAT_FILE <- args[6] # 2D file
 MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 NODE_FILE <- args[8]
 NODE_ID_VAR <- args[61]
 REGION_NAME_VAR <- args[62]
 
-# -- directory variables --
+# --- directory variables ---
 RES_OUT_DIR <- args[9]
 
-# -- processing varaibles --
+# --- processing varaibles ---
 # NOTE: convert string to expression using eval(parse(text = "string"))
-# -- (from config file) --
+# --- (from config file) ---
 LOG2_TRANS <- eval(parse(text = args[10]))
 HTMAP_TEXTSIZE_COL <- as.numeric(args[11])
 HTMAP_TEXTANGLE_COL <- as.numeric(args[12])
@@ -368,19 +367,13 @@ suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 ## export to results files if needed
 # x_ml <- t(normdata$E)[, sig_pairs_fit]
 
-# if (UNI_ANALYSIS) {
-#   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
-# } else {
-#   x_ml <- t(normdata$E)
-# }
-# ml_dfm <- data.frame(sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-# write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_ml.csv"), ml_dfm, row.names = FALSE)
-
 if (UNI_ANALYSIS) {
   x_ml <- t(normdata$E)[, sig_pairs_fit, drop = FALSE]
-  ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
-  write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_uni.csv"), ml_dfm, row.names = FALSE)
-} 
+} else {
+  x_ml <- t(normdata$E)
+}
+ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
+write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_prior.csv"), ml_dfm, row.names = FALSE)
 
 # free memory
 rm(pca_all)

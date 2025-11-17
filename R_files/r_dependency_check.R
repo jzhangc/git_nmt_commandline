@@ -3,7 +3,7 @@
 ## purpose: check all the dependent pacakges for running the follow-up R scripts
 
 # ------ variables ------
-## -- sys variables --
+## --- sys variables ---
 CRAN_PKG <- c("devtools", "BiocManager", "R.matlab", "ggrepel", "foreach", "doParallel", "parallel", "splines")
 JZ_PKG <- c("RBioFS", "RBioArray")
 
