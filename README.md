@@ -45,17 +45,38 @@ Please cite the following if you are to use this application:
             - SHAP value implementation
 
 
-    - 0.4.2 (April 4, 2025)
+    - 0.5.0 (Nov 16, 2025)
         - General updates
-          - Application termination behaviour updated with early stop and messaging
-          - Application messaging updated          
-          
-        - General updates
-          - More detailed error messages added
-          - Error handling updated with more explicit error messaging
+          - Reduced intermediate CSV file complexity
+          - Default randome_state set to 1
+          - Default log2_trans and uni_analysis both set to TRUE for connectivity modules
+          - Contrast group check added for classification modules
+          - Config file uni_analysis automatically set to TRUE when -k is set
+
+        - Data processing modules updates
+          - Z-score standardization (mean=0, SD=1) setting added into the config files: zscore_standardization
+            - When FALSE, the application only scale the data to 0-1 (min-max normalization)
+          - For connectivity modules, Min-Max normalization (range: 0-1) seeting added into the config files: minmax_norm
+          - Data file unique class/value check added for training data processing modules
+          - A bug fixed where non-variance column remove would result in data column shift
 
         - Modelling modules updates
-          - CV-rRF-FS-SVM step updated with fail error handling properties
+          - SHAP value implementation
+        
+        - Update to SVM modules
+          - fscount plot name fixed
+
+        - 0.4.2 (April 4, 2025)
+            - General updates
+              - Application termination behaviour updated with early stop and messaging
+              - Application messaging updated          
+              
+            - General updates
+              - More detailed error messages added
+              - Error handling updated with more explicit error messaging
+
+            - Modelling modules updates
+              - CV-rRF-FS-SVM step updated with fail error handling properties
 
 
     - 0.4.0 (December 26, 2024)
