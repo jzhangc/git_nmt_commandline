@@ -23,6 +23,8 @@ RES_OUT_DIR <- args[11]
 # --- mata data input variables ---
 SAMPLEID_VAR <- args[9]
 Y_VAR <- args[10]
+MINMAX_NORM <- args[12]
+ZSCORE_STAND <- args[13]
 
 # ------ load mat file ------
 raw <- readMat(MAT_FILE)
@@ -63,10 +65,23 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
 }
 raw_sample_dfm <- data.frame(sampleid = sampleid, y = y, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
+feature_dat <- raw_sample_dfm[, -c(1:2)]
+id_dat <- raw_sample_dfm[, c(1:2)]
+
+# -- data transformation --
+if (MINMAX_NORM) {
+  feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+}
+if (ZSCORE_STAND) {
+  feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
+}
+
+# -- data output --
+raw_sample_dfm_output <- cbind(id_dat, feature_dat)
 
 # ------ export and clean up the mess ------
 ## export to results files if needed
-write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm, row.names = FALSE)
+write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
 
 ## cat the vairables to export to shell scipt
 cat("\tMat file dimensions: ", raw_dim, "\n") # line 1: input mat file dimension

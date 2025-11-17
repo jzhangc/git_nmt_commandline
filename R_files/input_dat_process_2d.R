@@ -58,7 +58,7 @@ if (!all(contrast_group  %in% as.character(unique(raw_csv[, GROUP_VAR])))) {
 # ------ process the file with the mata data ------
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 group <- sample_group
-raw_sample_dfm <- data.frame(sampleid = sampleid, group = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
+raw_sample_dfm <- data.frame(sampleid = sampleid, y = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
@@ -76,12 +76,7 @@ if (ZSCORE_STAND) {
 
 # -- data output --
 raw_sample_dfm_output <- cbind(id_dat, feature_dat)
-names(raw_sample_dfm_output)[names(raw_sample_dfm_output) %in% "group"] <- "y"
-
-##: below: no need to replicate the same data with different col names
-# raw_sample_dfm_wo_uni <- cbind(id_dat, feature_dat)
-# names(raw_sample_dfm_wo_uni)[names(raw_sample_dfm_wo_uni) %in% "group"] <- "y"
-# write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D_wo_uni.csv"), raw_sample_dfm_wo_uni, row.names = FALSE)
+# names(raw_sample_dfm_output)[names(raw_sample_dfm_output) %in% "group"] <- "y"
 
 # -- free memory --
 rm(raw_csv)

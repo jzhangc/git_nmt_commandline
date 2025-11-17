@@ -18,8 +18,9 @@ Please cite the following if you are to use this application:
           - Contrast group check added for classification modules
 
         - Data processing modules updates
-          - For 2D modules, Z-score standardization (mean=0, SD=1) setting added into the config file: zscore_standardization
+          - Z-score standardization (mean=0, SD=1) setting added into the config files: zscore_standardization
             - When FALSE, the application only scale the data to 0-1 (min-max normalization)
+          - For connectivity modules, Min-Max normalization (range: 0-1) seeting added into the config files: minmax_norm
           - Data file unique class/value check added for training data processing modules
           - A bug fixed where non-variance column remove would result in data column shift
 
