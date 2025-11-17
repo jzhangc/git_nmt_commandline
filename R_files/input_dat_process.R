@@ -8,6 +8,7 @@ args <- commandArgs()
 
 # ------ load libraries ------
 require(foreach)
+require(RBioFS)
 require(R.matlab) # to read .mat files
 
 # ------ sys variables ------
