@@ -23,8 +23,9 @@ RES_OUT_DIR <- args[10]
 # -- mata data input variables --
 SAMPLEID_VAR <- args[8]
 GROUP_VAR <- args[9]
-ZSCORE_STAND <- args[11]
-CONTRAST <- args[12]
+MINMAX_NORM <- args[11]
+ZSCORE_STAND <- args[12]
+CONTRAST <- args[13]
 
 # ------ load file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
@@ -69,7 +70,9 @@ feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
 # raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
 # -- data transformation --
-feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+if (MINMAX_NORM) {
+  feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+}
 if (ZSCORE_STAND) {
   feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 }
