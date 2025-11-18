@@ -56,7 +56,7 @@ Please cite the following if you are to use this application:
         - Data processing modules updates
           - Z-score standardization (mean=0, SD=1) setting added into the config files: zscore_standardization
             - When FALSE, the application only scales data to 0-1 (min-max normalization)
-          - For connectivity modules, Min-Max normalization (range: 0-1) seeting added into the config files: minmax_norm
+          - Min-Max normalization (range: 0-1) is not a setting in the config files: minmax_norm
           - Data file unique class/value check added for training data processing modules
           - A bug fixed where non-variance column remove would result in data column shift
 

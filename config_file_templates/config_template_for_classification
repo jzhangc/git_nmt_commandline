@@ -6,6 +6,7 @@
 random_state=1 # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
+minmax_norm=TRUE
 zscore_standardization=TRUE
 log2_trans=FALSE
 uni_analysis=FALSE
