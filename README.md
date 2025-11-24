@@ -12,16 +12,16 @@ Please cite the following if you are to use this application:
 
     - 0.5.x-251122
 
-      - General updates
-        - Code base complexity substantially reduced
-          - Common utility prcoesses unified into expanded utility scripts
+        - General updates
+          - Code base complexity substantially reduced
+            - Common utility prcoesses unified into expanded utility scripts
 
-      - Modelling module updates
-        - Exported SVM model file (.RData) now include data processing config information
+        - Modelling module updates
+          - Exported SVM model file (.RData) now include data processing config information
 
-      - Prediction modules updates
-        - Prediction modules reads the data processing config information from the SVM model file for data processing
-        - Prediction modules reads the data processing config information from the SVM model file for inferencing
+        - Prediction modules updates
+          - Prediction modules reads the data processing config information from the SVM model file for data processing
+          - Prediction modules reads the data processing config information from the SVM model file for inferencing
 
 
     - 0.5.0 (Nov 16, 2025)
