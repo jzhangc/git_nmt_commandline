@@ -80,6 +80,11 @@
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results" -k -p 12
 
 
+./test.sh \
+-i ./data/2_tabular/freq_4_beta_power.csv \
+-u -k
+
+
 # # -- regression --
 # ./train_reg.sh \
 # -i "/Users/jingzhang/Desktop/nmt_demo/test_data/test_data_regression.csv" \

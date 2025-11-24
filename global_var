@@ -1,0 +1,45 @@
+# File name: sys_var
+# Description: version info etc
+# Usage: Adjust the values for the variables
+#
+# load utils and zzz config file
+source ./zzz
+
+# --- iniitate internal system variables ---
+VERSION=$VERSION
+CURRENT_DAY=$(date +%d-%b-%Y)
+PLATFORM="Unknown UNIX or UNIX-like system"
+UNAMESTR=`uname`  # use `uname` variable to detect OS type
+if [ $UNAMESTR == "Darwin" ]; then
+	PLATFORM="macOS"
+elif [ $UNAMESTR == "Linux" ]; then
+	PLATFORM="Linux"
+fi
+HELP="\n
+Format: ./train_class.sh <INPUTS> [OPTIONS]\n
+Current version: $VERSION\n
+\n
+-h, --help: This help information.\n
+--version: Display current version number.\n
+\n
+<INPUTS>: Mandatory\n
+-i <file>: Input 2D .csv file.\n
+-s <string>: Sample ID variable name.\n
+-g <string>: Group ID variable name.\n
+-c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
+\n
+[OPTIONS]: Optional\n
+-k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
+-u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
+-m <CONFIG>: Optoinal configuration file. NOTE: If no config file is supplied, the default settings are used. \n
+-o <dir>: Optional output directory. Default is where the program is. \n
+-p <int>: parallel computing, with core numbers.\n"
+CITE=$CITE
+
+# below: some colours
+COLOUR_YELLOW="\033[1;33m"
+COLOUR_ORANGE="\033[0;33m"
+COLOUR_RED="\033[0;31m"
+COLOUR_GREEN_L="\033[1;32m"
+COLOUR_BLUE_L="\033[1;34m"
+NO_COLOUR="\033[0;0m"

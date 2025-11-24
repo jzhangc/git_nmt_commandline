@@ -132,3 +132,53 @@ hms(){
     printf "%02d%s\n" $S "s"
   fi
 }
+
+# funciton to check system integrity
+integrity_check(){
+  # --- Rscript check ---
+  echo -e "\n"
+  echo -e "R environment check"
+  echo -e "=========================================================================="
+  # -- R script chack --
+  check_dependency
+  echo -e "=========================================================================="
+
+  # --- system files check ---
+  echo -e "\n"
+  echo -e "System file check"
+  echo -e "=========================================================================="
+  # -- R script chack --
+  echo -e "Checking required R script file(s)"
+  required_file_check "${R_SCRIPT_FILES[@]}"
+  echo -e "=========================================================================="
+
+  # --- check R dependecies ---
+  echo -e "\n"
+  echo -e "Checking R pacakge dependecies"
+  echo -e "=========================================================================="
+  Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
+  R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
+  if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
+    echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
+    echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
+    exit 1
+  fi
+  echo -e "=========================================================================="
+}
+
+# function to set up output dirs
+setup_dirs(){
+  # --- construct output folder structure ---
+  echo -e "\n"
+  echo -en "Copnstructing output file folder structure..."
+  [ -d "${OUT_DIR}"/LOG ] || mkdir "${OUT_DIR}"/LOG
+  [ -d "${OUT_DIR}"/OUTPUT ] || mkdir "${OUT_DIR}"/OUTPUT
+  # [ -d "${OUT_DIR}"/OUTPUT/RESULTS_FILES ] || mkdir "${OUT_DIR}"/OUTPUT/RESULTS_FILES
+  # [ -d "${OUT_DIR}"/OUTPUT/FIGURES ] || mkdir "${OUT_DIR}"/OUTPUT/FIGURES
+  echo -e "Done!"
+  echo -e "=========================================================================="
+  echo -e "Folders created and their usage:"
+  echo -e "\tLOG: Applcation log files"
+  echo -e "\tOUTPUT: Output files"
+  echo -e "=========================================================================="
+}
