@@ -11,7 +11,6 @@ Please cite the following if you are to use this application:
 ## Version History
 
     - 0.5.x-251122
-
         - General updates
           - Code base complexity substantially reduced
             - Common utility prcoesses unified into expanded utility scripts
