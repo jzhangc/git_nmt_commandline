@@ -14,6 +14,9 @@ Please cite the following if you are to use this application:
         - General updates
           - Code base complexity substantially reduced
             - Common utility prcoesses unified into expanded utility scripts
+        
+        - Data processing modules updates
+          - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
 
         - Modelling module updates
           - Exported SVM model file (.RData) now include data processing config information
