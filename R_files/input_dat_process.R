@@ -27,12 +27,13 @@ MINMAX_NORM <- args[12]
 ZSCORE_STAND <- args[13]
 CONTRAST <- args[14]
 
-# ------ load mat file ------
+# ------ load files ------
+# --- load mat file ---
 raw <- readMat(MAT_FILE)
 raw <- raw[[1]]
 raw_dim <- dim(raw)
 
-# ------ load annotation file (meta data) ------
+# --- load annotation file (meta data) ---
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(annot))) {
   cat("none_existent")
@@ -51,17 +52,18 @@ if (length(unique(annot[, GROUP_VAR])) == 1) {
   quit()
 }
 sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
+sample_group_names <- unique(as.character(sample_group))
 sampleid <- annot[, SAMPLEID_VAR]
 
+# --- load and process contrast ---
 contra_string <- unlist(strsplit(CONTRAST, split = ","))
 contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
 pasted_contrast <- paste0(contra_string, collapse = "-")
-contrast_group <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
-if (!all(contrast_group  %in% as.character(unique(annot[, GROUP_VAR])))) {
+contrast_group_names <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
+if (!all(contrast_group_names  %in% as.character(unique(annot[, GROUP_VAR])))) {
   cat("contrast_none_existent")
   quit()
 }
-
 
 # ------ process the mat file with the mata data ------
 raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
@@ -77,7 +79,6 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 raw_sample_dfm <- data.frame(sampleid = sampleid, y = sample_group, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
-# names(raw_sample_dfm)[names(raw_sample_dfm) %in% "group"] <- "y"
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 
@@ -89,8 +90,19 @@ if (ZSCORE_STAND) {
   feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 }
 
-# -- data output --
+# -------- data output --------
+# --- output data ---
 raw_sample_dfm_output <- cbind(id_dat, feature_dat)
+
+# --- output data sorting ---
+rem_group_names <- sample_group_names[!sample_group_names %in% contrast_group_names]
+if (length(rem_group_names) > 0)  {
+  order_group_names <- c(contrast_group_names, rem_group_names)
+} else {
+  order_group_names <- contrast_group_names
+}
+new_group_order <- order(factor(sample_group, levels = order_group_names, ordered = TRUE))
+raw_sample_dfm_output <- raw_sample_dfm_output[new_group_order, ]  # sorting
 
 # ------ export and clean up the mess --------
 ## export to results files if needed

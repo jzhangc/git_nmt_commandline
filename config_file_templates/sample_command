@@ -24,7 +24,7 @@
 ./cv_train_class.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/freq_4_beta_power.csv" \
 -s "subjectid" -g "groupid" \
--c "mTBI-TC" \
+-c "mTBI-TC, PTSD-NTC, TC-NTC" \
 -m "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/config_file_templates/config_template_for_classification" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results" -p 12
 

@@ -28,6 +28,7 @@ ZSCORE_STAND <- args[12]
 CONTRAST <- args[13]
 
 # ------ load file ------
+# --- load data ---
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 raw_dim <- dim(raw_csv)
 
@@ -44,25 +45,26 @@ if (length(unique(raw_csv[, GROUP_VAR])) == 1) {
   quit()
 }
 sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR]))
+sample_group_names <- unique(as.character(sample_group))
 sampleid <- raw_csv[, SAMPLEID_VAR]
 
+# --- load and process contrast ---
 contra_string <- unlist(strsplit(CONTRAST, split = ","))
 contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
 pasted_contrast <- paste0(contra_string, collapse = "-")
-contrast_group <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
-if (!all(contrast_group  %in% as.character(unique(raw_csv[, GROUP_VAR])))) {
+contrast_group_names <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
+if (!all(contrast_group_names  %in% sample_group_names)) {
   cat("contrast_none_existent")
-  quit()
 }
 
-
 # ------ process the file with the mata data ------
-# group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
-group <- sample_group
-raw_sample_dfm <- data.frame(sampleid = sampleid, y = group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
+# group <- sample_group
+raw_sample_dfm <- data.frame(sampleid = sampleid, y = sample_group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
 names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
+# -- free memory --
+rm(raw_csv)
 
 # -- remove columns with only the same value --
 drop_cols <- names(feature_dat)[which(!vapply(feature_dat, function(x) length(unique(x)) > 1, logical(1L)))]
@@ -77,12 +79,19 @@ if (ZSCORE_STAND) {
   feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 }
 
-# -- data output --
+# -------- data output --------
+# --- output data ---
 raw_sample_dfm_output <- cbind(id_dat, feature_dat)
-# names(raw_sample_dfm_output)[names(raw_sample_dfm_output) %in% "group"] <- "y"
 
-# -- free memory --
-rm(raw_csv)
+# --- output data sorting ---
+rem_group_names <- sample_group_names[!sample_group_names %in% contrast_group_names]
+if (length(rem_group_names) > 0)  {
+  order_group_names <- c(contrast_group_names, rem_group_names)
+} else {
+  order_group_names <- contrast_group_names
+}
+new_group_order <- order(factor(sample_group, levels = order_group_names, ordered = TRUE))
+raw_sample_dfm_output <- raw_sample_dfm_output[new_group_order, ]  # sorting
 
 # ------ export and clean up the mess ------
 ## export to results files if needed
