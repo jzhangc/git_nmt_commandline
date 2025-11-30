@@ -181,7 +181,6 @@ tryCatch(
     adjCV = is_adj_cv,
     perm.plot = FALSE,
     parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
-    randomState = RANDOM_STATE,
     verbose = FALSE
   ),
   error = function(e) {

@@ -283,6 +283,31 @@ rbioClass_svm_roc_auc(
 )
 sink()
 
+# ------ SHAP analysis ------
+sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+cat("\n\n------ Aggregated SHAP analysis messages ------\n")
+tryCatch(
+  {
+    shap_out <- rbioClass_svm_shap_aggregated(
+      model = svm_m, X = svm_test[, -1], bg_X = svm_training[, -1],
+      parallelComputing = PSETTING, clusterType = "PSOCK",
+      n_cores = CORES, randomState = RANDOM_STATE,
+      plot.type = "both", plot.n = Inf,
+      plot.filename.prefix = "svm_m",
+      plot.bee.colorscale = "D",
+      plot.xLabel = NULL, plot.yLabel = NULL, plot.yTickLblSize = 12,
+      plot.Width = 410, plot.Height = 255
+    )
+  },
+  error = function(e) {
+    cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
+  },
+  warining = function(w) {
+    cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
+  }
+)
+sink()
+
 # ------ clean up the mess and export ------
 ## variables for display
 orignal_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
@@ -342,7 +367,6 @@ cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.t
 cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
 cat("\n\n")
 cat("Clustering analysis\n")
-# cat("PCA on SVM selected pairs\n")
 cat("-------------------------------------\n")
 cat("PCA on CV-SVM-rRF-FS selected feature saved to:\n")
 cat("\tOn all data:\n")
