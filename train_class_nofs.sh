@@ -386,7 +386,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_pca_biplot_ellipse_conf=0.9
 	cpu_cluster="FORK"
 	training_percentage=0.8
-	svm_cv_centre_scale=TRUE
+	svm_cv_centre_scale=FALSE
 	svm_cv_kernel="radial"
 	svm_cv_cross_k=10
 	svm_cv_tune_method="cross"

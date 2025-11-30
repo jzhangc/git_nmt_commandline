@@ -80,7 +80,7 @@ cpu_cluster="PSOCK"  # for parallel computing only, options are "FORK" or "PSOCK
 training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
 
 # -- SVM internal nested cross-validation and feature selection
-svm_cv_centre_scale=TRUE
+svm_cv_centre_scale=FALSE
 svm_cv_kernel="linear"  # options are "radial", "ploynomial", "radial", "sigmoid". "radial" aka RBF
 svm_cv_cross_k=10  # outer loop
 svm_cv_tune_method="cross"  # inner loop. options are "cross" (i.e. cross validation), "boot" (i.e. bootstrap), and "fix"
