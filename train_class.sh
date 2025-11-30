@@ -794,7 +794,7 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- error handling --
 if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. ${NO_COLOUR}\n\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`
@@ -808,7 +808,7 @@ svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM analysis failed. Program terminated. ${NO_COLOUR}\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`

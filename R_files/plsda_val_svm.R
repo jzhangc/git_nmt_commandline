@@ -181,6 +181,7 @@ tryCatch(
     adjCV = is_adj_cv,
     perm.plot = FALSE,
     parallelComputing = PSETTING, n_cores = CORES, clusterType = CPU_CLUSTER,
+    randomState = RANDOM_STATE,
     verbose = FALSE
   ),
   error = function(e) {
@@ -250,8 +251,8 @@ tryCatch(
     plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
     plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE,
     plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-    plot.Width = 80 * plsda_m_optim$ncomp,
-    plot.Height = 100,
+    plot.Width = 170 * plsda_m_optim$ncomp,
+    plot.Height = 150,
     verbose = TRUE
   ),
   error = function(e) {

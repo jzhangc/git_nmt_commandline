@@ -116,8 +116,7 @@ RFFS_HTMAP_HEIGHT <- as.numeric(args[76])
 # random state
 RANDOM_STATE <- as.numeric(args[77])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -167,7 +166,7 @@ svm_m_cv <- rbioClass_svm_cv(
 )
 sink()
 
-# permuation test and plotting
+# permutation test and plotting
 if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
   cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -188,7 +187,8 @@ rbioUtil_perm_plot(
   plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
   plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT
+  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT,
+  verbose = FALSE
 )
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -297,8 +297,6 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
   paste0(levels(test_y)[i], "(", summary(test_y)[i], ")")
 
 ## export to results files if needed
-# y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
-#                            check.names = FALSE)
 write.csv(file = "ml_training.csv", training, row.names = FALSE)
 write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(
@@ -318,16 +316,13 @@ cat("-------------------------------------\n")
 cat("ML file dimensions: ", dim(ml_dfm), "\n")
 cat("Group labels (size): ", orignal_y_summary, "\n")
 cat("\n\n")
-cat("Label randomization\n")
-cat("-------------------------------------\n")
-cat("Training and test files saved to: ml_training.csv ml_test.csv\n")
-cat("\n\n")
-cat("Data split\n")
+cat("Training-test sets split with class stratification\n")
 cat("-------------------------------------\n")
 if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) cat("Invalid percentage. Use default instead.\n")
 cat("Training set percentage: ", TRAINING_PERCENTAGE, "\n")
 cat("Training set: ", training_summary, "\n")
 cat("test set: ", test_summary, "\n")
+cat("Training and test files saved to: ml_training.csv ml_test.csv\n")
 cat("\n\n")
 cat("SVM modelling with nested cross-validation\n")
 cat("-------------------------------------\n")

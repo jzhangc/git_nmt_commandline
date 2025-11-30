@@ -99,7 +99,7 @@ UNI_ALPHA <- as.numeric(args[59])
 # random state
 RANDOM_STATE <- as.numeric(args[60])
 
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -221,7 +221,7 @@ svm_m_cv <- rbioClass_svm_cv(
   verbose = TRUE
 )
 
-# permuation test and plotting
+# permutation test and plotting
 if (SVM_PERM_METHOD != "by_y") {
   cat("WARNING: SVM_PERM_METHOD can only be 'by_y' for regression. Proceed as such.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -242,7 +242,8 @@ rbioUtil_perm_plot(
   plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
   plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT
+  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT,
+  verbose = FALSE
 )
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -365,6 +366,8 @@ output_for_dl <- ml_dfm[, c("sampleid", "y", svm_rf_selected_features)]
 
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
+write.csv(file = "ml_training.csv", training, row.names = FALSE)
+write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(
   list = c("svm_m", "svm_rf_selected_features", "svm_training", "svm_test", "svm_nested_cv_fs", "svm_m_cv"),
   file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
@@ -381,14 +384,12 @@ cat("ML data file summary\n")
 cat("-------------------------------------\n")
 cat("ML file dimensions: ", dim(ml_dfm), "\n")
 cat("\n\n")
-cat("Label randomization\n")
-cat("-------------------------------------\n")
-cat("Randomized y order saved to file: ml_randomized_group_label_order.csv\n")
-cat("\n\n")
-cat("Data split\n")
+cat("Training-test sets split with sample randomization according to y\n")
 cat("-------------------------------------\n")
 if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) cat("Invalid percentage. Use default instead.\n")
 cat("Training set percentage: ", TRAINING_PERCENTAGE, "\n")
+cat("Training and test files saved to: ml_training.csv ml_test.csv\n")
+cat("Randomized y order saved to file: ml_randomized_group_label_order.csv\n")
 cat("\n\n")
 cat("SVM nested cross validation with rRF-FS\n")
 cat("-------------------------------------\n")

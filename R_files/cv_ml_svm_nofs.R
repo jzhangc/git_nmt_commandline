@@ -116,8 +116,7 @@ RFFS_HTMAP_HEIGHT <- as.numeric(args[76])
 # random state
 RANDOM_STATE <- as.numeric(args[77])
 
-###### R script --------
-# ------ set random state if available
+# ------ set random state if available ------
 if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
@@ -163,7 +162,7 @@ svm_m_cv <- rbioClass_svm_cv(
 )
 sink()
 
-# -- permuation test and plotting --
+# -- permutation test and plotting --
 if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
   cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -183,7 +182,8 @@ rbioUtil_perm_plot(
   plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
   plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT
+  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT,
+  verbose = FALSE
 )
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -300,10 +300,6 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
   paste0(levels(orignal_y)[i], "(", summary(orignal_y)[i], ")")
 
 ## export to results files if needed
-# y_randomized <- data.frame(`New order` = seq(length(ml_dfm_randomized$y)), `Randomized group labels` = ml_dfm_randomized$y,
-#                            check.names = FALSE)
-# save(list = c("svm_m", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
-#      file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata"))
 svm_training <- ml_dfm
 save(
   list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc"),
