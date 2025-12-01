@@ -257,6 +257,7 @@ for (i in 1:length(final_cv_auc)) {
 cat("\n-- On training data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_training",
+  center.scale.newdata = SVM_CV_CENTRE_SCALE,
   plot.smooth = SVM_ROC_SMOOTH,
   plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
   plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,

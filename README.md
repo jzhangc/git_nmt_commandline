@@ -32,6 +32,7 @@ Please cite the following if you are to use this application:
           - Exported SVM model file (.RData) now include data processing config information
           - Default value for svm_cv_centre_scale from the config file set to FALSE
             - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
+          - A bug fixed when program crashes with svm_cv_centre_scale set to FALSE
 
 
     - 0.5.0 (Nov 16, 2025)
