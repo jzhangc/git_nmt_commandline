@@ -327,7 +327,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	htmap_lab_row=FALSE
 	htmap_textsize_row=0.2
 	htmap_keysize=1.5
-	htmap_key_xlab="Normalized connectivity value"
+	htmap_key_xlab="Processed values"
 	htmap_key_ylab="Pair count"
 	htmap_margin="c(4, 5)"
 	htmap_width=6

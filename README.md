@@ -15,21 +15,24 @@ Please cite the following if you are to use this application:
           - Code base complexity substantially reduced
             - Common utility prcoesses unified into expanded utility scripts
 
+        - Modelling module updates
+          - Exported SVM model file (.RData) now include data processing config information
+
         - Prediction modules updates
           - Prediction modules reads the data processing config information from the SVM model file for data processing
           - Prediction modules reads the data processing config information from the SVM model file for inferencing
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-251130
+    - 0.5.x-251201
         - General updates
           - Application display updated with more accuracy
+          - Default htmap_key_xlab set to "Processed values" for 2D modules
         
         - Data processing modules updates
           - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
 
         - Modelling module updates
-          - Exported SVM model file (.RData) now include data processing config information
           - Default value for svm_cv_centre_scale from the config file set to FALSE
             - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
           - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE

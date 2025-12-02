@@ -3,7 +3,7 @@
 # Usage: Adjust the values for the variables
 #
 # ------ Random state ------
-random_state=99 # 0 is FALSE, or a >0 random integer
+random_state=1 # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
 minmax_norm=TRUE
@@ -18,7 +18,7 @@ htmap_textsize_col=0.3
 htmap_textangle_col=90
 htmap_textsize_row=0.2
 htmap_keysize=2
-htmap_key_xlab="Normalized AEC"
+htmap_key_xlab="Processed values"
 htmap_key_ylab="Count"
 htmap_margin="c(4, 5)"
 htmap_width=6
@@ -74,7 +74,7 @@ sig_pca_biplot_ellipse_conf=0.9
 
 # ------ Settings for SVM machine learning analysis ------
 # -- General settings --
-cpu_cluster="PSOCK"  # for parallel computing only, options are "FORK" or "PSOCK"
+cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
 
 # -- Data processing --
 training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
