@@ -28,6 +28,7 @@ Please cite the following if you are to use this application:
         - General updates
           - Application display updated with more accuracy
           - Default htmap_key_xlab set to "Processed values" for 2D modules
+          - A bug fixed where random state no longer works
         
         - Data processing modules updates
           - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
