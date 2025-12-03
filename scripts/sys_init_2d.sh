@@ -9,12 +9,7 @@ source ./src/utils
 source ./src/global_var
 source ./zzz
 
-# -- dependency file id variables --
-# file arrays
-# bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
-
-# initiate mandatory variable check variable. initial value 1 (false)
+# -- initiate mandatory variable check variable. initial value 1 (false) --
 CONF_CHECK=1
 
 # --- flag check and flag variables (unfinished) ---
