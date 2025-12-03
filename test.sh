@@ -5,9 +5,9 @@
 
 # ------ variables ------
 # load utils and zzz config file
-source ./global_var
-source ./sys_init_2d.sh
-source ./utils
+source ./src/global_var
+source ./src/sys_init_2d.sh
+source ./src/utils
 source ./zzz
 
 

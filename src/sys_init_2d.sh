@@ -5,8 +5,8 @@
 
 # ------ variables ------
 # load utils and zzz config file
-source ./utils
-source ./global_var
+source ./src/utils
+source ./src/global_var
 source ./zzz
 
 # -- dependency file id variables --
@@ -158,3 +158,6 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
 	exit 1
 fi
+
+# ------ system check ------
+source ./src/sys_check.sh
