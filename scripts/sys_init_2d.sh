@@ -148,16 +148,3 @@ else
 		esac
 	done
 fi
-
-if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
-
-if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
-	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
-	exit 1
-fi
-
-# ------ system check ------
-source ./src/sys_check.sh

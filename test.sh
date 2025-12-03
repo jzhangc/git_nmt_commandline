@@ -3,21 +3,14 @@
 # Discription: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
+
 # ------ variables ------
 # load utils and zzz config file
-source ./src/global_var
-source ./src/sys_init_2d.sh
-source ./src/utils
 source ./zzz
+source ./src/global_var
+source ./src/utils
+source ./scripts/sys_init_2d.sh
 
-
-# ------ script ------
-# --- start time ---
-start_t=`date +%s`
-
-# --- integrity check and set up output dirs---
-integrity_check
-setup_dirs
 
 # --- initial message ---
 echo -e "\nYou are running ${COLOUR_BLUE_L}train_class.sh${NO_COLOUR}"
@@ -26,6 +19,15 @@ echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"
 echo -e "Today is: $CURRENT_DAY\n"
 echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
+
+# ------ system check ------
+echo "OUT_DIR=$OUT_DIR"
+source ./scripts/sys_check.sh
+
+
+# ------ config loading ------
+source ./scripts/config_init.sh
+echo "OUT_DIR=$OUT_DIR"
 
 
 # --- read input 2D files ---

@@ -3,6 +3,7 @@
 # Discription: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
+
 # --- config file and variables ---
 echo -e "\n"
 echo -e "Config file: ${COLOUR_GREEN_L}$CONFIG_FILENAME${NO_COLOUR}"

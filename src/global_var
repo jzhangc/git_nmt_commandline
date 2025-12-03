@@ -5,6 +5,9 @@
 # load utils and zzz config file
 source ./zzz
 
+# --- set up time ---
+start_t=`date +%s`
+
 # --- iniitate internal system variables ---
 VERSION=$VERSION
 CURRENT_DAY=$(date +%d-%b-%Y)
