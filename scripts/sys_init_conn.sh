@@ -8,24 +8,27 @@
 CONF_CHECK=1
 
 # --- flag check and flag variables (unfinished) ---
-# argument positional variable
-POSITIONAL=()
-
 # initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
 CORES=1  # this is for the parallel computing
 
 IFLAG=1
-CFLAG=1
+AFLAG=1
 SFLAG=1
 GFLAG=1
+NFLAG=1
+DFLAG=1
+RFLAG=1
+CFLAG=1
+
 # below: CV univariate reduction
 UFLAG=1
 CVUNI=FALSE
-KFLAG=1  # prior univariate knowledge
+KFLAG=1   # prior univariate knowledge
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
+
 
 # ------ set flag variable from command flags ------
 if [ $# -eq 0 ]; then
@@ -49,7 +52,7 @@ else
 			;;
 	esac
 
-	while getopts ":kup:i:a:s:g:c:m:o:" opt; do
+	while getopts ":kup:i:a:s:g:n:d:r:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -68,12 +71,34 @@ else
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
-				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .csv format.${NO_COLOUR}\n" >&2
+				if [ ${MAT_FILENAME: -4} != ".mat" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
+				
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
+				;;
+			a)
+				# if [[ $OPTARG == *"~"* ]]; then
+				# 	ANNOT_FILE=$(expand_path $OPTARG)
+				# else
+				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
+				# fi	
+				ANNOT_FILE=$(path_resolve $OPTARG)
+				if ! [ -f "$ANNOT_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				ANNOT_FILENAME=`basename "$ANNOT_FILE"`
+				if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				AFLAG=0
 				;;
 			s)
 				SAMPLE_ID=$OPTARG
@@ -82,6 +107,35 @@ else
 			g)
 				GROUP_ID=$OPTARG
 				GFLAG=0
+				;;
+			n)
+				# if [[ $OPTARG == *"~"* ]]; then
+				# 	NODE_FILE=$(expand_path $OPTARG)
+				# else
+				# 	NODE_FILE=$(get_abs_filename $OPTARG)
+				# fi	
+				NODE_FILE=$(path_resolve $OPTARG)
+				if ! [ -f "$NODE_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_RED}\nERROR: -n node annotation file not found.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NODE_FILENAME=`basename "$NODE_FILE"`
+				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				NFLAG=0
+				;;
+			d)
+				NODE_ID=$OPTARG
+				DFLAG=0
+				;;
+			r)
+				REGION_NAME=$OPTARG
+				RFLAG=0
 				;;
 			c)
 			 	CONTRAST=$OPTARG
@@ -122,7 +176,7 @@ else
 			u)
 				UFLAG=0
 				CVUNI=TRUE
-				;;
+				;;		
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1
@@ -140,8 +194,8 @@ else
 fi
 
 # ------ flag check -----
-if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 

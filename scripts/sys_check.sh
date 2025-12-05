@@ -3,24 +3,8 @@
 # Discription: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
-# ------ variables ------
-# load utils and zzz config file
-source ./src/utils
-source ./src/global_var
-source ./zzz
 
 # ------ system check ------
-# -- flag check --
-if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
-
-if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
-	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
-	exit 1
-fi
-
 # --- Rscript check ---
 echo -e "\n"
 echo -e "R environment check"
