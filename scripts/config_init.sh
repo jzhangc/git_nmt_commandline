@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Name: train_class.sh
-# Discription: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
+# Name: config_init.sh
+# Discription: Initialize config file
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
-
+# Note: all sub scripts can assess the parent scope variables directly
 
 # --- config file and variables ---
 echo -e "\n"
@@ -14,7 +14,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $random_state || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $minmax_norm || -z $zscore_standardization || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $pca_scale_data || -z $pca_centre_data || -z $pca_pc \
 	|| -z $pca_biplot_samplelabel_type || -z $pca_biplot_samplelabel_size || -z $pca_biplot_symbol_size \
@@ -59,7 +59,9 @@ fi
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
-  	random_state=0
+  	random_state=1
+	minmax_norm=TRUE
+	zscore_standardization=TRUE
 	log2_trans=FALSE
 	uni_analysis=FALSE
 	htmap_textsize_col=0.5
@@ -67,7 +69,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	htmap_lab_row=FALSE
 	htmap_textsize_row=0.2
 	htmap_keysize=1.5
-	htmap_key_xlab="Normalized connectivity value"
+	htmap_key_xlab="Processed values"
 	htmap_key_ylab="Pair count"
 	htmap_margin="c(4, 5)"
 	htmap_width=6
@@ -113,7 +115,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	sig_pca_biplot_ellipse_conf=0.9
 	cpu_cluster="FORK"
 	training_percentage=0.8
-	svm_cv_centre_scale=TRUE
+	svm_cv_centre_scale=FALSE
 	svm_cv_kernel="radial"
 	svm_cv_cross_k=10
 	svm_cv_tune_method="cross"
@@ -200,10 +202,16 @@ if [ $CONF_CHECK -eq 1 ]; then
 else
   echo -e "Variables loaded from the config file:"
 fi
+if  [ $KFLAG -eq 0 ] && [ $uni_analysis == FALSE ]; then
+	echo -e "${COLOUR_YELLOW}WARNING: when -k is set, uni_analysis automatically set to TRUE.${NO_COLOUR}\n"
+	uni_analysis=TRUE
+fi
 # below: place loaders
 echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
 echo -e "\nData processing"
+echo -e "\tminmax_norm=$minmax_norm"
+echo -e "\tzscore_standardization=$zscore_standardization"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\tunianalysis=$uni_analysis"
 echo -e "\nClustering analysis for all connections"
