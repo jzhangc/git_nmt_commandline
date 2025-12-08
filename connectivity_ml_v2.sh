@@ -6,6 +6,7 @@
 
 # ------ variables ------
 # -- load utils and zzz config file --
+APP_NAME="connectivity_ml.sh"
 source ./zzz
 source ./src/global_var
 source ./src/utils
@@ -16,9 +17,8 @@ source ./scripts/sys_init_conn.sh
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R plsda_val_svm.R)
 
-
-# --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}connectivity_ml.sh${NO_COLOUR}"
+# ------ initial message ------
+echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
 echo -e "Output direcotry: $OUT_DIR"
@@ -26,16 +26,12 @@ echo -e "Today is: $CURRENT_DAY\n"
 echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
 # ------ system check ------
-# echo "OUT_DIR=$OUT_DIR"
 source ./scripts/sys_check.sh
-
 
 # ------ config loading ------
 source ./scripts/config_init.sh
-# echo "OUT_DIR=$OUT_DIR"
 
-
-# --- read input files ---
+# ------ read input files ------
 # -- input mat and annot files processing --
 echo -e "--------------------- source script: input_dat_process.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/input_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
@@ -92,7 +88,7 @@ if ! [ -f "$dat_2d_file" ]; then
 fi
 
 
-# --- univariant analysis ---
+# ------ univariant analysis ------
 echo -e "\n"
 echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
@@ -167,7 +163,7 @@ echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILEN
 echo -e "=========================================================================="
 
 
-# --- SVM machine learning analysis ---
+# ------ SVM machine learning analysis ------
 echo -e "\n"
 echo -e "CV-rRF-FS-SVM machine learning"
 echo -e "=========================================================================="
@@ -251,7 +247,7 @@ echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
-
+# ------ PLS-DA machine learning analysis ------
 echo -e "\n"
 echo -e "PLS-DA machine learning for SVM results evaluation"
 echo -e "=========================================================================="

@@ -1,36 +1,27 @@
 #!/usr/bin/env bash
 # Name: train_class_nofs.sh
 # Discription: train_class.sh but without feature selection. 
+# Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 # Note: all sub scripts can assess the parent scope variables directly
 
 # ------ variables ------
 # -- load utils and zzz config file --
+APP_NAME="train_class_nofs.sh"
 source ./zzz
 source ./src/global_var
 source ./src/utils
 source ./scripts/sys_init_2d.sh
-
 
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
 
-# --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}train_class.sh${NO_COLOUR}"
-echo -e "Version: $VERSION"
-echo -e "Current OS: $PLATFORM"
-echo -e "Output direcotry: $OUT_DIR"
-echo -e "Today is: $CURRENT_DAY\n"
-echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-
 # ------ system check ------
-# echo "OUT_DIR=$OUT_DIR"
 source ./scripts/sys_check.sh
 
 # ------ config loading ------
 source ./scripts/config_init.sh
-# echo "OUT_DIR=$OUT_DIR"
 
 # ------ read input 2D files ------
 # -- input file processing --

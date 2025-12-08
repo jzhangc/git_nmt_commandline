@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Name: train_class.sh
-# Discription: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
+# Name: cv_train_class_nofs.sh
+# Discription: cv_train_class.sh but without feature selection. 
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 # Note: all sub scripts can assess the parent scope variables directly
 
 # ------ variables ------
 # -- load utils and zzz config file --
-APP_NAME="train_class.sh"
+APP_NAME="cv_train_class_nofs.sh"
 source ./zzz
 source ./src/global_var
 source ./src/utils
@@ -15,7 +15,7 @@ source ./scripts/sys_init_2d.sh
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R cv_ml_svm.R cv_plsda_val_svm.R)
 
 # ------ system check ------
 source ./scripts/sys_check.sh
@@ -23,8 +23,8 @@ source ./scripts/sys_check.sh
 # ------ config loading ------
 source ./scripts/config_init.sh
 
-# ------ read input 2D files ------
-# -- input file processing --
+# --- read input 2D files ---
+# -- input mat and annot files processing --
 echo -e "--------------------- source script: input_dat_process_2d.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" "$GROUP_ID" \
@@ -37,10 +37,10 @@ echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log  # add one blank lines to the log files
 group_summary=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable check variable. See the R script.
 if [ "$group_summary" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -s or -g variables not found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "na_values" ]; then
-	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Progream terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "single_value" ]; then
 	echo -e "${COLOUR_RED}\nERROR: only single class detected in the outcome variable. Program terminated.${NO_COLOUR}\n" >&2
@@ -57,9 +57,9 @@ echo -e "Input files"
 echo -e "=========================================================================="
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
-echo -e "$dat_dim"
-echo -e "\nSample metadata"
 echo -e "$group_summary\n"
+echo -e "\nSample metadata"
+echo -e "$mat_dim"
 echo -e "\nData processed and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
@@ -79,7 +79,7 @@ if ! [ -f "$dat_2d_file" ]; then
 fi
 
 
-# ------ inspection and univariant analysis ------
+# --- univariant analysis---
 echo -e "\n"
 echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
@@ -145,9 +145,10 @@ echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENA
 echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_2D.csv"
 echo -e "=========================================================================="
 
-# ------ SVM machine learning analysis ------
+
+# --- SVM machine learning analysis ---
 echo -e "\n"
-echo -e "CV-rRF-FS-SVM machine learning"
+echo -e "CV-SVM machine learning"
 echo -e "=========================================================================="
 echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
@@ -170,9 +171,9 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
-echo -en "CV-rRF-FS-SVM machine learning analysis..."
-echo -e "--------------------- source script: ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+echo -en "CV-SVM machine learning analysis..."
+echo -e "--------------------- source script: cv_ml_svm_nofs.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/cv_ml_svm_nofs.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -206,23 +207,12 @@ rscript_display=`echo "${r_var[@]}"`
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
-# -- error handling --
-if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. ${NO_COLOUR}\n\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1
-fi
 # -- set up variables for output svm model file
-svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM analysis failed. Program terminated. ${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`
@@ -232,15 +222,15 @@ if ! [ -f "$svm_model_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 echo -e "Done!"
-echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
+echo -e "SVM analysis results saved to file: cv_only_${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
-# ------ PLS-DA machine learning analysis ------
+
 echo -e "\n"
 echo -e "PLS-DA machine learning for SVM results evaluation"
 echo -e "=========================================================================="
-echo -e "SVM model file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
+echo -e "SVM model file: ${COLOUR_GREEN_L}cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
@@ -249,8 +239,8 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLS-DA analysis..."
-echo -e "--------------------- source script: plsda_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: cv_plsda_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/cv_plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \
@@ -292,7 +282,8 @@ echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
-# ------ end time and display ------
+
+# end time and display
 end_t=`date +%s`
 tot=`hms $((end_t-start_t))`
 echo -e "\n"
