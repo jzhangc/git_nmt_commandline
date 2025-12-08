@@ -17,14 +17,6 @@ source ./scripts/sys_init_conn.sh
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R plsda_val_svm.R)
 
-# ------ initial message ------
-echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
-echo -e "Version: $VERSION"
-echo -e "Current OS: $PLATFORM"
-echo -e "Output direcotry: $OUT_DIR"
-echo -e "Today is: $CURRENT_DAY\n"
-echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-
 # ------ system check ------
 source ./scripts/sys_check.sh
 

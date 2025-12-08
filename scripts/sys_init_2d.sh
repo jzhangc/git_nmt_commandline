@@ -3,6 +3,14 @@
 # Discription: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
+# ------ initial message ------
+echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
+echo -e "Version: $VERSION"
+echo -e "Current OS: $PLATFORM"
+echo -e "Output direcotry: $OUT_DIR"
+echo -e "Today is: $CURRENT_DAY\n"
+echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
+
 # ------ variables ------
 # -- initiate mandatory variable check variable. initial value 1 (false) --
 CONF_CHECK=1
@@ -149,11 +157,3 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
 	exit 1
 fi
-
-# ------ initial message ------
-echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
-echo -e "Version: $VERSION"
-echo -e "Current OS: $PLATFORM"
-echo -e "Output direcotry: $OUT_DIR"
-echo -e "Today is: $CURRENT_DAY\n"
-echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"

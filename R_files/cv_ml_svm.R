@@ -436,7 +436,7 @@ tryCatch(
       model = svm_m, X = final_svm_data[, -1], bg_X = final_svm_data[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES,
-      randomState = RANDOM_STATE, 
+      randomState = RANDOM_STATE,
       plot.type = "both", plot.n = Inf,
       plot.filename.prefix = "svm_m",
       plot.bee.colorscale = "D",
