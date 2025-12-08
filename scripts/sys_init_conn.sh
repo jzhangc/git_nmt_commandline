@@ -7,7 +7,6 @@
 echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
 echo -e "Version: $VERSION"
 echo -e "Current OS: $PLATFORM"
-echo -e "Output direcotry: $OUT_DIR"
 echo -e "Today is: $CURRENT_DAY\n"
 echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
@@ -211,3 +210,6 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
 	exit 1
 fi
+
+# ------ display output folder ------
+echo -e "Output direcotry: ${COLOUR_BLUE_L}$OUT_DIR${NO_COLOUR}"
