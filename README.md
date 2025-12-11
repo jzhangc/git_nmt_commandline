@@ -24,7 +24,7 @@ Please cite the following if you are to use this application:
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-251201
+    - 0.5.x-251210
         - General updates
           - Code base complexity substantially reduced
             - Common utility prcoesses unified into expanded utility scripts for classification modules
