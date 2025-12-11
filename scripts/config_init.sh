@@ -61,7 +61,7 @@ if [ $CONF_CHECK -eq 1 ]; then
   # set the values back to default
   	random_state=1
 	minmax_norm=TRUE
-	zscore_standardization=TRUE
+	zscore_standardization=FALSE
 	log2_trans=FALSE
 	uni_analysis=FALSE
 	htmap_textsize_col=0.5
@@ -348,3 +348,9 @@ echo -e "\tplsda_vip_plot_y_tick_label_size=$plsda_vip_plot_y_tick_label_size"
 echo -e "\tplsda_vip_plot_width=$plsda_vip_plot_width"
 echo -e "\tplsda_vip_plot_height=$plsda_vip_plot_height"
 echo -e "=========================================================================="
+
+
+# ------ message display ------
+if [[ $minmax_norm == TRUE && $zscore_standardization == TRUE ]]; then
+	echo -e "${COLOUR_YELLOW}\nWARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only. ${NO_COLOUR}\n" >&2
+fi 

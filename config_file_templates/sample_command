@@ -1,7 +1,5 @@
 # ------ classification ------
-
 # -- 2d file --
-
 ./train_class.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/freq_4_beta_power.csv" \
 -s "subjectid" -g "groupid" \
