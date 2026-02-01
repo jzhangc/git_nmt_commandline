@@ -19,6 +19,12 @@ require(limma)
 CORE_OUT_OF_RANGE <- FALSE
 
 # ------ processing varaibles ------
+# --- file name variables ---
+DAT_FILE <- args[6] # ML file
+
+# --- directory variables ---
+RES_OUT_DIR <- args[8]
+
 # NOTE: convert string to expression using eval(parse(text = "string"))
 # -- from flags --
 PSETTING <- eval(parse(text = args[9]))
@@ -33,15 +39,10 @@ CPU_CLUSTER <- args[11]
 TRAINING_PERCENTAGE <- as.numeric(args[12])
 if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) TRAINING_PERCENTAGE <- 0.8
 
-# ------ config lists ------
+# ------ config list ------
 CONFIG_LIST <- list(
-  DAT_FILE = args[6],
   MAT_FILE_NO_EXT = args[7],
-  RES_OUT_DIR = args[8],
-  CORE_OUT_OF_RANG = CORE_OUT_OF_RANGE,
-  PSETTING = PSETTING,
-  CORES = CORES,
-  CPU_CLUSTER = args[11],
+  TRAINING_PERCENTAGE = TRAINING_PERCENTAGE,
   SVM_CV_CENTRE_SCALE = eval(parse(text = args[13])),
   SVM_CV_KERNEL = args[14],
   SVM_CV_CROSS_K = as.numeric(args[15]),
@@ -111,21 +112,20 @@ CONFIG_LIST <- list(
   RANDOM_STATE = as.numeric(args[77])
 )
 
-
 # ------ set random state if available ------
 # if (RANDOM_STATE) {
 #   set.seed(RANDOM_STATE)
 # }
 if (CONFIG_LIST$RANDOM_STATE) {
-  set.seed(RANDOM_STATE)
+  set.seed(CONFIG_LIST$RANDOM_STATE)
 }
 
 # ------ set the output directory as the working directory ------
 # setwd(RES_OUT_DIR) # the folder that all the results will be exports to
-setwd(CONFIG_LIST$RES_OUT_DIR) # the folder that all the results will be exports to
+setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load and processed ML data files ------
-ml_dfm <- read.csv(file = CONFIG_LIST$DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
+ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
@@ -157,8 +157,8 @@ if (input_n_total_features == 1) {
         fs.method = "rf", cross.best.model.method = CONFIG_LIST$SVM_CV_BEST_MODEL_METHOD,
         rf.ifs.ntree = CONFIG_LIST$SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = CONFIG_LIST$SVM_CV_FS_RF_SFS_NTREE,
         fs.count.cutoff = CONFIG_LIST$SVM_CV_FS_COUNT_CUTOFF,
-        parallelComputing = CONFIG_LIST$PSETTING, n_cores = CONFIG_LIST$CORES,
-        clusterType = CONFIG_LIST$CPU_CLUSTER,
+        parallelComputing = PSETTING, n_cores = CORES,
+        clusterType = CPU_CLUSTER,
         verbose = TRUE
       )
     },
@@ -248,8 +248,8 @@ svm_m_cv <- rbioClass_svm_cv(
   center.scale = CONFIG_LIST$SVM_CV_CENTRE_SCALE, kernel = CONFIG_LIST$SVM_CV_KERNEL, cross.k = CONFIG_LIST$SVM_CROSS_K, 
   cross.best.model.method = CONFIG_LIST$SVM_CV_BEST_MODEL_METHOD,
   tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD, tune.cross.k = CONFIG_LIST$SVM_TUNE_CROSS_K, tune.boot.n = CONFIG_LIST$SVM_TUNE_BOOT_N,
-  parallelComputing = CONFIG_LIST$PSETTING, n_cores = CONFIG_LIST$CORES,
-  clusterType = CONFIG_LIST$CPU_CLUSTER,
+  parallelComputing = PSETTING, n_cores = CORES,
+  clusterType = CPU_CLUSTER,
   verbose = TRUE
 )
 sink()
@@ -263,7 +263,7 @@ if (input_n_total_features == 1 && CONFIG_LIST$SVM_PERM_METHOD == "by_feature_pe
 
 rbioClass_svm_perm(
   object = svm_m, perm.method = CONFIG_LIST$SVM_PERM_METHOD, nperm = CONFIG_LIST$SVM_PERM_N,
-  parallelComputing = CONFIG_LIST$PSETTING, clusterType = CONFIG_LIST$CPU_CLUSTER, n_cores = CONFIG_LIST$CORES,
+  parallelComputing = PSETTING, clusterType = CPU_CLUSTER, n_cores = CORES,
   perm.plot = FALSE,
   verbose = FALSE
 )
@@ -435,8 +435,8 @@ tryCatch(
   {
     shap_out <- rbioClass_svm_shap_aggregated(
       model = svm_m, X = final_svm_data[, -1], bg_X = final_svm_data[, -1],
-      parallelComputing = CONFIG_LIST$PSETTING, clusterType = "PSOCK",
-      n_cores = CONFIG_LIST$CORES,
+      parallelComputing = PSETTING, clusterType = "PSOCK",
+      n_cores = CORES,
       randomState = CONFIG_LIST$RANDOM_STATE,
       plot.type = "both", plot.n = Inf,
       plot.filename.prefix = "svm_m",
@@ -565,7 +565,7 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 
 ## FS count plot
 rbioUtil_fscount_plot(svm_nested_cv_fs,
-  export.name = paste0("cv_only_", MAT_FILE_NO_EXT),
+  export.name = paste0("cv_only_", CONFIG_LIST$MAT_FILE_NO_EXT),
   plot.yLabelSize = 20, plot.xLabelSize = 20,
   plot.Width = 170, plot.Height = 150
 )
@@ -582,7 +582,7 @@ save(
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension
 # cat("First five variable names: ", names(raw_sample_dfm)[1:5])
-if (CONFIG_LIST$CORE_OUT_OF_RANGE) {
+if (CORE_OUT_OF_RANGE) {
   cat("WARNING: CPU core number out of range! Set to maximum cores - 1. \n")
   cat("-------------------------------------\n\n")
 }
