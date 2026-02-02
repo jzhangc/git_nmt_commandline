@@ -302,7 +302,7 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 ## export to results files if needed
 svm_training <- ml_dfm
 save(
-  list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc"),
+  list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc", "CONFIG_LIST"),
   file = paste0("cv_only_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
@@ -313,6 +313,7 @@ if (CORE_OUT_OF_RANGE) {
   cat("WARNING: CPU core number out of range! Set to maximum cores - 1. \n")
   cat("-------------------------------------\n\n")
 }
+cat("Random State: ", CONFIG_LIST$RANDOM_STATE, "\n")
 cat("ML data file summary\n")
 cat("-------------------------------------\n")
 cat("ML file dimensions: ", dim(ml_dfm), "\n")
