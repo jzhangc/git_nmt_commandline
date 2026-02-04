@@ -115,8 +115,6 @@ CONFIG_LIST <- list(
   RANDOM_STATE = as.numeric(args[77])
 )
 
-
-
 # ------ set random state if available ------
 if (CONFIG_LIST$RANDOM_STATE) {
   set.seed(CONFIG_LIST$RANDOM_STATE)
