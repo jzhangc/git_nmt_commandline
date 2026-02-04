@@ -15,7 +15,7 @@ source ./scripts/sys_init_conn.sh
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm_v2.R plsda_val_svm.R)
 
 # ------ system check ------
 source ./scripts/sys_check.sh
@@ -181,8 +181,8 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "CV-rRF-FS-SVM machine learning analysis..."
-echo -e "--------------------- source script: ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: ml_svm_v2.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/ml_svm_v2.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
