@@ -20,7 +20,6 @@ CORE_OUT_OF_RANGE <- FALSE
 
 # --- file name variables ---
 DAT_FILE <- args[6] # ML file
-MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
 # --- directory variables ---
 RES_OUT_DIR <- args[8]
@@ -40,85 +39,84 @@ CPU_CLUSTER <- args[11]
 TRAINING_PERCENTAGE <- as.numeric(args[12])
 if (TRAINING_PERCENTAGE <= options()$ts.eps || TRAINING_PERCENTAGE == 1) TRAINING_PERCENTAGE <- 0.8
 
-SVM_CV_CENTRE_SCALE <- eval(parse(text = args[13]))
-SVM_CV_KERNEL <- args[14]
-SVM_CV_CROSS_K <- as.numeric(args[15])
-SVM_CV_TUNE_METHOD <- args[16]
-SVM_CV_TUNE_CROSS_K <- as.numeric(args[17])
-SVM_CV_TUNE_BOOT_N <- as.numeric(args[18])
-SVM_CV_FS_RF_IFS_NTREE <- as.numeric(args[19])
-SVM_CV_FS_RF_SFS_NTREE <- as.numeric(args[20])
-SVM_CV_BEST_MODEL_METHOD <- args[21]
-SVM_CV_FS_COUNT_CUTOFF <- as.numeric(args[22])
-
-SVM_CROSS_K <- as.numeric(args[23])
-SVM_TUNE_CROSS_K <- as.numeric(args[24])
-SVM_TUNE_BOOT_N <- as.numeric(args[25])
-
-SVM_PERM_METHOD <- args[26] # OPTIONS ARE "BY_Y" AND "BY_FEATURE_PER_Y"
-SVM_PERM_N <- as.numeric(args[27])
-SVM_PERM_PLOT_SYMBOL_SIZE <- as.numeric(args[28])
-SVM_PERM_PLOT_LEGEND_SIZE <- as.numeric(args[29])
-SVM_PERM_PLOT_X_LABEL_SIZE <- as.numeric(args[30])
-SVM_PERM_PLOT_X_TICK_LABEL_SIZE <- as.numeric(args[31])
-SVM_PERM_PLOT_Y_LABEL_SIZE <- as.numeric(args[32])
-SVM_PERM_PLOT_Y_TICK_LABEL_SIZE <- as.numeric(args[33])
-SVM_PERM_PLOT_WIDTH <- as.numeric(args[34])
-SVM_PERM_PLOT_HEIGHT <- as.numeric(args[35])
-
-SVM_ROC_SMOOTH <- eval(parse(text = args[36]))
-SVM_ROC_SYMBOL_SIZE <- as.numeric(args[37])
-SVM_ROC_LEGEND_SIZE <- as.numeric(args[38])
-SVM_ROC_X_LABEL_SIZE <- as.numeric(args[39])
-SVM_ROC_X_TICK_LABEL_SIZE <- as.numeric(args[40])
-SVM_ROC_Y_LABEL_SIZE <- as.numeric(args[41])
-SVM_ROC_Y_TICK_LABEL_SIZE <- as.numeric(args[42])
-SVM_ROC_WIDTH <- as.numeric(args[43])
-SVM_ROC_HEIGHT <- as.numeric(args[44])
-
-PCA_SCALE_DATA <- eval(parse(text = args[45]))
-PCA_CENTRE_DATA <- eval(parse(text = args[46]))
-PCA_BIPLOT_SAMPLELABEL_TYPE <- args[47]
-PCA_BIPLOT_SAMPLELABEL_SIZE <- as.numeric(args[48])
-PCA_BIPLOT_SYMBOL_SIZE <- as.numeric(args[49])
-PCA_BIPLOT_ELLIPSE <- eval(parse(text = args[50]))
-PCA_BIPLOT_LOADING <- eval(parse(text = args[51]))
-PCA_BIPLOT_LOADING_TEXTSIZE <- as.numeric(args[52])
-PCA_BIPLOT_MULTI_DESITY <- eval(parse(text = args[53]))
-PCA_BIPLOT_MULTI_STRIPLABEL_SIZE <- as.numeric(args[54])
-PCA_RIGHTSIDE_Y <- eval(parse(text = args[55]))
-PCA_X_TICK_LABEL_SIZE <- as.numeric(args[56])
-PCA_Y_TICK_LABEL_SIZE <- as.numeric(args[57])
-PCA_WIDTH <- as.numeric(args[58])
-PCA_HEIGHT <- as.numeric(args[59])
-SVM_RFFS_PCA_PC <- eval(parse(text = args[60]))
-SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF <- as.numeric(args[61])
-
-# below: for if to do the univariate redution
-CVUNI <- eval(parse(text = args[62]))
-LOG2_TRANS <- eval(parse(text = args[63]))
-CONTRAST <- args[64]
-UNI_FDR <- eval(parse(text = args[65]))
-UNI_ALPHA <- as.numeric(args[66])
-
-# below: RFFS heatmap
-RFFS_HTMAP_TEXTSIZE_COL <- as.numeric(args[67])
-RFFS_HTMAP_TEXTANGLE_COL <- as.numeric(args[68])
-HTMAP_LAB_ROW <- eval(parse(text = args[69]))
-RFFS_HTMAP_TEXTSIZE_ROW <- as.numeric(args[70])
-RFFS_HTMAP_KEYSIZE <- as.numeric(args[71])
-RFFS_HTMAP_KEY_XLAB <- args[72]
-RFFS_HTMAP_KEY_YLAB <- args[73]
-RFFS_HTMAP_MARGIN <- eval(parse(text = args[74]))
-RFFS_HTMAP_WIDTH <- as.numeric(args[75])
-RFFS_HTMAP_HEIGHT <- as.numeric(args[76])
-
-# random state
-RANDOM_STATE <- as.numeric(args[77])
+#------ config list ------
+CONFIG_LIST <- list(
+  MAT_FILE_NO_EXT = args[7],
+  TRAINING_PERCENTAGE = TRAINING_PERCENTAGE,
+  SVM_CV_CENTRE_SCALE = eval(parse(text = args[13])),
+  SVM_CV_KERNEL = args[14],
+  SVM_CV_CROSS_K = as.numeric(args[15]),
+  SVM_CV_TUNE_METHOD = args[16],
+  SVM_CV_TUNE_CROSS_K = as.numeric(args[17]),
+  SVM_CV_TUNE_BOOT_N = as.numeric(args[18]),
+  SVM_CV_FS_RF_IFS_NTREE = as.numeric(args[19]),
+  SVM_CV_FS_RF_SFS_NTREE = as.numeric(args[20]),
+  SVM_CV_BEST_MODEL_METHOD = args[21],
+  SVM_CV_FS_COUNT_CUTOFF = as.numeric(args[22]),
+  SVM_CROSS_K = as.numeric(args[23]),
+  SVM_TUNE_CROSS_K = as.numeric(args[24]),
+  SVM_TUNE_BOOT_N = as.numeric(args[25]),
+  # below: OPTIONS ARE "BY_Y" AND "BY_FEATURE_PER_Y"
+  SVM_PERM_METHOD = args[26],
+  SVM_PERM_N = as.numeric(args[27]),
+  SVM_PERM_PLOT_SYMBOL_SIZE = as.numeric(args[28]),
+  SVM_PERM_PLOT_LEGEND_SIZE = as.numeric(args[29]),
+  SVM_PERM_PLOT_X_LABEL_SIZE = as.numeric(args[30]),
+  SVM_PERM_PLOT_X_TICK_LABEL_SIZE = as.numeric(args[31]),
+  SVM_PERM_PLOT_Y_LABEL_SIZE = as.numeric(args[32]),
+  SVM_PERM_PLOT_Y_TICK_LABEL_SIZE = as.numeric(args[33]),
+  SVM_PERM_PLOT_WIDTH = as.numeric(args[34]),
+  SVM_PERM_PLOT_HEIGHT = as.numeric(args[35]),
+  SVM_ROC_SMOOTH = eval(parse(text = args[36])),
+  SVM_ROC_SYMBOL_SIZE = as.numeric(args[37]),
+  SVM_ROC_LEGEND_SIZE = as.numeric(args[38]),
+  SVM_ROC_X_LABEL_SIZE = as.numeric(args[39]),
+  SVM_ROC_X_TICK_LABEL_SIZE = as.numeric(args[40]),
+  SVM_ROC_Y_LABEL_SIZE = as.numeric(args[41]),
+  SVM_ROC_Y_TICK_LABEL_SIZE = as.numeric(args[42]),
+  SVM_ROC_WIDTH = as.numeric(args[43]),
+  SVM_ROC_HEIGHT = as.numeric(args[44]),
+  PCA_SCALE_DATA = eval(parse(text = args[45])),
+  PCA_CENTRE_DATA = eval(parse(text = args[46])),
+  PCA_BIPLOT_SAMPLELABEL_TYPE = args[47],
+  PCA_BIPLOT_SAMPLELABEL_SIZE = as.numeric(args[48]),
+  PCA_BIPLOT_SYMBOL_SIZE = as.numeric(args[49]),
+  PCA_BIPLOT_ELLIPSE = eval(parse(text = args[50])),
+  PCA_BIPLOT_LOADING = eval(parse(text = args[51])),
+  PCA_BIPLOT_LOADING_TEXTSIZE = as.numeric(args[52]),
+  PCA_BIPLOT_MULTI_DESITY = eval(parse(text = args[53])),
+  PCA_BIPLOT_MULTI_STRIPLABEL_SIZE = as.numeric(args[54]),
+  PCA_RIGHTSIDE_Y = eval(parse(text = args[55])),
+  PCA_X_TICK_LABEL_SIZE = as.numeric(args[56]),
+  PCA_Y_TICK_LABEL_SIZE = as.numeric(args[57]),
+  PCA_WIDTH = as.numeric(args[58]),
+  PCA_HEIGHT = as.numeric(args[59]),
+  SVM_RFFS_PCA_PC = eval(parse(text = args[60])),
+  SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF = as.numeric(args[61]),
+  # below: for if to do the univariate redution
+  CVUNI = eval(parse(text = args[62])),
+  LOG2_TRANS = eval(parse(text = args[63])),
+  CONTRAST = args[64],
+  UNI_FDR = eval(parse(text = args[65])),
+  UNI_ALPHA = as.numeric(args[66]),
+  # below: RFFS heatmap
+  RFFS_HTMAP_TEXTSIZE_COL = as.numeric(args[67]),
+  RFFS_HTMAP_TEXTANGLE_COL = as.numeric(args[68]),
+  HTMAP_LAB_ROW = eval(parse(text = args[69])),
+  RFFS_HTMAP_TEXTSIZE_ROW = as.numeric(args[70]),
+  RFFS_HTMAP_KEYSIZE = as.numeric(args[71]),
+  RFFS_HTMAP_KEY_XLAB = args[72],
+  RFFS_HTMAP_KEY_YLAB = args[73],
+  RFFS_HTMAP_MARGIN = eval(parse(text = args[74])),
+  RFFS_HTMAP_WIDTH = as.numeric(args[75]),
+  RFFS_HTMAP_HEIGHT = as.numeric(args[76]),
+  # random state
+  RANDOM_STATE = as.numeric(args[77])
+)
 
 # ------ set random state if available ------
-if (RANDOM_STATE) {
-  set.seed(RANDOM_STATE)
+if (CONFIG_LIST$RANDOM_STATE) {
+  set.seed(CONFIG_LIST$RANDOM_STATE)
 }
 
 # ------ set the output directory as the working directory ------
@@ -141,21 +139,22 @@ final_svm_data <- ml_dfm[, !names(ml_dfm) %in% "sampleid"]
 # -- modelling --
 svm_m <- rbioClass_svm(
   x = final_svm_data[, -1, drop = FALSE], y = factor(final_svm_data$y, levels = unique(final_svm_data$y)),
-  center.scale = SVM_CV_CENTRE_SCALE, kernel = SVM_CV_KERNEL,
-  svm.cross.k = SVM_CROSS_K,
-  tune.method = SVM_CV_TUNE_METHOD,
-  tune.cross.k = SVM_TUNE_CROSS_K, tune.boot.n = SVM_TUNE_BOOT_N,
+  center.scale = CONFIG_LIST$SVM_CV_CENTRE_SCALE, kernel = CONFIG_LIST$SVM_CV_KERNEL,
+  svm.cross.k = CONFIG_LIST$SVM_CROSS_K,
+  tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD,
+  tune.cross.k = CONFIG_LIST$SVM_TUNE_CROSS_K, tune.boot.n = CONFIG_LIST$SVM_TUNE_BOOT_N,
   verbose = FALSE
 )
 
 # -- CV modelling --
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ CV modelling ------\n")
 # no fs only CV
 svm_m_cv <- rbioClass_svm_cv(
   x = final_svm_data[, -1], y = factor(final_svm_data$y, levels = unique(final_svm_data$y)),
-  center.scale = SVM_CV_CENTRE_SCALE, kernel = SVM_CV_KERNEL, cross.k = SVM_CROSS_K, cross.best.model.method = SVM_CV_BEST_MODEL_METHOD,
-  tune.method = SVM_CV_TUNE_METHOD, tune.cross.k = SVM_TUNE_CROSS_K, tune.boot.n = SVM_TUNE_BOOT_N,
+  center.scale = CONFIG_LIST$SVM_CV_CENTRE_SCALE, kernel = CONFIG_LIST$SVM_CV_KERNEL, cross.k = CONFIG_LIST$SVM_CROSS_K,
+  cross.best.model.method = CONFIG_LIST$SVM_CV_BEST_MODEL_METHOD,
+  tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD, tune.cross.k = CONFIG_LIST$SVM_TUNE_CROSS_K, tune.boot.n = CONFIG_LIST$SVM_TUNE_BOOT_N,
   parallelComputing = PSETTING, n_cores = CORES,
   clusterType = CPU_CLUSTER,
   verbose = TRUE
@@ -163,55 +162,55 @@ svm_m_cv <- rbioClass_svm_cv(
 sink()
 
 # -- permutation test and plotting --
-if (input_n_total_features == 1 && SVM_PERM_METHOD == "by_feature_per_y") {
+if (input_n_total_features == 1 && CONFIG_LIST$SVM_PERM_METHOD == "by_feature_per_y") {
   cat("WARNING: SVM_PERM_METHOD == 'by_feature_per_y' not valid with only one selected features. Set to 'by_y'.\n")
-  SVM_PERM_METHOD <- "by_y"
+  CONFIG_LIST$SVM_PERM_METHOD <- "by_y"
 }
 
 rbioClass_svm_perm(
-  object = svm_m, perm.method = SVM_PERM_METHOD, nperm = SVM_PERM_N,
+  object = svm_m, perm.method = CONFIG_LIST$SVM_PERM_METHOD, nperm = CONFIG_LIST$SVM_PERM_N,
   parallelComputing = PSETTING, clusterType = CPU_CLUSTER, n_cores = CORES,
   perm.plot = FALSE,
   verbose = FALSE
 )
 rbioUtil_perm_plot(
   perm_res = svm_m_perm,
-  plot.SymbolSize = SVM_PERM_PLOT_SYMBOL_SIZE,
-  plot.legendSize = SVM_PERM_PLOT_LEGEND_SIZE,
-  plot.xLabelSize = SVM_PERM_PLOT_X_LABEL_SIZE,
-  plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
-  plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT,
+  plot.SymbolSize = CONFIG_LIST$SVM_PERM_PLOT_SYMBOL_SIZE,
+  plot.legendSize = CONFIG_LIST$SVM_PERM_PLOT_LEGEND_SIZE,
+  plot.xLabelSize = CONFIG_LIST$SVM_PERM_PLOT_X_LABEL_SIZE,
+  plot.xTickLblSize = CONFIG_LIST$SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
+  plot.yLabelSize = CONFIG_LIST$SVM_PERM_PLOT_Y_LABEL_SIZE,
+  plot.yTickLblSize = CONFIG_LIST$SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
+  plot.Width = CONFIG_LIST$SVM_PERM_PLOT_WIDTH, plot.Height = CONFIG_LIST$SVM_PERM_PLOT_HEIGHT,
   verbose = FALSE
 )
 
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Permutation test results display ------\n")
 svm_m_perm
 sink()
 
 # ------ ROC-AUC ------
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ ROC-AUC results display ------\n")
 cat("-- On final CV models --\n")
 # cv roc-auc
 rbioClass_svm_cv_roc_auc(svm_m_cv,
-  plot.smooth = SVM_ROC_SMOOTH,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+  plot.smooth = CONFIG_LIST$SVM_ROC_SMOOTH,
+  plot.legendSize = CONFIG_LIST$SVM_ROC_LEGEND_SIZE,
+  plot.xLabelSize = CONFIG_LIST$SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = CONFIG_LIST$SVM_ROC_X_TICK_LABEL_SIZE,
+  plot.yLabelSize = CONFIG_LIST$SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = CONFIG_LIST$SVM_ROC_Y_TICK_LABEL_SIZE,
+  plot.Width = CONFIG_LIST$SVM_ROC_WIDTH, plot.Height = CONFIG_LIST$SVM_ROC_HEIGHT,
   verbose = FALSE
 )
 
 # mean cv auc with interporlation
 rbioClass_svm_cv_roc_auc_mean(
-  object = svm_m_cv, roc.smooth = SVM_ROC_SMOOTH,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+  object = svm_m_cv, roc.smooth = CONFIG_LIST$SVM_ROC_SMOOTH,
+  plot.legendSize = CONFIG_LIST$SVM_ROC_LEGEND_SIZE,
+  plot.xLabelSize = CONFIG_LIST$SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = CONFIG_LIST$SVM_ROC_X_TICK_LABEL_SIZE,
+  plot.yLabelSize = CONFIG_LIST$SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = CONFIG_LIST$SVM_ROC_Y_TICK_LABEL_SIZE,
+  plot.Width = CONFIG_LIST$SVM_ROC_WIDTH, plot.Height = CONFIG_LIST$SVM_ROC_HEIGHT,
   verbose = FALSE
 )
 
@@ -257,12 +256,12 @@ for (i in 1:length(final_cv_auc)) {
 cat("\n-- On training data --\n")
 rbioClass_svm_roc_auc(
   object = svm_m, fileprefix = "svm_m_training",
-  center.scale.newdata = SVM_CV_CENTRE_SCALE,
-  plot.smooth = SVM_ROC_SMOOTH,
-  plot.legendSize = SVM_ROC_LEGEND_SIZE, plot.SymbolSize = SVM_ROC_SYMBOL_SIZE,
-  plot.xLabelSize = SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = SVM_ROC_X_TICK_LABEL_SIZE,
-  plot.yLabelSize = SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = SVM_ROC_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_ROC_WIDTH, plot.Height = SVM_ROC_HEIGHT,
+  center.scale.newdata = CONFIG_LIST$SVM_CV_CENTRE_SCALE,
+  plot.smooth = CONFIG_LIST$SVM_ROC_SMOOTH,
+  plot.legendSize = CONFIG_LIST$SVM_ROC_LEGEND_SIZE, plot.SymbolSize = CONFIG_LIST$SVM_ROC_SYMBOL_SIZE,
+  plot.xLabelSize = CONFIG_LIST$SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = CONFIG_LIST$SVM_ROC_X_TICK_LABEL_SIZE,
+  plot.yLabelSize = CONFIG_LIST$SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = CONFIG_LIST$SVM_ROC_Y_TICK_LABEL_SIZE,
+  plot.Width = CONFIG_LIST$SVM_ROC_WIDTH, plot.Height = CONFIG_LIST$SVM_ROC_HEIGHT,
   verbose = FALSE
 )
 sink()
@@ -276,7 +275,7 @@ tryCatch(
     shap_out <- rbioClass_svm_shap_aggregated(
       model = svm_m, X = svm_training[, -1], bg_X = svm_training[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
-      n_cores = CORES, randomState = RANDOM_STATE,
+      n_cores = CORES, randomState = CONFIG_LIST$RANDOM_STATE,
       plot.type = "both", plot.n = Inf,
       plot.filename.prefix = "svm_m",
       plot.bee.colorscale = "D",
@@ -303,8 +302,8 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 ## export to results files if needed
 svm_training <- ml_dfm
 save(
-  list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc"),
-  file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
+  list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc", "CONFIG_LIST"),
+  file = paste0("cv_only_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
 ## cat the vairables to export to shell scipt
@@ -314,6 +313,7 @@ if (CORE_OUT_OF_RANGE) {
   cat("WARNING: CPU core number out of range! Set to maximum cores - 1. \n")
   cat("-------------------------------------\n\n")
 }
+cat("Random State: ", CONFIG_LIST$RANDOM_STATE, "\n")
 cat("ML data file summary\n")
 cat("-------------------------------------\n")
 cat("ML file dimensions: ", dim(ml_dfm), "\n")
@@ -323,7 +323,7 @@ cat("SVM modelling with nested cross-valdation\n")
 cat("-------------------------------------\n")
 svm_m
 cat("Total internal cross-validation accuracy: ", svm_m$tot.accuracy / 100, "\n")
-cat("Final SVM model saved to file: ", paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
+cat("Final SVM model saved to file: ", paste0("cv_only_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata\n"))
 cat("\n\n")
 cat("SVM permutation test\n")
 cat("-------------------------------------\n")
@@ -333,7 +333,7 @@ cat("Permutation plot saved to file: svm_m_perm.svm.perm.plot.pdf\n")
 cat("\n\n")
 cat("CV: ROC-AUC\n")
 cat("-------------------------------------\n")
-cat("NOTE: Check the SVM results file ", paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
+cat("NOTE: Check the SVM results file ", paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), " for AUC values.\n")
 cat("ROC figure saved to file (check SVM result file for AUC value): svm_m.svm.roc.pdf\n")
 cat("\n\n")
 cat("Clustering analysis\n")
@@ -346,4 +346,4 @@ cat("\t\tboxplot: pca_svm_rffs_all_samples.pca.boxplot.pdf\n")
 cat("\n\n")
 cat("Hierarchical clustering on CV-SVM-rRF-FS selected features saved to:\n")
 cat("\tOn all data:\n")
-cat("\t\t", paste0(MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
+cat("\t\t", paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples_heatmap.pdf"), "\n")
