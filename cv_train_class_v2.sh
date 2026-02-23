@@ -9,6 +9,7 @@
 APP_NAME="cv_train_class.sh"
 source ./zzz
 source ./src/global_var
+source ./src/help_var_class_2d
 source ./src/utils
 source ./scripts/sys_init_2d.sh
 

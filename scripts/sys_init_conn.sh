@@ -3,13 +3,6 @@
 # Discription: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
-# ----- initial message ------
-echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
-echo -e "Version: $VERSION"
-echo -e "Current OS: $PLATFORM"
-echo -e "Today is: $CURRENT_DAY\n"
-echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-
 # ------ variables ------
 # -- initiate mandatory variable check variable. initial value 1 (false) --
 CONF_CHECK=1
@@ -39,25 +32,34 @@ OUT_DIR=.  # set the default to output directory
 
 # ------ set flag variable from command flags ------
 if [ $# -eq 0 ]; then
-	echo -e $HELP
-	echo -e "\n"
-	echo -e "=========================================================================="
-	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-	exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+	# echo -e $HELP
+	# echo -e "\n"
+	# echo -e "=========================================================================="
+	# echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
+	# exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+	source ./scripts/trigger_help_info.sh
 else
 	case "$1" in  # "one off" flags
 		-h|--help)
-			echo -e $HELP
-			echo -e "\n"
-			echo -e "=========================================================================="
-			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-			exit 0
+			# echo -e $HELP
+			# echo -e "\n"
+			# echo -e "=========================================================================="
+			# echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
+			# exit 0
+			source ./scripts/trigger_help_info.sh
 			;;
 		-v|--version)
 			echo -e "Current version: $VERSION\n"
 			exit 0
 			;;
 	esac
+
+	# ----- initial message ------
+	echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
+	echo -e "Version: $VERSION"
+	echo -e "Current OS: $PLATFORM"
+	echo -e "Today is: $CURRENT_DAY\n"
+	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
 	while getopts ":kup:i:a:s:g:n:d:r:c:m:o:" opt; do
 		case $opt in

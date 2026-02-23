@@ -10,6 +10,7 @@
 APP_NAME="cv_connectivity_ml.sh"
 source ./zzz
 source ./src/global_var
+source ./src/help_var_class_conn
 source ./src/utils
 source ./scripts/sys_init_conn.sh
 
