@@ -1,5 +1,5 @@
 # ------ general info --------
-## name: ml_svm.R
+## name: cv_ml_svm.R
 ## purpose: svm modelling featuring rRF-FS
 
 ## flags from Rscript

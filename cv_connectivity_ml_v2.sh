@@ -182,7 +182,7 @@ fi
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"
-else
+elsec
 	echo -e "ON"
 fi
 echo -en "Parallel computing: "
