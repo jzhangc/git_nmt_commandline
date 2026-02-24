@@ -558,7 +558,7 @@ normdata_crosscv <- list(
 
 tryCatch(
   {
-    if (HTMAP_LAB_ROW) {
+    if (CONFIG_LIST$HTMAP_LAB_ROW) {
       rbioarray_hcluster(
         plotName = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_hclust_nestedcv_all_samples"),
         fltlist = normdata_crosscv, n = "all",
@@ -614,7 +614,7 @@ normdata_crosscv_training <- list(
   targets = data.frame(id = seq(nrow(training)), sample = training_sampleid),
   ArrayWeight = NULL
 )
-if (HTMAP_LAB_ROW) {
+if (CONFIG_LIST$HTMAP_LAB_ROW) {
   rbioarray_hcluster(
     plotName = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_hclust_nestedcv_training"),
     fltlist = normdata_crosscv_training, n = "all",
