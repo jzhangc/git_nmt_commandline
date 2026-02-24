@@ -268,7 +268,7 @@ sink()
 
 
 # ------ SHAP analysis ------
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Aggregated SHAP analysis messages ------\n")
 tryCatch(
   {

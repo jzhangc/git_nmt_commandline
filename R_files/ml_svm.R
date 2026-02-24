@@ -249,7 +249,7 @@ svm_m <- rbioClass_svm(
 )
 
 # CV modelling
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ CV modelling ------\n")
 svm_m_cv <- rbioClass_svm_cv(
   x = svm_training[, -1], y = factor(svm_training$y, levels = unique(svm_training$y)),
@@ -545,7 +545,7 @@ tryCatch(
 )
 sink()
 
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ hcluster error messages ------\n")
 # -- hcluster after nested CV: all data --
 rffs_selected_E <- rffs_selected_dfm[, -c(1:2)] # all sample: training + test

@@ -20,7 +20,6 @@ CORE_OUT_OF_RANGE <- FALSE
 
 # --- file name variables ---
 DAT_FILE <- args[6] # ML file
-MAT_FILE_NO_EXT <- args[7] # from the raw mat file, for naming export data
 
 # --- directory variables ---
 RES_OUT_DIR <- args[8]
@@ -299,7 +298,7 @@ rbioClass_svm_roc_auc(
 sink()
 
 # ------ SHAP analysis ------
-sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
+sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Aggregated SHAP analysis messages ------\n")
 tryCatch(
   {
