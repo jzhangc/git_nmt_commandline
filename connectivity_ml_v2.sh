@@ -11,7 +11,7 @@ source ./zzz
 source ./src/global_var
 source ./src/help_var_class_conn
 source ./src/utils
-source ./scripts/sys_init_conn.sh
+source ./scripts/sys_init_class_conn.sh
 
 # -- dependency file id variables --
 # file arrays
