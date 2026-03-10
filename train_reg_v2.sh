@@ -5,47 +5,11 @@
 
 # ------ variables ------
 # load utils and zzz config file
+APP_NAME="train_reg.sh"
 source ./src/utils
+source ./src/global_var
+source ./src/help_var_reg_2d
 source ./zzz
-
-# --- iniitate internal system variables ---
-# VERSION="0.4.0b11"
-VERSION=$VERSION
-CURRENT_DAY=$(date +%d-%b-%Y)
-PLATFORM="Unknown UNIX or UNIX-like system"
-UNAMESTR=`uname`  # use `uname` variable to detect OS type
-if [ $UNAMESTR == "Darwin" ]; then
-	PLATFORM="macOS"
-elif [ $UNAMESTR == "Linux" ]; then
-	PLATFORM="Linux"
-fi
-HELP="\n
-Format: ./train_reg.sh <INPUTS> [OPTIONS]\n
-Current version: $VERSION\n
-\n
--h, --help: This help information.\n
---version: Display current version number.\n
-\n
-<INPUTS>: Mandatory\n
--i <file>: Input 2D .csv file. \n
--s <string>: Sample ID variable name.\n
--y <string>: Continuous outcome (i.e. y) variable name.\n
-\n
-[OPTIONS]: Optional\n
--k: if to incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
--u: if to use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
--m <CONFIG>: Optoinal configuration file. NOTE: If no config file is supplied, the default settings are used. \n
--o <dir>: Optional output directory. Default is where the program is. \n
--p <int>: parallel computing, with core numbers.\n"
-CITE=$CITE
-
-# below: some colours
-COLOUR_YELLOW="\033[1;33m"
-COLOUR_ORANGE="\033[0;33m"
-COLOUR_RED="\033[0;31m"
-COLOUR_GREEN_L="\033[1;32m"
-COLOUR_BLUE_L="\033[1;34m"
-NO_COLOUR="\033[0;0m"
 
 # --- dependency file id variables ---
 # file arrays

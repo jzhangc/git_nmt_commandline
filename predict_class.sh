@@ -6,8 +6,9 @@
 
 # ------ variables ------
 # load utils and zzz config file
-source ./src/utils
+APP_NAME="predict_class.sh"
 source ./zzz
+source ./src/utils
 
 # --- iniitate internal system variables ---
 VERSION=$VERSION
@@ -20,7 +21,7 @@ elif [ $UNAMESTR == "Linux" ]; then
 	PLATFORM="Linux"
 fi
 HELP="\n
-Format: ./predict_class.sh <INPUTS> [OPTIONS]\n
+Format: $APP_NAME <INPUTS> [OPTIONS]\n
 Current version: $VERSION\n
 \n
 -h, --help: This help information.\n
