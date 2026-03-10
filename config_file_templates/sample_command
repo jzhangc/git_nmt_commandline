@@ -85,7 +85,19 @@
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/lstm_aec_phases_freq7_v4.csv" \
 -s "subject" -y "PCL" \
 -m "./config_file_templates/config_template_for_reg" \
--o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results/" -p 12
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results/res_reg" -p 12
+
+./cv_train_reg.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/lstm_aec_phases_freq7_v4.csv" \
+-s "subject" -y "PCL" \
+-m "./config_file_templates/config_template_for_reg" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results/res_reg" -p 12
+
+./cv_train_reg_nofs.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/lstm_aec_phases_freq7_v4.csv" \
+-s "subject" -y "PCL" \
+-m "./config_file_templates/config_template_for_reg" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results/res_reg" -p 12
 
 # - classification -
 ./train_class_v2.sh \

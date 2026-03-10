@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Name: cv_train_reg.sh
-# Discription: cv_train_reg.sh but without feature selection. 
+# Discription: A generalized version of cv_connectivity_ml_reg.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices.
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # load utils and zzz config file
-source ./src/utils
+source ./utils
 source ./zzz
 
 # --- iniitate internal system variables ---
@@ -274,7 +274,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $random_state || -z $minmax_norm || -z $zscore_standardization || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
+  if [[ -z $random_state || -z $zscore_standardization || -z $log2_trans || -z $uni_analysis || -z $htmap_textsize_col || -z $htmap_textangle_col || -z $htmap_lab_row \
 	|| -z $htmap_textsize_row || -z $htmap_keysize || -z $htmap_key_xlab || -z $htmap_key_ylab || -z $htmap_margin \
 	|| -z $htmap_width || -z $htmap_height || -z $uni_fdr || -z $uni_alpha || -z $uni_fold_change \
 	|| -z $sig_htmap_textsize_col || -z $sig_htmap_textangle_col || -z $sig_htmap_textsize_row || -z $sig_htmap_keysize \
@@ -314,7 +314,6 @@ if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
   	random_state=1
-	minmax_norm=TRUE
 	zscore_standardization=TRUE
 	log2_trans=FALSE
 	uni_analysis=FALSE
@@ -435,8 +434,7 @@ fi
 echo -e "Random state (0=FALSE)"
 echo -e "\trandom_state=$random_state"
 echo -e "\nData processing"
-echo -e "\tminmax_norm=$minmax_norm"
-echo -t "\tzscore_standardization=$zscore_standardization"
+echo -e "\tzscore_standardization=$zscore_standardization"
 echo -e "\tlog2_trans=$log2_trans"
 echo -e "\tunianalysis=$uni_analysis"
 echo -e "\nClustering analysis for all connections"
@@ -478,7 +476,7 @@ echo -e "\tsvm_cv_fs_rf_sfs_ntree=$svm_cv_fs_rf_sfs_ntree"
 echo -e "\tsvm_cv_best_model_method=$svm_cv_best_model_method"
 echo -e "\tsvm_cv_fs_count_cutoff=$svm_cv_fs_count_cutoff"
 echo -e "\tsvm_cross_k=$svm_cross_k"
-echo -e "\tsvm_tune_cross_k$svm_tune_cross_k"
+echo -e "\tsvm_tune_cross_k=$svm_tune_cross_k"
 echo -e "\tsvm_tune_boot_n=$svm_tune_boot_n"
 echo -e "\tsvm_perm_method=$svm_perm_method"
 echo -e "\tsvm_perm_n=$svm_perm_n"
@@ -548,12 +546,12 @@ echo -e "=======================================================================
 
 
 # --- read input 2D files ---
-# -- input mat and annot files processing --
+# -- input file processing --
 echo -e "--------------------- source script: reg_input_dat_process_2d.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/reg_input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" "$Y_VAR" \
 "${OUT_DIR}/OUTPUT" \
-"$minmax_norm" "$zscore_standardization" \
+"$zscore_standardization" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
@@ -596,7 +594,7 @@ if ! [ -f "$dat_2d_file" ]; then
 fi
 
 
-# --- univariant analysis ---
+# --- inspection and univariant analysis ---
 echo -e "\n"
 echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
@@ -647,7 +645,6 @@ if ! [ -f "$dat_ml_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 # -- additional display --
-# echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
 echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_w_prior.csv"
 # echo -e "Data for machine learning saved to file (wo univariate): ${MAT_FILENAME_WO_EXT}_2d_no_uni.csv"
 echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_2D.csv"
@@ -655,7 +652,7 @@ echo -e "=======================================================================
 
 # --- SVM machine learning analysis ---
 echo -e "\n"
-echo -e "CV-SVR machine learning (regression)"
+echo -e "CV-rRF-FS-SVR machine learning (regression)"
 echo -e "=========================================================================="
 echo -en "Univariate prior knowledge incorporation: "
 if [ $KFLAG -eq 1 ]; then
@@ -679,9 +676,9 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config.)"
 fi
-echo -en "CV-SVR machine learning analysis..."
-echo -e "--------------------- source script: cv_reg_ml_svm_nofs.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/cv_reg_ml_svm_nofs.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+echo -en "CV-rRF-FS-SVR machine learning analysis..."
+echo -e "--------------------- source script: cv_reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/cv_reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -716,7 +713,7 @@ svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: CV-SVR analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVR analysis failed. Program terminated.${NO_COLOUR}\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`
@@ -726,7 +723,7 @@ if ! [ -f "$svm_model_file" ]; then
 	exit 1  # exit 1: terminating with error
 fi
 echo -e "Done!"
-echo -e "SVR analysis results saved to file: cv_only_${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
+echo -e "SVM analysis results saved to file: cv_only_${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 

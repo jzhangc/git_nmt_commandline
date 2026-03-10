@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # load utils and zzz config file
-source ./src/utils
+source ./utils
 source ./zzz
 
 # --- iniitate internal system variables ---
