@@ -121,7 +121,7 @@
 -a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
 -s "sampleid" -g "groupid" -c "mtbi-control" \
 -n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
--m "./config_file_templates/config_template_for_classification" \
+-m "./config_file_templates/config_template_for_classification_connectivity" \
 -d "node_id" -r "region" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -u -p 12
 
@@ -130,6 +130,6 @@
 -a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
 -s "sampleid" -g "groupid" -c "mtbi-control" \
 -n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
--m "./config_file_templates/config_template_for_classification" \
+-m "./config_file_templates/config_template_for_classification_connectivity" \
 -d "node_id" -r "region" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -u -p 12

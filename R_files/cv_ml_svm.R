@@ -139,7 +139,7 @@ if (input_n_total_features == 1) {
   tryCatch(
     {
       nested_cv_x <- ml_dfm[, !colnames(ml_dfm) %in% c("sampleid", "y")]
-      nested_cv_y <- ml_dfm$y
+      nested_cv_y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
       svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
         x = nested_cv_x,
         y = nested_cv_y,
@@ -151,14 +151,36 @@ if (input_n_total_features == 1) {
         cross.k = CONFIG_LIST$SVM_CV_CROSS_K,
         tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD,
         tune.cross.k = CONFIG_LIST$SVM_CV_TUNE_CROSS_K,
-        tune.boot.n = CONFIG_LIST$VM_CV_TUNE_BOOT_N,
-        fs.method = "rf", cross.best.model.method = CONFIG_LIST$SVM_CV_BEST_MODEL_METHOD,
+        tune.boot.n = CONFIG_LIST$SVM_CV_TUNE_BOOT_N,
+        fs.method = "rf",
         rf.ifs.ntree = CONFIG_LIST$SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = CONFIG_LIST$SVM_CV_FS_RF_SFS_NTREE,
         fs.count.cutoff = CONFIG_LIST$SVM_CV_FS_COUNT_CUTOFF,
+        cross.best.model.method = CONFIG_LIST$SVM_CV_BEST_MODEL_METHOD,
         parallelComputing = PSETTING, n_cores = CORES,
         clusterType = CPU_CLUSTER,
         verbose = TRUE
       )
+
+      # svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
+      #   x = nested_cv_x,
+      #   y = nested_cv_y,
+      #   univariate.fs = CONFIG_LIST$CVUNI, uni.log2trans = CONFIG_LIST$OG2_TRANS,
+      #   uni.fdr = CONFIG_LIST$UNI_FDR, uni.alpha = CONFIG_LIST$UNI_ALPHA,
+      #   uni.contrast = CONFIG_LIST$CONTRAST,
+      #   center.scale = CONFIG_LIST$SVM_CV_CENTRE_SCALE,
+      #   kernel = CONFIG_LIST$SVM_CV_KERNEL,
+      #   cross.k = CONFIG_LIST$SVM_CV_CROSS_K,
+      #   tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD,
+      #   tune.cross.k = CONFIG_LIST$SVM_CV_TUNE_CROSS_K,
+      #   tune.boot.n = CONFIG_LIST$SVM_CV_TUNE_BOOT_N,
+      #   fs.method = "rf",
+      #   rf.ifs.ntree = CONFIG_LIST$SVM_CV_FS_RF_IFS_NTREE, rf.sfs.ntree = CONFIG_LIST$SVM_CV_FS_RF_SFS_NTREE,
+      #   fs.count.cutoff = CONFIG_LIST$SVM_CV_FS_COUNT_CUTOFF,
+      #   cross.best.model.method = CONFIG_LIST$SVM_CV_BEST_MODEL_METHOD,
+      #   parallelComputing = PSETTING, n_cores = CORES,
+      #   clusterType = CPU_CLUSTER,
+      #   verbose = TRUE
+      # )
     },
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
