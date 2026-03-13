@@ -7,6 +7,7 @@
 
 # ------ variables ------
 # load utils and zzz config file
+start_t=`date +%s`
 APP_NAME="cv_connectivity_ml.sh"
 source ./zzz
 source ./src/global_var

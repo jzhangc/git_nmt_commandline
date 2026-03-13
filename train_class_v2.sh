@@ -6,6 +6,7 @@
 
 # ------ variables ------
 # -- load utils and zzz config file --
+start_t=`date +%s`
 APP_NAME="train_class.sh"
 source ./zzz
 source ./src/global_var
@@ -18,11 +19,14 @@ source ./scripts/sys_init_class_2d.sh
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R plsda_val_svm.R)
 
+
 # ------ system check ------
 source ./scripts/sys_check.sh
 
+
 # ------ config loading ------
 source ./scripts/config_init.sh
+
 
 # ------ read input 2D files ------
 # -- input file processing --

@@ -6,6 +6,7 @@
 
 # ------ variables ------
 # load utils and zzz config file
+start_t=`date +%s`
 APP_NAME="cv_train_class.sh"
 source ./zzz
 source ./src/global_var
