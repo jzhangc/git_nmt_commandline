@@ -9,17 +9,20 @@ CONF_CHECK=1
 
 # --- flag check and flag variables (unfinished) ---
 # initiate mandatory variable check variable. initial value 1 (false)
+CONF_CHECK=1
+
+# --- flag check and flag variables (unfinished) ---
+# initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
-CORES=1  # this is for the parallel computing
+CORES=1  # this is for the cores
 
 IFLAG=1
 AFLAG=1
 SFLAG=1
-GFLAG=1
+YFLAG=1
 NFLAG=1
 DFLAG=1
 RFLAG=1
-CFLAG=1
 
 # below: CV univariate reduction
 UFLAG=1
@@ -29,14 +32,13 @@ KFLAG=1   # prior univariate knowledge
 # optional flag values
 OUT_DIR=.  # set the default to output directory
 
-
-# ------ set flag variable from command flags ------
+# flag check and set flag variable from command flags
 if [ $# -eq 0 ]; then
 	# echo -e $HELP
 	# echo -e "\n"
-	# echo -e "=========================================================================="
-	# echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-	# exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+  	# echo -e "=========================================================================="
+	# echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n\n"
+  	# exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
 	source ./scripts/trigger_help_info.sh
 else
 	case "$1" in  # "one off" flags
@@ -44,7 +46,13 @@ else
 			# echo -e $HELP
 			# echo -e "\n"
 			# echo -e "=========================================================================="
-			# echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
+			# echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n\n"
+			# end time and display
+			# end_t=`date +%s`
+			# tot=`hms $((end_t-start_t))`
+			# echo -e "\n"
+			# echo -e "Total run time: $tot"
+			# echo -e "\n"
 			# exit 0
 			source ./scripts/trigger_help_info.sh
 			;;
@@ -54,14 +62,14 @@ else
 			;;
 	esac
 
-	# ----- initial message ------
+	# -- initial message --
 	echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
 	echo -e "Version: $VERSION"
 	echo -e "Current OS: $PLATFORM"
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
-	while getopts ":kup:i:a:s:g:n:d:r:c:m:o:" opt; do
+	while getopts ":kup:i:a:s:y:n:d:r:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -73,10 +81,10 @@ else
 				# else
 				#     RAW_FILE=$(get_abs_filename $OPTARG)
 				# fi
-				RAW_FILE=$(path_resolve $OPTARG)
+				RAW_FILE=$(path_resolve $OPTARG)				
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .mat format; or file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
@@ -84,7 +92,6 @@ else
 					echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
-				
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
@@ -97,13 +104,13 @@ else
 				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -a annotation file not found.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 
 				ANNOT_FILENAME=`basename "$ANNOT_FILE"`
 				if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -a the annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -113,9 +120,9 @@ else
 				SAMPLE_ID=$OPTARG
 				SFLAG=0
 				;;
-			g)
-				GROUP_ID=$OPTARG
-				GFLAG=0
+			y)
+				Y_VAR=$OPTARG
+				YFLAG=0
 				;;
 			n)
 				# if [[ $OPTARG == *"~"* ]]; then
@@ -132,7 +139,8 @@ else
 
 				NODE_FILENAME=`basename "$NODE_FILE"`
 				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n\n" >&2
+					
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -145,10 +153,6 @@ else
 			r)
 				REGION_NAME=$OPTARG
 				RFLAG=0
-				;;
-			c)
-			 	CONTRAST=$OPTARG
-				CFLAG=0
 				;;
 			m)
 				# if [[ $OPTARG == *"~"* ]]; then
@@ -171,7 +175,7 @@ else
 				# else
 				#     OUT_DIR=$(get_abs_filename $OPTARG)
 				# fi
-				OUT_DIR=$(path_resolve $OPTARG)
+				OUT_DIR=$(path_resolve $OPTARG)				
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.
@@ -185,7 +189,7 @@ else
 			u)
 				UFLAG=0
 				CVUNI=TRUE
-				;;		
+				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1
@@ -202,9 +206,8 @@ else
 	done
 fi
 
-# ------ flag check -----
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -y -n, -d, -r flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 

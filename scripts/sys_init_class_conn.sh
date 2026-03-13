@@ -54,7 +54,7 @@ else
 			;;
 	esac
 
-	# ----- initial message ------
+	# -- initial message --
 	echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
 	echo -e "Version: $VERSION"
 	echo -e "Current OS: $PLATFORM"
