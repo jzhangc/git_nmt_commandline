@@ -13,7 +13,10 @@ Please cite the following if you are to use this application:
     - Waterbox
         - General updates
           - Code base complexity substantially reduced
-            - Common utility prcoesses unified into expanded utility scripts for regression modules
+            - cv and non-cv modules combined into one module with "-x" flag
+
+        - Data processing modules updates
+          - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
 
         - Modelling module updates
           - Exported SVM model file (.RData) now include data processing config information
@@ -26,10 +29,10 @@ Please cite the following if you are to use this application:
 
     - 0.5.x-251211-260313
         - General updates
-          - Code base complexity substantially reduced for regression modules
+          - Code base complexity substantially reduced
+            - Code base complexity substantially reduced for regression modules
 
         - Data processing modules updates
-          - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
           - A bug fixed where the minmax and zscore transformation not properly parsed            
 
         - Small fixes    
@@ -37,7 +40,8 @@ Please cite the following if you are to use this application:
 
     - 0.5.x-251210
         - General updates
-          - Code base complexity substantially reduced for classification modules
+          - Code base complexity substantially reduced
+            - Code base complexity substantially reduced for classification modules
             - Common utility prcoesses unified into expanded utility scripts for classification modules
           - Application display updated with more accuracy
           - Default htmap_key_xlab set to "Processed values" for 2D modules
