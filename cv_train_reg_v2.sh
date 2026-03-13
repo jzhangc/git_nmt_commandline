@@ -6,7 +6,7 @@
 
 # ------ variables ------
 # load utils and zzz config file
-source ./utils
+source ./src/utils
 source ./zzz
 
 # --- iniitate internal system variables ---
@@ -551,7 +551,7 @@ echo -e "--------------------- source script: reg_input_dat_process_2d.R -------
 r_var=`Rscript ./R_files/reg_input_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" "$Y_VAR" \
 "${OUT_DIR}/OUTPUT" \
-"$zscore_standardization" \
+"$minmax_norm" "$zscore_standardization" \
 --save 2>>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log

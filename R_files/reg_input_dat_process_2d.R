@@ -22,8 +22,8 @@ RES_OUT_DIR <- args[10]
 # --- mata data input variables ---
 SAMPLEID_VAR <- args[8]
 Y_VAR <- args[9]
-MINMAX_NORM <- args[11]
-ZSCORE_STAND <- args[12]
+MINMAX_NORM <- eval(parse(text = args[11]))
+ZSCORE_STAND <- eval(parse(text = args[12]))
 
 # ------ load 2d file ------
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
