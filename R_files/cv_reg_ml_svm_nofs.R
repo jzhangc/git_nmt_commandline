@@ -169,7 +169,7 @@ sink()
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg))
 
 ## export to results files if needed
-output_for_dl <- rffs_selected_dfm
+output_for_dl <- ml_dfm
 
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
 
