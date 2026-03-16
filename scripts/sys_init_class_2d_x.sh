@@ -23,6 +23,7 @@ GFLAG=1
 UFLAG=1
 CVUNI=FALSE
 KFLAG=1  # prior univariate knowledge
+XFLAG=1  # cross-validation only flag
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -51,14 +52,14 @@ else
 			;;
 	esac
 
-	# ------ initial message ------
+	# --- initial message ---
 	echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
 	echo -e "Version: $VERSION"
 	echo -e "Current OS: $PLATFORM"
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
-	while getopts ":kup:i:a:s:g:c:m:o:" opt; do
+	while getopts ":kup:i:a:s:g:c:x:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -96,12 +97,10 @@ else
 			 	CONTRAST=$OPTARG
 				CFLAG=0
 				;;
+			x)
+				XFLAG=0
+				;;
 			m)
-				# if [[ $OPTARG == *"~"* ]]; then
-				#     CONFIG_FILE=$(expand_path $OPTARG)
-				# else
-				#     CONFIG_FILE=$(get_abs_filename $OPTARG)
-				# fi
 				CONFIG_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$CONFIG_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -112,11 +111,6 @@ else
 				fi
 				;;
 			o)
-				# if [[ $OPTARG == *"~"* ]]; then
-				#     OUT_DIR=$(expand_path $OPTARG)
-				# else
-				#     OUT_DIR=$(get_abs_filename $OPTARG)
-				# fi
 				OUT_DIR=$(path_resolve $OPTARG)
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
@@ -148,6 +142,7 @@ else
 	done
 fi
 
+
 # ------ flag check -----
 if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
 	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
@@ -158,6 +153,22 @@ if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
 	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
 	exit 1
 fi
+
+
+# --- flag message ---
+if [[ $UFLAG -eq 1 || $KFLAG -eq 1 || $KFLAG -eq 1 ]]; then
+	echo -e "\nYou are running with following optional flags\n"
+	if [ $UFLAG -eq 0 ]; then
+		echo -e "-u: \n"
+	fi
+	if [ $KFLAG -eq 0 ]; then
+		ehoc -e "-k: \n"
+	fi
+	if [ $XFLAG -eq 0 ]; then
+		echo -e "-x: cross-validation only\n"
+	fi
+fi
+
 
 # ------ display output folder ------
 echo -e "Output direcotry: ${COLOUR_BLUE_L}$OUT_DIR${NO_COLOUR}"
