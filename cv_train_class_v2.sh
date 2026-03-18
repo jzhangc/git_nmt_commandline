@@ -19,11 +19,14 @@ source ./scripts/sys_init_class_2d.sh
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R cv_ml_svm.R cv_plsda_val_svm.R)
 
+
 # ------ system check ------
 source ./scripts/sys_check.sh
 
+
 # ------ config loading ------
 source ./scripts/config_init.sh
+
 
 # --- read input 2D files ---
 # -- input mat and annot files processing --
