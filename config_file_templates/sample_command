@@ -151,3 +151,14 @@
 -m "./config_file_templates/config_template_for_classification_connectivity" \
 -d "node_id" -r "region" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -u -p 12
+
+
+
+./cv_connectivity_ml_v2.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/r2mr_y2_resting_eeg_alpha_t1_t2.mat" \
+-a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/r2mr_y2_resting_eeg_annot.csv" \
+-s "sampleid" -g "groupid" -c "t2-t1" \
+-n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/r2mr_y2_resting_eeg_node.csv" \
+-m "./config_file_templates/config_template_for_classification_connectivity" \
+-d "node_id" -r "region" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -p 12
