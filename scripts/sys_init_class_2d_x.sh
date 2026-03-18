@@ -159,10 +159,10 @@ fi
 if [[ $UFLAG -eq 1 || $KFLAG -eq 1 || $KFLAG -eq 1 ]]; then
 	echo -e "\nYou are running with following optional flags\n"
 	if [ $UFLAG -eq 0 ]; then
-		echo -e "-u: \n"
+		echo -e "-u: use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done.\n"
 	fi
 	if [ $KFLAG -eq 0 ]; then
-		ehoc -e "-k: \n"
+		echo -e "-k: incorporate univariate prior knowledge to SVM analysis.\n"
 	fi
 	if [ $XFLAG -eq 0 ]; then
 		echo -e "-x: cross-validation only\n"
