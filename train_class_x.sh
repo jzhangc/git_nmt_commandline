@@ -176,10 +176,10 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "CV-rRF-FS-SVM machine learning analysis..."
-if [ $XFLAG -eq 1 ]; then
-	ml_script=ml_svm.R
-else
+if [ $XFLAG -eq 0 ]; then
 	ml_script=cv_ml_svm.R
+else
+	ml_script=ml_svm.R
 fi
 echo -e "--------------------- source script: $ml_script ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/$ml_script "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \

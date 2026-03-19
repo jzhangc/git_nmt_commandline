@@ -156,7 +156,7 @@ fi
 
 
 # --- flag message ---
-if [[ $UFLAG -eq 1 || $KFLAG -eq 1 || $KFLAG -eq 1 ]]; then
+if [[ $UFLAG -eq 0 || $KFLAG -eq 0 || $XFLAG -eq 0 ]]; then
 	echo -e "\nYou are running with following optional flags\n"
 	if [ $UFLAG -eq 0 ]; then
 		echo -e "-u: use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done.\n"
