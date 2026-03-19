@@ -59,7 +59,7 @@ else
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
-	while getopts ":kup:i:a:s:g:c:x:m:o:" opt; do
+	while getopts ":kuxp:i:a:s:g:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -97,9 +97,6 @@ else
 			 	CONTRAST=$OPTARG
 				CFLAG=0
 				;;
-			x)
-				XFLAG=0
-				;;
 			m)
 				CONFIG_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$CONFIG_FILE" ]; then
@@ -125,6 +122,9 @@ else
 			u)
 				UFLAG=0
 				CVUNI=TRUE
+				;;
+			x)
+				XFLAG=0
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2

@@ -181,8 +181,8 @@ if [ $XFLAG -eq 0 ]; then
 else
 	ml_script=ml_svm.R
 fi
-echo -e "--------------------- source script: $ml_script ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/$ml_script "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: cv_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/cv_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
