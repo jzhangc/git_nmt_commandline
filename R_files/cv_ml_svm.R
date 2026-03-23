@@ -333,7 +333,7 @@ if (input_n_total_features == 1) {
 
       # nested cv mean roc-auc
       rbioClass_svm_cv_roc_auc_mean(
-        object = svm_nested_cv_fs, roc.smooth = SVM_ROC_SMOOTH,
+        object = svm_nested_cv_fs, roc.smooth = CONFIG_LIST$SVM_ROC_SMOOTH,
         plot.legendSize = CONFIG_LIST$SVM_ROC_LEGEND_SIZE,
         plot.xLabelSize = CONFIG_LIST$SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = CONFIG_LIST$SVM_ROC_X_TICK_LABEL_SIZE,
         plot.yLabelSize = CONFIG_LIST$SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = CONFIG_LIST$SVM_ROC_Y_TICK_LABEL_SIZE,

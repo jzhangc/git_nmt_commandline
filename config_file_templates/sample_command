@@ -68,6 +68,15 @@
 -d "node_id" -r "region" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -k -p 12
 
+./connectivity_ml_x.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat" \
+-a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
+-m "./config_file_templates/config_template_for_classification_connectivity" \
+-d "node_id" -r "region" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -k -x -p 12
+
 ./cv_connectivity_ml.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat" \
 -a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
