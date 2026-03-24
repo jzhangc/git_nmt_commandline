@@ -26,7 +26,7 @@ Please cite the following if you are to use this application:
     - 0.5.x-260314-260324
         - General updates
           - Code base complexity substantially reduced
-            - cv and non-cv modules combined into one module with "-x" flag
+            - cv-only modules combined into their respective modules with "-x" flag
         
         - Classification module updates
             - nofs modules combined into their respective regular modules with "-n" flag
