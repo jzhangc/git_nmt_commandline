@@ -303,7 +303,7 @@ orignal_y_summary <- foreach(i = 1:length(levels(orignal_y)), .combine = "c") %d
 svm_training <- ml_dfm
 save(
   list = c("svm_m", "svm_m_cv", "svm_training", "final_cv_auc", "svm_m_training_svm_roc_auc", "CONFIG_LIST"),
-  file = paste0("cv_only_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
+  file = paste0("cv_only_nofs_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
 ## cat the vairables to export to shell scipt

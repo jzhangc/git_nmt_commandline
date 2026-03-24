@@ -17,7 +17,7 @@ source ./scripts/sys_init_class_2d_x.sh
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R cv_ml_svm.R plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R ml_svm_nofs.R cv_ml_svm.R cv_ml_svm_nofs.R plsda_val_svm.R)
 
 
 # ------ system check ------
@@ -177,9 +177,17 @@ else
 fi
 echo -en "CV-rRF-FS-SVM machine learning analysis..."
 if [ $XFLAG -eq 0 ]; then
-	ml_script=cv_ml_svm.R
+	if [ $NFLAG -eq 0 ]; then
+		ml_script=cv_ml_svm_nofs.R
+	else
+		ml_script=cv_ml_svm.R
+	fi
 else
-	ml_script=ml_svm.R
+	if [ $NFLAG -eq 0 ]; then
+		ml_script=ml_svm_nofs.R
+	else
+		ml_script=ml_svm.R
+	fi
 fi
 echo -e "--------------------- source script: cv_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/cv_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
@@ -229,10 +237,18 @@ if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotati
 fi
 # -- set up variables for output svm model file
 if [ $XFLAG -eq 0 ]; then
-	svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
+	if [ $NFLAG -eq 0 ]; then
+		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
+	else
+		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
+	fi
 else
-	svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
-fi 
+	if [ $NFLAG -eq 0 ]; then
+		svm_model_file="${OUT_DIR}/OUTPUT/nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+	else
+		svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+	fi
+fi
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)

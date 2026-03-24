@@ -228,7 +228,7 @@ if [[ $UFLAG -eq 0 || $KFLAG -eq 0 || $XFLAG -eq 0 ]]; then
 		echo -e "-k: incorporate univariate prior knowledge to SVM analysis.\n"
 	fi
 	if [ $XFLAG -eq 0 ]; then
-		echo -e "-x: cross-validation only\n"
+		echo -e "-x: cross-validation only.\n"
 	fi
 fi
 

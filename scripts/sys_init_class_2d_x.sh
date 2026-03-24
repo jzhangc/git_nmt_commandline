@@ -24,6 +24,7 @@ UFLAG=1
 CVUNI=FALSE
 KFLAG=1  # prior univariate knowledge
 XFLAG=1  # cross-validation only flag
+NFLAG=1  # nofs mode
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -59,7 +60,7 @@ else
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
-	while getopts ":kuxp:i:a:s:g:c:m:o:" opt; do
+	while getopts ":kuxnp:i:a:s:g:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -126,6 +127,9 @@ else
 			x)
 				XFLAG=0
 				;;
+			n)
+				XFLAG=0
+				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1
@@ -156,7 +160,7 @@ fi
 
 
 # --- flag message ---
-if [[ $UFLAG -eq 0 || $KFLAG -eq 0 || $XFLAG -eq 0 ]]; then
+if [[ $UFLAG -eq 0 || $KFLAG -eq 0 || $XFLAG -eq 0 || $NFLAG -eq 0 ]]; then
 	echo -e "\nYou are running with following optional flags\n"
 	if [ $UFLAG -eq 0 ]; then
 		echo -e "-u: use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done.\n"
@@ -165,7 +169,10 @@ if [[ $UFLAG -eq 0 || $KFLAG -eq 0 || $XFLAG -eq 0 ]]; then
 		echo -e "-k: incorporate univariate prior knowledge to SVM analysis.\n"
 	fi
 	if [ $XFLAG -eq 0 ]; then
-		echo -e "-x: cross-validation only\n"
+		echo -e "-x: cross-validation only.\n"
+	fi
+	if [ $NFLAG -eq 0 ]; then
+		echo -e "-n: no feature selection.\n"
 	fi
 fi
 

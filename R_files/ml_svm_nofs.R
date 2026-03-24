@@ -340,7 +340,7 @@ write.csv(file = "ml_training.csv", training, row.names = FALSE)
 write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(
   list = c("svm_m", "svm_m_cv", "svm_training", "svm_test", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
-  file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
+  file = paste0("nofs_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 
 ## cat the vairables to export to shell scipt
