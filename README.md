@@ -11,10 +11,6 @@ Please cite the following if you are to use this application:
 ## Version History
 
     - Waterbox
-        - General updates
-          - Code base complexity substantially reduced
-            - cv and non-cv modules combined into one module with "-x" flag
-
         - Data processing modules updates
           - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
 
@@ -25,6 +21,12 @@ Please cite the following if you are to use this application:
           - Prediction modules reads the data processing config information from the SVM model file for data processing
           - Prediction modules reads the data processing config information from the SVM model file for inferencing
           - Prediction modules config files to be revamped
+
+
+    - 0.5.x-260314-260324
+        - General updates
+          - Code base complexity substantially reduced
+            - cv and non-cv modules combined into one module with "-x" flag
 
 
     - 0.5.x-251211-260313
