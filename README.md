@@ -30,6 +30,9 @@ Please cite the following if you are to use this application:
         
         - Classification module updates
             - nofs modules combined into their respective regular modules with "-n" flag
+
+        - Regression module updates
+            - nofs modules combined into their respective regular modules with "-n" flag
           
 
     - 0.5.x-251211-260313
