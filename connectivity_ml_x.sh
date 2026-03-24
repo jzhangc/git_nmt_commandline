@@ -235,7 +235,11 @@ if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotati
 	exit 1
 fi
 # -- set up variables for output svm model file
-svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+if [ $XFLAG -eq 0 ]; then
+	svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+else
+	svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+fi 
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 	echo -e "${COLOUR_RED}\nERROR: SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
