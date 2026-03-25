@@ -29,7 +29,7 @@ Please cite the following if you are to use this application:
             - cv-only modules combined into their respective modules with "-x" flag
         
         - Classification module updates
-            - nofs modules combined into their respective regular modules with "-n" flag
+            - nofs modules combined into their respective regular modules with "-l" flag
 
         - Regression module updates
             - nofs modules combined into their respective regular modules with "-n" flag

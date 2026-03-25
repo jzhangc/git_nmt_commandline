@@ -182,3 +182,20 @@ setup_dirs(){
   echo -e "\tOUTPUT: Output files"
   echo -e "=========================================================================="
 }
+
+# function to check mandatory flags
+mand_flag_check(){
+  arr=("$@") # this is how you call the input arry from the function argument
+  
+  if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
+	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+	exit 1
+  fi
+
+
+}
+
+# function to check optional flags
+opt_flag_check(){
+
+}

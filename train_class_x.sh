@@ -177,13 +177,13 @@ else
 fi
 echo -en "CV-rRF-FS-SVM machine learning analysis..."
 if [ $XFLAG -eq 0 ]; then
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		ml_script=cv_ml_svm_nofs.R
 	else
 		ml_script=cv_ml_svm.R
 	fi
 else
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		ml_script=ml_svm_nofs.R
 	else
 		ml_script=ml_svm.R
@@ -237,13 +237,13 @@ if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotati
 fi
 # -- set up variables for output svm model file
 if [ $XFLAG -eq 0 ]; then
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
 	else
 		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
 	fi
 else
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		svm_model_file="${OUT_DIR}/OUTPUT/nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	else
 		svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
