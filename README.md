@@ -22,6 +22,10 @@ Please cite the following if you are to use this application:
           - Prediction modules reads the data processing config information from the SVM model file for inferencing
           - Prediction modules config files to be revamped
 
+    - 0.5.x-260325
+        - General updates
+          - Code base complexity substantially reduced
+            - helper functions added for flag checks
 
     - 0.5.x-260314-260324
         - General updates
