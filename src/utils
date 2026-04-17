@@ -184,18 +184,64 @@ setup_dirs(){
 }
 
 # function to check mandatory flags
+# usage: mand_flag_check "IFLAG:-i" "SFLAG:-s" "GFLAG:-g"
+# each argument is a "VARNAME:flag_letter" pair; the variable holds 1 (unset) or 0 (set)
 mand_flag_check(){
-  arr=("$@") # this is how you call the input arry from the function argument
-  
-  if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
+  local missing=()
+  for pair in "$@"; do
+    local varname="${pair%%:*}"
+    local flag="${pair##*:}"
+    if [[ "${!varname}" -eq 1 ]]; then
+      missing+=("$flag")
+    fi
+  done
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    local missing_str
+    missing_str=$(IFS=', '; echo "${missing[*]}")
+    echo -e "${COLOUR_RED}ERROR: ${missing_str} flag(s) are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+    exit 1
   fi
-
-
 }
 
-# function to check optional flags
+# function to check optional flags and print a summary of active ones
+# usage: opt_flag_check [--mutex "VARNAME1:VARNAME2"] "VARNAME:-flag:description" ...
+# --mutex pair errors if both variables are 0 (both set)
+# each non-mutex argument is a "VARNAME:-flag:description" triple
 opt_flag_check(){
+  local mutex_a="" mutex_b=""
+  local -a triples=()
 
+  while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--mutex" ]]; then
+      mutex_a="${2%%:*}"
+      mutex_b="${2##*:}"
+      shift 2
+    else
+      triples+=("$1")
+      shift
+    fi
+  done
+
+  if [[ -n "$mutex_a" && -n "$mutex_b" ]]; then
+    if [[ "${!mutex_a}" -eq 0 && "${!mutex_b}" -eq 0 ]]; then
+      local fa="${mutex_a//FLAG/-}" fb="${mutex_b//FLAG/-}"
+      echo -e "${COLOUR_RED}ERROR: Set either ${fa,,} or ${fb,,}, but not both.${NO_COLOUR}\n" >&2
+      exit 1
+    fi
+  fi
+
+  local header_printed=0
+  for triple in "${triples[@]}"; do
+    local varname="${triple%%:*}"
+    local rest="${triple#*:}"
+    local flag="${rest%%:*}"
+    local desc="${rest#*:}"
+    if [[ "${!varname}" -eq 0 ]]; then
+      if [[ $header_printed -eq 0 ]]; then
+        echo -e "\nYou are running with following optional flags\n"
+        header_printed=1
+      fi
+      echo -e "${flag}: ${desc}\n"
+    fi
+  done
 }
