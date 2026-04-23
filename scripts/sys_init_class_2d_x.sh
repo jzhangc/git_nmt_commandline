@@ -29,6 +29,7 @@ NFLAG=1  # nofs mode
 # optional flag values
 OUT_DIR=.  # set the default to output directory
 
+
 # ------ set flag variable from command flags ------
 if [ $# -eq 0 ]; then
 	# echo -e $HELP
@@ -148,10 +149,7 @@ fi
 
 
 # ------ flag check -----
-if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+mand_flag_check "IFLAG:-i" "CFLAG:-c" "SFLAG:-s" "GFLAG:-g"
 
 opt_flag_check \
 	--mutex "KFLAG:UFLAG" \

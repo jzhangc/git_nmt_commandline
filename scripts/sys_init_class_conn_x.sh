@@ -211,10 +211,7 @@ else
 fi
 
 # ------ flag check -----
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+mand_flag_check "IFLAG:-i" "AFLAG:-a" "SFLAG:-s" "GFLAG:-g" "NFLAG:-n" "DFLAG:-d" "RFLAG:-r" "CFLAG:-c"
 
 opt_flag_check \
 	--mutex "KFLAG:UFLAG" \
