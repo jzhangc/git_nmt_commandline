@@ -37,7 +37,7 @@ Please cite the following if you are to use this application:
 
         - Regression module updates
             - nofs modules combined into their respective regular modules with "-n" flag
-          
+      
 
     - 0.5.x-251211-260313
         - General updates
@@ -309,3 +309,29 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
+
+
+## Protype Python Implementation
+
+This repository also contains a Python implementation of the `train_class_x.sh` script (`test.py`) that provides the same functionality as the original shell script but with better error handling and readability.
+
+### Usage
+
+    python3 test.py -i input_file.csv -s sample_id -g group_id -c "contrast1,contrast2" [options]
+
+### Required Arguments
+
+- `-i, --input`: Input 2D .csv file
+- `-s, --sample-id`: Sample ID variable name
+- `-g, --group-id`: Group ID variable name
+- `-c, --contrast`: Contrasts (e.g., "a-b,c-a")
+
+### Optional Arguments
+
+- `-k, --prior-knowledge`: Incorporate univariate prior knowledge to SVM analysis
+- `-u, --univariate`: Use univariate analysis result during CV-SVM-rRF-FS
+- `-x, --cross-validation-only`: Cross-validation only
+- `-l, --nofs`: No feature selection mode
+- `-m, --config`: Optional configuration file
+- `-o, --output`: Optional output directory (default: current directory)
+- `-p, --parallel`: Parallel computing with core numbers
