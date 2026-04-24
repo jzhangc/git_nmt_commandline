@@ -311,7 +311,7 @@ Please cite the following if you are to use this application:
         - Initial commit
 
 
-## Protype Python Implementation
+## Prototype Python Implementation
 
 This repository also contains a Python implementation of the `train_class_x.sh` script (`test.py`) that provides the same functionality as the original shell script but with better error handling and readability.
 
