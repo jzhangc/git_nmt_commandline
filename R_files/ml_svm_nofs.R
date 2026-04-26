@@ -316,7 +316,7 @@ tryCatch(
   error = function(e) {
     cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
   },
-  warining = function(w) {
+   warning = function(w) {
     cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
   }
 )
