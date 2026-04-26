@@ -446,10 +446,10 @@ tryCatch(
   },
   error = function(e) {
     cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
-  },
-  warining = function(w) {
-    cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
-  }
+   },
+   warning = function(w) {
+     cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
+    }
 )
 sink()
 
@@ -547,10 +547,10 @@ tryCatch(
     cat("No hclust error\n")
   },
   error = function(e) {
-    cat(paste0("ERROR: hclustering failed..skipped.\n", "\tRef error message: ", e, "\n"))
-  },
-  warining = function(w) {
-    cat(paste0("WARNING: hclustering failed..skipped.\n", "\tRef warning message: ", w, "\n"))
+     cat(paste0("ERROR: hclustering failed..skipped.\n", "\tRef error message: ", e, "\n"))
+    },
+   warning = function(w) {
+     cat(paste0("WARNING: hclustering failed..skipped.\n", "\tRef warning message: ", w, "\n"))
   }
 )
 sink()
