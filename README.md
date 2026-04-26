@@ -4,7 +4,7 @@ Neuro-ML-tools (NMT): A bash application for automating machine learning analysi
 
 ![NMT Workflow](doc/NMT_workflow.png)
 
-[**View Interactive Diagram**](doc/interactive_diagram.html) — Click any module to see details and source code links
+[**View Interactive Diagram**](https://jzhangc.github.io/git_nmt_commandline/) — Click any module to see details and source code links
 
 Please cite the following if you are to use this application:
 
