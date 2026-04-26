@@ -50,7 +50,7 @@ Please cite the following if you are to use this application:
 
         - Regression module updates
             - nofs modules combined into their respective regular modules with "-n" flag
-      
+          
 
     - 0.5.x-251211-260313
         - General updates
@@ -319,6 +319,7 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
+<<<<<<< HEAD
 
 
 ## Prototype Python Implementation
@@ -358,3 +359,5 @@ Regression:
 - `-o, --output`: Optional output directory (default: current directory)
 - `-p, --parallel`: Parallel computing with core numbers
 - `-v, --version`: Display current version from zzz file
+=======
+>>>>>>> fix_warining
