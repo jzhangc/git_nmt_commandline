@@ -323,25 +323,38 @@ Please cite the following if you are to use this application:
 
 ## Prototype Python Implementation
 
-This repository also contains a Python implementation of the `train_class_x.sh` script (`test.py`) that provides the same functionality as the original shell script but with better error handling and readability.
+This repository contains Python implementations of the training modules, providing the same functionality as the original shell scripts with improved error handling, readability, and maintainability. Version information is dynamically read from the `zzz` configuration file.
+
+### Scripts
+
+- **`train_class_x.py`**: Python version of `train_class_x.sh` for classification machine learning analysis with SVM and PLS-DA
+- **`train_class_reg_v2.py`**: Python version of `train_reg_v2.sh` for regression machine learning analysis with SVR and PLSR
 
 ### Usage
 
-    python3 test.py -i input_file.csv -s sample_id -g group_id -c "contrast1,contrast2" [options]
+Classification:
+
+    python3 train_class_x.py -i input_file.csv -s sample_id -g group_id -c "contrast1,contrast2" [options]
+
+Regression:
+
+    python3 train_class_reg_v2.py -i input_file.csv -s sample_id -y y_var [options]
 
 ### Required Arguments
 
 - `-i, --input`: Input 2D .csv file
 - `-s, --sample-id`: Sample ID variable name
-- `-g, --group-id`: Group ID variable name
-- `-c, --contrast`: Contrasts (e.g., "a-b,c-a")
+- `-g, --group-id`: Group ID variable name (classification only)
+- `-y, --y-var`: Continuous outcome (y) variable name (regression only)
+- `-c, --contrast`: Contrasts (e.g., "a-b,c-a") (classification only)
 
 ### Optional Arguments
 
-- `-k, --prior-knowledge`: Incorporate univariate prior knowledge to SVM analysis
+- `-k, --prior-knowledge`: Incorporate univariate prior knowledge to SVM/SVR analysis
 - `-u, --univariate`: Use univariate analysis result during CV-SVM-rRF-FS
-- `-x, --cross-validation-only`: Cross-validation only
+- `-x, --cross-validation-only`: Cross-validation only mode (classification only)
 - `-l, --nofs`: No feature selection mode
-- `-m, --config`: Optional configuration file
+- `-m, --config`: Optional configuration file (reads from `zzz` for version info)
 - `-o, --output`: Optional output directory (default: current directory)
 - `-p, --parallel`: Parallel computing with core numbers
+- `-v, --version`: Display current version from zzz file
