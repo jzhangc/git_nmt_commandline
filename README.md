@@ -10,44 +10,9 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-<<<<<<< HEAD
-    - 0.5.x
-      (ICEBOX)
-          - General updates
-          - Reduced intermediate CSV file complexity
-            - Overall optimization
-            - A memory check module to ensure the stability
-            - Node file length check added for univariate.R and reg_univariate.R
-            - A NMT version without feature selection
-            - Compatibility of missing data
-            - Add VI for the final model(s): additional models see below
-            - Set up installation scripts
-            - Modelling speed optimization
-              - CV-rRF-FS-SVM: SVM element optimizaiton for speed
-          - New python script based final modelling modules
-            - Classification/regression final models
-              - PLS
-              - XGB
-              - RF
-              - LR
-              - kNN
-              - DNN
-            - Final model calibration functionality
-          - Modelling modules updates
-            - Handle "reaching max number of iterations" error
-            - CV-rRF-FS-XGB: Swtich CV SVM assessment to XGB, optimal for bigger datasets
-          - Prediction modules updates
-            - Proper data handling for input data with an outcome variable
-          - Bug fixes
-
-      (ADDED)
-          - Modelling modules updates
-            - Classification modules updated with interporlated ROC curves 
-            - SHAP value implementation
-=======
-    - Waterbox
-        - Data processing modules updates
-          - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
+      - Waterbox
+          - Data processing modules updates
+            - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
 
         - Modelling module updates
           - Exported SVM model file (.RData) now include data processing config information
@@ -55,9 +20,24 @@ Please cite the following if you are to use this application:
         - Prediction modules updates
           - Prediction modules reads the data processing config information from the SVM model file for data processing
           - Prediction modules reads the data processing config information from the SVM model file for inferencing
-          - Prediction modules config files to be revamped
+            - Prediction modules config files to be revamped
 
-    - 0.5.x-260325
+      - 0.5.x-py-260425
+          - New Python implementations added
+            - train_class_reg_v2.py: Python version of train_reg_v2.sh for regression machine learning analysis with SVR and PLSR
+            - train_class_x.py: Python version of train_class_x.sh for classification machine learning analysis with SVM and PLS-DA
+            - test.py: Updated with coding style consistent with new Python implementations
+              - Added --version/-v flag for version display
+              - Added hms() function for time formatting
+              - Updated run_r_script to handle logging internally with out_dir and current_day parameters
+              - Added --save flag to R script calls for log file output
+              - OS detection updated via platform.system() with macOS/Linux identification
+              - Flag variables updated to Shell convention (0 = true, 1 = false)
+
+          - Prototype Python implementation
+            - test_class_reg_v2.py added: Python version of train_reg_v2.sh for regression analysis with univariate prior knowledge incorporation, cross-validation, and parallel computing support
+
+      - 0.5.x-260325
         - General updates
           - Code base complexity substantially reduced
             - helper functions added for flag checks
@@ -105,7 +85,6 @@ Please cite the following if you are to use this application:
           - Default value for svm_cv_centre_scale from the config file set to FALSE
             - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
           - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
->>>>>>> nightly
 
 
     - 0.5.0 (Nov 16, 2025)
