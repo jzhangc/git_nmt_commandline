@@ -212,7 +212,7 @@ svm_m_cv <- rbioClass_svm_cv(
   verbose = TRUE
 )
 
-# ------ permuation test and plotting ------
+# ------ permutation test and plotting ------
 if (SVM_PERM_METHOD != "by_y") {
   cat("WARNING: SVM_PERM_METHOD can only be 'by_y' for regression. Proceed as such.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -233,7 +233,8 @@ rbioUtil_perm_plot(
   plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
   plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT
+  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT,
+  verbose = FALSE
 )
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)

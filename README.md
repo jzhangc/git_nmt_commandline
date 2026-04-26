@@ -10,6 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
+<<<<<<< HEAD
     - 0.5.x
       (ICEBOX)
           - General updates
@@ -43,6 +44,68 @@ Please cite the following if you are to use this application:
           - Modelling modules updates
             - Classification modules updated with interporlated ROC curves 
             - SHAP value implementation
+=======
+    - Waterbox
+        - Data processing modules updates
+          - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
+
+        - Modelling module updates
+          - Exported SVM model file (.RData) now include data processing config information
+
+        - Prediction modules updates
+          - Prediction modules reads the data processing config information from the SVM model file for data processing
+          - Prediction modules reads the data processing config information from the SVM model file for inferencing
+          - Prediction modules config files to be revamped
+
+    - 0.5.x-260325
+        - General updates
+          - Code base complexity substantially reduced
+            - helper functions added for flag checks
+
+    - 0.5.x-260314-260324
+        - General updates
+          - Code base complexity substantially reduced
+            - cv-only modules combined into their respective modules with "-x" flag
+        
+        - Classification module updates
+            - nofs modules combined into their respective regular modules with "-l" flag
+
+        - Regression module updates
+            - nofs modules combined into their respective regular modules with "-n" flag
+      
+
+    - 0.5.x-251211-260313
+        - General updates
+          - Code base complexity substantially reduced
+            - Code base complexity substantially reduced for regression modules
+
+        - Data processing modules updates
+          - A bug fixed where the minmax and zscore transformation not properly parsed            
+
+        - Small fixes    
+
+
+    - 0.5.x-251210
+        - General updates
+          - Code base complexity substantially reduced
+            - Code base complexity substantially reduced for classification modules
+            - Common utility prcoesses unified into expanded utility scripts for classification modules
+          - Application display updated with more accuracy
+          - Default htmap_key_xlab set to "Processed values" for 2D modules
+          - A bug fixed where random state no longer works
+        
+        - Data processing modules updates
+          - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
+          - Warning messaged added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
+            - Explaination: running min-max and zscore transformation at the same time is the same as running whichever comes second only
+          - Default value for minmax_norm set to TRUE
+          - Default value for zscore_standardization set to FALSE
+
+        - Modelling module updates
+          - Default value for svm_cv_centre_scale from the config file set to FALSE
+            - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
+          - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
+>>>>>>> nightly
 
 
     - 0.5.0 (Nov 16, 2025)
@@ -279,3 +342,29 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
+
+
+## Prototype Python Implementation
+
+This repository also contains a Python implementation of the `train_class_x.sh` script (`test.py`) that provides the same functionality as the original shell script but with better error handling and readability.
+
+### Usage
+
+    python3 test.py -i input_file.csv -s sample_id -g group_id -c "contrast1,contrast2" [options]
+
+### Required Arguments
+
+- `-i, --input`: Input 2D .csv file
+- `-s, --sample-id`: Sample ID variable name
+- `-g, --group-id`: Group ID variable name
+- `-c, --contrast`: Contrasts (e.g., "a-b,c-a")
+
+### Optional Arguments
+
+- `-k, --prior-knowledge`: Incorporate univariate prior knowledge to SVM analysis
+- `-u, --univariate`: Use univariate analysis result during CV-SVM-rRF-FS
+- `-x, --cross-validation-only`: Cross-validation only
+- `-l, --nofs`: No feature selection mode
+- `-m, --config`: Optional configuration file
+- `-o, --output`: Optional output directory (default: current directory)
+- `-p, --parallel`: Parallel computing with core numbers

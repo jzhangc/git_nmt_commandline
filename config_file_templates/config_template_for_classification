@@ -6,7 +6,7 @@
 random_state=1 # 0 is FALSE, or a >0 random integer
 
 # ------ Settings for data preprocessing ------
-minmax_norm=TRUE
+minmax_norm=FALSE
 zscore_standardization=TRUE
 log2_trans=FALSE
 uni_analysis=FALSE
@@ -18,7 +18,11 @@ htmap_textsize_col=0.3
 htmap_textangle_col=90
 htmap_textsize_row=0.2
 htmap_keysize=2
+<<<<<<< HEAD
 htmap_key_xlab="Feature Value"
+=======
+htmap_key_xlab="Processed values"
+>>>>>>> nightly
 htmap_key_ylab="Count"
 htmap_margin="c(4, 5)"
 htmap_width=6
@@ -80,8 +84,13 @@ cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
 training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set 1 or 0
 
 # -- SVM internal nested cross-validation and feature selection
+<<<<<<< HEAD
 svm_cv_centre_scale=TRUE
 svm_cv_kernel="radial"  # options are "radial", "ploynomial", "sigmoid". "radial" aka RBF
+=======
+svm_cv_centre_scale=FALSE
+svm_cv_kernel="linear"  # options are "radial", "ploynomial", "radial", "sigmoid". "radial" aka RBF
+>>>>>>> nightly
 svm_cv_cross_k=10  # outer loop
 svm_cv_tune_method="cross"  # inner loop. options are "cross" (i.e. cross validation), "boot" (i.e. bootstrap), and "fix"
 svm_cv_tune_cross_k=10  # set only when svm_cv_tune_method="cross", fold number for cross validation

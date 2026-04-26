@@ -204,9 +204,6 @@ if (UNI_ANALYSIS) {
   }
 }
 
-# ------ clean up the mess and export ------
-rm(normdata) # free memory
-
 # -- clean up the mess from Pathview --
 suppressWarnings(rm(cpd.simtypes, gene.idtype.bods, gene.idtype.list, korg, i))
 
@@ -218,6 +215,9 @@ if (UNI_ANALYSIS) {
 }
 ml_dfm <- data.frame(sampleid = raw_sample_dfm$sampleid, y, x_ml, check.names = FALSE, stringsAsFactors = FALSE)
 write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_w_prior.csv"), ml_dfm, row.names = FALSE)
+
+# ------ clean up the mess and export ------
+rm(normdata) # free memory
 
 # save(list = c("normdata"), file = paste0(RES_OUT_DIR, "/normdata.Rdata"))
 
