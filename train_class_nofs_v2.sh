@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: train_class_nofs.sh
-# Discription: train_class.sh but without feature selection. 
+# Description: train_class.sh but without feature selection.
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 # Note: all sub scripts can assess the parent scope variables directly
 
@@ -157,7 +157,7 @@ if [ $KFLAG -eq 1 ]; then
 else
 	echo -e "ON"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
-fi 
+fi
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"

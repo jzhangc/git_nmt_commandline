@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Name: cv_connectivity_ml_reg.sh
-# Discription: A shell script application for automated machine learning analysis for MEG connectivity data, but with "cv only" method
-# 				This application uses the same config file as connectivity_ml_reg.sh, with unused items ignored. 
+# Description: A shell script application for automated machine learning analysis for MEG connectivity data, but with "cv only" method
+# 				This application uses the same config file as connectivity_ml_reg.sh, with unused items ignored.
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
@@ -167,7 +167,7 @@ else
 	echo -e "ON"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
 	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
-fi 
+fi
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"

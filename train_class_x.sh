@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: train_class.sh
-# Discription: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices. 
+# Description: A generalized version of connectivity_ml.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices.
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 # Note: all sub scripts can assess the parent scope variables directly
 
@@ -161,7 +161,7 @@ if [ $KFLAG -eq 1 ]; then
 else
 	echo -e "ON"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
-fi 
+fi
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"
@@ -238,9 +238,9 @@ fi
 # -- set up variables for output svm model file
 if [ $XFLAG -eq 0 ]; then
 	if [ $LFLAG -eq 0 ]; then
-		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
+		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	else
-		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"	
+		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	fi
 else
 	if [ $LFLAG -eq 0 ]; then

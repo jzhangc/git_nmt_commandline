@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: sys_init_2d.sh
-# Discription: system initiation with flag checks and dependency checks
+# Description: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -81,7 +81,7 @@ else
 				# else
 				#     RAW_FILE=$(get_abs_filename $OPTARG)
 				# fi
-				RAW_FILE=$(path_resolve $OPTARG)				
+				RAW_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .mat format; or file not found.${NO_COLOUR}\n" >&2
@@ -100,7 +100,7 @@ else
 				# 	ANNOT_FILE=$(expand_path $OPTARG)
 				# else
 				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -129,7 +129,7 @@ else
 				# 	NODE_FILE=$(expand_path $OPTARG)
 				# else
 				# 	NODE_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				NODE_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$NODE_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -140,7 +140,7 @@ else
 				NODE_FILENAME=`basename "$NODE_FILE"`
 				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
 					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n\n" >&2
-					
+
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -175,7 +175,7 @@ else
 				# else
 				#     OUT_DIR=$(get_abs_filename $OPTARG)
 				# fi
-				OUT_DIR=$(path_resolve $OPTARG)				
+				OUT_DIR=$(path_resolve $OPTARG)
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.

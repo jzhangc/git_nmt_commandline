@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: connectivity_predict.sh
-# Discription: Predict group label for new data using model generated from connectivity_ml.sh or cv_connectivity_ml.sh
+# Description: Predict group label for new data using model generated from connectivity_ml.sh or cv_connectivity_ml.sh
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
@@ -99,7 +99,7 @@ else
 				#     RAW_FILE=$(expand_path $OPTARG)
 				# else
 				#     RAW_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				RAW_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -119,7 +119,7 @@ else
 				# 	ANNOT_FILE=$(expand_path $OPTARG)
 				# else
 				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -294,8 +294,8 @@ fi
 
 if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
-  # set the values back to default  
-	cpu_cluster="PSOCK" 
+  # set the values back to default
+	cpu_cluster="PSOCK"
 	newdata_centre_scale=TRUE
 	probability_method="softmax"
 	pie_width=170

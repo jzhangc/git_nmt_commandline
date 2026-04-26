@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: config_init.sh
-# Discription: Initialize config file
+# Description: Initialize config file
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 # Note: all sub scripts can assess the parent scope variables directly
 
@@ -353,4 +353,4 @@ echo -e "=======================================================================
 # ------ message display ------
 if [[ $minmax_norm == TRUE && $zscore_standardization == TRUE ]]; then
 	echo -e "${COLOUR_YELLOW}\nWARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only. ${NO_COLOUR}\n" >&2
-fi 
+fi

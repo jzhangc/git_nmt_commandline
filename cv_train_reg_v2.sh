@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: cv_train_reg.sh
-# Discription: A generalized version of cv_connectivity_ml_reg.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices.
+# Description: A generalized version of cv_connectivity_ml_reg.sh that takes 2D data table, instead of functional connectivity 3D mat adjacency matrices.
 # Usage: TBD
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
@@ -146,7 +146,7 @@ else
 	echo -e "ON"
 	echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_w_prior.csv${NO_COLOUR}"
 	# echo -e "Processing data file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_ml.csv${NO_COLOUR}"
-fi 
+fi
 echo -en "Univariate reduction for CV-SVM-rRF-FS: "
 if [ $UFLAG -eq 1 ]; then
 	echo -e "OFF"

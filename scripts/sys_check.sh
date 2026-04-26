@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: sys_init_2d.sh
-# Discription: system initiation with flag checks and dependency checks
+# Description: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 

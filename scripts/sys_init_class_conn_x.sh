@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: sys_init_2d.sh
-# Discription: system initiation with flag checks and dependency checks
+# Description: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -86,7 +86,7 @@ else
 					echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
-				
+
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
@@ -95,7 +95,7 @@ else
 				# 	ANNOT_FILE=$(expand_path $OPTARG)
 				# else
 				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -124,7 +124,7 @@ else
 				# 	NODE_FILE=$(expand_path $OPTARG)
 				# else
 				# 	NODE_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				NODE_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$NODE_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -193,7 +193,7 @@ else
 				;;
 			l)
 				LFLAG=0
-				;;				
+				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1

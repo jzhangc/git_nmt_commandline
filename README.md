@@ -10,7 +10,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - Waterbox
+      - Waterbox
         - Data processing modules updates
           - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
 
@@ -26,8 +26,16 @@ Please cite the following if you are to use this application:
         - General updates
           - Code base complexity substantially reduced
             - helper functions added for flag checks
+        
+          - Bug fixes
+            - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
 
-    - 0.5.x-260314-260324
+          - Other
+            - Discription typo fixed to Description in 24 shell scripts
+            - Trailing whitespace removed from all shell scripts
+
+
+      - 0.5.x-260314-260324
         - General updates
           - Code base complexity substantially reduced
             - cv-only modules combined into their respective modules with "-x" flag
