@@ -780,7 +780,7 @@ const details = {
       { title: 'Purpose', text: 'Non-cross-validated classification pipeline for MEG connectivity data. Runs SVM with rRF feature selection, with optional univariate pre-filtering.' },
       { title: 'R Scripts Called', text: 'input_dat_process.R → univariate.R → ml_svm.R → plsda_val_svm.R' },
       { title: 'Key Flags', text: '-k: Enable prior knowledge integration (skips univariate filter)\n-u: Enable univariate feature selection (default: ON)\n-p: Enable parallel computing\n-m: Custom config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/connectivity_ml_v2.sh' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_v2.sh' }
     ]
   },
   'entry1x': {
@@ -792,7 +792,7 @@ const details = {
       { title: 'ML Model Switch Logic', text: 'Determines which R script to run based on flags:\n- -x off, -n off → ml_svm.R (standard)\n- -x off, -n on → ml_svm_nofs.R (no feature selection)\n- -x on,  -n off → cv_ml_svm.R (CV)\n- -x on,  -n on  → cv_ml_svm_nofs.R (CV, no FS)' },
       { title: 'R Scripts Called', text: 'input_dat_process.R → univariate.R → ml_svm.R|cv_ml_svm.R → plsda_val_svm.R' },
       { title: 'Key Flags', text: '-x: Enable CV (nested cross-validation)\n-n: Enable no-feature-selection mode\n-p: Parallel computing\n-m: Config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/connectivity_ml_x.sh' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_x.sh' }
     ]
   },
   'entry2': {
@@ -803,7 +803,7 @@ const details = {
       { title: 'Purpose', text: 'Cross-validated classification using 2D data (not raw connectivity). Accepts pre-extracted feature matrices, faster than 3D pipeline.' },
       { title: 'R Scripts Called', text: 'input_dat_process_2d.R → univariate_2d.R → cv_ml_svm.R → cv_plsda_val_svm.R' },
       { title: 'Key Flags', text: '-k: Prior knowledge (skips univariate)\n-u: Univariate feature selection flag\n-p: Parallel computing\n-m: Config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/cv_train_class_v2.sh' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/cv_train_class_v2.sh' }
     ]
   },
   'entry3': {
@@ -814,7 +814,7 @@ const details = {
       { title: 'Purpose', text: 'Non-cross-validated regression pipeline for MEG connectivity data. Predicts continuous outcomes using SVR (Support Vector Regression) with rRF feature selection.' },
       { title: 'R Scripts Called', text: 'reg_input_dat_process.R → reg_univariate.R → reg_ml_svm.R → reg_plsr_val_svm.R' },
       { title: 'Key Flags', text: '-k: Prior knowledge integration\n-u: Univariate feature selection disabled (UFLAG=1)\n-p: Parallel computing\n-m: Config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/connectivity_ml_reg_v2.sh' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_reg_v2.sh' }
     ]
   },
   'entry4': {
@@ -825,7 +825,7 @@ const details = {
       { title: 'Purpose', text: 'Cross-validated regression using 2D data. Nested CV for SVR hyperparameter tuning with continuous outcome prediction.' },
       { title: 'R Scripts Called', text: 'reg_input_dat_process_2d.R → reg_univariate_2d.R → cv_reg_ml_svm.R → cv_reg_plsr_val_svm.R' },
       { title: 'Key Flags', text: '-k: Prior knowledge\n-u: Univariate feature selection\n-p: Parallel computing' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/cv_train_reg_v2.sh' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/cv_train_reg_v2.sh' }
     ]
   },
   'cond1': {
@@ -906,7 +906,7 @@ const details = {
       { title: 'Purpose', text: 'Core SVM classifier with rRF (Random Forest Feature Selection) wrapper. Trains SVM models with cross-validation for hyperparameter tuning.' },
       { title: 'Pipeline', text: 'Feature selection (rRF-FS) → SVM training with CV → Permutation testing → ROC-AUC curves → PCA biplots → Hierarchical clustering' },
       { title: 'Key Components', text: '- SVM-rRF-FS: Recursive random forest feature selection\n- Nested CV for robust performance estimation\n- Permutation testing (p-value estimation)\n- ROC-AUC curve generation\n- PCA biplot visualization' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/ml_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/ml_svm.R' }
     ]
   },
   'ml2': {
@@ -917,7 +917,7 @@ const details = {
       { title: 'Purpose', text: 'Nested cross-validated SVM classification. Outer CV for performance estimation, inner CV for hyperparameter tuning. Provides unbiased model evaluation.' },
       { title: 'Pipeline', text: 'Outer CV loops → Inner CV (hyperparameter tuning) → rRF-FS → SVM training → PLS-DA validation' },
       { title: 'Key Difference', text: 'connectivity_ml_x.sh selects this based on -x flag. Provides more robust performance estimates than non-CV version.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/cv_ml_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_ml_svm.R' }
     ]
   },
   'mlselect': {
@@ -936,7 +936,7 @@ const details = {
     sections: [
       { title: 'Purpose', text: 'Support Vector Regression with rRF feature selection. Predicts continuous outcomes using SVR with recursive random forest feature selection.' },
       { title: 'Pipeline', text: 'Feature selection → SVR training → Permutation testing → Regression plots → Clustering' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/reg_ml_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/reg_ml_svm.R' }
     ]
   },
   'ml4': {
@@ -945,7 +945,7 @@ const details = {
     color: '#e11d48',
     sections: [
       { title: 'Purpose', text: 'Nested CV version of SVR pipeline for regression. Outer CV for unbiased evaluation, inner CV for hyperparameter tuning.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/cv_reg_ml_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_reg_ml_svm.R' }
     ]
   },
   'val1': {
@@ -956,7 +956,7 @@ const details = {
       { title: 'Purpose', text: 'Validates SVM results using PLS-DA (Partial Least Squares Discriminant Analysis). Independent classification method to confirm features are not overfit.' },
       { title: 'Pipeline', text: 'Load SVM model → PLS-DA analysis → VIP scores → Permutation testing → ROC-AUC → Score plots with confidence ellipses' },
       { title: 'Why Important', text: 'Different ML algorithm (PLS-DA vs SVM) confirms that identified features genuinely discriminate groups, not artifacts of a specific algorithm.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/plsda_val_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/plsda_val_svm.R' }
     ]
   },
   'val2': {
@@ -965,7 +965,7 @@ const details = {
     color: '#f43f5e',
     sections: [
       { title: 'Purpose', text: 'Cross-validated PLS-DA validation for 2D CV classification pipelines.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/cv_plsda_val_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_plsda_val_svm.R' }
     ]
   },
   'val3': {
@@ -974,7 +974,7 @@ const details = {
     color: '#10b981',
     sections: [
       { title: 'Purpose', text: 'Validates SVR (regression) results using PLSR (Partial Least Squares Regression). Independent regression method confirming feature importance.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/reg_plsr_val_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/reg_plsr_val_svm.R' }
     ]
   },
   'val4': {
@@ -983,7 +983,7 @@ const details = {
     color: '#e11d48',
     sections: [
       { title: 'Purpose', text: 'Cross-validated PLSR validation for 2D CV regression pipelines.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/cv_reg_plsr_val_svm.R' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_reg_plsr_val_svm.R' }
     ]
   },
   'pred': {
@@ -994,7 +994,7 @@ const details = {
       { title: 'Purpose', text: 'Predicts group labels for new, unseen data using a previously trained SVM model. Applies the same data processing config stored in the model file.' },
       { title: 'Pipeline', text: 'Input data processing (pred_dat_process_2d.R) → SVM prediction (pred_classif.R)\n\nOutputs pie charts of predicted labels, feature-subsetted data.' },
       { title: 'Key Flags', text: '-i: Input 2D CSV file\n-s: Sample ID variable\n-l: Trained .RData model file\n-m: Optional config file\n-o: Output directory\n-p: Parallel cores' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/predict_class.sh' }
+      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/predict_class.sh' }
     ]
   },
   'out1': {
