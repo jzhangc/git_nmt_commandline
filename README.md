@@ -23,10 +23,10 @@ Please cite the following if you are to use this application:
             - Prediction modules config files to be revamped
 
       - 0.5.x-py-260425
-          - New Python implementations added
-            - train_class_reg_v2.py: Python version of train_reg_v2.sh for regression machine learning analysis with SVR and PLSR
-            - train_class_x.py: Python version of train_class_x.sh for classification machine learning analysis with SVM and PLS-DA
-            - test.py: Updated with coding style consistent with new Python implementations
+          - Prototype Python implementations
+            - train class_reg_v2.py added: Python version of train_reg_v2.sh for regression analysis with univariate prior knowledge incorporation, cross-validation, and parallel computing support
+            - train_class_x.py added: Python version of train_class_x.sh for classification machine learning analysis with SVM and PLS-DA
+              - Updated with coding style consistent with new Python implementations
               - Added --version/-v flag for version display
               - Added hms() function for time formatting
               - Updated run_r_script to handle logging internally with out_dir and current_day parameters
@@ -34,8 +34,6 @@ Please cite the following if you are to use this application:
               - OS detection updated via platform.system() with macOS/Linux identification
               - Flag variables updated to Shell convention (0 = true, 1 = false)
 
-          - Prototype Python implementation
-            - test_class_reg_v2.py added: Python version of train_reg_v2.sh for regression analysis with univariate prior knowledge incorporation, cross-validation, and parallel computing support
 
       - 0.5.x-260325
         - General updates
