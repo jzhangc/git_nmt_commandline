@@ -8,8 +8,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #ffffff;
+  color: #1e293b;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -19,11 +19,11 @@ body {
 h1 {
   font-size: 1.5rem;
   margin-bottom: 8px;
-  color: #f8fafc;
+  color: #0f172a;
 }
 .subtitle {
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #64748b;
   margin-bottom: 20px;
 }
 .legend {
@@ -38,7 +38,7 @@ h1 {
   align-items: center;
   gap: 6px;
   font-size: 0.75rem;
-  color: #cbd5e1;
+  color: #475569;
 }
 .legend-dot {
   width: 14px;
@@ -54,19 +54,21 @@ h1 {
 svg { display: block; }
 .box {
   cursor: pointer;
-  transition: filter 0.2s, opacity 0.2s;
+  transition: opacity 0.2s;
 }
-.box:hover { filter: brightness(1.3); }
+.box:hover {
+  filter: brightness(0.92);
+}
 .box-label {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  fill: #0f172a;
+  fill: #ffffff;
   text-anchor: middle;
   pointer-events: none;
   font-weight: 600;
 }
 .box-label-sm {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  fill: #0f172a;
+  fill: #ffffff;
   text-anchor: middle;
   pointer-events: none;
   font-weight: 500;
@@ -74,11 +76,26 @@ svg { display: block; }
 }
 .box-label-wl {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  fill: #0f172a;
+  fill: #ffffff;
   text-anchor: middle;
   pointer-events: none;
   font-weight: 700;
   font-size: 11px;
+}
+.box-label-white-bg {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  fill: #1e293b;
+  text-anchor: middle;
+  pointer-events: none;
+  font-weight: 600;
+}
+.box-label-sm-white-bg {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  fill: #334155;
+  text-anchor: middle;
+  pointer-events: none;
+  font-weight: 500;
+  font-size: 10px;
 }
 .detail-panel {
   position: fixed;
@@ -86,9 +103,9 @@ svg { display: block; }
   right: -420px;
   width: 400px;
   height: 100vh;
-  background: #1e293b;
-  border-left: 1px solid #334155;
-  box-shadow: -4px 0 24px rgba(0,0,0,0.4);
+  background: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.1);
   transition: right 0.3s ease;
   overflow-y: auto;
   z-index: 100;
@@ -98,7 +115,7 @@ svg { display: block; }
 .detail-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.3);
   z-index: 99;
   opacity: 0;
   pointer-events: none;
@@ -121,16 +138,17 @@ svg { display: block; }
   justify-content: center;
   border-radius: 6px;
 }
-.detail-close:hover { background: #334155; color: #f8fafc; }
+.detail-close:hover { background: #f1f5f9; color: #1e293b; }
 .detail-title {
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 4px;
   padding-right: 40px;
+  color: #0f172a;
 }
 .detail-type {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #94a3b8;
   margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -142,13 +160,13 @@ svg { display: block; }
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #64748b;
+  color: #94a3b8;
   margin-bottom: 8px;
 }
 .detail-section p {
   font-size: 0.85rem;
   line-height: 1.6;
-  color: #cbd5e1;
+  color: #475569;
 }
 .detail-link {
   display: inline-block;
@@ -183,33 +201,22 @@ svg { display: block; }
   font-family: 'Segoe UI', system-ui, sans-serif;
   pointer-events: none;
 }
-.cond-branch-active {
-  fill: #fbbf24;
-  font-weight: 700;
-}
 .connector {
-  stroke: #475569;
-  stroke-width: 2;
+  stroke: #cbd5e1;
+  stroke-width: 1.5;
   fill: none;
   marker-end: url(#arrow);
 }
 .connector-dashed {
-  stroke: #475569;
-  stroke-width: 1.5;
+  stroke: #cbd5e1;
+  stroke-width: 1.2;
   stroke-dasharray: 6 4;
   fill: none;
   marker-end: url(#arrow);
 }
-.input-arrow {
-  stroke: #64748b;
-  stroke-width: 1.5;
-  fill: none;
-  marker-end: url(#arrow);
-  marker-start: url(#arrow-start);
-}
 .section-label {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  fill: #64748b;
+  fill: #94a3b8;
   text-anchor: middle;
   font-size: 12px;
   font-weight: 700;
@@ -231,495 +238,406 @@ svg { display: block; }
 <p class="subtitle">Click any module to see details and source code links</p>
 
 <div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Classification</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>Regression</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>2D Data Input</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#ec4899"></div>Connectivity (3D) Input</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f43f5e"></div>Cross-validated</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#64748b"></div>Prediction</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>Classification</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#059669"></div>Regression</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>2D Data Input</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#db2777"></div>Connectivity (3D) Input</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#e11d48"></div>Cross-validated</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#64748b"></div>Prediction</div>
 </div>
 
 <div class="diagram-container">
 <svg width="1360" height="820" viewBox="0 0 1360 820" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-    <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
-  </marker>
-  <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="5" markerHeight="5" orient="auto">
-    <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
-  </marker>
-  <linearGradient id="gradClassConn" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#fbbf24"/>
-    <stop offset="100%" stop-color="#f59e0b"/>
-  </linearGradient>
-  <linearGradient id="gradClass2D" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#c084fc"/>
-    <stop offset="100%" stop-color="#a855f7"/>
-  </linearGradient>
-  <linearGradient id="gradClassCV" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#fca5a5"/>
-    <stop offset="100%" stop-color="#f43f5e"/>
-  </linearGradient>
-  <linearGradient id="gradRegConn" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#6ee7b7"/>
-    <stop offset="100%" stop-color="#10b981"/>
-  </linearGradient>
-  <linearGradient id="gradReg2D" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#a78bfa"/>
-    <stop offset="100%" stop-color="#8b5cf6"/>
-  </linearGradient>
-  <linearGradient id="gradRegCV" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#f87171"/>
-    <stop offset="100%" stop-color="#e11d48"/>
-  </linearGradient>
-  <linearGradient id="gradPred" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#94a3b8"/>
-    <stop offset="100%" stop-color="#64748b"/>
-  </linearGradient>
-  <linearGradient id="gradInput" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#38bdf8"/>
-    <stop offset="100%" stop-color="#0284c7"/>
-  </linearGradient>
-  <linearGradient id="gradShared" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#7dd3fc"/>
-    <stop offset="100%" stop-color="#0ea5e9"/>
-  </linearGradient>
-  <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
-    <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
-  </filter>
-  <filter id="shadowHL" x="-8%" y="-8%" width="116%" height="118%">
-    <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#60a5fa" flood-opacity="0.5"/>
-  </filter>
+   <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+     <path d="M 0 0 L 10 5 L 0 10 z" fill="#cbd5e1"/>
+   </marker>
+   <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+     <circle cx="15" cy="15" r="0.5" fill="#f1f5f9"/>
+   </pattern>
 </defs>
 
-<!-- Background grid dots -->
-<pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-  <circle cx="15" cy="15" r="0.5" fill="#1e293b"/>
-</pattern>
+<!-- Background -->
 <rect width="1360" height="820" fill="url(#grid)"/>
 
 <!-- Section headers -->
 <text x="200" y="16" class="section-label">ENTRY POINTS (Shell Scripts)</text>
-<text x="480" y="16" class="section-label">UNSUPERVED / UNIVARIATE</text>
+<text x="480" y="16" class="section-label">UNSUPERVISED / UNIVARIATE</text>
 <text x="800" y="16" class="section-label">MACHINE LEARNING</text>
 <text x="1140" y="16" class="section-label">VALIDATION / OUTPUT</text>
 
-<!-- ============================== -->
-<!-- CONDITIONAL BRACKETS & LABELS -->
-<!-- ============================== -->
-
-<!-- Branch group 1: Class + Conn (top row) -->
-<!-- -k flag: no prior knowledge branch -->
-<line x1="310" y1="65" x2="310" y2="125" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>
+<!-- Branch condition labels -->
+<line x1="310" y1="65" x2="310" y2="125" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
 <text x="248" y="100" class="cond-branch">-k (no prior)</text>
-
-<!-- Branch group labelled: with -u off (no univariate feature selection) -->
 <text x="480" y="230" class="cond-branch">-u off</text>
 
 <!-- ============================== -->
-<!-- INPUT STAGE (far left, rows 1-3) -->
+<!-- INPUT STAGE (far left)         -->
 <!-- ============================== -->
 
 <!-- Group 1: Classification + Connectivity -->
-<rect x="30" y="35" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="35" width="160" height="55" rx="8" fill="#38bdf8" stroke="#0284c7" stroke-width="1" class="box"
   onclick="showDetail('input1')" onmouseenter="hlBox('input1')" onmouseleave="unhlBox('input1')"/>
 <text x="110" y="62" class="box-label">Raw Connectivity</text>
 <text x="110" y="78" class="box-label-sm">(3D MEG matrix file)</text>
-
 <text x="110" y="108" class="cond-branch">-g / -s</text>
 
 <!-- Group 2: Classification + 2D data -->
-<rect x="30" y="150" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="150" width="160" height="55" rx="8" fill="#38bdf8" stroke="#0284c7" stroke-width="1" class="box"
   onclick="showDetail('input2')" onmouseenter="hlBox('input2')" onmouseleave="unhlBox('input2')"/>
 <text x="110" y="177" class="box-label">Raw 2D Data Table</text>
 <text x="110" y="193" class="box-label-sm">(CSV feature matrix)</text>
-
 <text x="110" y="223" class="cond-branch">-g / -s</text>
 
 <!-- Group 3: Regression + Connectivity -->
-<rect x="30" y="265" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="265" width="160" height="55" rx="8" fill="#38bdf8" stroke="#0284c7" stroke-width="1" class="box"
   onclick="showDetail('input3')" onmouseenter="hlBox('input3')" onmouseleave="unhlBox('input3')"/>
 <text x="110" y="292" class="box-label">Raw Connectivity</text>
 <text x="110" y="308" class="box-label-sm">(3D MEG matrix file)</text>
-
 <text x="110" y="338" class="cond-branch">-y</text>
 
 <!-- Group 4: Regression + 2D data -->
-<rect x="30" y="380" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="380" width="160" height="55" rx="8" fill="#38bdf8" stroke="#0284c7" stroke-width="1" class="box"
   onclick="showDetail('input4')" onmouseenter="hlBox('input4')" onmouseleave="unhlBox('input4')"/>
 <text x="110" y="407" class="box-label">Raw 2D Data Table</text>
 <text x="110" y="423" class="box-label-sm">(CSV feature matrix)</text>
-
 <text x="110" y="453" class="cond-branch">-y</text>
 
 <!-- ============================== -->
-<!-- ENTRY POINTS (column 2)       -->
+<!-- ENTRY POINTS                   -->
 <!-- ============================== -->
 
 <!-- Class + Conn: no CV -->
-<rect x="225" y="35" width="170" height="55" rx="8" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<rect x="225" y="35" width="170" height="55" rx="8" fill="#d97706" stroke="#b45309" stroke-width="1" class="box"
   onclick="showDetail('entry1')" onmouseenter="hlBox('entry1')" onmouseleave="unhlBox('entry1')"/>
 <text x="310" y="60" class="box-label-wl">connectivity_ml_v2.sh</text>
 <text x="310" y="76" class="box-label-sm"><tspan class="badge badge-class">Class</tspan><tspan class="badge badge-conn">Conn</tspan></text>
 
 <!-- Class + Conn: with CV via -x -->
-<rect x="225" y="100" width="170" height="55" rx="8" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="225" y="100" width="170" height="55" rx="8" fill="#f43f5e" stroke="#e11d48" stroke-width="1" class="box"
   onclick="showDetail('entry1x')" onmouseenter="hlBox('entry1x')" onmouseleave="unhlBox('entry1x')"/>
 <text x="310" y="125" class="box-label-wl">connectivity_ml_x.sh</text>
 <text x="310" y="141" class="box-label-sm"><tspan class="badge badge-class">Class</tspan><tspan class="badge badge-conn">Conn</tspan><tspan class="badge badge-cv">CV</tspan></text>
 
 <!-- Class + 2D: CV-only -->
-<rect x="225" y="185" width="170" height="55" rx="8" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="225" y="185" width="170" height="55" rx="8" fill="#f43f5e" stroke="#e11d48" stroke-width="1" class="box"
   onclick="showDetail('entry2')" onmouseenter="hlBox('entry2')" onmouseleave="unhlBox('entry2')"/>
 <text x="310" y="210" class="box-label-wl">cv_train_class_v2.sh</text>
 <text x="310" y="226" class="box-label-sm"><tspan class="badge badge-class">Class</tspan><tspan class="badge badge-2d">2D</tspan><tspan class="badge badge-cv">CV</tspan></text>
 
 <!-- Reg + Conn: no CV -->
-<rect x="225" y="265" width="170" height="55" rx="8" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+<rect x="225" y="265" width="170" height="55" rx="8" fill="#059669" stroke="#047857" stroke-width="1" class="box"
   onclick="showDetail('entry3')" onmouseenter="hlBox('entry3')" onmouseleave="unhlBox('entry3')"/>
 <text x="310" y="290" class="box-label-wl">connectivity_ml_reg_v2.sh</text>
 <text x="310" y="306" class="box-label-sm"><tspan class="badge badge-reg">Reg</tspan><tspan class="badge badge-conn">Conn</tspan></text>
 
 <!-- Reg + 2D: CV-only -->
-<rect x="225" y="380" width="170" height="55" rx="8" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
+<rect x="225" y="380" width="170" height="55" rx="8" fill="#e11d48" stroke="#be123c" stroke-width="1" class="box"
   onclick="showDetail('entry4')" onmouseenter="hlBox('entry4')" onmouseleave="unhlBox('entry4')"/>
 <text x="310" y="405" class="box-label-wl">cv_train_reg_v2.sh</text>
 <text x="310" y="421" class="box-label-sm"><tspan class="badge badge-reg">Reg</tspan><tspan class="badge badge-2d">2D</tspan><tspan class="badge badge-cv">CV</tspan></text>
 
 <!-- ============================== -->
-<!-- CONDITIONAL NODES (col 3)     -->
+<!-- CONDITIONAL NODES              -->
 <!-- ============================== -->
 
-<!-- For Class+Conn no-CV: conditional on -k (UFLAG) -->
-<rect x="430" y="43" width="90" height="38" rx="19" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" class="box"
+<!-- Class+Conn: univariate.R -->
+<rect x="430" y="43" width="90" height="38" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1" class="box"
   onclick="showDetail('cond1')" onmouseenter="hlBox('cond1')" onmouseleave="unhlBox('cond1')"/>
-<text x="475" y="67" class="box-label-sm" style="fill:#fbbf24">univariate.R</text>
-<text x="475" y="79" class="box-label-sm">(-k flag)</text>
+<text x="475" y="65" class="box-label-sm-white-bg" style="fill:#92400e">univariate.R</text>
+<text x="475" y="79" class="box-label-sm" style="fill:#d97706">(-k flag)</text>
 
-<!-- For Class+2D: conditional on -k (-k) -->
-<rect x="430" y="200" width="90" height="38" rx="19" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" class="box"
+<!-- Class+2D: univariate_2d.R -->
+<rect x="430" y="200" width="90" height="38" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1" class="box"
   onclick="showDetail('cond2')" onmouseenter="hlBox('cond2')" onmouseleave="unhlBox('cond2')"/>
-<text x="475" y="224" class="box-label-sm" style="fill:#c084fc">univariate_2d.R</text>
-<text x="475" y="236" class="box-label-sm">(-k flag)</text>
+<text x="475" y="222" class="box-label-sm-white-bg" style="fill:#5b21b6">univariate_2d.R</text>
+<text x="475" y="236" class="box-label-sm" style="fill:#7c3aed;">(-k flag)</text>
 
-<!-- For Reg+Conn: conditional UFLAG -->
-<rect x="430" y="273" width="90" height="38" rx="19" fill="#1e293b" stroke="#10b981" stroke-width="1.5" class="box"
+<!-- Reg+Conn: reg_univariate.R -->
+<rect x="430" y="273" width="90" height="38" rx="8" fill="#d1fae5" stroke="#059669" stroke-width="1" class="box"
   onclick="showDetail('cond3')" onmouseenter="hlBox('cond3')" onmouseleave="unhlBox('cond3')"/>
-<text x="475" y="297" class="box-label-sm" style="fill:#6ee7b7">reg_univariate.R</text>
-<text x="475" y="309" class="box-label-sm">(-u off)</text>
+<text x="475" y="295" class="box-label-sm-white-bg" style="fill:#065f46">reg_univariate.R</text>
+<text x="475" y="309" class="box-label-sm" style="fill:#059669;">(-u off)</text>
 
-<!-- For Reg+2D: conditional UFLAG -->
-<rect x="430" y="388" width="90" height="38" rx="19" fill="#1e293b" stroke="#10b981" stroke-width="1.5" class="box"
+<!-- Reg+2D: reg_univariate_2d.R -->
+<rect x="430" y="388" width="90" height="38" rx="8" fill="#d1fae5" stroke="#059669" stroke-width="1" class="box"
   onclick="showDetail('cond4')" onmouseenter="hlBox('cond4')" onmouseleave="unhlBox('cond4')"/>
-<text x="475" y="412" class="box-label-sm" style="fill:#6ee7b7">reg_univariate_2d.R</text>
-<text x="475" y="424" class="box-label-sm">(-u off)</text>
+<text x="475" y="410" class="box-label-sm-white-bg" style="fill:#065f46">reg_univariate_2d.R</text>
+<text x="475" y="424" class="box-label-sm" style="fill:#059669;">(-u off)</text>
 
 <!-- ============================== -->
-<!-- SHARED STEPS (col 3-4)        -->
+<!-- SHARED STEPS                   -->
 <!-- ============================== -->
 
-<!-- input_dat_process.R group -->
-<rect x="430" y="0" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<!-- input_dat_process.R -->
+<rect x="430" y="0" width="90" height="32" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="1" class="box"
   onclick="showDetail('shared1')" onmouseenter="hlBox('shared1')" onmouseleave="unhlBox('shared1')"/>
-<text x="475" y="20" class="box-label-sm">input_dat_process.R</text>
+<text x="475" y="20" class="box-label-sm-white-bg" style="fill:#155e75">input_dat_proce_.R</text>
 
-<!-- reg_input_dat_process.R group -->
-<rect x="430" y="235" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<!-- reg_input_dat_process.R -->
+<rect x="430" y="235" width="90" height="32" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="1" class="box"
   onclick="showDetail('shared2')" onmouseenter="hlBox('shared2')" onmouseleave="unhlBox('shared2')"/>
-<text x="475" y="255" class="box-label-sm">reg_input_dat_.R</text>
-<rect x="430" y="355" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<text x="475" y="255" class="box-label-sm-white-bg" style="fill:#155e75">reg_input_dat_.R</text>
+
+<rect x="430" y="355" width="90" height="32" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="1" class="box"
   onclick="showDetail('shared2b')" onmouseenter="hlBox('shared2b')" onmouseleave="unhlBox('shared2b')"/>
-<text x="475" y="375" class="box-label-sm">reg_input_dat_.R</text>
+<text x="475" y="375" class="box-label-sm-white-bg" style="fill:#155e75">reg_input_dat_.R</text>
 
 <!-- Shared 2D input -->
-<rect x="425" y="165" width="95" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<rect x="425" y="165" width="95" height="32" rx="8" fill="#cffafe" stroke="#0891b2" stroke-width="1" class="box"
   onclick="showDetail('shared1b')" onmouseenter="hlBox('shared1b')" onmouseleave="unhlBox('shared1b')"/>
-<text x="473" y="185" class="box-label-sm">input_dat_proce_.R</text>
+<text x="473" y="185" class="box-label-sm-white-bg" style="fill:#155e75">input_dat_proce_.R</text>
 
 <!-- ============================== -->
-<!-- ML MODELS (col 4-5)           -->
+<!-- ML MODELS                      -->
 <!-- ============================== -->
 
-<!-- ML model selection for -x flag branch (connectivity_ml_x.sh) -->
-<rect x="570" y="92" width="130" height="72" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1" class="box"
+<!-- ML model selector switch -->
+<rect x="570" y="92" width="130" height="72" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" class="box"
   onclick="showDetail('mlselect')" onmouseenter="hlBox('mlselect')" onmouseleave="unhlBox('mlselect')"/>
-<text x="635" y="116" class="box-label-sm" style="fill:#e2e8f0">ML Model Switch</text>
-<text x="635" y="132" class="box-label-sm" style="fill:#94a3b8">-x/-n flags</text>
-<text x="635" y="148" class="box-label-sm" style="fill:#94a3b8">→ ml_svm.R / cv_ml_svm.R</text>
+<text x="635" y="116" class="box-label-sm-white-bg">ML Model Switch</text>
+<text x="635" y="132" class="box-label-sm" style="fill:#64748b;">-x/-n flags</text>
+<text x="635" y="148" class="box-label-sm" style="fill:#64748b;">→ ml_svm.R / cv_ml_svm.R</text>
 
 <!-- Class+Conn ML (no CV): ml_svm.R -->
-<rect x="570" y="25" width="130" height="52" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<rect x="570" y="25" width="130" height="52" rx="8" fill="#d97706" stroke="#b45309" stroke-width="1" class="box"
   onclick="showDetail('ml1')" onmouseenter="hlBox('ml1')" onmouseleave="unhlBox('ml1')"/>
-<text x="635" y="48" class="box-label-sm" style="fill:#0f172a; font-weight:700">ml_svm.R</text>
-<text x="635" y="64" class="box-label-sm">SVM-rRF-FS</text>
+<text x="635" y="48" class="box-label-sm-white-bg" style="fill:#78350f">ml_svm.R</text>
+<text x="635" y="64" class="box-label-sm" style="fill:#d97706">SVM-rRF-FS</text>
 
 <!-- Class+2D ML (CV): cv_ml_svm.R -->
-<rect x="570" y="165" width="130" height="52" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="570" y="165" width="130" height="52" rx="8" fill="#f43f5e" stroke="#e11d48" stroke-width="1" class="box"
   onclick="showDetail('ml2')" onmouseenter="hlBox('ml2')" onmouseleave="unhlBox('ml2')"/>
-<text x="635" y="188" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_ml_svm.R</text>
-<text x="635" y="204" class="box-label-sm">CV SVM-rRF-FS</text>
+<text x="635" y="188" class="box-label-sm-white-bg" style="fill:#881337">cv_ml_svm.R</text>
+<text x="635" y="204" class="box-label-sm" style="fill:#f43f5e;">CV SVM-rRF-FS</text>
 
 <!-- Reg+Conn ML (no CV): reg_ml_svm.R -->
-<rect x="570" y="255" width="130" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+<rect x="570" y="255" width="130" height="52" rx="8" fill="#059669" stroke="#047857" stroke-width="1" class="box"
   onclick="showDetail('ml3')" onmouseenter="hlBox('ml3')" onmouseleave="unhlBox('ml3')"/>
-<text x="635" y="278" class="box-label-sm" style="fill:#0f172a; font-weight:700">reg_ml_svm.R</text>
-<text x="635" y="294" class="box-label-sm">SVR-rRF-FS</text>
+<text x="635" y="278" class="box-label-sm-white-bg" style="fill:#064e3b">reg_ml_svm.R</text>
+<text x="635" y="294" class="box-label-sm" style="fill:#059669">SVR-rRF-FS</text>
 
 <!-- Reg+2D ML (CV): cv_reg_ml_svm.R -->
-<rect x="570" y="370" width="130" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
+<rect x="570" y="370" width="130" height="52" rx="8" fill="#e11d48" stroke="#be123c" stroke-width="1" class="box"
   onclick="showDetail('ml4')" onmouseenter="hlBox('ml4')" onmouseleave="unhlBox('ml4')"/>
-<text x="635" y="393" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_reg_ml_svm.R</text>
-<text x="635" y="409" class="box-label-sm">CV SVR-rRF-FS</text>
+<text x="635" y="393" class="box-label-sm-white-bg" style="fill:#881337">cv_reg_ml_svm.R</text>
+<text x="635" y="409" class="box-label-sm" style="fill:#e11d48;">CV SVR-rRF-FS</text>
 
 <!-- ============================== -->
-<!-- VALIDATION (col 5-6)          -->
+<!-- VALIDATION                     -->
 <!-- ============================== -->
 
-<!-- Class+Conn validation: plsda_val_svm.R (always after ml_svm) -->
-<rect x="760" y="25" width="140" height="52" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<!-- Class+Conn validation -->
+<rect x="760" y="25" width="140" height="52" rx="8" fill="#d97706" stroke="#b45309" stroke-width="1" class="box"
   onclick="showDetail('val1')" onmouseenter="hlBox('val1')" onmouseleave="unhlBox('val1')"/>
-<text x="830" y="48" class="box-label-sm" style="fill:#0f172a; font-weight:700">plsda_val_svm.R</text>
-<text x="830" y="64" class="box-label-sm">PLS-DA validation</text>
+<text x="830" y="48" class="box-label-sm-white-bg" style="fill:#78350f">plsda_val_svm.R</text>
+<text x="830" y="64" class="box-label-sm" style="fill:#d97706">PLS-DA validation</text>
 
-<!-- Class+2D CV validation: cv_plsda_val_svm.R -->
-<rect x="760" y="165" width="140" height="52" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<!-- Class+2D CV validation -->
+<rect x="760" y="165" width="140" height="52" rx="8" fill="#f43f5e" stroke="#e11d48" stroke-width="1" class="box"
   onclick="showDetail('val2')" onmouseenter="hlBox('val2')" onmouseleave="unhlBox('val2')"/>
-<text x="830" y="188" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_plsda_val_svm.R</text>
-<text x="830" y="204" class="box-label-sm">PLS-DA validation</text>
+<text x="830" y="188" class="box-label-sm-white-bg" style="fill:#881337">cv_plsda_val_svm.R</text>
+<text x="830" y="204" class="box-label-sm" style="fill:#f43f5e;">PLS-DA validation</text>
 
-<!-- Reg+Conn validation: reg_plsr_val_svm.R -->
-<rect x="760" y="255" width="140" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+<!-- Reg+Conn validation -->
+<rect x="760" y="255" width="140" height="52" rx="8" fill="#059669" stroke="#047857" stroke-width="1" class="box"
   onclick="showDetail('val3')" onmouseenter="hlBox('val3')" onmouseleave="unhlBox('val3')"/>
-<text x="830" y="278" class="box-label-sm" style="fill:#0f172a; font-weight:700">reg_plsr_val_svm.R</text>
-<text x="830" y="294" class="box-label-sm">PLSR validation</text>
+<text x="830" y="278" class="box-label-sm-white-bg" style="fill:#064e3b">reg_plsr_val_svm.R</text>
+<text x="830" y="294" class="box-label-sm" style="fill:#059669">PLSR validation</text>
 
-<!-- Reg+2D CV validation: cv_reg_plsr_val_svm.R -->
-<rect x="760" y="370" width="140" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
+<!-- Reg+2D CV validation -->
+<rect x="760" y="370" width="140" height="52" rx="8" fill="#e11d48" stroke="#be123c" stroke-width="1" class="box"
   onclick="showDetail('val4')" onmouseenter="hlBox('val4')" onmouseleave="unhlBox('val4')"/>
-<text x="830" y="393" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_reg_plsr_val_svm.R</text>
-<text x="830" y="409" class="box-label-sm">PLSR validation</text>
+<text x="830" y="393" class="box-label-sm-white-bg" style="fill:#881337">cv_reg_plsr_val_svm.R</text>
+<text x="830" y="409" class="box-label-sm" style="fill:#e11d48;">PLSR validation</text>
 
 <!-- ============================== -->
-<!-- PREDICTION MODULE (far right) -->
+<!-- PREDICTION MODULE              -->
 <!-- ============================== -->
 
-<!-- predict_class.sh arrow from models -->
-<rect x="950" y="195" width="170" height="60" rx="10" fill="url(#gradPred)" filter="url(#shadow)" class="box"
+<rect x="950" y="195" width="170" height="60" rx="8" fill="#64748b" stroke="#475569" stroke-width="1" class="box"
   onclick="showDetail('pred')" onmouseenter="hlBox('pred')" onmouseleave="unhlBox('pred')"/>
-<text x="1035" y="219" class="box-label">predict_class.sh</text>
-<text x="1035" y="237" class="box-label-sm">SVM classification prediction</text>
+<text x="1035" y="219" class="box-label-white-bg">predict_class.sh</text>
+<text x="1035" y="237" class="box-label-sm" style="fill:#e2e8f0;">SVM classification prediction</text>
 
 <!-- ============================== -->
-<!-- OUTPUTS (bottom, spanning all) -->
+<!-- OUTPUTS                        -->
 <!-- ============================== -->
 
-<rect x="100" y="500" width="1100" height="280" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" opacity="0.6"/>
+<rect x="100" y="500" width="1100" height="280" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
 <text x="650" y="530" class="section-label">OUTPUTS</text>
 
 <!-- Output 1: SVM Model -->
-<rect x="140" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="140" y="550" width="180" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out1')" onmouseenter="hlBox('out1')" onmouseleave="unhlBox('out1')"/>
-<text x="230" y="572" class="box-label-sm">*_final_svm_model.Rdata</text>
-<text x="230" y="588" class="box-label-sm">SVM model + config</text>
+<text x="230" y="572" class="box-label-sm-white-bg">*_final_svm_model.Rdata</text>
+<text x="230" y="588" class="box-label-sm" style="fill:#64748b">SVM model + config</text>
 
 <!-- Output 2: SVM Results -->
-<rect x="340" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="340" y="550" width="180" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out2')" onmouseenter="hlBox('out2')" onmouseleave="unhlBox('out2')"/>
-<text x="430" y="572" class="box-label-sm">*_svm_results.txt</text>
-<text x="430" y="588" class="box-label-sm">SVM performance metrics</text>
+<text x="430" y="572" class="box-label-sm-white-bg">*_svm_results.txt</text>
+<text x="430" y="588" class="box-label-sm" style="fill:#64748b">SVM performance metrics</text>
 
 <!-- Output 3: Univariate results -->
-<rect x="540" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="540" y="550" width="180" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out3')" onmouseenter="hlBox('out3')" onmouseleave="unhlBox('out3')"/>
-<text x="630" y="572" class="box-label-sm">Univariate analysis plots</text>
-<text x="630" y="588" class="box-label-sm">Heatmaps, PCA, volcano</text>
+<text x="630" y="572" class="box-label-sm-white-bg">Univariate analysis plots</text>
+<text x="630" y="588" class="box-label-sm" style="fill:#64748b">Heatmaps, PCA, volcano</text>
 
 <!-- Output 4: Feature selection -->
-<rect x="740" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="740" y="550" width="180" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out4')" onmouseenter="hlBox('out4')" onmouseleave="unhlBox('out4')"/>
-<text x="830" y="572" class="box-label-sm">*_w_prior.csv</text>
-<text x="830" y="588" class="box-label-sm">Selected features subset</text>
+<text x="830" y="572" class="box-label-sm-white-bg">*_w_prior.csv</text>
+<text x="830" y="588" class="box-label-sm" style="fill:#64748b">Selected features subset</text>
 
 <!-- Output 5: Validation results -->
-<rect x="940" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="940" y="550" width="180" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out5')" onmouseenter="hlBox('out5')" onmouseleave="unhlBox('out5')"/>
-<text x="1030" y="572" class="box-label-sm">*_plsda/plsr_results.txt</text>
-<text x="1030" y="588" class="box-label-sm">Validation metrics &amp; VIP</text>
+<text x="1030" y="572" class="box-label-sm-white-bg">*_plsda/plsr_results.txt</text>
+<text x="1030" y="588" class="box-label-sm" style="fill:#64748b">Validation metrics &amp; VIP</text>
 
 <!-- Prediction outputs -->
-<rect x="1150" y="550" width="190" height="90" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="1150" y="550" width="190" height="90" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out6')" onmouseenter="hlBox('out6')" onmouseleave="unhlBox('out6')"/>
-<text x="1245" y="578" class="box-label-sm">Prediction results</text>
-<text x="1245" y="594" class="box-label-sm">Pie charts, data subset,</text>
-<text x="1245" y="608" class="box-label-sm">predicted labels</text>
+<text x="1245" y="578" class="box-label-sm-white-bg">Prediction results</text>
+<text x="1245" y="594" class="box-label-sm" style="fill:#64748b">Pie charts, data subset,</text>
+<text x="1245" y="608" class="box-label-sm" style="fill:#64748b">predicted labels</text>
 
 <!-- Additional outputs row -->
-<rect x="140" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="140" y="660" width="170" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out7')" onmouseenter="hlBox('out7')" onmouseleave="unhlBox('out7')"/>
-<text x="225" y="682" class="box-label-sm">*_2D.csv</text>
-<text x="225" y="698" class="box-label-sm">Processed 2D data</text>
+<text x="225" y="682" class="box-label-sm-white-bg">*_2D.csv</text>
+<text x="225" y="698" class="box-label-sm" style="fill:#64748b">Processed 2D data</text>
 
-<rect x="330" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="330" y="660" width="170" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out8')" onmouseenter="hlBox('out8')" onmouseleave="unhlBox('out8')"/>
-<text x="415" y="682" class="box-label-sm">Feature selection plots</text>
-<text x="415" y="698" class="box-label-sm">rRF bar graphs</text>
+<text x="415" y="682" class="box-label-sm-white-bg">Feature selection plots</text>
+<text x="415" y="698" class="box-label-sm" style="fill:#64748b">rRF bar graphs</text>
 
-<rect x="520" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="520" y="660" width="170" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out9')" onmouseenter="hlBox('out9')" onmouseleave="unhlBox('out9')"/>
-<text x="605" y="682" class="box-label-sm">Log files</text>
-<text x="605" y="698" class="box-label-sm">R + Shell logs</text>
+<text x="605" y="682" class="box-label-sm-white-bg">Log files</text>
+<text x="605" y="698" class="box-label-sm" style="fill:#64748b">R + Shell logs</text>
 
-<rect x="710" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="710" y="660" width="170" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out10')" onmouseenter="hlBox('out10')" onmouseleave="unhlBox('out10')"/>
-<text x="795" y="682" class="box-label-sm">Permutation test plots</text>
-<text x="795" y="698" class="box-label-sm">ROC, PCA biplots</text>
+<text x="795" y="682" class="box-label-sm-white-bg">Permutation test plots</text>
+<text x="795" y="698" class="box-label-sm" style="fill:#64748b">ROC, PCA biplots</text>
 
-<rect x="900" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="900" y="660" width="170" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out11')" onmouseenter="hlBox('out11')" onmouseleave="unhlBox('out11')"/>
-<text x="985" y="682" class="box-label-sm">VIP plots</text>
-<text x="985" y="698" class="box-label-sm">Variable importance</text>
+<text x="985" y="682" class="box-label-sm-white-bg">VIP plots</text>
+<text x="985" y="698" class="box-label-sm" style="fill:#64748b">Variable importance</text>
 
-<rect x="1090" y="660" width="250" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="1090" y="660" width="250" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" class="box"
   onclick="showDetail('out12')" onmouseenter="hlBox('out12')" onmouseleave="unhlBox('out12')"/>
-<text x="1215" y="682" class="box-label-sm">Log data, pie charts, predictions</text>
-<text x="1215" y="698" class="box-label-sm">PREDICTION/ directory</text>
+<text x="1215" y="682" class="box-label-sm-white-bg">Log data, pie charts, predictions</text>
+<text x="1215" y="698" class="box-label-sm" style="fill:#64748b">PREDICTION/ directory</text>
 
 <!-- ============================== -->
-<!-- DRAW FLOW LINES               -->
+<!-- FLOW LINES                     -->
 <!-- ============================== -->
 
-<!-- Input 1 -> Shared 1 (input_dat_process.R) -->
-<path d="M190,62 L425,16" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
-<!-- Shared 1 -> Entry 1 -->
-<path d="M430,16 L395,55" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- Input 1 -> input_dat_process.R -> Entry 1 -->
+<path d="M190,62 L420,16" class="connector" stroke="#b45309" stroke-width="1.5"/>
+<path d="M430,16 L395,55" class="connector" stroke="#b45309" stroke-width="1.5"/>
 
-<!-- Input 2 -> Shared 1b -->
-<path d="M190,177 L425,181" class="connector" stroke="#a855f7" stroke-width="1.5"/>
-<!-- Shared 1b -> Entry 2 -->
-<path d="M425,181 L395,200" class="connector" stroke="#a855f7" stroke-width="1.5"/>
+<!-- Input 2 -> input_dat_process_2d.R -> Entry 2 -->
+<path d="M190,177 L420,181" class="connector" stroke="#7c3aed" stroke-width="1.5"/>
+<path d="M425,181 L395,200" class="connector" stroke="#7c3aed" stroke-width="1.5"/>
 
-<!-- Input 3 -> Shared 2 -->
-<path d="M190,292 L425,251" class="connector" stroke="#10b981" stroke-width="1.5"/>
-<!-- Shared 2 -> Entry 3 -->
-<path d="M425,251 L395,280" class="connector" stroke="#10b981" stroke-width="1.5"/>
+<!-- Input 3 -> reg_input_dat_process.R -> Entry 3 -->
+<path d="M190,292 L420,251" class="connector" stroke="#047857" stroke-width="1.5"/>
+<path d="M425,251 L395,280" class="connector" stroke="#047857" stroke-width="1.5"/>
 
-<!-- Input 4 -> Shared 2b -->
-<path d="M190,407 L425,371" class="connector" stroke="#e11d48" stroke-width="1.5"/>
-<!-- Shared 2b -> Entry 4 -->
+<!-- Input 4 -> reg_input_dat_process_2d.R -> Entry 4 -->
+<path d="M190,407 L420,371" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 <path d="M425,371 L395,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 
-<!-- Entry 1 -> Shared 1 (vertical, goes down to univariate) -->
-<path d="M310,90 L310,140" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
-<path d="M310,140 L425,16" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- Entry 1 -> univariate.R -> ml_svm.R -->
+<path d="M310,90 L310,140" class="connector" stroke="#b45309" stroke-width="1.5"/>
+<path d="M310,140 L425,16" class="connector" stroke="#b45309" stroke-width="1.5"/>
+<path d="M380,62 L422,62" class="connector" stroke="#b45309" stroke-width="1.5"/>
+<path d="M475,62 L475,140" class="connector-dashed" stroke="#d97706" stroke-width="1"/>
+<path d="M475,140 L562,51" class="connector" stroke="#d97706" stroke-width="1.5"/>
 
-<!-- Entry 1 -> cond1 (univariate.R) -->
-<path d="M380,62 L422,62" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- -k skip branch -->
+<path d="M520,62 L425,62" class="connector-dashed" stroke="#d97706" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="472" y="56" class="flow-label" fill="#d97706">-k</text>
 
-<!-- cond1 -> ml1 (vertical) -->
-<path d="M475,62 L475,140" class="connector-dashed" stroke="#fbbf24" stroke-width="1"/>
-<path d="M475,140 L562,51" class="connector" stroke="#fbbf24" stroke-width="1.5"/>
+<!-- Entry 1 -> ML Switch -->
+<path d="M520,62 L562,128" class="connector" stroke="#b45309" stroke-width="1.5"/>
 
-<!-- cond1 -> ml1 direct (skip branch) -->
-<path d="M520,62 L425,62" class="connector-dashed" stroke="#fbbf24" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="472" y="56" class="flow-label" fill="#fbbf24">-k</text>
+<!-- Entry 2 -> univariate_2d.R -> cv_ml_svm.R -->
+<path d="M380,200 L422,200" class="connector" stroke="#7c3aed" stroke-width="1.5"/>
+<path d="M520,200 L555,191" class="connector" stroke="#7c3aed" stroke-width="1.5"/>
 
-<!-- cond1 branching to both ml1 and ml-select -->
-<path d="M520,62 L562,128" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- Entry 3 -> reg_univariate.R -> reg_ml_svm.R -->
+<path d="M380,280 L422,280" class="connector" stroke="#047857" stroke-width="1.5"/>
+<path d="M520,280 L555,281" class="connector" stroke="#047857" stroke-width="1.5"/>
 
-<!-- Entry 2 -> cond2 -->
-<path d="M380,200 L422,200" class="connector" stroke="#a855f7" stroke-width="1.5"/>
-
-<!-- cond2 -> ml2 -->
-<path d="M520,200 L555,191" class="connector" stroke="#a855f7" stroke-width="1.5"/>
-
-<!-- Entry 3 -> cond3 -->
-<path d="M380,280 L422,280" class="connector" stroke="#10b981" stroke-width="1.5"/>
-
-<!-- cond3 -> ml3 -->
-<path d="M520,280 L555,281" class="connector" stroke="#10b981" stroke-width="1.5"/>
-
-<!-- Entry 4 -> cond4 -->
+<!-- Entry 4 -> reg_univariate_2d.R -> cv_reg_ml_svm.R -->
 <path d="M380,396 L422,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
-
-<!-- cond4 -> ml4 -->
 <path d="M520,400 L555,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 
-<!-- ML Model Switch -> ml_svm.R (no CV path via -x 0, -n 0) -->
-<path d="M700,128 L635,74" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- ML Model Switch branching -->
+<path d="M700,128 L635,74" class="connector" stroke="#b45309" stroke-width="1.5"/>
+<path d="M700,128 L635,217" class="connector" stroke="#e11d48" stroke-width="1.5"/>
+<text x="708" y="175" class="flow-label" fill="#e11d48">-x flag</path>
 
-<!-- ML Model Switch -> cv_ml_svm.R (via -x flag) -->
-<path d="M700,128 L635,217" class="connector" stroke="#f43f5e" stroke-width="1.5"/>
-<text x="708" y="175" class="flow-label" fill="#f43f5e">-x flag</text>
-
-<!-- ml1 -> val1 -->
-<path d="M700,51 L752,51" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
-
-<!-- ml-select branching path to ml_svm_nofs (conditional) -->
-<path d="M700,134 L425,134" class="connector" stroke="#64748b" stroke-width="1" stroke-dasharray="4 3"/>
-
-<!-- ml2 -> val2 -->
-<path d="M700,191 L752,191" class="connector" stroke="#a855f7" stroke-width="1.5"/>
-
-<!-- ml3 -> val3 -->
-<path d="M700,278 L752,278" class="connector" stroke="#10b981" stroke-width="1.5"/>
-
-<!-- ml4 -> val4 -->
+<!-- ML -> Validation -->
+<path d="M700,51 L752,51" class="connector" stroke="#b45309" stroke-width="1.5"/>
+<path d="M700,191 L752,191" class="connector" stroke="#7c3aed" stroke-width="1.5"/>
+<path d="M700,278 L752,278" class="connector" stroke="#047857" stroke-width="1.5"/>
 <path d="M700,396 L752,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 
-<!-- val1 -> outputs (downward) -->
-<path d="M830,77 L830,145" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,391 L830,495" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L230,495 L230,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L430,495 L430,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L630,495 L630,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L830,495 L830,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L1030,495 L1030,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<!-- Conditional switch branching path -->
+<path d="M700,134 L425,134" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 3"/>
 
-<!-- val2 -> outputs -->
-<path d="M830,217 L830,290" class="connector" stroke="#a855f7" stroke-width="1"/>
-<path d="M830,290 L830,495" class="connector" stroke="#a855f7" stroke-width="1"/>
-<path d="M830,495 L230,495 L230,550" class="connector" stroke="#a855f7" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
+<!-- Validation -> Outputs -->
+<path d="M830,77 L830,145" class="connector" stroke="#b45309" stroke-width="1"/>
+<path d="M830,391 L830,495" class="connector" stroke="#b45309" stroke-width="1"/>
+<path d="M830,495 L230,495 L230,550" class="connector" stroke="#b45309" stroke-width="1"/>
+<path d="M830,495 L430,495 L430,550" class="connector" stroke="#b45309" stroke-width="1"/>
+<path d="M830,495 L630,495 L630,550" class="connector" stroke="#b45309" stroke-width="1"/>
+<path d="M830,495 L830,495 L830,550" class="connector" stroke="#b45309" stroke-width="1"/>
+<path d="M830,495 L1030,495 L1030,550" class="connector" stroke="#b45309" stroke-width="1"/>
 
-<!-- val3 -> outputs -->
-<path d="M830,307 L830,495" class="connector" stroke="#10b981" stroke-width="1"/>
+<path d="M830,217 L830,290" class="connector" stroke="#7c3aed" stroke-width="1"/>
+<path d="M830,290 L830,495" class="connector" stroke="#7c3aed" stroke-width="1"/>
+<path d="M830,495 L230,495 L230,550" class="connector" stroke="#7c3aed" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
 
-<!-- val4 -> outputs -->
+<path d="M830,307 L830,495" class="connector" stroke="#047857" stroke-width="1"/>
 <path d="M830,422 L830,495" class="connector" stroke="#e11d48" stroke-width="1"/>
 
-<!-- Prediction from ml outputs -->
+<!-- Validation -> Prediction -->
 <path d="M880,51 L940,225" class="connector" stroke="#64748b" stroke-width="1.5"/>
 <path d="M880,191 L940,225" class="connector" stroke="#64748b" stroke-width="1.5"/>
 
-<!-- Prediction outputs flow -->
+<!-- Prediction -> Outputs -->
 <path d="M1120,255 L1120,540 L1245,540 L1245,550" class="connector" stroke="#64748b" stroke-width="1"/>
 
-<!-- Additional outputs from each stage -->
-<!-- univariate outputs -->
+<!-- Supplementary outputs -->
 <path d="M520,100 L630,550" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
-<!-- feature selection output -->
 <path d="M700,51 L830,550" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
-<!-- permutation/ROC PCA from ml -->
 <path d="M700,278 L795,660" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
 
-<!-- R script call indicators (small labels next to modules) -->
-<text x="575" y="23" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="765" y="23" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="575" y="155" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="765" y="155" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="575" y="245" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="765" y="245" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="575" y="360" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
-<text x="765" y="360" class="flow-label" fill="#64748b" style="font-size:8px">Rscript</text>
+<!-- Rscript annotations -->
+<text x="575" y="23" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="765" y="23" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="575" y="155" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="765" y="155" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="575" y="245" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="765" y="245" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="575" y="360" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="765" y="360" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript</text>
+<text x="1035" y="268" class="flow-label" fill="#94a3b8" style="font-size:8px">Rscript × 2</text>
 
-<!-- Prediction section annotation -->
-<text x="1035" y="268" class="flow-label" fill="#64748b" style="font-size:8px">Rscript × 2</text>
-
-<!-- Branch conditions annotation -->
-<text x="430" y="15" class="flow-label" fill="#fbbf24" style="font-size:9px">UFLAG=1 (default): univariate filter ON</text>
-<text x="430" y="156" class="flow-label" fill="#c084fc" style="font-size:9px">KFLAG: prior knowledge incorporation</text>
-
-<!-- No prior knowledge branch label -->
-<text x="430" y="100" class="flow-label" fill="#64748b" style="font-size:8px">-k: skip univariate, use all features</text>
+<!-- Branch conditions -->
+<text x="430" y="15" class="flow-label" fill="#d97706" style="font-size:9px">UFLAG=1 (default): univariate filter ON</text>
+<text x="430" y="156" class="flow-label" fill="#7c3aed" style="font-size:9px">KFLAG: prior knowledge incorporation</text>
+<text x="430" y="100" class="flow-label" fill="#94a3b8" style="font-size:8px">-k: skip univariate, use all features</text>
 
 </svg>
 </div>
@@ -727,373 +645,373 @@ svg { display: block; }
 <!-- Detail panel -->
 <div class="detail-overlay" onclick="closeDetail()"></div>
 <div class="detail-panel" id="detailPanel">
-  <button class="detail-close" onclick="closeDetail()">×</button>
-  <div id="detailContent"></div>
+   <button class="detail-close" onclick="closeDetail()">×</button>
+   <div id="detailContent"></div>
 </div>
 
 <script>
 const details = {
-  'input1': {
+   'input1': {
     title: 'Raw Connectivity Data (3D)',
     type: 'Input File',
-    color: '#f59e0b',
+    color: '#38bdf8',
     sections: [
-      { title: 'Description', text: '3D MEG connectivity matrix file containing temporal connectivity between brain regions. Typically a .mat or .nii file with dimensions [x × y × subjects].' },
-      { title: 'Required Flags', text: '-g: Group labels variable name\n-s: Sample ID variable name\n-g provides the classification outcome variable (e.g., case vs control).' },
-      { title: 'Pipeline', text: 'This input feeds into input_dat_process.R which reshapes it into 2D format (features × samples) for downstream ML processing.' }
-    ]
-  },
-  'input2': {
+       { title: 'Description', text: '3D MEG connectivity matrix file containing temporal connectivity between brain regions. Typically a .mat or .nii file with dimensions [x × y × subjects].' },
+       { title: 'Required Flags', text: '-g: Group labels variable name\n-s: Sample ID variable name\n-g provides the classification outcome variable (e.g., case vs control).' },
+       { title: 'Pipeline', text: 'This input feeds into input_dat_process.R which reshapes it into 2D format (features × samples) for downstream ML processing.' }
+     ]
+   },
+   'input2': {
     title: 'Raw 2D Data Table',
     type: 'Input File',
-    color: '#8b5cf6',
+    color: '#38bdf8',
     sections: [
-      { title: 'Description', text: 'Pre-extracted 2D feature matrix (CSV). Each row is a sample, columns are features. Used instead of raw connectivity matrices for faster processing.' },
-      { title: 'Required Flags', text: '-g: Group labels variable name\n-s: Sample ID variable name' },
-      { title: 'Pipeline', text: 'Input data processing reshapes and validates, then feeds into univariate filter or directly to ML.' }
-    ]
-  },
-  'input3': {
+       { title: 'Description', text: 'Pre-extracted 2D feature matrix (CSV). Each row is a sample, columns are features. Used instead of raw connectivity matrices for faster processing.' },
+       { title: 'Required Flags', text: '-g: Group labels variable name\n-s: Sample ID variable name' },
+       { title: 'Pipeline', text: 'Input data processing reshapes and validates, then feeds into univariate filter or directly to ML.' }
+     ]
+   },
+   'input3': {
     title: 'Raw Connectivity Data (Regression)',
     type: 'Input File',
-    color: '#10b981',
+    color: '#38bdf8',
     sections: [
-      { title: 'Description', text: 'Same 3D MEG connectivity matrices but for regression tasks. Predicts continuous outcome variables (e.g., symptom severity scores).' },
-      { title: 'Required Flags', text: '-y: Continuous outcome variable name' },
-      { title: 'Pipeline', text: 'Uses reg_input_dat_process.R to reshape into 2D format for regression ML pipeline.' }
-    ]
-  },
-  'input4': {
+       { title: 'Description', text: 'Same 3D MEG connectivity matrices but for regression tasks. Predicts continuous outcome variables (e.g., symptom severity scores).' },
+       { title: 'Required Flags', text: '-y: Continuous outcome variable name' },
+       { title: 'Pipeline', text: 'Uses reg_input_dat_process.R to reshape into 2D format for regression ML pipeline.' }
+     ]
+   },
+   'input4': {
     title: 'Raw 2D Data Table (Regression)',
     type: 'Input File',
-    color: '#e11d48',
+    color: '#38bdf8',
     sections: [
-      { title: 'Description', text: '2D feature matrix for regression tasks. Pre-extracted, ready for CV regression pipelines.' },
-      { title: 'Required Flags', text: '-y: Continuous outcome variable name' }
-    ]
-  },
-  'entry1': {
+       { title: 'Description', text: '2D feature matrix for regression tasks. Pre-extracted, ready for CV regression pipelines.' },
+       { title: 'Required Flags', text: '-y: Continuous outcome variable name' }
+     ]
+   },
+   'entry1': {
     title: 'connectivity_ml_v2.sh',
     type: 'Classification (Connectivity)',
-    color: '#f59e0b',
+    color: '#d97706',
     sections: [
-      { title: 'Purpose', text: 'Non-cross-validated classification pipeline for MEG connectivity data. Runs SVM with rRF feature selection, with optional univariate pre-filtering.' },
-      { title: 'R Scripts Called', text: 'input_dat_process.R → univariate.R → ml_svm.R → plsda_val_svm.R' },
-      { title: 'Key Flags', text: '-k: Enable prior knowledge integration (skips univariate filter)\n-u: Enable univariate feature selection (default: ON)\n-p: Enable parallel computing\n-m: Custom config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_v2.sh' }
-    ]
-  },
-  'entry1x': {
+       { title: 'Purpose', text: 'Non-cross-validated classification pipeline for MEG connectivity data. Runs SVM with rRF feature selection, with optional univariate pre-filtering.' },
+       { title: 'R Scripts Called', text: 'input_dat_process.R → univariate.R → ml_svm.R → plsda_val_svm.R' },
+       { title: 'Key Flags', text: '-k: Enable prior knowledge integration (skips univariate filter)\n-u: Enable univariate feature selection (default: ON)\n-p: Enable parallel computing\n-m: Custom config file' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_v2.sh' }
+     ]
+   },
+   'entry1x': {
     title: 'connectivity_ml_x.sh',
     type: 'Classification + CV (Connectivity)',
     color: '#f43f5e',
     sections: [
-      { title: 'Purpose', text: 'Nested cross-validated classification pipeline. Adds internal CV for hyperparameter tuning of the SVM classifier, providing unbiased performance estimates.' },
-      { title: 'ML Model Switch Logic', text: 'Determines which R script to run based on flags:\n- -x off, -n off → ml_svm.R (standard)\n- -x off, -n on → ml_svm_nofs.R (no feature selection)\n- -x on,  -n off → cv_ml_svm.R (CV)\n- -x on,  -n on  → cv_ml_svm_nofs.R (CV, no FS)' },
-      { title: 'R Scripts Called', text: 'input_dat_process.R → univariate.R → ml_svm.R|cv_ml_svm.R → plsda_val_svm.R' },
-      { title: 'Key Flags', text: '-x: Enable CV (nested cross-validation)\n-n: Enable no-feature-selection mode\n-p: Parallel computing\n-m: Config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_x.sh' }
-    ]
-  },
-  'entry2': {
+       { title: 'Purpose', text: 'Nested cross-validated classification pipeline. Adds internal CV for hyperparameter tuning of the SVM classifier, providing unbiased performance estimates.' },
+       { title: 'ML Model Switch Logic', text: 'Determines which R script to run based on flags:\n- -x off, -n off → ml_svm.R (standard)\n- -x off, -n on → ml_svm_nofs.R (no feature selection)\n- -x on,   -n off → cv_ml_svm.R (CV)\n- -x on,   -n on   → cv_ml_svm_nofs.R (CV, no FS)' },
+       { title: 'R Scripts Called', text: 'input_dat_process.R → univariate.R → ml_svm.R | cv_ml_svm.R → plsda_val_svm.R' },
+       { title: 'Key Flags', text: '-x: Enable CV (nested cross-validation)\n-n: Enable no-feature-selection mode\n-p: Parallel computing\n-m: Config file' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_x.sh' }
+     ]
+   },
+   'entry2': {
     title: 'cv_train_class_v2.sh',
     type: 'Classification + CV (2D)',
     color: '#f43f5e',
     sections: [
-      { title: 'Purpose', text: 'Cross-validated classification using 2D data (not raw connectivity). Accepts pre-extracted feature matrices, faster than 3D pipeline.' },
-      { title: 'R Scripts Called', text: 'input_dat_process_2d.R → univariate_2d.R → cv_ml_svm.R → cv_plsda_val_svm.R' },
-      { title: 'Key Flags', text: '-k: Prior knowledge (skips univariate)\n-u: Univariate feature selection flag\n-p: Parallel computing\n-m: Config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/cv_train_class_v2.sh' }
-    ]
-  },
-  'entry3': {
+       { title: 'Purpose', text: 'Cross-validated classification using 2D data (not raw connectivity). Accepts pre-extracted feature matrices, faster than 3D pipeline.' },
+       { title: 'R Scripts Called', text: 'input_dat_process_2d.R → univariate_2d.R → cv_ml_svm.R → cv_plsda_val_svm.R' },
+       { title: 'Key Flags', text: '-k: Prior knowledge (skips univariate)\n-u: Univariate feature selection flag\n-p: Parallel computing\n-m: Config file' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/cv_train_class_v2.sh' }
+     ]
+   },
+   'entry3': {
     title: 'connectivity_ml_reg_v2.sh',
     type: 'Regression (Connectivity)',
-    color: '#10b981',
+    color: '#059669',
     sections: [
-      { title: 'Purpose', text: 'Non-cross-validated regression pipeline for MEG connectivity data. Predicts continuous outcomes using SVR (Support Vector Regression) with rRF feature selection.' },
-      { title: 'R Scripts Called', text: 'reg_input_dat_process.R → reg_univariate.R → reg_ml_svm.R → reg_plsr_val_svm.R' },
-      { title: 'Key Flags', text: '-k: Prior knowledge integration\n-u: Univariate feature selection disabled (UFLAG=1)\n-p: Parallel computing\n-m: Config file' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_reg_v2.sh' }
-    ]
-  },
-  'entry4': {
+       { title: 'Purpose', text: 'Non-cross-validated regression pipeline for MEG connectivity data. Predicts continuous outcomes using SVR (Support Vector Regression) with rRF feature selection.' },
+       { title: 'R Scripts Called', text: 'reg_input_dat_process.R → reg_univariate.R → reg_ml_svm.R → reg_plsr_val_svm.R' },
+       { title: 'Key Flags', text: '-k: Prior knowledge integration\n-u: Univariate feature selection disabled (UFLAG=1)\n-p: Parallel computing\n-m: Config file' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/connectivity_ml_reg_v2.sh' }
+     ]
+   },
+   'entry4': {
     title: 'cv_train_reg_v2.sh',
     type: 'Regression + CV (2D)',
     color: '#e11d48',
     sections: [
-      { title: 'Purpose', text: 'Cross-validated regression using 2D data. Nested CV for SVR hyperparameter tuning with continuous outcome prediction.' },
-      { title: 'R Scripts Called', text: 'reg_input_dat_process_2d.R → reg_univariate_2d.R → cv_reg_ml_svm.R → cv_reg_plsr_val_svm.R' },
-      { title: 'Key Flags', text: '-k: Prior knowledge\n-u: Univariate feature selection\n-p: Parallel computing' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/cv_train_reg_v2.sh' }
-    ]
-  },
-  'cond1': {
+       { title: 'Purpose', text: 'Cross-validated regression using 2D data. Nested CV for SVR hyperparameter tuning with continuous outcome prediction.' },
+       { title: 'R Scripts Called', text: 'reg_input_dat_process_2d.R → reg_univariate_2d.R → cv_reg_ml_svm.R → cv_reg_plsr_val_svm.R' },
+       { title: 'Key Flags', text: '-k: Prior knowledge\n-u: Univariate feature selection\n-p: Parallel computing' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/cv_train_reg_v2.sh' }
+     ]
+   },
+   'cond1': {
     title: 'univariate.R',
     type: 'R Script — Univariate Analysis (Classification)',
-    color: '#fbbf24',
+    color: '#d97706',
     sections: [
-      { title: 'Purpose', text: 'Performs univariate statistical analysis on classified data: PCA, hierarchical clustering, volcano plots, and feature filtering for classification tasks.' },
-      { title: 'Inputs', text: 'Preprocessed 2D data from input_dat_process.R\nNode annotation file for brain region mapping' },
-      { title: 'Outputs', text: 'Significant feature subset (w_prior.csv)\nPCA plots, volcano plots, hierarchical clustering\nFeature filtering based on FDR, p-value, fold-change' }
-    ]
-  },
-  'cond2': {
+       { title: 'Purpose', text: 'Performs univariate statistical analysis on classified data: PCA, hierarchical clustering, volcano plots, and feature filtering for classification tasks.' },
+       { title: 'Inputs', text: 'Preprocessed 2D data from input_dat_process.R\nNode annotation file for brain region mapping' },
+       { title: 'Outputs', text: 'Significant feature subset (w_prior.csv)\nPCA plots, volcano plots, hierarchical clustering\nFeature filtering based on FDR, p-value, fold-change' }
+     ]
+   },
+   'cond2': {
     title: 'univariate_2d.R',
     type: 'R Script — Univariate Analysis (2D)',
-    color: '#c084fc',
+    color: '#7c3aed',
     sections: [
-      { title: 'Purpose', text: 'Same univariate analysis as univariate.R but tailored for 2D input data. Includes PCA, volcano plots, and clustering.' },
-      { title: 'Key Feature', text: 'Skip when -k flag set (prior knowledge mode: use all features without filtering).' }
-    ]
-  },
-  'cond3': {
+       { title: 'Purpose', text: 'Same univariate analysis as univariate.R but tailored for 2D input data. Includes PCA, volcano plots, and clustering.' },
+       { title: 'Key Feature', text: 'Skip when -k flag set (prior knowledge mode: use all features without filtering).' }
+     ]
+   },
+   'cond3': {
     title: 'reg_univariate.R',
     type: 'R Script — Univariate Analysis (Regression)',
-    color: '#6ee7b7',
+    color: '#059669',
     sections: [
-      { title: 'Purpose', text: 'Univariate analysis for regression: hierarchical clustering and feature screening for continuous outcome prediction.' },
-      { title: 'Key Feature', text: 'Skip when -u off (no feature selection). Uses all features directly for SVR training.' }
-    ]
-  },
-  'cond4': {
+       { title: 'Purpose', text: 'Univariate analysis for regression: hierarchical clustering and feature screening for continuous outcome prediction.' },
+       { title: 'Key Feature', text: 'Skip when -u off (no feature selection). Uses all features directly for SVR training.' }
+     ]
+   },
+   'cond4': {
     title: 'reg_univariate_2d.R',
     type: 'R Script — Univariate Analysis (Regression 2D)',
-    color: '#6ee7b7',
+    color: '#059669',
     sections: [
-      { title: 'Purpose', text: 'Univariate analysis for 2D regression data. Hierarchical clustering and feature screening.' }
-    ]
-  },
-  'shared1': {
+       { title: 'Purpose', text: 'Univariate analysis for 2D regression data. Hierarchical clustering and feature screening.' }
+     ]
+   },
+   'shared1': {
     title: 'input_dat_process.R',
     type: 'R Script — Data Preprocessing (Classification/Connectivity)',
-    color: '#0284c7',
+    color: '#0891b2',
     sections: [
-      { title: 'Purpose', text: 'Reshapes 3D connectivity matrices into 2D feature matrix (features × samples). Applies min-max normalization and/or z-score standardization. Validates annotation data integrity.' },
-      { title: 'Checks', text: '- Group labels existence in annotation file\n- Sample count vs data dimensions match\n- No NA values in annotation\n- Single class detection\n- Contrast group existence' },
-      { title: 'Output', text: '*_2D.csv — Flattened 2D data matrix' }
-    ]
-  },
-  'shared1b': {
+       { title: 'Purpose', text: 'Reshapes 3D connectivity matrices into 2D feature matrix (features × samples). Applies min-max normalization and/or z-score standardization. Validates annotation data integrity.' },
+       { title: 'Checks', text: '- Group labels existence in annotation file\n- Sample count vs data dimensions match\n- No NA values in annotation\n- Single class detection\n- Contrast group existence' },
+       { title: 'Output', text: '*_2D.csv — Flattened 2D data matrix' }
+     ]
+   },
+   'shared1b': {
     title: 'input_dat_process_2d.R',
     type: 'R Script — Data Preprocessing (2D)',
-    color: '#0284c7',
+    color: '#0891b2',
     sections: [
-      { title: 'Purpose', text: 'Same as input_dat_process.R but accepts 2D input. Handles normalization and annotation validation.' }
-    ]
-  },
-  'shared2': {
+       { title: 'Purpose', text: 'Same as input_dat_process.R but accepts 2D input. Handles normalization and annotation validation.' }
+     ]
+   },
+   'shared2': {
     title: 'reg_input_dat_process.R',
     type: 'R Script — Data Preprocessing (Regression/Connectivity)',
-    color: '#0284c7',
+    color: '#0891b2',
     sections: [
-      { title: 'Purpose', text: 'Reshapes 3D matrices for regression, validates continuous outcome variable, applies normalization.' }
-    ]
-  },
-  'shared2b': {
+       { title: 'Purpose', text: 'Reshapes 3D matrices for regression, validates continuous outcome variable, applies normalization.' }
+     ]
+   },
+   'shared2b': {
     title: 'reg_input_dat_process_2d.R',
     type: 'R Script — Data Preprocessing (Regression/2D)',
-    color: '#0284c7',
+    color: '#0891b2',
     sections: [
-      { title: 'Purpose', text: 'Same as reg_input_dat_process.R but for 2D input data.' }
-    ]
-  },
-  'ml1': {
+       { title: 'Purpose', text: 'Same as reg_input_dat_process.R but for 2D input data.' }
+     ]
+   },
+   'ml1': {
     title: 'ml_svm.R',
     type: 'R Script — SVM Machine Learning (Classification)',
-    color: '#f59e0b',
+    color: '#d97706',
     sections: [
-      { title: 'Purpose', text: 'Core SVM classifier with rRF (Random Forest Feature Selection) wrapper. Trains SVM models with cross-validation for hyperparameter tuning.' },
-      { title: 'Pipeline', text: 'Feature selection (rRF-FS) → SVM training with CV → Permutation testing → ROC-AUC curves → PCA biplots → Hierarchical clustering' },
-      { title: 'Key Components', text: '- SVM-rRF-FS: Recursive random forest feature selection\n- Nested CV for robust performance estimation\n- Permutation testing (p-value estimation)\n- ROC-AUC curve generation\n- PCA biplot visualization' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/ml_svm.R' }
-    ]
-  },
-  'ml2': {
+       { title: 'Purpose', text: 'Core SVM classifier with rRF (Random Forest Feature Selection) wrapper. Trains SVM models with cross-validation for hyperparameter tuning.' },
+       { title: 'Pipeline', text: 'Feature selection (rRF-FS) → SVM training with CV → Permutation testing → ROC-AUC curves → PCA biplots → Hierarchical clustering' },
+       { title: 'Key Components', text: '- SVM-rRF-FS: Recursive random forest feature selection\n- Nested CV for robust performance estimation\n- Permutation testing (p-value estimation)\n- ROC-AUC curve generation\n- PCA biplot visualization' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/ml_svm.R' }
+     ]
+   },
+   'ml2': {
     title: 'cv_ml_svm.R',
     type: 'R Script — CV SVM Machine Learning',
     color: '#f43f5e',
     sections: [
-      { title: 'Purpose', text: 'Nested cross-validated SVM classification. Outer CV for performance estimation, inner CV for hyperparameter tuning. Provides unbiased model evaluation.' },
-      { title: 'Pipeline', text: 'Outer CV loops → Inner CV (hyperparameter tuning) → rRF-FS → SVM training → PLS-DA validation' },
-      { title: 'Key Difference', text: 'connectivity_ml_x.sh selects this based on -x flag. Provides more robust performance estimates than non-CV version.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_ml_svm.R' }
-    ]
-  },
-  'mlselect': {
+       { title: 'Purpose', text: 'Nested cross-validated SVM classification. Outer CV for performance estimation, inner CV for hyperparameter tuning. Provides unbiased model evaluation.' },
+       { title: 'Pipeline', text: 'Outer CV loops → Inner CV (hyperparameter tuning) → rRF-FS → SVM training → PLS-DA validation' },
+       { title: 'Key Difference', text: 'connectivity_ml_x.sh selects this based on -x flag. Provides more robust performance estimates than non-CV version.' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_ml_svm.R' }
+     ]
+   },
+   'mlselect': {
     title: 'ML Model Switch',
     type: 'Conditional Routing',
-    color: '#94a3b8',
+    color: '#64748b',
     sections: [
-      { title: 'Purpose', text: 'connectivity_ml_x.sh dynamically selects the appropriate ML script based on flags:\n\nIf -x=0, -n=0 → ml_svm.R\nIf -x=0, -n=1 → ml_svm_nofs.R\nIf -x=1,  -n=0 → cv_ml_svm.R\nIf -x=1,  -n=1 → cv_ml_svm_nofs.R' },
-      { title: 'Flag Meaning', text: '-x: Enable nested cross-validation\n-n: Enable "no feature selection" mode\n  (NFLAG=1 means skip univariate FS step)' }
-    ]
-  },
-  'ml3': {
+       { title: 'Purpose', text: 'connectivity_ml_x.sh dynamically selects the appropriate ML script based on flags:\n\nIf -x=0, -n=0 → ml_svm.R\nIf -x=0, -n=1 → ml_svm_nofs.R\nIf -x=1,   -n=0 → cv_ml_svm.R\nIf -x=1,   -n=1 → cv_ml_svm_nofs.R' },
+       { title: 'Flag Meaning', text: '-x: Enable nested cross-validation\n-n: Enable "no feature selection" mode\n   (NFLAG=1 means skip univariate FS step)' }
+     ]
+   },
+   'ml3': {
     title: 'reg_ml_svm.R',
     type: 'R Script — SVR Machine Learning (Regression)',
-    color: '#10b981',
+    color: '#059669',
     sections: [
-      { title: 'Purpose', text: 'Support Vector Regression with rRF feature selection. Predicts continuous outcomes using SVR with recursive random forest feature selection.' },
-      { title: 'Pipeline', text: 'Feature selection → SVR training → Permutation testing → Regression plots → Clustering' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/reg_ml_svm.R' }
-    ]
-  },
-  'ml4': {
+       { title: 'Purpose', text: 'Support Vector Regression with rRF feature selection. Predicts continuous outcomes using SVR with recursive random forest feature selection.' },
+       { title: 'Pipeline', text: 'Feature selection → SVR training → Permutation testing → Regression plots → Clustering' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/reg_ml_svm.R' }
+     ]
+   },
+   'ml4': {
     title: 'cv_reg_ml_svm.R',
     type: 'R Script — CV SVR Machine Learning',
     color: '#e11d48',
     sections: [
-      { title: 'Purpose', text: 'Nested CV version of SVR pipeline for regression. Outer CV for unbiased evaluation, inner CV for hyperparameter tuning.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_reg_ml_svm.R' }
-    ]
-  },
-  'val1': {
+       { title: 'Purpose', text: 'Nested CV version of SVR pipeline for regression. Outer CV for unbiased evaluation, inner CV for hyperparameter tuning.' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_reg_ml_svm.R' }
+     ]
+   },
+   'val1': {
     title: 'plsda_val_svm.R',
     type: 'R Script — PLS-DA Validation',
-    color: '#f59e0b',
+    color: '#d97706',
     sections: [
-      { title: 'Purpose', text: 'Validates SVM results using PLS-DA (Partial Least Squares Discriminant Analysis). Independent classification method to confirm features are not overfit.' },
-      { title: 'Pipeline', text: 'Load SVM model → PLS-DA analysis → VIP scores → Permutation testing → ROC-AUC → Score plots with confidence ellipses' },
-      { title: 'Why Important', text: 'Different ML algorithm (PLS-DA vs SVM) confirms that identified features genuinely discriminate groups, not artifacts of a specific algorithm.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/plsda_val_svm.R' }
-    ]
-  },
-  'val2': {
+       { title: 'Purpose', text: 'Validates SVM results using PLS-DA (Partial Least Squares Discriminant Analysis). Independent classification method to confirm features are not overfit.' },
+       { title: 'Pipeline', text: 'Load SVM model → PLS-DA analysis → VIP scores → Permutation testing → ROC-AUC → Score plots with confidence ellipses' },
+       { title: 'Why Important', text: 'Different ML algorithm (PLS-DA vs SVM) confirms that identified features genuinely discriminate groups, not artifacts of a specific algorithm.' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/plsda_val_svm.R' }
+     ]
+   },
+   'val2': {
     title: 'cv_plsda_val_svm.R',
     type: 'R Script — CV PLS-DA Validation',
     color: '#f43f5e',
     sections: [
-      { title: 'Purpose', text: 'Cross-validated PLS-DA validation for 2D CV classification pipelines.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_plsda_val_svm.R' }
-    ]
-  },
-  'val3': {
+       { title: 'Purpose', text: 'Cross-validated PLS-DA validation for 2D CV classification pipelines.' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_plsda_val_svm.R' }
+     ]
+   },
+   'val3': {
     title: 'reg_plsr_val_svm.R',
     type: 'R Script — PLSR Validation',
-    color: '#10b981',
+    color: '#059669',
     sections: [
-      { title: 'Purpose', text: 'Validates SVR (regression) results using PLSR (Partial Least Squares Regression). Independent regression method confirming feature importance.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/reg_plsr_val_svm.R' }
-    ]
-  },
-  'val4': {
+       { title: 'Purpose', text: 'Validates SVR (regression) results using PLSR (Partial Least Squares Regression). Independent regression method confirming feature importance.' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/reg_plsr_val_svm.R' }
+     ]
+   },
+   'val4': {
     title: 'cv_reg_plsr_val_svm.R',
     type: 'R Script — CV PLSR Validation',
     color: '#e11d48',
     sections: [
-      { title: 'Purpose', text: 'Cross-validated PLSR validation for 2D CV regression pipelines.' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_reg_plsr_val_svm.R' }
-    ]
-  },
-  'pred': {
+       { title: 'Purpose', text: 'Cross-validated PLSR validation for 2D CV regression pipelines.' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/R_files/cv_reg_plsr_val_svm.R' }
+     ]
+   },
+   'pred': {
     title: 'predict_class.sh',
     type: 'Prediction Module',
     color: '#64748b',
     sections: [
-      { title: 'Purpose', text: 'Predicts group labels for new, unseen data using a previously trained SVM model. Applies the same data processing config stored in the model file.' },
-      { title: 'Pipeline', text: 'Input data processing (pred_dat_process_2d.R) → SVM prediction (pred_classif.R)\n\nOutputs pie charts of predicted labels, feature-subsetted data.' },
-      { title: 'Key Flags', text: '-i: Input 2D CSV file\n-s: Sample ID variable\n-l: Trained .RData model file\n-m: Optional config file\n-o: Output directory\n-p: Parallel cores' },
-      { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/predict_class.sh' }
-    ]
-  },
-  'out1': {
+       { title: 'Purpose', text: 'Predicts group labels for new, unseen data using a previously trained SVM model. Applies the same data processing config stored in the model file.' },
+       { title: 'Pipeline', text: 'Input data processing (pred_dat_process_2d.R) → SVM prediction (pred_classif.R)\n\nOutputs pie charts of predicted labels, feature-subsetted data.' },
+       { title: 'Key Flags', text: '-i: Input 2D CSV file\n-s: Sample ID variable\n-l: Trained .RData model file\n-m: Optional config file\n-o: Output directory\n-p: Parallel cores' },
+       { title: 'Source', text: '', link: 'https://github.com/jzhangc/git_nmt_commandline/blob/nightly/predict_class.sh' }
+     ]
+   },
+   'out1': {
     title: '*.Rdata — SVM Model Files',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'Trained SVM model weights, selected features, data processing configuration, AUC scores, nested CV results.' },
-      { title: 'Naming', text: '*_final_svm_model.Rdata\nor\ncv_only_*_final_svm_model.Rdata (CV runs)\nor\nnofs_*_final_svm_model.Rdata (no FS mode)' }
-    ]
-  },
-  'out2': {
+       { title: 'Contents', text: 'Trained SVM model weights, selected features, data processing configuration, AUC scores, nested CV results.' },
+       { title: 'Naming', text: '*_final_svm_model.Rdata\nor\ncv_only_*_final_svm_model.Rdata (CV runs)\nor\nnofs_*_final_svm_model.Rdata (no FS mode)' }
+     ]
+   },
+   'out2': {
     title: '*.txt — SVM Results',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'SVM performance metrics including accuracy, sensitivity, specificity, ROC-AUC values, feature rankings, and permutation test p-values.' }
-    ]
-  },
-  'out3': {
+       { title: 'Contents', text: 'SVM performance metrics including accuracy, sensitivity, specificity, ROC-AUC values, feature rankings, and permutation test p-values.' }
+     ]
+   },
+   'out3': {
     title: 'Univariate Analysis Plots',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Includes', text: 'PCA plots with biplots, volcano plots, hierarchical clustering heatmaps, feature correlation matrices. Generated by univariate.R or variants.' }
-    ]
-  },
-  'out4': {
+       { title: 'Includes', text: 'PCA plots with biplots, volcano plots, hierarchical clustering heatmaps, feature correlation matrices. Generated by univariate.R or variants.' }
+     ]
+   },
+   'out4': {
     title: '*_w_prior.csv — Feature Subset',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Purpose', text: 'DataFrame containing only features selected by univariate filter + rRF-FS. Used as input for downstream ML training.' }
-    ]
-  },
-  'out5': {
+       { title: 'Purpose', text: 'DataFrame containing only features selected by univariate filter + rRF-FS. Used as input for downstream ML training.' }
+     ]
+   },
+   'out5': {
     title: 'Validation Results',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'PLS-DA / PLSR validation metrics, VIP scores, permutation test results, ROC curves, score plots.' }
-    ]
-  },
-  'out6': {
+       { title: 'Contents', text: 'PLS-DA / PLSR validation metrics, VIP scores, permutation test results, ROC curves, score plots.' }
+     ]
+   },
+   'out6': {
     title: 'Prediction Outputs',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'Pie charts showing predicted labels, feature-subsetted data, prediction probabilities in PREDICTION/ directory.' }
-    ]
-  },
-  'out7': {
+       { title: 'Contents', text: 'Pie charts showing predicted labels, feature-subsetted data, prediction probabilities in PREDICTION/ directory.' }
+     ]
+   },
+   'out7': {
     title: '*_2D.csv — Processed Data',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'Normalized (min-max / z-score) 2D data matrix ready for ML. Features as columns, samples as rows.' }
-    ]
-  },
-  'out8': {
+       { title: 'Contents', text: 'Normalized (min-max / z-score) 2D data matrix ready for ML. Features as columns, samples as rows.' }
+     ]
+   },
+   'out8': {
     title: 'Feature Selection Plots',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'rRF feature importance bar graphs showing ranked features and selection thresholds.' }
-    ]
-  },
-  'out9': {
+       { title: 'Contents', text: 'rRF feature importance bar graphs showing ranked features and selection thresholds.' }
+     ]
+   },
+   'out9': {
     title: 'Log Files',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Location', text: 'LOG/ directory\n\nprocessing_R_log_* — R script output\nprocessing_shell_log_* — Shell script execution info' }
-    ]
-  },
-  'out10': {
+       { title: 'Location', text: 'LOG/ directory\n\nprocessing_R_log_* — R script output\nprocessing_shell_log_* — Shell script execution info' }
+     ]
+   },
+   'out10': {
     title: 'Permutation Test & ROC Plots',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'ROC-AUC curves, permutation test plots, PCA biplots with confidence ellipses. Generated by ml_svm.R and validation scripts.' }
-    ]
-  },
-  'out11': {
+       { title: 'Contents', text: 'ROC-AUC curves, permutation test plots, PCA biplots with confidence ellipses. Generated by ml_svm.R and validation scripts.' }
+     ]
+   },
+   'out11': {
     title: 'VIP Plots',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'VIP (Variable Importance in Projection) scores from PLS-DA/PLSR validation, showing feature importance as measured by the validation model.' }
-    ]
-  },
-  'out12': {
+       { title: 'Contents', text: 'VIP (Variable Importance in Projection) scores from PLS-DA/PLSR validation, showing feature importance as measured by the validation model.' }
+     ]
+   },
+   'out12': {
     title: 'Prediction Results',
     type: 'Output',
     color: '#64748b',
     sections: [
-      { title: 'Contents', text: 'Predicted labels, sample data subset, pie charts of predictions, and logs stored in PREDICTION/ directory.' }
-    ]
-  }
+       { title: 'Contents', text: 'Predicted labels, sample data subset, pie charts of predictions, and logs stored in PREDICTION/ directory.' }
+     ]
+   }
 };
 
 function showDetail(key) {
@@ -1105,11 +1023,11 @@ function showDetail(key) {
     html += `<div class="detail-section"><h3>${s.title}</h3>`;
     if (s.link) {
       html += `<a href="${s.link}" class="detail-link" target="_blank">View Source →</a>`;
-    } else {
+     } else {
       html += `<p>${s.text.replace(/\n/g, '<br>')}</p>`;
-    }
+     }
     html += `</div>`;
-  });
+   });
   document.getElementById('detailContent').innerHTML = html;
   document.getElementById('detailPanel').classList.add('active');
   document.querySelector('.detail-overlay').classList.add('active');
