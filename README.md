@@ -12,16 +12,8 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-       - 0.5.x-260426
-           - Bug fixes
-             - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
 
-           - Other
-             - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
-             - Discription typo fixed to Description in 24 shell scripts
-             - Trailing whitespace removed from all shell scripts
-
-       - Waterbox
+    - Waterbox
         - Data processing modules updates
           - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
 
@@ -32,6 +24,17 @@ Please cite the following if you are to use this application:
           - Prediction modules reads the data processing config information from the SVM model file for data processing
           - Prediction modules reads the data processing config information from the SVM model file for inferencing
           - Prediction modules config files to be revamped
+
+
+    - 0.5.x-260426
+        - Bug fixes
+          - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
+
+        - Other
+          - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
+          - Discription typo fixed to Description in 24 shell scripts
+          - Trailing whitespace removed from all shell scripts
+
 
     - 0.5.x-260325
         - General updates
