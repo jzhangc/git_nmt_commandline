@@ -14,7 +14,6 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-
     - Waterbox
         - Data processing modules updates
           - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
