@@ -442,37 +442,48 @@ svg { display: block; }
 <text x="473" y="185" class="box-label-sm">input_dat_proce_.R</text>
 
 <!-- ============================== -->
-<!-- ML MODELS (col 4-5)           -->
+<!-- ML MODELS (col 4-5)            -->
 <!-- ============================== -->
 
-<!-- ML model selection for -x flag branch (connectivity_ml_x.sh) -->
-<rect x="570" y="92" width="130" height="72" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1" class="box"
-  onclick="showDetail('mlselect')" onmouseenter="hlBox('mlselect')" onmouseleave="unhlBox('mlselect')"/>
-<text x="635" y="116" class="box-label-sm" style="fill:#e2e8f0">ML Model Switch</text>
-<text x="635" y="132" class="box-label-sm" style="fill:#94a3b8">-x/-n flags</text>
-<text x="635" y="148" class="box-label-sm" style="fill:#94a3b8">→ ml_svm.R / cv_ml_svm.R</text>
+<!-- ml_svm.R (top, no CV, with FS) -->
+<rect x="570" y="20" width="130" height="45" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+   onclick="showDetail('ml1')" onmouseenter="hlBox('ml1')" onmouseleave="unhlBox('ml1')"/>
+<text x="635" y="40" class="box-label-sm" style="fill:#0f172a; font-weight:700">ml_svm.R</text>
+<text x="635" y="55" class="box-label-sm">SVM-rRF-FS</text>
 
-<!-- Class+Conn ML (no CV): ml_svm.R -->
-<rect x="570" y="25" width="130" height="52" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
-  onclick="showDetail('ml1')" onmouseenter="hlBox('ml1')" onmouseleave="unhlBox('ml1')"/>
-<text x="635" y="48" class="box-label-sm" style="fill:#0f172a; font-weight:700">ml_svm.R</text>
-<text x="635" y="64" class="box-label-sm">SVM-rRF-FS</text>
+<!-- ml_svm_nofs.R (no CV, no FS) -->
+<rect x="570" y="72" width="130" height="40" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+   onclick="showDetail('mlselect')" onmouseenter="hlBox('mlselect')" onmouseleave="unhlBox('mlselect')"/>
+<text x="635" y="90" class="box-label-sm" style="fill:#0f172a; font-weight:600">ml_svm_nofs.R</text>
+<text x="635" y="103" class="box-label-sm">no FS (option)</text>
 
-<!-- Class+2D ML (CV): cv_ml_svm.R -->
-<rect x="570" y="165" width="130" height="52" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
-  onclick="showDetail('ml2')" onmouseenter="hlBox('ml2')" onmouseleave="unhlBox('ml2')"/>
-<text x="635" y="188" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_ml_svm.R</text>
-<text x="635" y="204" class="box-label-sm">CV SVM-rRF-FS</text>
+<!-- Label -->
+<text x="635" y="120" class="flow-label" style="fill:#94a3b8; font-size:7px">── CV paths (connectivity_ml_x.sh) ──</text>
+
+<!-- cv_ml_svm.R -->
+<rect x="570" y="128" width="130" height="45" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+   onclick="showDetail('ml2')" onmouseenter="hlBox('ml2')" onmouseleave="unhlBox('ml2')"/>
+<text x="635" y="148" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_ml_svm.R</text>
+<text x="635" y="163" class="box-label-sm">CV SVM-rRF-FS</text>
+
+<!-- cv_ml_svm_nofs.R -->
+<rect x="570" y="178" width="130" height="40" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+   onclick="showDetail('mlselect')" onmouseenter="hlBox('mlselect')" onmouseleave="unhlBox('mlselect')"/>
+<text x="635" y="196" class="box-label-sm" style="fill:#0f172a; font-weight:600">cv_ml_svm_nofs.R</text>
+<text x="635" y="209" class="box-label-sm">CV no FS (option)</text>
+
+<!-- Label -->
+<text x="635" y="226" class="flow-label" style="fill:#94a3b8; font-size:7px">── Other ML scripts (no switch) ──</text>
 
 <!-- Reg+Conn ML (no CV): reg_ml_svm.R -->
-<rect x="570" y="255" width="130" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
-  onclick="showDetail('ml3')" onmouseenter="hlBox('ml3')" onmouseleave="unhlBox('ml3')"/>
-<text x="635" y="278" class="box-label-sm" style="fill:#0f172a; font-weight:700">reg_ml_svm.R</text>
-<text x="635" y="294" class="box-label-sm">SVR-rRF-FS</text>
+<rect x="570" y="245" width="130" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+   onclick="showDetail('ml3')" onmouseenter="hlBox('ml3')" onmouseleave="unhlBox('ml3')"/>
+<text x="635" y="268" class="box-label-sm" style="fill:#0f172a; font-weight:700">reg_ml_svm.R</text>
+<text x="635" y="284" class="box-label-sm">SVR-rRF-FS</text>
 
 <!-- Reg+2D ML (CV): cv_reg_ml_svm.R -->
 <rect x="570" y="370" width="130" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
-  onclick="showDetail('ml4')" onmouseenter="hlBox('ml4')" onmouseleave="unhlBox('ml4')"/>
+   onclick="showDetail('ml4')" onmouseenter="hlBox('ml4')" onmouseleave="unhlBox('ml4')"/>
 <text x="635" y="393" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_reg_ml_svm.R</text>
 <text x="635" y="409" class="box-label-sm">CV SVR-rRF-FS</text>
 
@@ -626,8 +637,8 @@ svg { display: block; }
 <path d="M520,52 Q540,34 555,44" class="connector-dashed" stroke="#fbbf24" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="535" y="34" class="flow-label" fill="#fbbf24">-k (skip univariate)</text>
 
-<!-- cond1 branching to both ml1 and ml-select -->
-<path d="M520,62 L562,128" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- cond1 branching: univariate output to ml1 only (connectivity_ml_v2.sh direct path) -->
+<!-- ML Model Switch is ONLY for connectivity_ml_x.sh (cond → ml-select), not for other entry points -->
 
 <!-- Entry 2 -> cond2 -->
 <path d="M380,200 L422,200" class="connector" stroke="#a855f7" stroke-width="1.5"/>
@@ -647,41 +658,34 @@ svg { display: block; }
 <!-- cond4 -> ml4 -->
 <path d="M520,400 L555,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 
-<!-- ML Model Switch -> ml_svm.R (no CV path via -x 0, -n 0) -->
-<path d="M700,128 L635,74" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- Entry 1x (395,105) -> ML paths (connectivity_ml_x.sh routes to 4 scripts based on -x/-n flags) -->
+<path d="M395,105 L565,65" class="connector" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M395,105 L565,105" class="connector" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+<path d="M395,105 L565,155" class="connector" stroke="#94a3b8" stroke-width="1.5"/>
+<path d="M395,105 L565,195" class="connector" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="400" y="85" class="flow-label" fill="#94a3b8" style="font-size:7px">-x=1,-n=1</text>
+<text x="400" y="100" class="flow-label" fill="#94a3b8" style="font-size:7px">-x=1,-n=0</text>
+<text x="400" y="125" class="flow-label" fill="#94a3b8" style="font-size:7px">-x=0,-n=1</text>
+<text x="400" y="140" class="flow-label" fill="#94a3b8" style="font-size:7px">-x=0,-n=0</text>
 
-<!-- ML Model Switch -> cv_ml_svm.R (via -x flag) -->
-<path d="M700,128 L635,217" class="connector" stroke="#f43f5e" stroke-width="1.5"/>
-<text x="708" y="175" class="flow-label" fill="#f43f5e">-x flag</text>
-
-<!-- ml1 -> val1 -->
-<path d="M700,51 L752,51" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
-
-<!-- ml-select branching path to ml_svm_nofs (conditional) -->
-<path d="M700,134 L425,134" class="connector" stroke="#64748b" stroke-width="1" stroke-dasharray="4 3"/>
-
-<!-- ml2 -> val2 -->
-<path d="M700,191 L752,191" class="connector" stroke="#a855f7" stroke-width="1.5"/>
-
-<!-- ml3 -> val3 -->
+<!-- ML scripts -> val scripts -->
+<path d="M700,45 L758,45" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<path d="M700,150 L758,191" class="connector" stroke="#a855f7" stroke-width="1.5"/>
 <path d="M700,278 L752,278" class="connector" stroke="#10b981" stroke-width="1.5"/>
-
-<!-- ml4 -> val4 -->
 <path d="M700,396 L752,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 
 <!-- val1 -> outputs (downward) -->
-<path d="M830,77 L830,145" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,391 L830,495" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L230,495 L230,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L430,495 L430,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L630,495 L630,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L830,495 L830,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L1030,495 L1030,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,50 L900,145" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,395 L900,495" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,495 L230,495 L230,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,495 L430,495 L430,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,495 L630,495 L630,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,495 L830,495 L830,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M900,495 L1030,495 L1030,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
 
 <!-- val2 -> outputs -->
-<path d="M830,217 L830,290" class="connector" stroke="#a855f7" stroke-width="1"/>
-<path d="M830,290 L830,495" class="connector" stroke="#a855f7" stroke-width="1"/>
-<path d="M830,495 L230,495 L230,548" class="connector" stroke="#a855f7" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
+<path d="M900,158 L900,495" class="connector" stroke="#a855f7" stroke-width="1"/>
+<path d="M900,495 L230,495 L230,548" class="connector" stroke="#a855f7" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
 
 <!-- val3 -> outputs -->
 <path d="M830,307 L830,495" class="connector" stroke="#10b981" stroke-width="1"/>
@@ -923,15 +927,16 @@ const details = {
       { title: 'Source', text: '', link: 'https://github.com/jzhang9016/git_nmt_commandline/blob/nightly/R_files/cv_ml_svm.R' }
     ]
   },
-  'mlselect': {
-    title: 'ML Model Switch',
-    type: 'Conditional Routing',
-    color: '#94a3b8',
-    sections: [
-      { title: 'Purpose', text: 'connectivity_ml_x.sh dynamically selects the appropriate ML script based on flags:\n\nIf -x=0, -n=0 → ml_svm.R\nIf -x=0, -n=1 → ml_svm_nofs.R\nIf -x=1,  -n=0 → cv_ml_svm.R\nIf -x=1,  -n=1 → cv_ml_svm_nofs.R' },
-      { title: 'Flag Meaning', text: '-x: Enable nested cross-validation\n-n: Enable "no feature selection" mode\n  (NFLAG=1 means skip univariate FS step)' }
-    ]
-  },
+   'mlselect': {
+     title: 'ML Model Switch (connectivity_ml_x.sh only)',
+     type: 'Conditional Routing',
+     color: '#94a3b8',
+     sections: [
+        { title: 'Purpose', text: 'connectivity_ml_x.sh dynamically selects the appropriate ML script based on flags:\n\nIf -x off (-x=0), -n off (-n=0) → cv_ml_svm_nofs.R (CV, no feature selection)\nIf -x off (-x=0), -n on   (-n=1) → cv_ml_svm.R (CV, with feature selection)\nIf -x on   (-x=1),   -n off (-n=0) → ml_svm_nofs.R (no CV, no feature selection)\nIf -x on   (-x=1),   -n on   (-n=1) → ml_svm.R (no CV, with feature selection)\n\nNote: Flag logic is inverted from usual — 0=true means "enable CV".' },
+        { title: 'Flag Meaning', text: '-x: Enable nested cross-validation (0=CV enabled, 1=CV disabled → direct split)\n-n: Enable "no feature selection" mode (0=noFS enabled, 1=nFS disabled → use feature selection)\n\nModel file naming:\n- cv_only_nofs_* if -x=0, -n=0\n- cv_only_* if -x=0, -n=1\n- nofs_* if -x=1, -n=0\n- *_final_svm_model.Rdata if -x=1, -n=1' },
+        { title: 'Not in other scripts', text: 'connectivity_ml_v2.sh: only calls ml_svm.R (no switch)\ncv_train_class_v2.sh: only calls cv_ml_svm.R (no switch)\nRegression scripts: no ML switch — fixed model calls' }
+     ]
+    },
   'ml3': {
     title: 'reg_ml_svm.R',
     type: 'R Script — SVR Machine Learning (Regression)',
