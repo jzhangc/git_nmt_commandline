@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NMT Program - Interactive Diagram</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 8px;
+      font-size: 1.6rem;
+      text-align: center;
+    }
+    .subtitle {
+      color: #b0c4de;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: rgba(255,255,255,0.1);
+      padding: 12px 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: #e8e8e8;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+    .container {
+      width: 100%;
+      max-width: 1800px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.7) 60%, rgba(255,255,255,0.5) 100%);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .workflow {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      position: relative;
+    }
+    .row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+    }
+    .row .connections {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+    .row .connections::after {
+      content: '';
+      position: absolute;
+      left: 250px;
+      right: 250px;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, 
+        #cbd5e1 0px, 
+        #cbd5e1 40px, 
+        #e2e8f0 40px, 
+        #e2e8f0 80px);
+    }
+    .node {
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 2px solid transparent;
+      min-width: 140px;
+    }
+    .node:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .node:active {
+      transform: translateY(-2px);
+    }
+    .node-content {
+      padding: 12px;
+      text-align: center;
+    }
+    .node-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: #334155;
+      word-break: break-word;
+    }
+    .node-subtitle {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 400;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      margin: 2px;
+      color: #fff;
+    }
+    .badge-class { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .badge-reg { background: linear-gradient(135deg, #10b981, #059669); }
+    .badge-2d { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .badge-conn { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+    .badge-cv { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+    .badge-input { background: linear-gradient(135deg, #60a5fa, #3b82f6); color: #1e3a8a; }
+    .badge-script { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .badge-process { background: linear-gradient(135deg, #94a3b8, #64748b); color: #334155; }
+    .badge-val { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+    .badge-output { background: linear-gradient(135deg, #84cc16, #65a30d); }
+    .flow-label {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e40af;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      white-space: nowrap;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .flow-label-right {
+      left: auto;
+      right: -120px;
+    }
+    .flow-label-small {
+      font-size: 0.55rem;
+      padding: 3px 8px;
+      margin-top: 12px;
+    }
+    .flow-label-ml {
+      background: linear-gradient(135deg, #ec4899, #db2777);
+      padding: 4px 12px;
+      font-size: 0.7rem;
+      position: absolute;
+      left: 630px;
+      top: 170px;
+    }
+    .outputs-section {
+      position: relative;
+      text-align: center;
+    }
+    .outputs-header {
+      display: inline-block;
+      padding: 8px 24px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #fff;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(249,115,22,0.3);
+    }
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      justify-content: center;
+    }
+    .output-card {
+      background: linear-gradient(145deg, #fff, #f8fafc);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      min-width: 140px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .output-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .output-card-content {
+      padding: 8px;
+    }
+    .output-title {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    .output-description {
+      font-size: 0.65rem;
+      color: #64748b;
+    }
+    .detail-panel {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 440px;
+      height: 100vh;
+      background: #fff;
+      border-left: 1px solid #e2e8f0;
+      box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      z-index: 100;
+      padding: 28px;
+    }
+    .detail-panel.active { right: 0; }
+    .detail-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .detail-overlay.active { opacity: 1; pointer-events: all; }
+    .detail-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.8rem;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .detail-close:hover { 
+      background: #f1f5f9; 
+      color: #1e293b; 
+      transform: rotate(90deg);
+    }
+    .detail-header {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .detail-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      padding-right: 48px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .detail-type {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+    .detail-section {
+      margin-bottom: 20px;
+    }
+    .detail-section h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #64748b;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .detail-section p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #334155;
+    }
+    .detail-section ul {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: #334155;
+      padding-left: 18px;
+    }
+    .detail-section li {
+      margin-bottom: 4px;
+    }
+    .detail-link {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    }
+    .detail-link:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99,102,241,0.4);
+    }
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+    .code-key { color: #60a5fa; }
+    .code-value { color: #fbbf24; }
+    .code-string { color: #67e8f9; }
+    .code-comment { color: #94a3b8; }
+    .info-box {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      border: 1px solid #93c5fd;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+    .info-box p {
+      font-size: 0.85rem;
+      color: #1e40af;
+      line-height: 1.6;
+    }
+    .section-label {
+      font-family: 'Apple SD Gothic Neo', sans-serif;
+      fill: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .connector {
+      stroke: #cbd5e1;
+      stroke-width: 2;
+      fill: none;
+    }
+    .connector-dashed {
+      stroke: #cbd5e1;
+      stroke-width: 1.5;
+      stroke-dasharray: 6 4;
+      fill: none;
+    }
+    .connector-highlight {
+      stroke: #6366f1;
+      stroke-width: 2;
+      fill: none;
+    }
+    .connector-arrow {
+      marker-end: url(#arrow);
+    }
+    .arrow {
+      fill: #cbd5e1;
+    }
+    .highlight-line {
+      fill: rgba(99,102,241,0.2);
+      stroke: #6366f1;
+      stroke-width: 2;
+      fill-opacity: 0.2;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+      100% { opacity: 0.3; }
+    }
+    .highlight-box {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @media (max-width: 1200px) {
+      .output-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .row {
+        flex-wrap: wrap;
+        gap: 30px;
+      }
+    }
+    @media (max-width: 768px) {
+      .output-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      .output-grid {
+        grid-template-columns: 1fr;
+      }
+      .legend {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧬 Neuro-ML-tools (NMT) Program</h1>
+  <p class="subtitle">Interactive workflow diagram - Click any module to explore</p>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #f59e0b, #d97706)"></div>
+      <span>Classification</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #10b981, #059669)"></div>
+      <span>Regression</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed)"></div>
+      <span>2D Input</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9)"></div>
+      <span>3D Connectivity</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #f43f5e, #e11d48)"></div>
+      <span>Cross-validated</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #06b6d4, #22d3ee)"></div>
+      <span>Validation</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background: linear-gradient(135deg, #84cc16, #65a30d)"></div>
+      <span>Output</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="workflow">
+      
+      <!-- ROW 1: Classification with 3D Connectivity -->
+      <div class="row">
+        <div class="connections"></div>
+        
+        <!-- Input -->
+        <div class="node" id="input-conn-1" onclick="showDetail('input-conn-1')" 
+             onmouseenter="highlightBox('input-conn-1')" onmouseleave="unhighlightBox()">
+          <div class="flow-label">Input</div>
+          <div class="node-content">
+            <div class="node-title">Connectivity Data</div>
+            <div class="node-subtitle">
+              <span class="badge badge-conn">3D MEG</span>
+              <span class="badge badge-input">Input</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Processing -->
+        <div class="node" id="proc-conn-1" onclick="showDetail('proc-conn-1')"
+             onmouseenter="highlightBox('proc-conn-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">input_dat_process.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              3D → 2D reshape
+            </div>
+          </div>
+        </div>
+
+        <!-- Entry Point -->
+        <div class="node" id="entry-conn-1" onclick="showDetail('entry-conn-1')"
+             onmouseenter="highlightBox('entry-conn-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">connectivity_ml_v2.sh</div>
+            <div class="node-subtitle">
+              <span class="badge badge-class">Class</span><br>
+              <span class="badge badge-conn">Conn</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Univariate Filter -->
+        <div class="node" id="uni-conn-1" onclick="showDetail('uni-conn-1')" onmouseenter="highlightBox('uni-conn-1')" onmouseleave="unhighlightBox()">
+          <div class="flow-label-right" style="background: linear-gradient(135deg, #eab308, #f59e0b);">UFLAG=1 (default)</div>
+          <div class="node-content">
+            <div class="node-title">univariate.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              (-k skip / -u filter)
+            </div>
+          </div>
+        </div>
+
+        <!-- ML Model Switch -->
+        <div class="node" id="ml-switch" onclick="showDetail('ml-switch')"
+             onmouseenter="highlightBox('ml-switch')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">ML Model Switch</div>
+            <div class="node-subtitle">-x / -n flags determine script</div>
+          </div>
+        </div>
+
+        <!-- ML Script -->
+        <div class="node" id="ml-class-1" onclick="showDetail('ml-class-1')"
+             onmouseenter="highlightBox('ml-class-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">ml_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-class">Class</span><br>
+              SVM-rRF-FS
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation -->
+        <div class="node" id="val-class-1" onclick="showDetail('val-class-1')"
+             onmouseenter="highlightBox('val-class-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">plsda_val_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-val">Validation</span><br>
+              PLS-DA validation
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: Classification with 2D Data -->
+      <div class="row">
+        <div class="connections"></div>
+
+        <!-- Input -->
+        <div class="node" id="input-2d-1" onclick="showDetail('input-2d-1')"
+             onmouseenter="highlightBox('input-2d-1')" onmouseleave="unhighlightBox()">
+          <div class="flow-label">Input</div>
+          <div class="node-content">
+            <div class="node-title">2D Feature Matrix</div>
+            <div class="node-subtitle">
+              <span class="badge badge-2d">2D CSV</span>
+              <span class="badge badge-input">Input</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Processing 2D -->
+        <div class="node" id="proc-2d-1" onclick="showDetail('proc-2d-1')"
+             onmouseenter="highlightBox('proc-2d-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">input_dat_process_2d.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              2D normalize
+            </div>
+          </div>
+        </div>
+
+        <!-- Entry Point CV -->
+        <div class="node" id="entry-cv-class" onclick="showDetail('entry-cv-class')"
+             onmouseenter="highlightBox('entry-cv-class')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">cv_train_class_v2.sh</div>
+            <div class="node-subtitle">
+              <span class="badge badge-class">Class</span><br>
+              <span class="badge badge-2d">2D</span><br>
+              <span class="badge badge-cv">CV</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Univariate 2D -->
+        <div class="node" id="uni-2d-1" onclick="showDetail('uni-2d-1')" onmouseenter="highlightBox('uni-2d-1')" onmouseleave="unhighlightBox()">
+          <div class="flow-label-right" style="background: linear-gradient(135deg, #eab308, #f59e0b);">UFLAG=1 (default)</div>
+          <div class="node-content">
+            <div class="node-title">univariate_2d.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              (-k skip / -u filter)
+            </div>
+          </div>
+        </div>
+
+        <!-- ML CV -->
+        <div class="node" id="ml-cv-class" onclick="showDetail('ml-cv-class')"
+             onmouseenter="highlightBox('ml-cv-class')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">cv_ml_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-class">Class</span><br>
+              <span class="badge badge-cv">CV</span><br>
+              CV SVM-rRF-FS
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation CV -->
+        <div class="node" id="val-cv-class" onclick="showDetail('val-cv-class')"
+             onmouseenter="highlightBox('val-cv-class')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">cv_plsda_val_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-val">Validation</span><br>
+              CV PLS-DA
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: Regression with 3D Connectivity -->
+      <div class="row">
+        <div class="connections"></div>
+
+        <!-- Input -->
+        <div class="node" id="input-reg-1" onclick="showDetail('input-reg-1')"
+             onmouseenter="highlightBox('input-reg-1')" onmouseleave="unhighlightBox()">
+          <div class="flow-label">Input</div>
+          <div class="node-content">
+            <div class="node-title">Connectivity Data</div>
+            <div class="node-subtitle">
+              <span class="badge badge-conn">3D MEG</span><br>
+              <span class="badge badge-input">Input</span>
+              <br><span class="badge badge-reg">Reg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Processing 3D -->
+        <div class="node" id="proc-reg-1" onclick="showDetail('proc-reg-1')"
+             onmouseenter="highlightBox('proc-reg-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">reg_input_dat_process.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              3D → 2D reshape
+            </div>
+          </div>
+        </div>
+
+        <!-- Entry Point Regression -->
+        <div class="node" id="entry-reg-1" onclick="showDetail('entry-reg-1')"
+             onmouseenter="highlightBox('entry-reg-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">connectivity_ml_reg_v2.sh</div>
+            <div class="node-subtitle">
+              <span class="badge badge-reg">Reg</span><br>
+              <span class="badge badge-conn">Conn</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Univariate Reg -->
+        <div class="node" id="uni-reg-1" onclick="showDetail('uni-reg-1')" onmouseenter="highlightBox('uni-reg-1')" onmouseleave="unhighlightBox()">
+          <div class="flow-label-right" style="background: linear-gradient(135deg, #eab308, #f59e0b);">UFLAG=1 (default)</div>
+          <div class="node-content">
+            <div class="node-title">reg_univariate.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              (-u off / no FS)
+            </div>
+          </div>
+        </div>
+
+        <!-- ML Regression -->
+        <div class="node" id="ml-reg-1" onclick="showDetail('ml-reg-1')"
+             onmouseenter="highlightBox('ml-reg-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">reg_ml_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-reg">Reg</span><br>
+              SVR-rRF-FS
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation Reg -->
+        <div class="node" id="val-reg-1" onclick="showDetail('val-reg-1')"
+             onmouseenter="highlightBox('val-reg-1')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">reg_plsr_val_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-val">Validation</span><br>
+              PLSR validation
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 4: Regression with 2D Data -->
+      <div class="row">
+        <div class="connections"></div>
+
+        <!-- Input -->
+        <div class="node" id="input-2d-reg" onclick="showDetail('input-2d-reg')"
+             onmouseenter="highlightBox('input-2d-reg')" onmouseleave="unhighlightBox()">
+          <div class="flow-label">Input</div>
+          <div class="node-content">
+            <div class="node-title">2D Feature Matrix</div>
+            <div class="node-subtitle">
+              <span class="badge badge-2d">2D CSV</span><br>
+              <span class="badge badge-reg">Reg</span><br>
+              <span class="badge badge-input">Input</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Processing 2D Reg -->
+        <div class="node" id="proc-2d-reg" onclick="showDetail('proc-2d-reg')"
+             onmouseenter="highlightBox('proc-2d-reg')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">reg_input_dat_process_2d.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              2D normalize
+            </div>
+          </div>
+        </div>
+
+        <!-- Entry Point CV Reg -->
+        <div class="node" id="entry-cv-reg" onclick="showDetail('entry-cv-reg')"
+             onmouseenter="highlightBox('entry-cv-reg')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">cv_train_reg_v2.sh</div>
+            <div class="node-subtitle">
+              <span class="badge badge-reg">Reg</span><br>
+              <span class="badge badge-2d">2D</span><br>
+              <span class="badge badge-cv">CV</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Univariate Reg 2D -->
+        <div class="node" id="uni-2d-reg" onclick="showDetail('uni-2d-reg')" onmouseenter="highlightBox('uni-2d-reg')" onmouseleave="unhighlightBox()">
+          <div class="flow-label-right" style="background: linear-gradient(135deg, #eab308, #f59e0b);">UFLAG=1 (default)</div>
+          <div class="node-content">
+            <div class="node-title">reg_univariate_2d.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-process">Script</span><br>
+              (-u off / no FS)
+            </div>
+          </div>
+        </div>
+
+        <!-- ML CV Reg -->
+        <div class="node" id="ml-cv-reg" onclick="showDetail('ml-cv-reg')"
+             onmouseenter="highlightBox('ml-cv-reg')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">cv_reg_ml_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-reg">Reg</span><br>
+              <span class="badge badge-cv">CV</span><br>
+              CV SVR-rRF-FS
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation CV Reg -->
+        <div class="node" id="val-cv-reg" onclick="showDetail('val-cv-reg')"
+             onmouseenter="highlightBox('val-cv-reg')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">cv_reg_plsr_val_svm.R</div>
+            <div class="node-subtitle">
+              <span class="badge badge-val">Validation</span><br>
+              CV PLSR
+            </div>
+          </div>
+        </div>
+
+        <!-- Prediction Module -->
+        <div class="node" id="predict-module" onclick="showDetail('predict-module')" style="max-width: 200px;"
+             onmouseenter="highlightBox('predict-module')" onmouseleave="unhighlightBox()">
+          <div class="node-content">
+            <div class="node-title">predict_class.sh</div>
+            <div class="node-subtitle">
+              <span class="badge badge-input">Prediction</span><br>
+              Predict on new data
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTPUTS SECTION -->
+      <div class="outputs-section">
+        <div class="outputs-header">📦 Outputs</div>
+        <div class="output-grid">
+          <div class="output-card" onclick="showDetail('output-1')">
+            <div class="output-card-content">
+              <div class="output-title">*_final_svm_model.Rdata</div>
+              <div class="output-description">Model weights, features, config</div>
+            </div>
+          </div>
+          <div class="output-card" onclick="showDetail('output-2')">
+            <div class="output-card-content">
+              <div class="output-title">*_svm_results.txt</div>
+              <div class="output-description">Metrics: AUC, accuracy, sensitivity</div>
+            </div>
+          </div>
+          <div class="output-card" onclick="showDetail('output-3')">
+            <div class="output-card-content">
+              <div class="output-title">Univariate Plots</div>
+              <div class="output-description">PCA, volcano, heatmaps</div>
+            </div>
+          </div>
+          <div class="output-card" onclick="showDetail('output-4')">
+            <div class="output-card-content">
+              <div class="output-title">*_w_prior.csv</div>
+              <div class="output-description">Selected features</div>
+            </div>
+          </div>
+          <div class="output-card" onclick="showDetail('output-5')">
+            <div class="output-card-content">
+              <div class="output-title">Validation Results</div>
+              <div class="output-description">PLS-DA/PLSR metrics, VIP scores</div>
+            </div>
+          </div>
+          <div class="output-card" onclick="showDetail('output-6')">
+            <div class="output-card-content">
+              <div class="output-title">Prediction Results</div>
+              <div class="output-description">Pie charts, probabilities</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Detail Panel -->
+  <div class="detail-overlay" onclick="closeDetail()"></div>
+  <div class="detail-panel" id="detailPanel">
+    <button class="detail-close" onclick="closeDetail()">×</button>
+    <div id="detailContent"></div>
+  </div>
+
+  <script>
+    const connections = {
+      'input-conn-1': {
+        title: 'Connectivity Data (3D MEG Matrix)',
+        type: 'Input File',
+        color: '#38bdf8',
+        sections: [
+          { title: 'Description', text: 'Raw 3D Magnetoencephalography connectivity matrices. Dimensions: [brain regions × brain regions × subjects]. Usually in .mat or .nii format.' },
+          { title: 'Required Flags', text: '-g: Group labels variable name<br>-s: Sample ID variable name' },
+          { title: 'Pipeline', text: 'This input flows to input_dat_process.R which reshapes the 3D matrix into a 2D feature matrix (features × samples) for machine learning processing.' },
+          { title: 'Related Files', text: 'Located in data folder (3D MEG files)' }
+        ]
+      },
+      'input-2d-1': {
+        title: '2D Feature Matrix (CSV)',
+        type: 'Input File',
+        color: '#38bdf8',
+        sections: [
+          { title: 'Description', text: 'Pre-extracted 2D feature matrix in CSV format. Each row represents a subject/sample, each column represents a feature/connection.' },
+          { title: 'Required Flags', text: '-g: Group labels variable name<br>-s: Sample ID variable name' },
+          { title: 'Pipeline', text: 'Used instead of raw connectivity matrices when pre-extraction has been done. Faster processing, simpler input.' },
+          { title: 'Related Files', text: 'Generated from connectivity analysis or provided by external sources' }
+        ]
+      },
+      'input-reg-1': {
+        title: 'Connectivity Data (Regression)',
+        type: 'Input File',
+        color: '#38bdf8',
+        sections: [
+          { title: 'Description', text: 'Same 3D MEG connectivity matrices but for regression tasks. Predicts continuous outcome variables like symptom severity scores, reaction times, or behavioral measures.' },
+          { title: 'Required Flags', text: '-g: Group labels variable name<br>-s: Sample ID variable name<br>-y: Continuous outcome variable name' },
+          { title: 'Pipeline', text: 'Flows through reg_input_dat_process.R for reshaping and validation before regression modeling.' },
+          { title: 'Use Case', text: 'When you have a continuous dependent variable rather than class labels' }
+        ]
+      },
+      'input-2d-reg': {
+        title: '2D Feature Matrix (Regression)',
+        type: 'Input File',
+        color: '#38bdf8',
+        sections: [
+          { title: 'Description', text: 'Pre-extracted 2D feature matrix for regression tasks. Same format as classification but with continuous outcome variable.' },
+          { title: 'Required Flags', text: '-g: Group labels variable name<br>-s: Sample ID variable name<br>-y: Continuous outcome variable' },
+          { title: 'Pipeline', text: 'Reads directly into data processing step, bypassing 3D matrix reshaping.' }
+        ]
+      },
+      'proc-conn-1': {
+        title: 'input_dat_process.R',
+        type: 'R Script — Data Preprocessing',
+        color: '#64748b',
+        sections: [
+          { title: 'Purpose', text: 'Reshapes 3D connectivity matrices into 2D feature matrix format (features × samples). Applies data transformations and validates input integrity.' },
+          { title: 'Data Transformations', text: '• Min-max normalization (0-1 range)<br>• Z-score standardization<br>• Optional log2 transformation<br>• Data cleaning and NA handling' },
+          { title: 'Validation Checks', text: '• Group labels verification<br>• Sample count vs dimensions<br>• NA value detection<br>• Single class detection<br>• Contrast group validation' },
+          { title: 'Output', text: '*_2D.csv — Flattened 2D data matrix ready for ML' }
+        ]
+      },
+      'proc-2d-1': {
+        title: 'input_dat_process_2d.R',
+        type: 'R Script — 2D Preprocessing',
+        color: '#64748b',
+        sections: [
+          { title: 'Purpose', text: 'Same data processing as input_dat_process.R but accepts already-extracted 2D CSV input. Handles normalization and annotation validation for pre-extracted data.' },
+          { title: 'Key Feature', text: 'Designed for workflows where features have already been extracted from 3D data.' },
+          { title: 'Output', text: 'Normalized 2D matrix with validated annotations' }
+        ]
+      },
+      'proc-reg-1': {
+        title: 'reg_input_dat_process.R',
+        type: 'R Script — Regression Preprocessing',
+        color: '#64748b',
+        sections: [
+          { title: 'Purpose', text: 'Same as input_dat_process.R but includes validation of continuous outcome variable. Ensures target variable has proper numeric encoding.' },
+          { title: 'Additional Checks', text: '• Continuous variable verification<br>• Outcome variable encoding validation' }
+        ]
+      },
+      'proc-2d-reg': {
+        title: 'reg_input_dat_process_2d.R',
+        type: 'R Script — 2D Regression Processing',
+        color: '#64748b',
+        sections: [
+          { title: 'Purpose', text: 'Same as reg_input_dat_process.R but for 2D input data. Handles preprocessing for pre-extracted features in regression workflow.' },
+          { title: 'Note', text: 'Used in CV regression pipelines that use 2D data instead of raw connectivity matrices.' }
+        ]
+      },
+      'uni-conn-1': {
+        title: 'univariate.R',
+        type: 'R Script — Univariate Analysis',
+        color: '#f59e0b',
+        sections: [
+          { title: 'Purpose', text: 'Performs univariate statistical analysis to identify discriminative features. Includes PCA, hierarchical clustering, volcano plots, and feature filtering.' },
+          { title: 'Key Analysis', text: '• Principal Component Analysis (PCA)<br>• Hierarchical clustering with heatmaps<br>• Volcano plots (effect vs significance)<br>• FDR-corrected p-values<br>• Fold-change thresholding' },
+          { title: 'Condition', text: '<div class="info-box"><p>⚡ <strong>Default behavior:</strong> Applies univariate filter (UFLAG=1)</p><p><strong>Flags:</strong><br>• <code>-k</code> = Prior knowledge mode (skips univariate)</p><p>• <code>-u</code> = Enable feature selection</p><p>• Without <code>-k</code> or <code>-u</code> = Apply filter</p></div>' },
+          { title: 'Outputs', text: '• *_w_prior.csv (feature subset)<br>• PCA plots<br>• Volcano plots<br>• Clustering heatmaps' }
+        ]
+      },
+      'uni-2d-1': {
+        title: 'univariate_2d.R',
+        type: 'R Script — 2D Univariate Analysis',
+        color: '#7c3aed',
+        sections: [
+          { title: 'Purpose', text: 'Same univariate analysis as univariate.R but optimized for 2D input data. Uses the same statistical methods with 2D-aware processing.' },
+          { title: 'Key Analysis', text: '• PCA biplots with confidence ellipses<br>• Hierarchical clustering<br>• Feature importance ranking' },
+          { title: 'Condition', text: '<div class="info-box"><p>⚡ <strong>Default behavior:</strong> Applies univariate filter (UFLAG=1)</p><p><strong>Flags:</strong><br>• <code>-k</code> = Skip univariate filter</p><p>• <code>-u</code> = Enable feature filtering</p></div>' }
+        ]
+      },
+      'uni-reg-1': {
+        title: 'reg_univariate.R',
+        type: 'R Script — Regression Univariate',
+        color: '#10b981',
+        sections: [
+          { title: 'Purpose', text: 'Univariate analysis for regression tasks. Focuses on identifying features that predict continuous outcomes rather than class separation.' },
+          { title: 'Key Analysis', text: '• Feature screening for prediction<br>• Hierarchical clustering<br>• Correlation analysis' },
+          { title: 'Condition', text: '<div class="info-box"><p>⚡ <strong>Default behavior:</strong> Applies feature selection (UFLAG=1)</p><p><strong>Flags:</strong><br>• <code>-u</code> = Disable (use all features)</p><p>When <code>UFLAG=0</code>, skips this step entirely</p></div>' }
+        ]
+      },
+      'uni-2d-reg': {
+        title: 'reg_univariate_2d.R',
+        type: 'R Script — 2D Regression Univariate',
+        color: '#10b981',
+        sections: [
+          { title: 'Purpose', text: 'Regression-focused univariate analysis for 2D data. Similar to reg_univariate.R but for pre-extracted feature matrices.' }
+        ]
+      },
+      'entry-conn-1': {
+        title: 'connectivity_ml_v2.sh',
+        type: 'Shell Script — Classification Entry Point',
+        color: '#eab308',
+        sections: [
+          { title: 'Purpose', text: 'Non-cross-validated classification pipeline for MEG connectivity data. Orchestrates the entire ML workflow from preprocessing to validation.' },
+          { title: 'Workflow', text: '• Reads config file from command line args<br>• Calls R scripts via Rscript<br>• Manages file paths with error handling<br>• Generates output reports and plots' },
+          { title: 'R Scripts', text: '• input_dat_process.R<br>• univariate.R (optional)<br>• ml_svm.R<br>• plsda_val_svm.R' },
+          { title: 'Key Flags', text: '<div class="code-block"><span class="code-comment"># Classification mode</span>' }
+        ]
+      },
+      'entry-cv-class': {
+        title: 'cv_train_class_v2.sh',
+        type: 'Shell Script — CV Classification (2D)',
+        color: '#f43f5e',
+        sections: [
+          { title: 'Purpose', text: 'Cross-validated classification using 2D data. This is the preferred entry point when you have pre-extracted features. Provides nested CV for unbiased performance estimation.' },
+          { title: 'Workflow', text: '• Outer CV: Performance estimation<br>• Inner CV: Hyperparameter tuning<br>• Nested cross-validation ensures no data leakage' },
+          { title: 'R Scripts', text: '• input_dat_process_2d.R<br>• univariate_2d.R (optional)<br>• cv_ml_svm.R<br>• cv_plsda_val_svm.R' },
+          { title: 'When to use', text: '• When working with pre-extracted 2D data<br>• When you need CV performance estimates<br>• For faster processing than 3D pipeline' }
+        ]
+      },
+      'entry-reg-1': {
+        title: 'connectivity_ml_reg_v2.sh',
+        type: 'Shell Script — Regression Entry Point',
+        color: '#059669',
+        sections: [
+          { title: 'Purpose', text: 'Non-cross-validated regression pipeline for MEG connectivity data. Predicts continuous outcomes using SVR (Support Vector Regression) with rRF feature selection.' },
+          { title: 'Workflow', text: '• Reads config file for parameters<br>• Orchestrates SVR modeling with R<br>• Manages file paths and outputs<br>• Generates regression metrics and plots' },
+          { title: 'R Scripts', text: '• reg_input_dat_process.R<br>• reg_univariate.R (optional)<br>• reg_ml_svm.R<br>• reg_plsr_val_svm.R' },
+          { title: 'Key Flags', text: '<div class="code-block"><span class="code-comment"># Regression mode</span>' }
+        ]
+      },
+      'entry-cv-reg': {
+        title: 'cv_train_reg_v2.sh',
+        type: 'Shell Script — CV Regression (2D)',
+        color: '#e11d48',
+        sections: [
+          { title: 'Purpose', text: 'Cross-validated regression using 2D data. Nested CV for SVR hyperparameter tuning with continuous outcome prediction and unbiased performance estimation.' },
+          { title: 'Workflow', text: '• Outer CV: Performance estimation<br>• Inner CV: Hyperparameter tuning<br>• SVR with rRF feature selection' },
+          { title: 'R Scripts', text: '• reg_input_dat_process_2d.R<br>• reg_univariate_2d.R (optional)<br>• cv_reg_ml_svm.R<br>• cv_reg_plsr_val_svm.R' },
+          { title: 'Output Metrics', text: '• Test RMSE<br>• CV RMSE<br>• R² scores<br>• Correlation coefficients' }
+        ]
+      },
+      'proc-reg-1-missed': {
+        title: 'connectivity_ml_reg_v2.sh',
+        type: 'Shell Script — Regression Entry',
+        color: '#059669',
+        sections: [
+          { title: 'Purpose', text: 'Non-CV regression pipeline. Note: This flows directly from proc-conn-1 for regression' }
+        ]
+      },
+      'predict-module': {
+        title: 'predict_class.sh',
+        type: 'Shell Script — Prediction',
+        color: '#94a3b8',
+        sections: [
+          { title: 'Purpose', text: 'Predicts group labels for new, unseen samples using a previously trained SVM model. Applies the exact same preprocessing that was used during training.' },
+          { title: 'Workflow', text: '• Reads trained model from *_final_svm_model.Rdata<br>• Extracts preprocessing config from model file<br>• Applies data processing to new input<br>• Uses trained SVM weights for prediction<br>• Generates prediction results and plots' },
+          { title: 'Key Flags', text: '<div class="code-block"><span class="code-comment"># Key parameters:</span>' }
+        ]
+      },
+      'ml-switch': {
+        title: 'ML Model Switch',
+        type: 'Conditional Logic',
+        color: '#64748b',
+        sections: [
+          { title: 'Purpose', text: 'connectivity_ml_x.sh uses this conditional logic to select the appropriate R script based on flags (-x and -n parameters).' },
+          { title: 'Decision Logic', text: '<div class="info-box"><strong>If -x=0, -n=0:</strong> ml_svm.R (standard)<br>' }
+        ]
+      },
+      'ml-class-1': {
+        title: 'ml_svm.R',
+        type: 'R Script — SVM Machine Learning',
+        color: '#f59e0b',
+        sections: [
+          { title: 'Purpose', text: 'Core SVM classification with rRF (random forest feature selection) wrapper. Trains SVM model with nested cross-validation for hyperparameter optimization.' },
+          { title: 'Pipeline', text: '• Feature selection (rRF-FS)<br>• SVM training with CV<br>• Permutation testing (p-values)<br>• ROC-AUC curve generation<br>• PCA biplots<br>• Hierarchical clustering' },
+          { title: 'Key Components', text: '• SVM-rRF-FS: Recursive random forest selection<br>• Nested 5-fold CV<br>• Grid search for parameters<br>• Permutation testing (1000 iterations)' },
+          { title: 'Outputs', text: '• Trained SVM model<br>• Performance metrics<br>• ROC curves<br>• Feature rankings<br>• Plots and graphs' },
+          { title: 'Source', text: 'R_files/ml_svm.R' }
+        ]
+      },
+      'ml-cv-class': {
+        title: 'cv_ml_svm.R',
+        type: 'R Script — CV SVM',
+        color: '#f43f5e',
+        sections: [
+          { title: 'Purpose', text: 'Nested cross-validated SVM classification. Outer loop for performance estimation, inner loop for hyperparameter tuning. Provides more robust performance estimates.' },
+          { title: 'Advantage', text: 'connectivity_ml_x.sh selects this when -x=1. Provides unbiased performance estimates through nested CV structure.' },
+          { title: 'Workflow', text: '• Outer 5-fold CV: Unbiased evaluation<br>• Inner 5-fold CV: Hyperparameter tuning<br>• rRF-FS feature selection<br>• SVM training in each fold<br>• Aggregated results' }
+        ]
+      },
+      'ml-reg-1': {
+        title: 'reg_ml_svm.R',
+        type: 'R Script — SVR Machine Learning',
+        color: '#10b981',
+        sections: [
+          { title: 'Purpose', text: 'Support Vector Regression with rRF feature selection. Predicts continuous outcomes using SVR with random forest feature selection wrapper.' },
+          { title: 'Pipeline', text: '• Feature selection (rRF-FS)<br>• SVR training with CV<br>• Permutation testing<br>• Regression metrics computation<br>• Prediction plots' },
+          { title: 'Outputs', text: '• Trained SVR model<br>• RMSE metrics<br>• R² scores<br>• Correlation analysis<br>• Regression plots' },
+          { title: 'Source', text: 'R_files/reg_ml_svm.R' }
+        ]
+      },
+      'ml-cv-reg': {
+        title: 'cv_reg_ml_svm.R',
+        type: 'R Script — CV SVR',
+        color: '#e11d48',
+        sections: [
+          { title: 'Purpose', text: 'Nested CV version of SVR pipeline for regression. Outer CV for unbiased evaluation, inner CV for hyperparameter tuning of SVR model.' }
+        ]
+      },
+      'val-class-1': {
+        title: 'plsda_val_svm.R',
+        type: 'R Script — PLS-DA Validation',
+        color: '#06b6d4',
+        sections: [
+          { title: 'Purpose', text: 'Validates SVM classification results using PLS-DA (Partial Least Squares Discriminant Analysis). Independent ML algorithm to verify that identified features genuinely discriminate groups.' },
+          { title: 'Why Important', text: '• Different algorithm (PLS-DA vs SVM)<br>• If both find same features = robust result<br>• If only SVM finds features = possible overfitting<br>• VIP scores from PLS-DA validate feature importance' },
+          { title: 'Analytics', text: '• Load SVM model and selected features<br>• PLS-DA analysis<br>• VIP score computation<br>• Permutation testing<br>• ROC-AUC calculation<br>• Score plots with confidence ellipses<br>• Loadings plots' },
+          { title: 'Outputs', text: '• *_plsda_results.txt<br>• ROC-AUC curves<br>• Score plots<br>• VIP plots' },
+          { title: 'Source', text: 'R_files/plsda_val_svm.R' }
+        ]
+      },
+      'val-cv-class': {
+        title: 'cv_plsda_val_svm.R',
+        type: 'R Script — CV PLS-DA',
+        color: '#f43f5e',
+        sections: [
+          { title: 'Purpose', text: 'Cross-validated PLS-DA validation for 2D CV classification pipelines. Same as plsda_val_svm.R but for CV workflow with pre-extracted 2D data.' }
+        ]
+      },
+      'val-reg-1': {
+        title: 'reg_plsr_val_svm.R',
+        type: 'R Script — PLSR Validation',
+        color: '#06b6d4',
+        sections: [
+          { title: 'Purpose', text: 'Validates SVR (regression) results using PLSR (Partial Least Squares Regression). Independent regression method confirming that identified features predict the continuous outcome.' },
+          { title: 'Why Important', text: '• Different algorithm (PLSR vs SVR)<br>• Verifies feature importance independently<br>• VIP scores validate predictors<br>• R² comparison shows consistency' },
+          { title: 'Outputs', text: '• *_plsda/plsr_results.txt<br>• VIP scores<br>• Score plots<br>• R² comparison<br>• Permutation test results' },
+          { title: 'Source', text: 'R_files/reg_plsr_val_svm.R' }
+        ]
+      },
+      'val-cv-reg': {
+        title: 'cv_reg_plsr_val_svm.R',
+        type: 'R Script — CV PLSR',
+        color: '#e11d48',
+        sections: [
+          { title: 'Purpose', text: 'Cross-validated PLSR validation for 2D CV regression pipelines. Same as reg_plsr_val_svm.R but for nested CV workflow.' }
+        ]
+      },
+      'output-1': {
+        title: '*_final_svm_model.Rdata',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contents', text: '• Trained SVM model weights and bias<br>• Selected features from rRF-FS<br>• Hyperparameters (C, Sigma)<br>• Data processing configuration<br>• AUC/scores from nested CV<br>• Performance metrics' },
+          { title: 'Naming', text: '<div class="info-box"><code>*_final_svm_model.Rdata</code> — Standard run<br><code>cv_only_*_final_svm_model.Rdata</code> — CV runs<br><code>nofs_*_final_svm_model.Rdata</code> — No FS mode</p><p><strong>Note:</strong> Model file contains preprocessing config, so prediction can reuse same processing.</div>' },
+          { title: 'Purpose', text: 'Load for predictions with predict_class.sh, or retrain with modified parameters.' }
+        ]
+      },
+      'output-2': {
+        title: '*_svm_results.txt',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contents', text: '• Overall accuracy<br>• Sensitivity and specificity<br>• ROC-AUC values (mean ± SE)<br>• Feature rankings<br>• Permutation test p-values<br>• Nested CV results<br>• Best model hyperparameters' }
+        ]
+      },
+      'output-3': {
+        title: 'Univariate Analysis Plots',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Includes', text: '<div class="info-box"><strong>PCA Plots:</strong><br>• PCA biplot with ellipses<br>• Score plot with group labels<br>• Biplot showing feature loadings</p><strong>Volcano Plots:</strong><br>• Effect size vs significance<br>• FDR-adjusted p-value threshold<br>• Fold-change threshold lines</p><strong>Heatmaps:</strong><br>• Hierarchical clustering<br>• Color-coded significance<br>• Feature vs group annotations</p></div>' }
+        ]
+      },
+      'output-4': {
+        title: '*_w_prior.csv',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Purpose', text: 'DataFrame containing only features that passed univariate filter + rRF-FS selection. These are the features used for downstream ML training.' },
+          { title: 'Structure', text: '<div class="info-box"><strong>Columns:</strong><br>• Sample ID<br>• Feature values<br>• Optional annotations</p><strong>Usage:</strong><br>• Input for ML training scripts<br>• Used by all subsequent R scripts<br>• Can be subsetted further as needed</div>' }
+        ]
+      },
+      'output-5': {
+        title: 'Validation Results',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'PLS-DA/PLSR Results', text: '<div class="info-box"><strong>Contents:</strong><br>• VIP scores<br>• R² prediction R² cross-validation<br>• Permutation test results<br>• ROC-AUC curves<br>• Score plots<br>• Confidence ellipses<br>• Loadings plots</p><strong>Purpose:</strong><br>• Validates that SVM-selected features are genuinely informative<br>• Provides alternative metric for feature importance<br>• Different algorithm confirmation' }</p> ],
+      },
+      'output-6': {
+        title: 'Prediction Results',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contents', text: '<div class="info-box"><strong>Location:</strong> PREDICTION/ directory<br><strong>Files:</strong><br>• *_pred.txt (predicted labels)<br>• *_pred_prob.txt (probabilities)<br>• *_pie.pdf (pie charts)<br>• *_sample_2D.csv (subset with preds)<br>• Logs and error messages</p><strong>Pie Charts Show:</strong><br>• Distribution of predicted labels<br>• Confidence intervals<br>• Accuracy statistics</div>' }
+        ]
+      },
+      'output-7': {
+        title: '*_2D.csv',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contents', text: 'Normalized (min-max / z-score) 2D data matrix ready for machine learning. Features as columns, samples as rows, with sample IDs in first column.' },
+          { title: 'Structure', text: '<div class="info-box"><strong>Format:</strong><br>• Column 1: Sample ID<br>• Column 2+: Feature values<br>• Normalized values<br>• No missing data (NA removed)</p></div>' }
+        ]
+      },
+      'output-8': {
+        title: 'Feature Selection Plots',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contains', text: '<div class="info-box"><strong>rRF Feature Importance:</strong><br>• Bar graphs showing top features<br>• Selection threshold<br>• Ranking visualization<br>• Distribution of scores</p><strong>FS Analysis:</strong><br>• Feature selection progression<br>• Subset quality metrics<br>• Performance across steps</div>' }
+        ]
+      },
+      'output-9': {
+        title: 'Log Files',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Location', text: '<div class="info-box"><strong>LOG/ directory:</strong><br>• processing_R_log_* — R script output<br>• processing_shell_log_* — Shell execution info<br>• Error messages and warnings<br>• Timing information<br>• Detailed operation logs</div>' }
+        ]
+      },
+      'output-10': {
+        title: 'Permutation & ROC Plots',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contains', text: '<div class="info-box"><strong>ROC Curves:</strong><br>• Mean ROC ± SE bands<br>• Permutation test points<br>• Random chance reference<br>• AUC value<br>• Confidence intervals</p><strong>Permutation Tests:</strong><br>• Histogram of permuted AUC<br>• P-value calculation<br>• Significance assessment</p></div>' }
+        ]
+      },
+      'output-11': {
+        title: 'VIP Plots',
+        type: 'Output',
+        color: '#fff',
+        sections: [
+          { title: 'Contains', text: '<div class="info-box"><strong>Variable Importance in Projection (VIP):</strong><br>• VIP score per feature<br>• Threshold line (usually 1.0)<br>• Ranked features<br>• Correlation with outcome</p><strong>Purpose</strong><br>• From PLS-DA/PLSR validation<br>• Identifies most informative features<br>• Independent of SVM selection</div>' }
+        ]
+      },
+      'general-info': {
+        title: 'NMT Program Overview',
+        type: 'Information',
+        color: '#64748b',
+        sections: [
+          { title: 'What is NMT?', text: '<div class="info-box"><strong>Neuro-ML-tools (NMT)</strong> is a bash/R application for automating machine learning analysis of:' }
+        ]
+      }
+    };
+
+    // Add default section info for missing entries
+    const defaultInfo = {
+      'proc-conn-1-missed': 'Missing entry point reference',
+      'entry-conn-1-missed': 'Missing connectivity_ml_v2.sh reference'
+    };
+
+    function showDetail(key) {
+      const d = connections[key];
+      if (!d && defaultInfo[key]) {
+        d = {
+          title: defaultInfo[key],
+          type: 'Info',
+          color: '#94a3b8',
+          sections: [{ title: 'Information', text: defaultInfo[key] }]
+        };
+      }
+      if (!d) {
+        // Fallback for unknown nodes, provide their title and purpose
+        const node = document.getElementById(key);
+        if (node) {
+          const title = node.querySelector('.node-title')?.textContent || key;
+          const subtitle = node.querySelector('.node-subtitle')?.textContent || '';
+          const badge = node.querySelector('.badge')?.textContent || '';
+          
+          d = {
+            title: title,
+            type: 'Module',
+            color: '#cbd5e1',
+            sections: [
+              { title: 'Description', text: `${subtitle}<br><br>This module is part of the NMT (Neuro-ML-tools) workflow. Click to see detailed information.` }
+            ]
+          };
+        } else {
+          return;
+        }
+      }
+      
+      let html = `<div class="detail-title" style="color:${d.color}">${d.title}</div>`;
+      html += `<div class="detail-type">${d.type}</div>`;
+      
+      d.sections.forEach(s => {
+        html += `<div class="detail-section"><h3>${s.title}</h3>`;
+        html += `<p>${s.text.replace(/\n/g, '<br>').replace(/<div class="info-box">/, '<div class="info-box"><p>').replace(/<\/div>$/, '</p></div>')}</p>`;
+        html += `</div>`;
+      });
+      
+      document.getElementById('detailContent').innerHTML = html;
+      document.getElementById('detailPanel').classList.add('active');
+      document.querySelector('.detail-overlay').classList.add('active');
+    }
+
+    function closeDetail() {
+      document.getElementById('detailPanel').classList.remove('active');
+      document.querySelector('.detail-overlay').classList.remove('active');
+    }
+
+    function highlightBox(key) {
+      document.querySelectorAll('.node').forEach(b => {
+        b.style.opacity = '0.3';
+        b.style.filter = 'brightness(0.8)';
+      });
+      const box = document.getElementById(key);
+      if (box) {
+        box.style.opacity = '1';
+        box.style.filter = 'brightness(1.1)';
+        box.classList.add('highlight-box');
+      }
+    }
+
+    function unhighlightBox() {
+      document.querySelectorAll('.node').forEach(b => {
+        b.style.opacity = '1';
+        b.style.filter = 'brightness(1)';
+        b.classList.remove('highlight-box');
+      });
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeDetail();
+    });
+
+    // Prevent context menu on right-click
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      const keys = {
+        'k': 'Prior knowledge mode',
+        'u': 'Enable univariate filter',
+        'x': 'Enable cross-validation',
+        'n': 'No feature selection',
+        'p': 'Parallel computing',
+        'v': 'Show version',
+        'm': 'Custom config file',
+        '1': 'Connectivity Classification',
+        '2': '2D Classification',
+        '3': 'Connectivity Regression',
+        '4': '2D Regression',
+        'a': 'Activation function info'
+      };
+      
+      if (keys[e.key.toLowerCase()]) {
+        alert(`${e.key} - ${keys[e.key.toLowerCase()]}`);
+      }
+    });
+
+    console.log('NMT Interactive Diagram loaded successfully!');
+    console.log('Keyboard shortcuts available: k,u,x,n,p,v,m and number keys 1-4');
+  </script>
+</body>
+</html>
