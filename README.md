@@ -33,6 +33,7 @@ Please cite the following if you are to use this application:
 
         - Other
           - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
+            - Interactive version added
           - Discription typo fixed to Description in 24 shell scripts
           - Trailing whitespace removed from all shell scripts
 
