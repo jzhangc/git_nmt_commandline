@@ -240,8 +240,8 @@ svg { display: block; }
 </div>
 
 <div class="legend">
-   <div class="legend-item"><svg width="40" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#64748b" stroke-width="2"/></svg><span style="font-size:0.75rem;color:#cbd5e1">Solid: data flow path</span></div>
-   <div class="legend-item"><svg width="40" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 4"/></svg><span style="font-size:0.75rem;color:#cbd5e1">Dotted: conditional/skippable path</span></div>
+   <div class="legend-item"><svg width="40" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#cbd5e1" stroke-width="2"/></svg><span style="font-size:0.75rem;color:#cbd5e1">Solid: data flow path</span></div>
+   <div class="legend-item"><svg width="40" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6 4"/></svg><span style="font-size:0.75rem;color:#cbd5e1">Dotted: conditional/skippable path</span></div>
 </div>
 
 <div class="diagram-container">
@@ -299,7 +299,7 @@ svg { display: block; }
 
 <!-- Background grid dots -->
 <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-  <circle cx="15" cy="15" r="0.5" fill="#1e293b"/>
+  <circle cx="15" cy="15" r="0.5" fill="#f1f5f8"/>
 </pattern>
 <rect width="1360" height="820" fill="url(#grid)"/>
 
@@ -315,7 +315,7 @@ svg { display: block; }
 
 <!-- Branch group 1: Class + Conn (top row) -->
 <!-- -k flag: no prior knowledge branch -->
-<line x1="310" y1="65" x2="310" y2="125" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="310" y1="65" x2="310" y2="125" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 2"/>
 <text x="248" y="100" class="cond-branch">-k (no prior)</text>
 
 <!-- Branch group labelled: with -u off (no univariate feature selection) -->
@@ -326,7 +326,7 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- Group 1: Classification + Connectivity -->
-<rect x="30" y="35" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="35" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('input1')" onmouseenter="hlBox('input1')" onmouseleave="unhlBox('input1')"/>
 <text x="110" y="62" class="box-label">Raw Connectivity</text>
 <text x="110" y="78" class="box-label-sm">(3D MEG matrix file)</text>
@@ -334,7 +334,7 @@ svg { display: block; }
 <text x="110" y="108" class="cond-branch">-g / -s</text>
 
 <!-- Group 2: Classification + 2D data -->
-<rect x="30" y="150" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="150" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('input2')" onmouseenter="hlBox('input2')" onmouseleave="unhlBox('input2')"/>
 <text x="110" y="177" class="box-label">Raw 2D Data Table</text>
 <text x="110" y="193" class="box-label-sm">(CSV feature matrix)</text>
@@ -342,7 +342,7 @@ svg { display: block; }
 <text x="110" y="223" class="cond-branch">-g / -s</text>
 
 <!-- Group 3: Regression + Connectivity -->
-<rect x="30" y="265" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="265" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('input3')" onmouseenter="hlBox('input3')" onmouseleave="unhlBox('input3')"/>
 <text x="110" y="292" class="box-label">Raw Connectivity</text>
 <text x="110" y="308" class="box-label-sm">(3D MEG matrix file)</text>
@@ -350,7 +350,7 @@ svg { display: block; }
 <text x="110" y="338" class="cond-branch">-y</text>
 
 <!-- Group 4: Regression + 2D data -->
-<rect x="30" y="380" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box"
+<rect x="30" y="380" width="160" height="55" rx="8" fill="url(#gradInput)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('input4')" onmouseenter="hlBox('input4')" onmouseleave="unhlBox('input4')"/>
 <text x="110" y="407" class="box-label">Raw 2D Data Table</text>
 <text x="110" y="423" class="box-label-sm">(CSV feature matrix)</text>
@@ -362,31 +362,31 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- Class + Conn: no CV -->
-<rect x="225" y="35" width="170" height="55" rx="8" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<rect x="225" y="35" width="170" height="55" rx="8" fill="url(#gradClassConn)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('entry1')" onmouseenter="hlBox('entry1')" onmouseleave="unhlBox('entry1')"/>
 <text x="310" y="60" class="box-label-wl">connectivity_ml_v2.sh</text>
 <text x="310" y="76" class="box-label-sm"><tspan class="badge badge-class">Class</tspan><tspan class="badge badge-conn">Conn</tspan></text>
 
 <!-- Class + Conn: with CV via -x -->
-<rect x="225" y="100" width="170" height="55" rx="8" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="225" y="100" width="170" height="55" rx="8" fill="url(#gradClassCV)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('entry1x')" onmouseenter="hlBox('entry1x')" onmouseleave="unhlBox('entry1x')"/>
 <text x="310" y="125" class="box-label-wl">connectivity_ml_x.sh</text>
 <text x="310" y="141" class="box-label-sm"><tspan class="badge badge-class">Class</tspan><tspan class="badge badge-conn">Conn</tspan><tspan class="badge badge-cv">CV</tspan></text>
 
 <!-- Class + 2D: CV-only -->
-<rect x="225" y="185" width="170" height="55" rx="8" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="225" y="185" width="170" height="55" rx="8" fill="url(#gradClassCV)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('entry2')" onmouseenter="hlBox('entry2')" onmouseleave="unhlBox('entry2')"/>
 <text x="310" y="210" class="box-label-wl">cv_train_class_v2.sh</text>
 <text x="310" y="226" class="box-label-sm"><tspan class="badge badge-class">Class</tspan><tspan class="badge badge-2d">2D</tspan><tspan class="badge badge-cv">CV</tspan></text>
 
 <!-- Reg + Conn: no CV -->
-<rect x="225" y="265" width="170" height="55" rx="8" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+<rect x="225" y="265" width="170" height="55" rx="8" fill="url(#gradRegConn)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('entry3')" onmouseenter="hlBox('entry3')" onmouseleave="unhlBox('entry3')"/>
 <text x="310" y="290" class="box-label-wl">connectivity_ml_reg_v2.sh</text>
 <text x="310" y="306" class="box-label-sm"><tspan class="badge badge-reg">Reg</tspan><tspan class="badge badge-conn">Conn</tspan></text>
 
 <!-- Reg + 2D: CV-only -->
-<rect x="225" y="380" width="170" height="55" rx="8" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
+<rect x="225" y="380" width="170" height="55" rx="8" fill="url(#gradRegCV)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('entry4')" onmouseenter="hlBox('entry4')" onmouseleave="unhlBox('entry4')"/>
 <text x="310" y="405" class="box-label-wl">cv_train_reg_v2.sh</text>
 <text x="310" y="421" class="box-label-sm"><tspan class="badge badge-reg">Reg</tspan><tspan class="badge badge-2d">2D</tspan><tspan class="badge badge-cv">CV</tspan></text>
@@ -396,25 +396,25 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- For Class+Conn no-CV: conditional on -k (UFLAG) -->
-<rect x="430" y="43" width="90" height="38" rx="19" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" class="box"
+<rect x="430" y="43" width="90" height="38" rx="19" fill="#f1f5f8" stroke="#f59e0b" stroke-width="1.5" class="box theme-light"
   onclick="showDetail('cond1')" onmouseenter="hlBox('cond1')" onmouseleave="unhlBox('cond1')"/>
 <text x="475" y="67" class="box-label-sm" style="fill:#fbbf24">univariate.R</text>
 <text x="475" y="79" class="box-label-sm">(-k flag)</text>
 
 <!-- For Class+2D: conditional on -k (-k) -->
-<rect x="430" y="200" width="90" height="38" rx="19" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" class="box"
+<rect x="430" y="200" width="90" height="38" rx="19" fill="#f1f5f8" stroke="#8b5cf6" stroke-width="1.5" class="box theme-light"
   onclick="showDetail('cond2')" onmouseenter="hlBox('cond2')" onmouseleave="unhlBox('cond2')"/>
 <text x="475" y="224" class="box-label-sm" style="fill:#c084fc">univariate_2d.R</text>
 <text x="475" y="236" class="box-label-sm">(-k flag)</text>
 
 <!-- For Reg+Conn: conditional UFLAG -->
-<rect x="430" y="273" width="90" height="38" rx="19" fill="#1e293b" stroke="#10b981" stroke-width="1.5" class="box"
+<rect x="430" y="273" width="90" height="38" rx="19" fill="#f1f5f8" stroke="#10b981" stroke-width="1.5" class="box theme-light"
   onclick="showDetail('cond3')" onmouseenter="hlBox('cond3')" onmouseleave="unhlBox('cond3')"/>
 <text x="475" y="297" class="box-label-sm" style="fill:#6ee7b7">reg_univariate.R</text>
 <text x="475" y="309" class="box-label-sm">(-u off)</text>
 
 <!-- For Reg+2D: conditional UFLAG -->
-<rect x="430" y="388" width="90" height="38" rx="19" fill="#1e293b" stroke="#10b981" stroke-width="1.5" class="box"
+<rect x="430" y="388" width="90" height="38" rx="19" fill="#f1f5f8" stroke="#10b981" stroke-width="1.5" class="box theme-light"
   onclick="showDetail('cond4')" onmouseenter="hlBox('cond4')" onmouseleave="unhlBox('cond4')"/>
 <text x="475" y="412" class="box-label-sm" style="fill:#6ee7b7">reg_univariate_2d.R</text>
 <text x="475" y="424" class="box-label-sm">(-u off)</text>
@@ -424,20 +424,20 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- input_dat_process.R group -->
-<rect x="430" y="0" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<rect x="430" y="0" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('shared1')" onmouseenter="hlBox('shared1')" onmouseleave="unhlBox('shared1')"/>
 <text x="475" y="20" class="box-label-sm">input_dat_process.R</text>
 
 <!-- reg_input_dat_process.R group -->
-<rect x="430" y="235" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<rect x="430" y="235" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('shared2')" onmouseenter="hlBox('shared2')" onmouseleave="unhlBox('shared2')"/>
 <text x="475" y="255" class="box-label-sm">reg_input_dat_.R</text>
-<rect x="430" y="355" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<rect x="430" y="355" width="90" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('shared2b')" onmouseenter="hlBox('shared2b')" onmouseleave="unhlBox('shared2b')"/>
 <text x="475" y="375" class="box-label-sm">reg_input_dat_.R</text>
 
 <!-- Shared 2D input -->
-<rect x="425" y="165" width="95" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box"
+<rect x="425" y="165" width="95" height="32" rx="6" fill="#0e7490" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('shared1b')" onmouseenter="hlBox('shared1b')" onmouseleave="unhlBox('shared1b')"/>
 <text x="473" y="185" class="box-label-sm">input_dat_proce_.R</text>
 
@@ -446,13 +446,13 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- ml_svm.R (top, no CV, with FS) -->
-<rect x="570" y="20" width="130" height="45" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<rect x="570" y="20" width="130" height="45" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box theme-light"
    onclick="showDetail('ml1')" onmouseenter="hlBox('ml1')" onmouseleave="unhlBox('ml1')"/>
 <text x="635" y="40" class="box-label-sm" style="fill:#0f172a; font-weight:700">ml_svm.R</text>
 <text x="635" y="55" class="box-label-sm">SVM-rRF-FS</text>
 
 <!-- ml_svm_nofs.R (no CV, no FS) -->
-<rect x="570" y="72" width="130" height="40" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<rect x="570" y="72" width="130" height="40" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box theme-light"
    onclick="showDetail('mlselect')" onmouseenter="hlBox('mlselect')" onmouseleave="unhlBox('mlselect')"/>
 <text x="635" y="90" class="box-label-sm" style="fill:#0f172a; font-weight:600">ml_svm_nofs.R</text>
 <text x="635" y="103" class="box-label-sm">no FS (option)</text>
@@ -461,13 +461,13 @@ svg { display: block; }
 <text x="635" y="120" class="flow-label" style="fill:#94a3b8; font-size:7px">── CV paths (connectivity_ml_x.sh) ──</text>
 
 <!-- cv_ml_svm.R -->
-<rect x="570" y="128" width="130" height="45" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="570" y="128" width="130" height="45" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box theme-light"
    onclick="showDetail('ml2')" onmouseenter="hlBox('ml2')" onmouseleave="unhlBox('ml2')"/>
 <text x="635" y="148" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_ml_svm.R</text>
 <text x="635" y="163" class="box-label-sm">CV SVM-rRF-FS</text>
 
 <!-- cv_ml_svm_nofs.R -->
-<rect x="570" y="178" width="130" height="40" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="570" y="178" width="130" height="40" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box theme-light"
    onclick="showDetail('mlselect')" onmouseenter="hlBox('mlselect')" onmouseleave="unhlBox('mlselect')"/>
 <text x="635" y="196" class="box-label-sm" style="fill:#0f172a; font-weight:600">cv_ml_svm_nofs.R</text>
 <text x="635" y="209" class="box-label-sm">CV no FS (option)</text>
@@ -476,13 +476,13 @@ svg { display: block; }
 <text x="635" y="226" class="flow-label" style="fill:#94a3b8; font-size:7px">── Other ML scripts (no switch) ──</text>
 
 <!-- Reg+Conn ML (no CV): reg_ml_svm.R -->
-<rect x="570" y="245" width="130" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+<rect x="570" y="245" width="130" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box theme-light"
    onclick="showDetail('ml3')" onmouseenter="hlBox('ml3')" onmouseleave="unhlBox('ml3')"/>
 <text x="635" y="268" class="box-label-sm" style="fill:#0f172a; font-weight:700">reg_ml_svm.R</text>
 <text x="635" y="284" class="box-label-sm">SVR-rRF-FS</text>
 
 <!-- Reg+2D ML (CV): cv_reg_ml_svm.R -->
-<rect x="570" y="370" width="130" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
+<rect x="570" y="370" width="130" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box theme-light"
    onclick="showDetail('ml4')" onmouseenter="hlBox('ml4')" onmouseleave="unhlBox('ml4')"/>
 <text x="635" y="393" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_reg_ml_svm.R</text>
 <text x="635" y="409" class="box-label-sm">CV SVR-rRF-FS</text>
@@ -492,25 +492,25 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- Class+Conn validation: plsda_val_svm.R (always after ml_svm) -->
-<rect x="760" y="25" width="140" height="52" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box"
+<rect x="760" y="25" width="140" height="52" rx="10" fill="url(#gradClassConn)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('val1')" onmouseenter="hlBox('val1')" onmouseleave="unhlBox('val1')"/>
 <text x="830" y="48" class="box-label-sm" style="fill:#0f172a; font-weight:700">plsda_val_svm.R</text>
 <text x="830" y="64" class="box-label-sm">PLS-DA validation</text>
 
 <!-- Class+2D CV validation: cv_plsda_val_svm.R -->
-<rect x="760" y="165" width="140" height="52" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box"
+<rect x="760" y="165" width="140" height="52" rx="10" fill="url(#gradClassCV)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('val2')" onmouseenter="hlBox('val2')" onmouseleave="unhlBox('val2')"/>
 <text x="830" y="188" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_plsda_val_svm.R</text>
 <text x="830" y="204" class="box-label-sm">PLS-DA validation</text>
 
 <!-- Reg+Conn validation: reg_plsr_val_svm.R -->
-<rect x="760" y="255" width="140" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box"
+<rect x="760" y="255" width="140" height="52" rx="10" fill="url(#gradRegConn)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('val3')" onmouseenter="hlBox('val3')" onmouseleave="unhlBox('val3')"/>
 <text x="830" y="278" class="box-label-sm" style="fill:#0f172a; font-weight:700">reg_plsr_val_svm.R</text>
 <text x="830" y="294" class="box-label-sm">PLSR validation</text>
 
 <!-- Reg+2D CV validation: cv_reg_plsr_val_svm.R -->
-<rect x="760" y="370" width="140" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box"
+<rect x="760" y="370" width="140" height="52" rx="10" fill="url(#gradRegCV)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('val4')" onmouseenter="hlBox('val4')" onmouseleave="unhlBox('val4')"/>
 <text x="830" y="393" class="box-label-sm" style="fill:#0f172a; font-weight:700">cv_reg_plsr_val_svm.R</text>
 <text x="830" y="409" class="box-label-sm">PLSR validation</text>
@@ -520,7 +520,7 @@ svg { display: block; }
 <!-- ============================== -->
 
 <!-- predict_class.sh arrow from models -->
-<rect x="950" y="195" width="170" height="60" rx="10" fill="url(#gradPred)" filter="url(#shadow)" class="box"
+<rect x="950" y="195" width="170" height="60" rx="10" fill="url(#gradPred)" filter="url(#shadow)" class="box theme-light"
   onclick="showDetail('pred')" onmouseenter="hlBox('pred')" onmouseleave="unhlBox('pred')"/>
 <text x="1035" y="219" class="box-label">predict_class.sh</text>
 <text x="1035" y="237" class="box-label-sm">SVM classification prediction</text>
@@ -529,76 +529,76 @@ svg { display: block; }
 <!-- OUTPUTS (bottom, spanning all) -->
 <!-- ============================== -->
 
-<rect x="100" y="500" width="1100" height="280" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" opacity="0.6"/>
+<rect x="100" y="500" width="1100" height="280" rx="12" fill="#f1f5f8" stroke="#334155" stroke-width="1" opacity="0.6"/>
 <text x="650" y="530" class="section-label">OUTPUTS</text>
 
 <!-- Output 1: SVM Model -->
-<rect x="140" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="140" y="550" width="180" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out1')" onmouseenter="hlBox('out1')" onmouseleave="unhlBox('out1')"/>
-<text x="230" y="572" class="box-label-sm">*_final_svm_model.Rdata</text>
-<text x="230" y="588" class="box-label-sm">SVM model + config</text>
+<text x="230" y="586" class="box-label-sm">*_final_svm_model.Rdata</text>
+<text x="230" y="602" class="box-label-sm">SVM model + config</text>
 
 <!-- Output 2: SVM Results -->
-<rect x="340" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="340" y="550" width="180" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out2')" onmouseenter="hlBox('out2')" onmouseleave="unhlBox('out2')"/>
-<text x="430" y="572" class="box-label-sm">*_svm_results.txt</text>
-<text x="430" y="588" class="box-label-sm">SVM performance metrics</text>
+<text x="430" y="586" class="box-label-sm">*_svm_results.txt</text>
+<text x="430" y="602" class="box-label-sm">SVM performance metrics</text>
 
 <!-- Output 3: Univariate results -->
-<rect x="540" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="540" y="550" width="180" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out3')" onmouseenter="hlBox('out3')" onmouseleave="unhlBox('out3')"/>
-<text x="630" y="572" class="box-label-sm">Univariate analysis plots</text>
-<text x="630" y="588" class="box-label-sm">Heatmaps, PCA, volcano</text>
+<text x="630" y="586" class="box-label-sm">Univariate analysis plots</text>
+<text x="630" y="602" class="box-label-sm">Heatmaps, PCA, volcano</text>
 
 <!-- Output 4: Feature selection -->
-<rect x="740" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="740" y="550" width="180" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out4')" onmouseenter="hlBox('out4')" onmouseleave="unhlBox('out4')"/>
-<text x="830" y="572" class="box-label-sm">*_w_prior.csv</text>
-<text x="830" y="588" class="box-label-sm">Selected features subset</text>
+<text x="830" y="586" class="box-label-sm">*_w_prior.csv</text>
+<text x="830" y="602" class="box-label-sm">Selected features subset</text>
 
 <!-- Output 5: Validation results -->
-<rect x="940" y="550" width="180" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="940" y="550" width="180" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out5')" onmouseenter="hlBox('out5')" onmouseleave="unhlBox('out5')"/>
-<text x="1030" y="572" class="box-label-sm">*_plsda/plsr_results.txt</text>
-<text x="1030" y="588" class="box-label-sm">Validation metrics &amp; VIP</text>
+<text x="1030" y="586" class="box-label-sm">*_plsda/plsr_results.txt</text>
+<text x="1030" y="602" class="box-label-sm">Validation metrics &amp; VIP</text>
 
 <!-- Prediction outputs -->
-<rect x="1150" y="550" width="190" height="90" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="1150" y="550" width="190" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out6')" onmouseenter="hlBox('out6')" onmouseleave="unhlBox('out6')"/>
-<text x="1245" y="578" class="box-label-sm">Prediction results</text>
-<text x="1245" y="594" class="box-label-sm">Pie charts, data subset,</text>
-<text x="1245" y="608" class="box-label-sm">predicted labels</text>
+<text x="1245" y="592" class="box-label-sm">Prediction results</text>
+<text x="1245" y="622" class="box-label-sm">Pie charts, data subset,</text>
+<text x="1245" y="622" class="box-label-sm">predicted labels</text>
 
 <!-- Additional outputs row -->
-<rect x="140" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="140" y="660" width="170" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out7')" onmouseenter="hlBox('out7')" onmouseleave="unhlBox('out7')"/>
-<text x="225" y="682" class="box-label-sm">*_2D.csv</text>
-<text x="225" y="698" class="box-label-sm">Processed 2D data</text>
+<text x="225" y="696" class="box-label-sm">*_2D.csv</text>
+<text x="225" y="712" class="box-label-sm">Processed 2D data</text>
 
-<rect x="330" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="330" y="660" width="170" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out8')" onmouseenter="hlBox('out8')" onmouseleave="unhlBox('out8')"/>
-<text x="415" y="682" class="box-label-sm">Feature selection plots</text>
-<text x="415" y="698" class="box-label-sm">rRF bar graphs</text>
+<text x="415" y="696" class="box-label-sm">Feature selection plots</text>
+<text x="415" y="712" class="box-label-sm">rRF bar graphs</text>
 
-<rect x="520" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="520" y="660" width="170" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out9')" onmouseenter="hlBox('out9')" onmouseleave="unhlBox('out9')"/>
-<text x="605" y="682" class="box-label-sm">Log files</text>
-<text x="605" y="698" class="box-label-sm">R + Shell logs</text>
+<text x="605" y="696" class="box-label-sm">Log files</text>
+<text x="605" y="712" class="box-label-sm">R + Shell logs</text>
 
-<rect x="710" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="710" y="660" width="170" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out10')" onmouseenter="hlBox('out10')" onmouseleave="unhlBox('out10')"/>
-<text x="795" y="682" class="box-label-sm">Permutation test plots</text>
-<text x="795" y="698" class="box-label-sm">ROC, PCA biplots</text>
+<text x="795" y="696" class="box-label-sm">Permutation test plots</text>
+<text x="795" y="712" class="box-label-sm">ROC, PCA biplots</text>
 
-<rect x="900" y="660" width="170" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="900" y="660" width="170" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out11')" onmouseenter="hlBox('out11')" onmouseleave="unhlBox('out11')"/>
-<text x="985" y="682" class="box-label-sm">VIP plots</text>
-<text x="985" y="698" class="box-label-sm">Variable importance</text>
+<text x="985" y="696" class="box-label-sm">VIP plots</text>
+<text x="985" y="712" class="box-label-sm">Variable importance</text>
 
-<rect x="1090" y="660" width="250" height="48" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1" class="box"
+<rect x="1090" y="660" width="250" height="100" rx="8" fill="#f1f5f8" stroke="#cbd5e1" stroke-width="1" class="box theme-light"
   onclick="showDetail('out12')" onmouseenter="hlBox('out12')" onmouseleave="unhlBox('out12')"/>
-<text x="1215" y="682" class="box-label-sm">Log data, pie charts, predictions</text>
-<text x="1215" y="698" class="box-label-sm">PREDICTION/ directory</text>
+<text x="1215" y="696" class="box-label-sm">Log data, pie charts, predictions</text>
+<text x="1215" y="712" class="box-label-sm">PREDICTION/ directory</text>
 
 <!-- ============================== -->
 <!-- DRAW FLOW LINES               -->
@@ -694,11 +694,11 @@ svg { display: block; }
 <path d="M830,422 L830,495" class="connector" stroke="#e11d48" stroke-width="1"/>
 
 <!-- Prediction from ml outputs -->
-<path d="M880,51 L940,225" class="connector" stroke="#64748b" stroke-width="1.5"/>
-<path d="M880,191 L940,225" class="connector" stroke="#64748b" stroke-width="1.5"/>
+<path d="M880,51 L940,225" class="connector" stroke="#cbd5e1" stroke-width="1.5"/>
+<path d="M880,191 L940,225" class="connector" stroke="#cbd5e1" stroke-width="1.5"/>
 
 <!-- Prediction outputs flow -->
-<path d="M1120,245 L1120,500 L1245,500 L1245,548" class="connector" stroke="#64748b" stroke-width="1"/>
+<path d="M1120,245 L1120,500 L1245,500 L1245,548" class="connector" stroke="#cbd5e1" stroke-width="1"/>
 
 <!-- Additional outputs from each stage -->
 <!-- univariate outputs -->
