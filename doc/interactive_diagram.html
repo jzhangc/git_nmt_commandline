@@ -236,7 +236,12 @@ svg { display: block; }
   <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>2D Data Input</div>
   <div class="legend-item"><div class="legend-dot" style="background:#ec4899"></div>Connectivity (3D) Input</div>
   <div class="legend-item"><div class="legend-dot" style="background:#f43f5e"></div>Cross-validated</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#64748b"></div>Prediction</div>
+   <div class="legend-item"><div class="legend-dot" style="background:#64748b"></div>Prediction</div>
+</div>
+
+<div class="legend">
+   <div class="legend-item"><svg width="40" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#64748b" stroke-width="2"/></svg><span style="font-size:0.75rem;color:#cbd5e1">Solid: data flow path</span></div>
+   <div class="legend-item"><svg width="40" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 4"/></svg><span style="font-size:0.75rem;color:#cbd5e1">Dotted: conditional/skippable path</span></div>
 </div>
 
 <div class="diagram-container">
@@ -615,11 +620,11 @@ svg { display: block; }
 <path d="M395,62 L430,62" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
 
 <!-- cond1 -> ml1 (direct, univariate ON) -->
-<path d="M520,62 L562,51" class="connector" stroke="#fbbf24" stroke-width="1.5"/>
+<path d="M520,62 L555,54" class="connector" stroke="#fbbf24" stroke-width="1.5"/>
 
 <!-- cond1 -> ml1 direct (skip branch, -k flag bypasses univariate) -->
-<path d="M520,52 Q535,30 570,45" class="connector-dashed" stroke="#fbbf24" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="530" y="34" class="flow-label" fill="#fbbf24">-k (skip univariate)</text>
+<path d="M520,52 Q540,34 555,44" class="connector-dashed" stroke="#fbbf24" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="535" y="34" class="flow-label" fill="#fbbf24">-k (skip univariate)</text>
 
 <!-- cond1 branching to both ml1 and ml-select -->
 <path d="M520,62 L562,128" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
@@ -667,16 +672,16 @@ svg { display: block; }
 <!-- val1 -> outputs (downward) -->
 <path d="M830,77 L830,145" class="connector" stroke="#f59e0b" stroke-width="1"/>
 <path d="M830,391 L830,495" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L230,495 L230,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L430,495 L430,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L630,495 L630,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L830,495 L830,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
-<path d="M830,495 L1030,495 L1030,550" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M830,495 L230,495 L230,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M830,495 L430,495 L430,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M830,495 L630,495 L630,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M830,495 L830,495 L830,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
+<path d="M830,495 L1030,495 L1030,548" class="connector" stroke="#f59e0b" stroke-width="1"/>
 
 <!-- val2 -> outputs -->
 <path d="M830,217 L830,290" class="connector" stroke="#a855f7" stroke-width="1"/>
 <path d="M830,290 L830,495" class="connector" stroke="#a855f7" stroke-width="1"/>
-<path d="M830,495 L230,495 L230,550" class="connector" stroke="#a855f7" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
+<path d="M830,495 L230,495 L230,548" class="connector" stroke="#a855f7" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
 
 <!-- val3 -> outputs -->
 <path d="M830,307 L830,495" class="connector" stroke="#10b981" stroke-width="1"/>
@@ -689,13 +694,13 @@ svg { display: block; }
 <path d="M880,191 L940,225" class="connector" stroke="#64748b" stroke-width="1.5"/>
 
 <!-- Prediction outputs flow -->
-<path d="M1120,255 L1120,540 L1245,540 L1245,550" class="connector" stroke="#64748b" stroke-width="1"/>
+<path d="M1120,245 L1120,500 L1245,500 L1245,548" class="connector" stroke="#64748b" stroke-width="1"/>
 
 <!-- Additional outputs from each stage -->
 <!-- univariate outputs -->
-<path d="M520,100 L630,550" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
+<path d="M520,100 L630,548" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
 <!-- feature selection output -->
-<path d="M700,51 L830,550" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
+<path d="M700,51 L830,548" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
 <!-- permutation/ROC PCA from ml -->
 <path d="M700,278 L795,660" class="connector" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
 
