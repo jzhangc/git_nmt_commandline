@@ -1,6 +1,6 @@
 # Neuro-ML-tools (NMT)
 
-Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection data
+Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection matrix and vectorized 2D tabular data
 
 ![NMT Workflow](doc/NMT_workflow.png)
 
