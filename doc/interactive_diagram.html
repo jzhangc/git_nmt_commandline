@@ -608,20 +608,18 @@ svg { display: block; }
 <!-- Shared 2b -> Entry 4 -->
 <path d="M425,371 L395,396" class="connector" stroke="#e11d48" stroke-width="1.5"/>
 
-<!-- Entry 1 -> Shared 1 (vertical, goes down to univariate) -->
-<path d="M310,90 L310,140" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
-<path d="M310,140 L425,16" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<!-- Entry 1 -> Shared 1 (input_dat_process.R) -->
+<path d="M395,62 L430,16" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
 
 <!-- Entry 1 -> cond1 (univariate.R) -->
-<path d="M380,62 L422,62" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
+<path d="M395,62 L430,62" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
 
-<!-- cond1 -> ml1 (vertical) -->
-<path d="M475,62 L475,140" class="connector-dashed" stroke="#fbbf24" stroke-width="1"/>
-<path d="M475,140 L562,51" class="connector" stroke="#fbbf24" stroke-width="1.5"/>
+<!-- cond1 -> ml1 (direct, univariate ON) -->
+<path d="M520,62 L562,51" class="connector" stroke="#fbbf24" stroke-width="1.5"/>
 
-<!-- cond1 -> ml1 direct (skip branch) -->
-<path d="M520,62 L425,62" class="connector-dashed" stroke="#fbbf24" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="472" y="56" class="flow-label" fill="#fbbf24">-k</text>
+<!-- cond1 -> ml1 direct (skip branch, -k flag bypasses univariate) -->
+<path d="M520,52 Q535,30 570,45" class="connector-dashed" stroke="#fbbf24" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="530" y="34" class="flow-label" fill="#fbbf24">-k (skip univariate)</text>
 
 <!-- cond1 branching to both ml1 and ml-select -->
 <path d="M520,62 L562,128" class="connector" stroke="#f59e0b" stroke-width="1.5"/>
