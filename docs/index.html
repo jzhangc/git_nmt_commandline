@@ -427,100 +427,18 @@
          .output-grid {
            grid-template-columns: 1fr;
            }
-          .legend {
-           flex-direction: column;
-           align-items: center;
-           }
-          .keyboard-shortcuts {
-           display: none;
-           }
-          }
-      .keyboard-shortcuts {
-       background: rgba(255,255,255,0.1);
-       border-radius: 12px;
-       padding: 12px 20px;
-       margin-bottom: 20px;
-       backdrop-filter: blur(10px);
-       color: #e8e8e8;
-       text-align: center;
-      }
-      .keyboard-shortcuts h3 {
-       font-size: 0.75rem;
-       color: #b0c4de;
-       margin-bottom: 8px;
-       text-transform: uppercase;
-       letter-spacing: 1px;
-      }
-      .shortcut-row {
-       display: flex;
-       gap: 16px;
-       flex-wrap: wrap;
-       justify-content: center;
-      }
-      .shortcut-item {
-       display: flex;
-       align-items: center;
-       gap: 6px;
-       font-size: 0.7rem;
-       color: #e8e8e8;
-      }
-      .keyboard-key {
-       display: inline-flex;
-       align-items: center;
-       justify-content: center;
-       min-width: 24px;
-       height: 24px;
-       padding: 0 6px;
-       background: rgba(255,255,255,0.2);
-       border: 1px solid rgba(255,255,255,0.3);
-       border-radius: 4px;
-       font-family: 'SF Mono', monospace;
-       font-size: 0.65rem;
-       color: #fff;
-      }
-      .info-tip {
-       position: fixed;
-       bottom: 20px;
-       left: 50%;
-       transform: translateX(-50%) translateY(100px);
-       background: rgba(30, 64, 175, 0.95);
-       color: #fff;
-       padding: 12px 24px;
-       border-radius: 12px;
-       font-size: 0.85rem;
-       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-       z-index: 100;
-       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
-       opacity: 0;
-       pointer-events: none;
-       text-align: center;
-       max-width: 80vw;
-      }
-      .info-tip.visible {
-       transform: translateX(-50%) translateY(0);
-       opacity: 1;
-      }
-  </style>
+         .legend {
+         flex-direction: column;
+         align-items: center;
+         }
+        }
+       }
+    </style>
 </head>
 <body>
 
   <h1>🧬 Neuro-ML-tools (NMT) Program</h1>
     <p class="subtitle">Interactive workflow diagram - Click any module to explore</p>
-
-    <div class="keyboard-shortcuts">
-      <h3>⌨ Keyboard Shortcuts</h3>
-      <div class="shortcut-row">
-        <div class="shortcut-item"><span class="keyboard-key">k</span> Prior knowledge</div>
-        <div class="shortcut-item"><span class="keyboard-key">u</span> Univariate filter</div>
-        <div class="shortcut-item"><span class="keyboard-key">x</span> Cross-validation</div>
-        <div class="shortcut-item"><span class="keyboard-key">n</span> No feature selection</div>
-        <div class="shortcut-item"><span class="keyboard-key">p</span> Parallel computing</div>
-        <div class="shortcut-item"><span class="keyboard-key">v</span> Show version</div>
-        <div class="shortcut-item"><span class="keyboard-key">m</span> Config file</div>
-        <div class="shortcut-item"><span class="keyboard-key">1-4</span> Pipeline row</div>
-        <div class="shortcut-item"><span class="keyboard-key">ESC</span> Close panel</div>
-      </div>
-    </div>
 
     <div class="legend">
     <div class="legend-item">
@@ -1402,47 +1320,11 @@
     }
 
        // Keyboard navigation
-       document.addEventListener('keydown', e => {
-         if (e.key === 'Escape') closeDetail();
-       });
+         document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') closeDetail();
+         });
 
-       // Keyboard shortcuts info bar with inline tooltip
-       const keyMap = {
-          'k': 'Prior knowledge mode — skips univariate filter',
-          'u': 'Enable univariate filter',
-          'x': 'Enable cross-validation (nested CV)',
-          'n': 'No feature selection',
-          'p': 'Parallel computing',
-          'v': 'Show version',
-          'm': 'Use custom config file',
-          '1': 'Row 1: Connectivity Classification',
-          '2': 'Row 2: 2D Classification (CV)',
-          '3': 'Row 3: Connectivity Regression',
-          '4': 'Row 4: 2D Regression (CV)',
-          'a': 'Activation function info'
-       };
-
-       const infoTip = document.createElement('div');
-       infoTip.className = 'info-tip';
-       document.body.appendChild(infoTip);
-
-       let infoTimeout = null;
-       function showInfoTip(msg) {
-         infoTip.textContent = msg;
-         infoTip.classList.add('visible');
-         clearTimeout(infoTimeout);
-         infoTimeout = setTimeout(() => infoTip.classList.remove('visible'), 3000);
-       }
-
-       document.addEventListener('keydown', e => {
-         const key = e.key.toLowerCase();
-         if (keyMap[key]) {
-           showInfoTip(keyMap[key]);
-         }
-       });
-
-     console.log('NMT Interactive Diagram loaded successfully!');
-     console.log('Keyboard shortcuts available: k, u, x, n, p, v, m, 1-4, ESC');
+      console.log('NMT Interactive Diagram loaded successfully!');
   </script>
 </body>
 </html>
