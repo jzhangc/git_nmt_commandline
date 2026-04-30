@@ -194,12 +194,12 @@
       margin-bottom: 16px;
       box-shadow: 0 4px 16px rgba(249,115,22,0.3);
     }
-    .output-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 16px;
-      justify-content: center;
-    }
+      .output-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+       gap: 16px;
+       justify-content: center;
+      }
     .output-card {
       background: linear-gradient(145deg, #fff, #f8fafc);
       border-radius: 12px;
@@ -418,29 +418,111 @@
         flex-wrap: wrap;
         gap: 30px;
       }
-    }
     @media (max-width: 768px) {
-      .output-grid {
-        grid-template-columns: repeat(2, 1fr);
+       .output-grid {
+         grid-template-columns: repeat(2, 1fr);
+        }
+       }
+       @media (max-width: 480px) {
+         .output-grid {
+           grid-template-columns: 1fr;
+           }
+          .legend {
+           flex-direction: column;
+           align-items: center;
+           }
+          .keyboard-shortcuts {
+           display: none;
+           }
+          }
+      .keyboard-shortcuts {
+       background: rgba(255,255,255,0.1);
+       border-radius: 12px;
+       padding: 12px 20px;
+       margin-bottom: 20px;
+       backdrop-filter: blur(10px);
+       color: #e8e8e8;
+       text-align: center;
       }
-    }
-    @media (max-width: 480px) {
-      .output-grid {
-        grid-template-columns: 1fr;
+      .keyboard-shortcuts h3 {
+       font-size: 0.75rem;
+       color: #b0c4de;
+       margin-bottom: 8px;
+       text-transform: uppercase;
+       letter-spacing: 1px;
       }
-      .legend {
-        flex-direction: column;
-        align-items: center;
+      .shortcut-row {
+       display: flex;
+       gap: 16px;
+       flex-wrap: wrap;
+       justify-content: center;
       }
-    }
+      .shortcut-item {
+       display: flex;
+       align-items: center;
+       gap: 6px;
+       font-size: 0.7rem;
+       color: #e8e8e8;
+      }
+      .keyboard-key {
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       min-width: 24px;
+       height: 24px;
+       padding: 0 6px;
+       background: rgba(255,255,255,0.2);
+       border: 1px solid rgba(255,255,255,0.3);
+       border-radius: 4px;
+       font-family: 'SF Mono', monospace;
+       font-size: 0.65rem;
+       color: #fff;
+      }
+      .info-tip {
+       position: fixed;
+       bottom: 20px;
+       left: 50%;
+       transform: translateX(-50%) translateY(100px);
+       background: rgba(30, 64, 175, 0.95);
+       color: #fff;
+       padding: 12px 24px;
+       border-radius: 12px;
+       font-size: 0.85rem;
+       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+       z-index: 100;
+       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+       opacity: 0;
+       pointer-events: none;
+       text-align: center;
+       max-width: 80vw;
+      }
+      .info-tip.visible {
+       transform: translateX(-50%) translateY(0);
+       opacity: 1;
+      }
   </style>
 </head>
 <body>
 
   <h1>🧬 Neuro-ML-tools (NMT) Program</h1>
-  <p class="subtitle">Interactive workflow diagram - Click any module to explore</p>
+    <p class="subtitle">Interactive workflow diagram - Click any module to explore</p>
 
-  <div class="legend">
+    <div class="keyboard-shortcuts">
+      <h3>⌨ Keyboard Shortcuts</h3>
+      <div class="shortcut-row">
+        <div class="shortcut-item"><span class="keyboard-key">k</span> Prior knowledge</div>
+        <div class="shortcut-item"><span class="keyboard-key">u</span> Univariate filter</div>
+        <div class="shortcut-item"><span class="keyboard-key">x</span> Cross-validation</div>
+        <div class="shortcut-item"><span class="keyboard-key">n</span> No feature selection</div>
+        <div class="shortcut-item"><span class="keyboard-key">p</span> Parallel computing</div>
+        <div class="shortcut-item"><span class="keyboard-key">v</span> Show version</div>
+        <div class="shortcut-item"><span class="keyboard-key">m</span> Config file</div>
+        <div class="shortcut-item"><span class="keyboard-key">1-4</span> Pipeline row</div>
+        <div class="shortcut-item"><span class="keyboard-key">ESC</span> Close panel</div>
+      </div>
+    </div>
+
+    <div class="legend">
     <div class="legend-item">
       <div class="legend-dot" style="background: linear-gradient(135deg, #f59e0b, #d97706)"></div>
       <span>Classification</span>
@@ -847,14 +929,44 @@
               <div class="output-description">PLS-DA/PLSR metrics, VIP scores</div>
             </div>
           </div>
-          <div class="output-card" onclick="showDetail('output-6')">
-            <div class="output-card-content">
-              <div class="output-title">Prediction Results</div>
-              <div class="output-description">Pie charts, probabilities</div>
+            <div class="output-card" onclick="showDetail('output-6')">
+              <div class="output-card-content">
+                <div class="output-title">Prediction Results</div>
+                <div class="output-description">Pie charts, probabilities</div>
+              </div>
+            </div>
+            <div class="output-card" onclick="showDetail('output-7')">
+              <div class="output-card-content">
+                <div class="output-title">*_2D.csv</div>
+                <div class="output-description">Normalized feature matrix</div>
+              </div>
+            </div>
+            <div class="output-card" onclick="showDetail('output-8')">
+              <div class="output-card-content">
+                <div class="output-title">Feature Selection Plots</div>
+                <div class="output-description">rRF importance, thresholds</div>
+              </div>
+            </div>
+            <div class="output-card" onclick="showDetail('output-9')">
+              <div class="output-card-content">
+                <div class="output-title">Log Files</div>
+                <div class="output-description">Processing logs and errors</div>
+              </div>
+            </div>
+            <div class="output-card" onclick="showDetail('output-10')">
+              <div class="output-card-content">
+                <div class="output-title">Permutation & ROC Plots</div>
+                <div class="output-description">ROC curves, significance</div>
+              </div>
+            </div>
+            <div class="output-card" onclick="showDetail('output-11')">
+              <div class="output-card-content">
+                <div class="output-title">VIP Plots</div>
+                <div class="output-description">Variable importance scores</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
     </div>
   </div>
@@ -1033,15 +1145,7 @@
           { title: 'Output Metrics', text: '• Test RMSE<br>• CV RMSE<br>• R² scores<br>• Correlation coefficients' }
         ]
       },
-      'proc-reg-1-missed': {
-        title: 'connectivity_ml_reg_v2.sh',
-        type: 'Shell Script — Regression Entry',
-        color: '#059669',
-        sections: [
-          { title: 'Purpose', text: 'Non-CV regression pipeline. Note: This flows directly from proc-conn-1 for regression' }
-        ]
-      },
-      'predict-module': {
+        'predict-module': {
         title: 'predict_class.sh',
         type: 'Shell Script — Prediction',
         color: '#94a3b8',
@@ -1146,7 +1250,7 @@
         color: '#fff',
         sections: [
           { title: 'Contents', text: '• Trained SVM model weights and bias<br>• Selected features from rRF-FS<br>• Hyperparameters (C, Sigma)<br>• Data processing configuration<br>• AUC/scores from nested CV<br>• Performance metrics' },
-          { title: 'Naming', text: '<div class="info-box"><code>*_final_svm_model.Rdata</code> — Standard run<br><code>cv_only_*_final_svm_model.Rdata</code> — CV runs<br><code>nofs_*_final_svm_model.Rdata</code> — No FS mode</p><p><strong>Note:</strong> Model file contains preprocessing config, so prediction can reuse same processing.</div>' },
+            { title: 'Naming', text: '<code>*_final_svm_model.Rdata</code> — Standard run<br><code>cv_only_*_final_svm_model.Rdata</code> — CV runs<br><code>nofs_*_final_svm_model.Rdata</code> — No FS mode<br><strong>Note:</strong> Model file contains preprocessing config, so prediction can reuse same processing.' },
           { title: 'Purpose', text: 'Load for predictions with predict_class.sh, or retrain with modified parameters.' }
         ]
       },
@@ -1163,7 +1267,7 @@
         type: 'Output',
         color: '#fff',
         sections: [
-          { title: 'Includes', text: '<div class="info-box"><strong>PCA Plots:</strong><br>• PCA biplot with ellipses<br>• Score plot with group labels<br>• Biplot showing feature loadings</p><strong>Volcano Plots:</strong><br>• Effect size vs significance<br>• FDR-adjusted p-value threshold<br>• Fold-change threshold lines</p><strong>Heatmaps:</strong><br>• Hierarchical clustering<br>• Color-coded significance<br>• Feature vs group annotations</p></div>' }
+            { title: 'Includes', text: '<strong>PCA Plots:</strong><br>• PCA biplot with ellipses<br>• Score plot with group labels<br>• Biplot showing feature loadings<br><br><strong>Volcano Plots:</strong><br>• Effect size vs significance<br>• FDR-adjusted p-value threshold<br>• Fold-change threshold lines<br><br><strong>Heatmaps:</strong><br>• Hierarchical clustering<br>• Color-coded significance<br>• Feature vs group annotations' }
         ]
       },
       'output-4': {
@@ -1172,22 +1276,23 @@
         color: '#fff',
         sections: [
           { title: 'Purpose', text: 'DataFrame containing only features that passed univariate filter + rRF-FS selection. These are the features used for downstream ML training.' },
-          { title: 'Structure', text: '<div class="info-box"><strong>Columns:</strong><br>• Sample ID<br>• Feature values<br>• Optional annotations</p><strong>Usage:</strong><br>• Input for ML training scripts<br>• Used by all subsequent R scripts<br>• Can be subsetted further as needed</div>' }
+             { title: 'Structure', text: '<strong>Columns:</strong><br>• Sample ID<br>• Feature values<br>• Optional annotations<br><br><strong>Usage:</strong><br>• Input for ML training scripts<br>• Used by all subsequent R scripts<br>• Can be subsetted further as needed' }
         ]
       },
-      'output-5': {
-        title: 'Validation Results',
-        type: 'Output',
-        color: '#fff',
-        sections: [
-          { title: 'PLS-DA/PLSR Results', text: '<div class="info-box"><strong>Contents:</strong><br>• VIP scores<br>• R² prediction R² cross-validation<br>• Permutation test results<br>• ROC-AUC curves<br>• Score plots<br>• Confidence ellipses<br>• Loadings plots</p><strong>Purpose:</strong><br>• Validates that SVM-selected features are genuinely informative<br>• Provides alternative metric for feature importance<br>• Different algorithm confirmation' }</p> ],
-      },
+        'output-5': {
+         title: 'Validation Results',
+         type: 'Output',
+         color: '#fff',
+         sections: [
+            { title: 'PLS-DA/PLSR Results', text: '<strong>Contents:</strong><br>• VIP scores<br>• R² prediction R² cross-validation<br>• Permutation test results<br>• ROC-AUC curves<br>• Score plots<br>• Confidence ellipses<br>• Loadings plots<br><br><strong>Purpose:</strong><br>• Validates that SVM-selected features are genuinely informative<br>• Provides alternative metric for feature importance<br>• Different algorithm confirmation' }
+          ]
+        },
       'output-6': {
         title: 'Prediction Results',
         type: 'Output',
         color: '#fff',
         sections: [
-          { title: 'Contents', text: '<div class="info-box"><strong>Location:</strong> PREDICTION/ directory<br><strong>Files:</strong><br>• *_pred.txt (predicted labels)<br>• *_pred_prob.txt (probabilities)<br>• *_pie.pdf (pie charts)<br>• *_sample_2D.csv (subset with preds)<br>• Logs and error messages</p><strong>Pie Charts Show:</strong><br>• Distribution of predicted labels<br>• Confidence intervals<br>• Accuracy statistics</div>' }
+             { title: 'Contents', text: '<strong>Location:</strong> PREDICTION/ directory<br><strong>Files:</strong><br>• *_pred.txt (predicted labels)<br>• *_pred_prob.txt (probabilities)<br>• *_pie.pdf (pie charts)<br>• *_sample_2D.csv (subset with preds)<br>• Logs and error messages<br><br><strong>Pie Charts Show:</strong><br>• Distribution of predicted labels<br>• Confidence intervals<br>• Accuracy statistics' }
         ]
       },
       'output-7': {
@@ -1196,7 +1301,7 @@
         color: '#fff',
         sections: [
           { title: 'Contents', text: 'Normalized (min-max / z-score) 2D data matrix ready for machine learning. Features as columns, samples as rows, with sample IDs in first column.' },
-          { title: 'Structure', text: '<div class="info-box"><strong>Format:</strong><br>• Column 1: Sample ID<br>• Column 2+: Feature values<br>• Normalized values<br>• No missing data (NA removed)</p></div>' }
+             { title: 'Structure', text: '<strong>Format:</strong><br>• Column 1: Sample ID<br>• Column 2+: Feature values<br>• Normalized values<br>• No missing data (NA removed)' }
         ]
       },
       'output-8': {
@@ -1204,7 +1309,7 @@
         type: 'Output',
         color: '#fff',
         sections: [
-          { title: 'Contains', text: '<div class="info-box"><strong>rRF Feature Importance:</strong><br>• Bar graphs showing top features<br>• Selection threshold<br>• Ranking visualization<br>• Distribution of scores</p><strong>FS Analysis:</strong><br>• Feature selection progression<br>• Subset quality metrics<br>• Performance across steps</div>' }
+             { title: 'Contains', text: '<strong>rRF Feature Importance:</strong><br>• Bar graphs showing top features<br>• Selection threshold<br>• Ranking visualization<br>• Distribution of scores<br><br><strong>FS Analysis:</strong><br>• Feature selection progression<br>• Subset quality metrics<br>• Performance across steps' }
         ]
       },
       'output-9': {
@@ -1212,7 +1317,7 @@
         type: 'Output',
         color: '#fff',
         sections: [
-          { title: 'Location', text: '<div class="info-box"><strong>LOG/ directory:</strong><br>• processing_R_log_* — R script output<br>• processing_shell_log_* — Shell execution info<br>• Error messages and warnings<br>• Timing information<br>• Detailed operation logs</div>' }
+            { title: 'Location', text: '<strong>LOG/ directory:</strong><br>• processing_R_log_* — R script output<br>• processing_shell_log_* — Shell execution info<br>• Error messages and warnings<br>• Timing information<br>• Detailed operation logs' }
         ]
       },
       'output-10': {
@@ -1220,7 +1325,7 @@
         type: 'Output',
         color: '#fff',
         sections: [
-          { title: 'Contains', text: '<div class="info-box"><strong>ROC Curves:</strong><br>• Mean ROC ± SE bands<br>• Permutation test points<br>• Random chance reference<br>• AUC value<br>• Confidence intervals</p><strong>Permutation Tests:</strong><br>• Histogram of permuted AUC<br>• P-value calculation<br>• Significance assessment</p></div>' }
+             { title: 'Contains', text: '<strong>ROC Curves:</strong><br>• Mean ROC ± SE bands<br>• Permutation test points<br>• Random chance reference<br>• AUC value<br>• Confidence intervals<br><br><strong>Permutation Tests:</strong><br>• Histogram of permuted AUC<br>• P-value calculation<br>• Significance assessment' }
         ]
       },
       'output-11': {
@@ -1228,52 +1333,28 @@
         type: 'Output',
         color: '#fff',
         sections: [
-          { title: 'Contains', text: '<div class="info-box"><strong>Variable Importance in Projection (VIP):</strong><br>• VIP score per feature<br>• Threshold line (usually 1.0)<br>• Ranked features<br>• Correlation with outcome</p><strong>Purpose</strong><br>• From PLS-DA/PLSR validation<br>• Identifies most informative features<br>• Independent of SVM selection</div>' }
-        ]
-      },
-      'general-info': {
-        title: 'NMT Program Overview',
-        type: 'Information',
-        color: '#64748b',
-        sections: [
-          { title: 'What is NMT?', text: '<div class="info-box"><strong>Neuro-ML-tools (NMT)</strong> is a bash/R application for automating machine learning analysis of:' }
-        ]
-      }
-    };
+             { title: 'Contains', text: '<strong>Variable Importance in Projection (VIP):</strong><br>• VIP score per feature<br>• Threshold line (usually 1.0)<br>• Ranked features<br>• Correlation with outcome<br><br><strong>Purpose</strong><br>• From PLS-DA/PLSR validation<br>• Identifies most informative features<br>• Independent of SVM selection' }
+          ]
+            },
+          };
 
-    // Add default section info for missing entries
-    const defaultInfo = {
-      'proc-conn-1-missed': 'Missing entry point reference',
-      'entry-conn-1-missed': 'Missing connectivity_ml_v2.sh reference'
-    };
-
-    function showDetail(key) {
-      const d = connections[key];
-      if (!d && defaultInfo[key]) {
-        d = {
-          title: defaultInfo[key],
-          type: 'Info',
-          color: '#94a3b8',
-          sections: [{ title: 'Information', text: defaultInfo[key] }]
-        };
-      }
-      if (!d) {
+      function showDetail(key) {
+        const d = connections[key];
+        if (!d) {
         // Fallback for unknown nodes, provide their title and purpose
         const node = document.getElementById(key);
-        if (node) {
-          const title = node.querySelector('.node-title')?.textContent || key;
-          const subtitle = node.querySelector('.node-subtitle')?.textContent || '';
-          const badge = node.querySelector('.badge')?.textContent || '';
-          
-          d = {
-            title: title,
-            type: 'Module',
-            color: '#cbd5e1',
-            sections: [
-              { title: 'Description', text: `${subtitle}<br><br>This module is part of the NMT (Neuro-ML-tools) workflow. Click to see detailed information.` }
-            ]
-          };
-        } else {
+         if (node) {
+           const title = node.querySelector('.node-title')?.textContent || key;
+           const subtitle = node.querySelector('.node-subtitle')?.textContent || '';
+           d = {
+             title: title,
+             type: 'Module',
+             color: '#cbd5e1',
+             sections: [
+               { title: 'Description', text: `${subtitle}<br><br>This module is part of the NMT (Neuro-ML-tools) workflow. Click to see detailed information.` }
+               ]
+             };
+           } else {
           return;
         }
       }
@@ -1281,11 +1362,13 @@
       let html = `<div class="detail-title" style="color:${d.color}">${d.title}</div>`;
       html += `<div class="detail-type">${d.type}</div>`;
       
-      d.sections.forEach(s => {
-        html += `<div class="detail-section"><h3>${s.title}</h3>`;
-        html += `<p>${s.text.replace(/\n/g, '<br>').replace(/<div class="info-box">/, '<div class="info-box"><p>').replace(/<\/div>$/, '</p></div>')}</p>`;
-        html += `</div>`;
-      });
+        d.sections.forEach(s => {
+          if (s.text.includes('class="info-box"') || s.text.includes('class="code-block"')) {
+            html += `<div class="detail-section"><h3>${s.title}</h3>${s.text.replace(/\n/g, '<br>')}</div>`;
+          } else {
+            html += `<div class="detail-section"><h3>${s.title}</h3><p>${s.text.replace(/\n/g, '<br>')}</p></div>`;
+          }
+          });
       
       document.getElementById('detailContent').innerHTML = html;
       document.getElementById('detailPanel').classList.add('active');
@@ -1318,38 +1401,48 @@
       });
     }
 
-    // Keyboard navigation
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeDetail();
-    });
+       // Keyboard navigation
+       document.addEventListener('keydown', e => {
+         if (e.key === 'Escape') closeDetail();
+       });
 
-    // Prevent context menu on right-click
-    document.addEventListener('contextmenu', e => e.preventDefault());
+       // Keyboard shortcuts info bar with inline tooltip
+       const keyMap = {
+          'k': 'Prior knowledge mode — skips univariate filter',
+          'u': 'Enable univariate filter',
+          'x': 'Enable cross-validation (nested CV)',
+          'n': 'No feature selection',
+          'p': 'Parallel computing',
+          'v': 'Show version',
+          'm': 'Use custom config file',
+          '1': 'Row 1: Connectivity Classification',
+          '2': 'Row 2: 2D Classification (CV)',
+          '3': 'Row 3: Connectivity Regression',
+          '4': 'Row 4: 2D Regression (CV)',
+          'a': 'Activation function info'
+       };
 
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', e => {
-      const keys = {
-        'k': 'Prior knowledge mode',
-        'u': 'Enable univariate filter',
-        'x': 'Enable cross-validation',
-        'n': 'No feature selection',
-        'p': 'Parallel computing',
-        'v': 'Show version',
-        'm': 'Custom config file',
-        '1': 'Connectivity Classification',
-        '2': '2D Classification',
-        '3': 'Connectivity Regression',
-        '4': '2D Regression',
-        'a': 'Activation function info'
-      };
-      
-      if (keys[e.key.toLowerCase()]) {
-        alert(`${e.key} - ${keys[e.key.toLowerCase()]}`);
-      }
-    });
+       const infoTip = document.createElement('div');
+       infoTip.className = 'info-tip';
+       document.body.appendChild(infoTip);
 
-    console.log('NMT Interactive Diagram loaded successfully!');
-    console.log('Keyboard shortcuts available: k,u,x,n,p,v,m and number keys 1-4');
+       let infoTimeout = null;
+       function showInfoTip(msg) {
+         infoTip.textContent = msg;
+         infoTip.classList.add('visible');
+         clearTimeout(infoTimeout);
+         infoTimeout = setTimeout(() => infoTip.classList.remove('visible'), 3000);
+       }
+
+       document.addEventListener('keydown', e => {
+         const key = e.key.toLowerCase();
+         if (keyMap[key]) {
+           showInfoTip(keyMap[key]);
+         }
+       });
+
+     console.log('NMT Interactive Diagram loaded successfully!');
+     console.log('Keyboard shortcuts available: k, u, x, n, p, v, m, 1-4, ESC');
   </script>
 </body>
 </html>
