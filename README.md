@@ -27,7 +27,7 @@ Please cite the following if you are to use this application:
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-260426-0.5.x-260427
+    - 0.5.x-260426-0.5.x-260429
         - Bug fixes
           - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
 
