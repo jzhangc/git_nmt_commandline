@@ -119,7 +119,7 @@ Multiple template directories with overlapping purposes:
 
 ---
 
-## Next Steps / Questions
+## Key Questions
 
 Before proceeding with implementation, clarification needed on:
 
@@ -131,6 +131,4 @@ Before proceeding with implementation, clarification needed on:
 
 4. **Documentation:** Should we prioritize documentation improvements along with the refactoring?
 
----
 
-**Status:** Awaiting user feedback on next steps
