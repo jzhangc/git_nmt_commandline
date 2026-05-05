@@ -121,8 +121,6 @@ Multiple template directories with overlapping purposes:
 
 ## Key Questions
 
-Before proceeding with implementation, clarification needed on:
-
 1. **Backwards compatibility:** Is it critical to maintain all `_v2` / `_nofs` / `_x` command variants for existing users?
 
 2. **Scope:** Should we focus on bash scripts first, R files next, or tackle them together?
@@ -130,5 +128,3 @@ Before proceeding with implementation, clarification needed on:
 3. **Timeline:** Is this a short-term refactor (1-2 sprints) or gradual migration over months?
 
 4. **Documentation:** Should we prioritize documentation improvements along with the refactoring?
-
-
