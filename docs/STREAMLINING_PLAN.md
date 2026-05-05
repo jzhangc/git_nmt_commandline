@@ -1,7 +1,7 @@
 # Code Base Streamlining Plan
 
 **Project:** Neuro-ML-tools (NMT)  
-**Assessment Date:** May 2026
+**Date:** May 2026
 
 ---
 
