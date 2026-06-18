@@ -24,7 +24,7 @@ UFLAG=1
 CVUNI=FALSE
 KFLAG=1  # prior univariate knowledge
 XFLAG=1  # cross-validation only flag
-NFLAG=1  # nofs mode
+LFLAG=1  # no feature selection flag
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory

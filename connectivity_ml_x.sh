@@ -19,8 +19,10 @@ source ./scripts/sys_init_class_conn_x.sh
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R ml_svm_nofs.R cv_ml_svm.R cv_ml_svm_nofs.R plsda_val_svm.R)
 
+
 # ------ system check ------
 source ./scripts/sys_check.sh
+
 
 # ------ config loading ------
 source ./scripts/config_init.sh
@@ -184,13 +186,13 @@ else
 fi
 echo -en "CV-rRF-FS-SVM machine learning analysis..."
 if [ $XFLAG -eq 0 ]; then
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		ml_script=cv_ml_svm_nofs.R
 	else
 		ml_script=cv_ml_svm.R
 	fi
 else
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		ml_script=ml_svm_nofs.R
 	else
 		ml_script=ml_svm.R
@@ -244,25 +246,28 @@ if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotati
 fi
 # -- set up variables for output svm model file
 if [ $XFLAG -eq 0 ]; then
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	else
 		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	fi
 else
-	if [ $NFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
 		svm_model_file="${OUT_DIR}/OUTPUT/nofs_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	else
 		svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	fi
 fi
+echo -e "Done!"
 # -- file check before next step --
+echo -en "Checking the resulting model file..."
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: SVM analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: Output model file cannot be found. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1  # exit 1: terminating with error
+else
+	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${svm_model_file}${NO_COLOUR}"
 fi
-echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="

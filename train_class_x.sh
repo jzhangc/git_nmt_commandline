@@ -249,10 +249,12 @@ else
 		svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 	fi
 fi
+echo -e "Done!"
 # -- file check before next step --
+echo -en "Checking the resulting model file..."
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM analysis failed. Program terminated. ${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: Output model file cannot be found. Program terminated. ${NO_COLOUR}\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`
@@ -260,8 +262,9 @@ if ! [ -f "$svm_model_file" ]; then
 	echo -e "Total run time: $tot"
 	echo -e "\n"
 	exit 1  # exit 1: terminating with error
+else
+	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${svm_model_file}${NO_COLOUR}"
 fi
-echo -e "Done!"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="

@@ -27,9 +27,16 @@ Please cite the following if you are to use this application:
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-260426-0.5.x-260429
-        - Bug fixes
-          - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
+    - 0.5.x-260618
+        - Modelling module updates
+          - Messaging updated for clarity for train_class_x.sh and connectivity_ml_x.sh
+          - A big fixed for connectivity_ml_x.sh where the generated model files cannot be checked
+
+
+    - 0.5.x-260426-0.5.x-260508
+        - General updates
+          - Bug fixes
+            - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
 
         - Other
           - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
