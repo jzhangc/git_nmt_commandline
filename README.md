@@ -36,7 +36,7 @@ Please cite the following if you are to use this application:
             - cv-only modules combined into their respective modules with "-x" flag
             - nofs modules combined into their respective regular modules with "-l" flag          
           - Messaging updated for clarity for train_class_x.sh and connectivity_ml_x.sh
-          - A big fixed for connectivity_ml_x.sh where the generated model files cannot be checked
+          - A bug fixed for connectivity_ml_x.sh where the generated model files cannot be checked
 
 
     - 0.5.x-260426-0.5.x-260508
