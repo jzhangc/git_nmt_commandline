@@ -17,7 +17,7 @@ source ./scripts/sys_init_class_conn_x.sh
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R ml_svm_nofs.R cv_ml_svm.R cv_ml_svm_nofs.R plsda_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process.R univariate.R ml_svm.R ml_svm_nofs.R plsda_val_svm.R cv_ml_svm.R cv_ml_svm_nofs.R cv_plsda_val_svm.R)
 
 
 # ------ system check ------
@@ -284,9 +284,14 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES"
 fi
+if [ $XFLAG -eq 0 ]; then
+	pls_script=cv_plsda_val_svm.R
+else
+	pls_script=plsda_val_svm.R
+fi
 echo -en "PLS-DA analysis..."
-echo -e "--------------------- source script: plsda_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: $pls_script ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/$pls_script "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \

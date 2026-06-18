@@ -27,8 +27,14 @@ Please cite the following if you are to use this application:
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-260618
+    - 0.5.x-260618-260619
+        - General updates
+          - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
+
         - Modelling module updates
+          - Regression module updates
+            - cv-only modules combined into their respective modules with "-x" flag
+            - nofs modules combined into their respective regular modules with "-l" flag          
           - Messaging updated for clarity for train_class_x.sh and connectivity_ml_x.sh
           - A big fixed for connectivity_ml_x.sh where the generated model files cannot be checked
 
@@ -61,13 +67,10 @@ Please cite the following if you are to use this application:
       - 0.5.x-260314-260324
         - General updates
           - Code base complexity substantially reduced
-            - cv-only modules combined into their respective modules with "-x" flag
         
         - Classification module updates
+            - cv-only modules combined into their respective modules with "-x" flag
             - nofs modules combined into their respective regular modules with "-l" flag
-
-        - Regression module updates
-            - nofs modules combined into their respective regular modules with "-n" flag
           
 
     - 0.5.x-251211-260313

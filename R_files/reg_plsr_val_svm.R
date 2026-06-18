@@ -121,7 +121,7 @@ plsr_m <- tryCatch(
   ),
   error = function(e) {
     cat(paste0("Error generated for preliminary PLSR on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    NCOMP_WARNING <<- TRUE # use <<- to assign global vars
     # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioReg_plsr(
       x = x, y = y,
@@ -153,7 +153,7 @@ plsr_m_optim <- tryCatch(
   ),
   error = function(e) {
     cat(paste0("Error generated for final PLSR on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    NCOMP_WARNING <<- TRUE # use <<- to assign global vars
     # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioReg_plsr(
       x = x, y = y,
@@ -213,7 +213,10 @@ rbioFS_plsda_vip_plot(
 ## variables for display
 
 ## export to results files if needed
-save(list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"), file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata"))
+save(
+  list = c("plsr_m_optim", "plsr_m_optim_plsr_vip", "plsr_m_optim_perm"),
+  file = paste0(MAT_FILE_NO_EXT, "_final_plsr_model.Rdata")
+)
 
 ## cat the vairables to export to shell scipt
 # cat("\t", dim(raw_sample_dfm), "\n") # line 1: file dimension

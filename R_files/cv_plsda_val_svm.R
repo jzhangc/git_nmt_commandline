@@ -122,7 +122,7 @@ plsda_m <- tryCatch(
   ),
   error = function(e) {
     cat(paste0("Error generated for preliminary PLS-DA on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    NCOMP_WARNING <<- TRUE # use <<- to assign global vars
     # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda(
       x = x, y = y,
@@ -153,7 +153,7 @@ plsda_m_optim <- tryCatch(
   ),
   error = function(e) {
     cat(paste0("Error generated for preliminary PLS-DA on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    NCOMP_WARNING <<- TRUE # use <<- to assign global vars
     # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda(
       x = x, y = y,
@@ -201,7 +201,7 @@ tryCatch(
   ),
   error = function(e) {
     cat(paste0("Error generated for preliminary PLS-DA on ncomp. Proceed with ncomp=1.\n", "\tRef error message: ", e, "\n"))
-    NCOMP_WARNING <<- TRUE  # use <<- to assign global vars
+    NCOMP_WARNING <<- TRUE # use <<- to assign global vars
     # assign("NCOMP_WARNING", TRUE, envir = .GlobalEnv)
     rbioClass_plsda_scoreplot(
       object = plsda_m_optim, comps = 1,
@@ -258,7 +258,10 @@ tryCatch(
 
 ## export to results files if needed
 tryCatch(
-  save(list = c("plsda_m_optim"), file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsda_model.Rdata")),
+  save(
+    list = c("plsda_m_optim"),
+    file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_plsda_model.Rdata")
+  ),
   error = function(e) {
     cat(paste0("ERROR: PLS-DA model export error generated\n", "\tRef error message: ", e, "\n"))
     # warning(e)
