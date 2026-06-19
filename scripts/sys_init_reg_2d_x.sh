@@ -13,12 +13,11 @@ POSITIONAL=()
 
 # initiate mandatory variable check variable. initial value 1 (false)
 PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
-CORES=1  # this is for the parallel computing
+CORES=1  # this is for the cores
 
 IFLAG=1
-CFLAG=1
 SFLAG=1
-GFLAG=1
+YFLAG=1
 # below: CV univariate reduction
 UFLAG=1
 CVUNI=FALSE
@@ -29,14 +28,13 @@ LFLAG=1  # no feature selection flag
 # optional flag values
 OUT_DIR=.  # set the default to output directory
 
-
-# ------ set flag variable from command flags ------
+# flag check and set flag variable from command flags
 if [ $# -eq 0 ]; then
-	# echo -e $HELP
-	# echo -e "\n"
-	# echo -e "=========================================================================="
-	# echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-	# exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
+# 	echo -e $HELP
+# 	echo -e "\n"
+#   echo -e "=========================================================================="
+# 	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
+#   exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
 	source ./scripts/trigger_help_info.sh
 else
 	case "$1" in  # "one off" flags
@@ -54,14 +52,14 @@ else
 			;;
 	esac
 
-	# --- initial message ---
+	# ------ initial message ------
 	echo -e "\nYou are running ${COLOUR_BLUE_L}$APP_NAME${NO_COLOUR}"
 	echo -e "Version: $VERSION"
 	echo -e "Current OS: $PLATFORM"
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
-	while getopts ":kuxlp:i:a:s:g:c:m:o:" opt; do
+	while getopts ":kup:i:a:s:y:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -91,15 +89,16 @@ else
 				SAMPLE_ID=$OPTARG
 				SFLAG=0
 				;;
-			g)
-				GROUP_ID=$OPTARG
-				GFLAG=0
-				;;
-			c)
-			 	CONTRAST=$OPTARG
-				CFLAG=0
+			y)
+				Y_VAR=$OPTARG
+				YFLAG=0
 				;;
 			m)
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     CONFIG_FILE=$(expand_path $OPTARG)
+				# else
+				#     CONFIG_FILE=$(get_abs_filename $OPTARG)
+				# fi
 				CONFIG_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$CONFIG_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -110,6 +109,11 @@ else
 				fi
 				;;
 			o)
+				# if [[ $OPTARG == *"~"* ]]; then
+				#     OUT_DIR=$(expand_path $OPTARG)
+				# else
+				#     OUT_DIR=$(get_abs_filename $OPTARG)
+				# fi
 				OUT_DIR=$(path_resolve $OPTARG)
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
@@ -147,9 +151,8 @@ else
 	done
 fi
 
-
 # ------ flag check -----
-mand_flag_check "IFLAG:-i" "CFLAG:-c" "SFLAG:-s" "GFLAG:-g"
+mand_flag_check "IFLAG:-i" "SFLAG:-s" "YFLAG:-y"
 
 opt_flag_check \
 	--mutex "KFLAG:UFLAG" \

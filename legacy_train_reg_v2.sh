@@ -9,9 +9,9 @@ start_t=`date +%s`
 APP_NAME="train_reg.sh"
 source ./zzz
 source ./src/global_var
-source ./src/help_var_reg_2d
+source ./src/legacy_help_var_reg_2d
 source ./src/utils
-source ./scripts/sys_init_reg_2d.sh
+source ./scripts/legacy_sys_init_reg_2d.sh
 
 # --- dependency file id variables ---
 # file arrays
