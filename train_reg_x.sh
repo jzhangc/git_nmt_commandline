@@ -170,7 +170,7 @@ else
 	if [ $LFLAG -eq 0 ]; then
 		ml_script=reg_ml_svm_nofs.R
 	else
-		ml_script=ml_svm.R
+		ml_script=reg_ml_svm.R
 	fi
 fi
 echo -en "CV-rRF-FS-SVR machine learning analysis..."
