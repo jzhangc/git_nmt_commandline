@@ -48,7 +48,7 @@ PCA_BIPLOT_ELLIPSE <- eval(parse(text = args[27]))
 PCA_BIPLOT_ELLIPSE_CONF <- as.numeric(args[28])
 PCA_BIPLOT_LOADING <- eval(parse(text = args[29]))
 PCA_BIPLOT_LOADING_TEXTSIZE <- as.numeric(args[30])
-PCA_BIPLOT_MULTI_DESITY <- eval(parse(text = args[31]))
+PCA_BIPLOT_MULTI_DENSITY <- eval(parse(text = args[31]))
 PCA_BIPLOT_MULTI_STRIPLABEL_SIZE <- as.numeric(args[32])
 PCA_RIGHTSIDE_Y <- eval(parse(text = args[33]))
 PCA_X_TICK_LABEL_SIZE <- as.numeric(args[34])
@@ -196,7 +196,7 @@ rbioFS_PCA(
   biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = PCA_BIPLOT_ELLIPSE_CONF,
   biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
   biplot.loadingplot = FALSE, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-  biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+  biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DENSITY,
   biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
   biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
   fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
@@ -239,7 +239,7 @@ if (UNI_ANALYSIS) {
     ),
     warning = function(w) {
       cat(paste0("WARNING: warning generated for univarate analysis with FDR seeting. FDR=FALSE.\n", "\tRef warning message: ", w, "\n"))
-      if (length(contra_string) == 1) FDR_FAIL_WARNING <<- TRUE  # use <<- to assign global vars
+      if (length(contra_string) == 1) FDR_FAIL_WARNING <<- TRUE # use <<- to assign global vars
       # if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
       rbioarray_DE(
         objTitle = MAT_FILE_NO_EXT, output.mode = "probe.all",
@@ -351,7 +351,7 @@ if (UNI_ANALYSIS) {
       biplot.ellipse = PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = SIG_PCA_BIPLOT_ELLIPSE_CONF,
       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
       biplot.loadingplot = PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = PCA_BIPLOT_LOADING_TEXTSIZE,
-      biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+      biplot.mtx.densityplot = PCA_BIPLOT_MULTI_DENSITY,
       biplot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
       biplot.Width = PCA_WIDTH, biplot.Height = PCA_HEIGHT, rightsideY = PCA_RIGHTSIDE_Y,
       fontType = "sans", xTickLblSize = PCA_X_TICK_LABEL_SIZE, yTickLblSize = PCA_Y_TICK_LABEL_SIZE,

@@ -83,7 +83,7 @@ CONFIG_LIST <- list(
   PCA_BIPLOT_ELLIPSE = eval(parse(text = args[50])),
   PCA_BIPLOT_LOADING = eval(parse(text = args[51])),
   PCA_BIPLOT_LOADING_TEXTSIZE = as.numeric(args[52]),
-  PCA_BIPLOT_MULTI_DESITY = eval(parse(text = args[53])),
+  PCA_BIPLOT_MULTI_DENSITY = eval(parse(text = args[53])),
   PCA_BIPLOT_MULTI_STRIPLABEL_SIZE = as.numeric(args[54]),
   PCA_RIGHTSIDE_Y = eval(parse(text = args[55])),
   PCA_X_TICK_LABEL_SIZE = as.numeric(args[56]),
@@ -472,9 +472,9 @@ tryCatch(
   error = function(e) {
     cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
   },
-   warning = function(w) {
+  warning = function(w) {
     cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
-   }
+  }
 )
 sink()
 
@@ -503,7 +503,7 @@ tryCatch(
       biplot.ellipse = CONFIG_LIST$PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = CONFIG_LIST$SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
       biplot.loadingplot = CONFIG_LIST$PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = CONFIG_LIST$PCA_BIPLOT_LOADING_TEXTSIZE,
-      biplot.mtx.densityplot = CONFIG_LIST$PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = CONFIG_LIST$PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+      biplot.mtx.densityplot = CONFIG_LIST$PCA_BIPLOT_MULTI_DENSITY, biplot.mtx.stripLblSize = CONFIG_LIST$PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
       biplot.Width = CONFIG_LIST$PCA_WIDTH, biplot.Height = CONFIG_LIST$PCA_HEIGHT, rightsideY = CONFIG_LIST$PCA_RIGHTSIDE_Y,
       fontType = "sans", xTickLblSize = CONFIG_LIST$PCA_X_TICK_LABEL_SIZE, yTickLblSize = CONFIG_LIST$PCA_Y_TICK_LABEL_SIZE,
       verbose = FALSE
@@ -533,7 +533,7 @@ tryCatch(
       biplot.ellipse = CONFIG_LIST$PCA_BIPLOT_ELLIPSE, biplot.ellipse_conf = CONFIG_LIST$SVM_RFFS_PCA_BIPLOT_ELLIPSE_CONF,
       biplot.xAngle = 0, biplot.xhAlign = 0.5, biplot.xvAlign = 0.5,
       biplot.loadingplot = CONFIG_LIST$PCA_BIPLOT_LOADING, biplot.loadingplot.textsize = CONFIG_LIST$PCA_BIPLOT_LOADING_TEXTSIZE,
-      biplot.mtx.densityplot = CONFIG_LIST$PCA_BIPLOT_MULTI_DESITY, biplot.mtx.stripLblSize = CONFIG_LIST$PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
+      biplot.mtx.densityplot = CONFIG_LIST$PCA_BIPLOT_MULTI_DENSITY, biplot.mtx.stripLblSize = CONFIG_LIST$PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
       biplot.Width = CONFIG_LIST$PCA_WIDTH, biplot.Height = CONFIG_LIST$PCA_HEIGHT, rightsideY = CONFIG_LIST$PCA_RIGHTSIDE_Y,
       fontType = "sans", xTickLblSize = CONFIG_LIST$PCA_X_TICK_LABEL_SIZE, yTickLblSize = CONFIG_LIST$PCA_Y_TICK_LABEL_SIZE,
       verbose = FALSE
@@ -600,9 +600,9 @@ tryCatch(
   error = function(e) {
     cat(paste0("ERROR: hclustering failed. skipped.\n", "\tRef error message: ", e, "\n"))
   },
-   warning = function(w) {
+  warning = function(w) {
     cat(paste0("WARNING: hclustering warning generated.\n", "\tRef warning message: ", w, "\n"))
-   }
+  }
 )
 sink()
 
