@@ -211,7 +211,7 @@ if (input_n_total_features > 1) {
       },
       error = function(e) {
         # below: has to add \n so cat does not output partial end of line sign: %
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
+        cat(paste0("rRF-FS iteration: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
         # warning(e)
       }
     )

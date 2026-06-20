@@ -238,7 +238,7 @@ if (UNI_ANALYSIS) {
       parallelComputing = FALSE, clusterType = "PSOCK", verbose = FALSE
     ),
     warning = function(w) {
-      cat(paste0("WARNING: warning generated for univarate analysis with FDR seeting. FDR=FALSE.\n", "\tRef warning message: ", w, "\n"))
+      cat(paste0("WARNING: warning generated for univariate analysis with FDR setting. FDR=FALSE.\n", "\tRef warning message: ", w, "\n"))
       if (length(contra_string) == 1) FDR_FAIL_WARNING <<- TRUE # use <<- to assign global vars
       # if (length(contra_string) == 1) assign("FDR_FAIL_WARNING", TRUE, envir = .GlobalEnv)
       rbioarray_DE(

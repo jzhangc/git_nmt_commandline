@@ -227,7 +227,7 @@ tryCatch(
     verbose = FALSE
   ),
   error = function(e) {
-    cat(paste0("ERROR: PLS-DA VIP calculateion error generated\n", "\tRef error message: ", e, "\n"))
+    cat(paste0("ERROR: PLS-DA VIP calculation error generated\n", "\tRef error message: ", e, "\n"))
     # cwarning(e)
   }
 )

@@ -96,8 +96,8 @@ Please cite the following if you are to use this application:
         
         - Data processing modules updates
           - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
-          - Warning messaged added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
-            - Explaination: running min-max and zscore transformation at the same time is the same as running whichever comes second only
+          - Warning messages added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
+            - Explanation: running min-max and zscore transformation at the same time is the same as running whichever comes second only
           - Default value for minmax_norm set to TRUE
           - Default value for zscore_standardization set to FALSE
 

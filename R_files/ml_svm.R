@@ -218,7 +218,7 @@ if (input_n_total_features > 1) {
         cat("CV fold ", i, ": no SFS plot error\n")
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
+        cat(paste0("rRF-FS iteration: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }

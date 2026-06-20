@@ -74,7 +74,7 @@ check_dependency(){
           brew install R
         else
 					echo -e "not found.\n"
-          echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to wwww.r-project.org to install R directly.${NO_COLOUR}\n" >&2
+          echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to       www.r-project.org to install R directly.${NO_COLOUR}\n" >&2
 					exit 1
         fi
     elif [ $UNAMESTR=="Linux" ]; then
