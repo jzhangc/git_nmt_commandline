@@ -62,7 +62,7 @@ PLSDA_PERM_PLOT_HEIGHT <- as.numeric(args[31])
 PLSDA_SCOREPLOT_ELLIPSE_CONF <- as.numeric(args[32])
 PCA_BIPLOT_SYMBOL_SIZE <- as.numeric(args[33])
 PCA_BIPLOT_ELLIPSE <- eval(parse(text = args[34]))
-PCA_BIPLOT_MULTI_DESITY <- eval(parse(text = args[35]))
+PCA_BIPLOT_MULTI_DENSITY <- eval(parse(text = args[35]))
 PCA_BIPLOT_MULTI_STRIPLABEL_SIZE <- as.numeric(args[36])
 PCA_RIGHTSIDE_Y <- eval(parse(text = args[37]))
 PCA_X_TICK_LABEL_SIZE <- as.numeric(args[38])
@@ -193,7 +193,7 @@ tryCatch(
     plot.sampleLabel.type = "none",
     plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
     plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-    plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+    plot.mtx.densityplot = PCA_BIPLOT_MULTI_DENSITY,
     plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
     plot.rightsideY = PCA_RIGHTSIDE_Y,
     plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,
@@ -208,7 +208,7 @@ tryCatch(
       plot.sampleLabel.type = "none",
       plot.ellipse = PCA_BIPLOT_ELLIPSE, plot.ellipse_conf = PLSDA_SCOREPLOT_ELLIPSE_CONF,
       plot.SymbolSize = PCA_BIPLOT_SYMBOL_SIZE,
-      plot.mtx.densityplot = PCA_BIPLOT_MULTI_DESITY,
+      plot.mtx.densityplot = PCA_BIPLOT_MULTI_DENSITY,
       plot.mtx.stripLblSize = PCA_BIPLOT_MULTI_STRIPLABEL_SIZE,
       plot.rightsideY = PCA_RIGHTSIDE_Y,
       plot.xTickLblSize = PCA_X_TICK_LABEL_SIZE, plot.yTickLblSize = PCA_Y_TICK_LABEL_SIZE,

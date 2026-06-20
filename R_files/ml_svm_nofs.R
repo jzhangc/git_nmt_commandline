@@ -84,7 +84,7 @@ CONFIG_LIST <- list(
   PCA_BIPLOT_ELLIPSE = eval(parse(text = args[50])),
   PCA_BIPLOT_LOADING = eval(parse(text = args[51])),
   PCA_BIPLOT_LOADING_TEXTSIZE = as.numeric(args[52]),
-  PCA_BIPLOT_MULTI_DESITY = eval(parse(text = args[53])),
+  PCA_BIPLOT_MULTI_DENSITY = eval(parse(text = args[53])),
   PCA_BIPLOT_MULTI_STRIPLABEL_SIZE = as.numeric(args[54]),
   PCA_RIGHTSIDE_Y = eval(parse(text = args[55])),
   PCA_X_TICK_LABEL_SIZE = as.numeric(args[56]),
@@ -316,7 +316,7 @@ tryCatch(
   error = function(e) {
     cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
   },
-   warning = function(w) {
+  warning = function(w) {
     cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
   }
 )
