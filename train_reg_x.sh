@@ -276,7 +276,7 @@ r_var=`Rscript ./R_files/$pls_script "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "$plsda_scoreplot_ellipse_conf" \
 "$pca_biplot_symbol_size" \
 "$pca_biplot_ellipse" \
-"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_biplot_multi_density" "$pca_biplot_multi_striplabel_size" \
 "$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
 "$pca_width" "$pca_height" \
 "$plsda_roc_smooth" \

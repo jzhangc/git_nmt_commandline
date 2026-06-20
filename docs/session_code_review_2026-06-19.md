@@ -61,3 +61,51 @@ Turn count: 7 (5 input rounds +2 tool outputs+final response generation). Averag
 --- 
 
 **Review Completed:** ✅ No modifications made; summary documentation provided in this session file for future reference during subsequent audits or pull request reviews involving changes to connected RML pipelines under current repository structure maintained by opencode agent workflows described initially before task assignment was triggered today's date June 19th per environmental metadata shown at top of chat window when first message entered asking specifically about code review process expectations prior to receiving full context details subsequently provided through conversation history now available for reference purposes only going forward from this point onwards instead.
+
+
+
+Code Review: train_reg_x.sh
+Critical Issues
+1. String comparison uses == outside [[ ]] (line 157-158, line 250)
+if [ $PSETTING == "FALSE" ]; then
+In [ ... ], the == operator is a Bashism that may fail in strict POSIX environments. Also, $PSETTING is unquoted — if it's empty, this becomes [ == FALSE ] which errors. Should be == wrapped in [[ ]] or quoted properly: "$PSETTING" = "FALSE" inside [ ].
+2. Unquoted variable expansions throughout
+Vars like $KFLAG, $LFLAG, $XFLAG, $UFLAG, $CORES appear unquoted in [ ] tests. If any variable is unset/empty, the script crashes with a syntax error. Example at line 46: "none_existent" is correct, but line 111 "[ $KFLAG -eq 1 ]" would break if $KFLAG is unset.
+High-Priority Issues
+3. backtick subshell deprecation
+Lines 8, 33-38, 86-99, 178-197, 263-292 use  \`...\` . These deprecated forms don't nest properly and lose quoting semantics. $() is safer: $(date +%s) instead of  `date +%s` . More critically, the Rscript captures (lines 33-38, etc.) use backticks wrapping piped commands (...| tee ...) — this pattern loses the ability to correctly capture the R subprocess exit code via PIPESTATUS.
+4. Rscript exit code silently ignored after pipe to tee
+Every Rscript invocation pipes stdout through tee (e.g., line 33-38). The script never checks if Rscript itself returned non-zero exit status. Only sys_check.sh checks PIPESTATUS[0], but the main pipeline steps (input processing, univariate, SVM, PLSR) silently proceed regardless of R failure, relying solely on file existence downstream. An R crash producing partial output leaves the script in an inconsistent state while the output file exists, masking the real failure.
+5. Duplicate effort between src/utils and scripts/sys_check.sh
+Both contain nearly identical logic: check_dependency, required_file_check, output dir creation, and r_dependency_check.R execution. Line 23 sources sys_check.sh, which duplicates what setup_dirs() and integrity_check() in utils already provide. Dead code risk.
+Medium-Priority Issues
+6. Hard-coded Rplots.pdf removal bandaid (lines 106-108, 202-204, 297-299)
+Three rm "${OUT_DIR}/OUTPUT/Rplots.pdf" blocks with comments noting this is a workaround for a ggplot2 ggsave() behavior. This is fragile: if another R call produces Rplots.pdf before these checkpoints, or writes legitimately to it, it gets deleted incorrectly. Better solution: start each R session with R "--vanilla" or suppress base graphics device.
+7. Typo propagation across the project
+Typographical errors appear consistently:
+- "Copnstructing" (line 29 of sys_check.sh)
+- "Appplcation" (line 37 of sys_check.sh)
+- "pacakge", "dependecies" (line 46-47 of sys_check.sh)
+- "anlaysis" (line 82, 84)
+- "chack" (throughout comments)
+- "direcotry" (line 165 of sys_init_reg_2d_x.sh)
+- "vairables" (line 46 of config_init_reg.sh)
+These undermine documentation quality but don't affect runtime.
+8. Spurious typo in src/utils line 9: VERSION=$VERSION does nothing useful unless VERSION is set externally by the zzz config.
+9. Spelling error in src/utils line 74: homeberw/science should be homebrew/science.
+10. Comment says "SVM" but actual algorithm is SVR
+The script labels headers like "CV-rRF-FS-SVR machine learning (regression)" internally (line 139), yet many variables and filenames mix terminology (svm_model_file, _final_svm_model, cv_ml_svm). Since this is a regression task (not classification), every reference to " SVM" in variable names, display text, and log messages should be "SVR".
+Low-Priority / Style Issues
+11. Inconsistent error handling pattern
+Error exits duplicate boilerplate (end time calculation, HMS conversion, echo) in five places (lines 66-76, 118-128, 226-235, 310-319). An exit_error function would DRY this out.
+12. Missing set -euo pipefail
+No shell safety flags. Without set -u, unset variables expand silently. Without set -e, failing commands (like sed on line 41) won't abort. The pipefail issue is especially relevant given the tee piping patterns.
+13. set -o pipefail absent despite pipe-heavy design
+Multiple Rscript | tee pipelines mask the Rscript exit code. Even adding set -o pipefail alone would cause the script to abort on R failure, catching the issue at point 4 above implicitly.
+14. echo -e relies on GNU coreutils/bash
+BSD/macos /bin/sh doesn't support -e. While the shebang is #!/usr/bin/env bash, printf is more portable than echo -e.
+15. Variable $OFLAG used but never initialized (line 123 of sys_init_reg_2d_x.sh sets it to 0 but never declares default OFLAG=1). Not used downstream so harmless.
+16. Large parameter list to R scripts
+Lines 178-196 pass ~50+ parameters positionally to the R script. A single failure to align arguments causes silent data corruption. A JSON/YAML config file passed via stdin or --args flag would be safer.
+17. PLRS section references wrong variable in header (line 248): Displays ${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata but the actual model file path varies based on $XFLAG/$LFLAG (lines 210-222). The display text can be misleading about which model file was actually generated.
+18. Double "Done!" print at lines 300 and 307 — redundant in the final block.

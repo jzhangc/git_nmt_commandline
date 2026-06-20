@@ -99,7 +99,7 @@ r_var=`Rscript ./R_files/univariate_2d.R "$dat_2d_file" "$MAT_FILENAME_WO_EXT" \
 "$pca_biplot_samplelabel_type" "$pca_biplot_samplelabel_size" "$pca_biplot_symbol_size" \
 "$pca_biplot_ellipse" "$pca_biplot_ellipse_conf" \
 "$pca_biplot_loading" "$pca_biplot_loading_textsize" \
-"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_biplot_multi_density" "$pca_biplot_multi_striplabel_size" \
 "$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
 "$pca_width" "$pca_height" \
 "$CONTRAST" \
@@ -189,7 +189,7 @@ r_var=`Rscript ./R_files/ml_svm_nofs.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "$pca_biplot_samplelabel_type" "$pca_biplot_samplelabel_size" "$pca_biplot_symbol_size" \
 "$pca_biplot_ellipse" \
 "$pca_biplot_loading" "$pca_biplot_loading_textsize" \
-"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_biplot_multi_density" "$pca_biplot_multi_striplabel_size" \
 "$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
 "$pca_width" "$pca_height" \
 "$svm_rffs_pca_pc" "$svm_rffs_pca_biplot_ellipse_conf" \
@@ -256,7 +256,7 @@ r_var=`Rscript ./R_files/plsda_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT
 "$plsda_scoreplot_ellipse_conf" \
 "$pca_biplot_symbol_size" \
 "$pca_biplot_ellipse" \
-"$pca_biplot_multi_desity" "$pca_biplot_multi_striplabel_size" \
+"$pca_biplot_multi_density" "$pca_biplot_multi_striplabel_size" \
 "$pca_rightside_y" "$pca_x_tick_label_size" "$pca_y_tick_label_size" \
 "$pca_width" "$pca_height" \
 "$plsda_roc_smooth" \

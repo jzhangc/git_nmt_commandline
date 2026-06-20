@@ -19,7 +19,7 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
 	|| -z $htmap_width || -z $htmap_height || -z $pca_scale_data || -z $pca_centre_data || -z $pca_pc \
 	|| -z $pca_biplot_samplelabel_type || -z $pca_biplot_samplelabel_size || -z $pca_biplot_symbol_size \
 	|| -z $pca_biplot_ellipse || -z $pca_biplot_ellipse_conf || -z $pca_biplot_loading || -z $pca_biplot_loading_textsize \
-	|| -z $pca_biplot_multi_desity || -z $pca_biplot_multi_striplabel_size || -z $pca_rightside_y || -z $pca_x_tick_label_size \
+	|| -z $pca_biplot_multi_density || -z $pca_biplot_multi_striplabel_size || -z $pca_rightside_y || -z $pca_x_tick_label_size \
 	|| -z $pca_y_tick_label_size || -z $pca_width || -z $pca_height || -z $uni_fdr || -z $uni_alpha || -z $uni_fold_change \
 	|| -z $volcano_n_top_connection || -z $volcano_symbol_size || -z $volcano_sig_colour || -z $volcano_nonsig_colour \
 	|| -z $volcano_x_text_size || -z $volcano_y_text_size || -z $volcano_width || -z $volcano_height \
@@ -84,7 +84,7 @@ if [ $CONF_CHECK -eq 1 ]; then
 	pca_biplot_ellipse_conf=0.95
 	pca_biplot_loading=FALSE
 	pca_biplot_loading_textsize=3
-	pca_biplot_multi_desity=TRUE
+	pca_biplot_multi_density=TRUE
 	pca_biplot_multi_striplabel_size=10
 	pca_rightside_y=FALSE
 	pca_x_tick_label_size=10
@@ -235,7 +235,7 @@ echo -e "\tpca_biplot_ellipse=$pca_biplot_ellipse"
 echo -e "\tpca_biplot_ellipse_conf=$pca_biplot_ellipse_conf"
 echo -e "\tpca_biplot_loading=$pca_biplot_loading"
 echo -e "\tpca_biplot_loading_textsize=$pca_biplot_loading_textsize"
-echo -e "\tpca_biplot_multi_desity=$pca_biplot_multi_desity"
+echo -e "\tpca_biplot_multi_desity=$pca_biplot_multi_density"
 echo -e "\tpca_biplot_multi_striplabel_size=$pca_biplot_multi_striplabel_size"
 echo -e "\tpca_rightside_y=$pca_rightside_y"
 echo -e "\tpca_x_tick_label_size=$pca_x_tick_label_size"

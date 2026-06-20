@@ -30,6 +30,7 @@ Please cite the following if you are to use this application:
     - 0.5.x-260618-260619
         - General updates
           - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
+          - Typo fixes for comments and display texts
 
         - Modelling module updates
           - Regression module updates
