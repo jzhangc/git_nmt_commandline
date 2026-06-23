@@ -11,7 +11,7 @@ source ./zzz
 source ./src/global_var
 source ./src/help_var_reg_conn
 source ./src/utils
-source ./scripts/sys_init_reg_conn.sh
+source ./scripts/legacy_sys_init_reg_conn.sh
 
 # --- dependency file id variables ---
 # file arrays

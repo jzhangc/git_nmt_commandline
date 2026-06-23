@@ -1,24 +1,22 @@
 #!/usr/bin/env bash
-# Name: cv_connectivity_ml_reg.sh
-# Description: A shell script application for automated machine learning analysis for MEG connectivity data, but with "cv only" method
-# 				This application uses the same config file as connectivity_ml_reg.sh, with unused items ignored.
-# Usage: TBD
+# Name: connectivity_ml_reg.sh
+# Description: A shell script application for automated machine learning analysis for MEG connectivity data
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
 # load utils and zzz config file
 start_t=`date +%s`
-APP_NAME="cv_connectivity_ml_reg.sh"
+APP_NAME="connectivity_ml_reg.sh"
 source ./zzz
 source ./src/global_var
 source ./src/help_var_reg_conn
 source ./src/utils
-source ./scripts/sys_init_reg_conn.sh
+source ./scripts/sys_init_reg_conn_x.sh
 
 # --- dependency file id variables ---
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R cv_reg_ml_svm.R cv_reg_plsr_val_svm.R)
+R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R reg_plsr_val_svm.R)
 
 
 # ------ system check ------
@@ -48,10 +46,10 @@ elif [ "$group_summary" == "unequal_length" ]; then
 	echo -e "${COLOUR_RED}\nERROR: annotation file failed to match mat file sample length (third dimension value). Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "na_values" ]; then
-	echo -e "${COLOUR_RED}\nERROR: NAs found in the input file. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: NAs found in the annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 elif [ "$group_summary" == "single_value" ]; then
-	echo -e "${COLOUR_RED}\nERROR: only single value detected in the outcome variable. Program terminated.${NO_COLOUR}\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: only single value detected in the outcome variable of the annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	exit 1
 fi
 mat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
@@ -75,17 +73,11 @@ dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
 if ! [ -f "$dat_2d_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
 	exit 1  # exit 1: terminating with error
 fi
 
 
-# ------ inspection and univariant analysis ------
+# ------ univariant analysis ------
 echo -e "\n"
 echo -e "Unsupervised learning and univariate anlaysis"
 echo -e "=========================================================================="
@@ -114,7 +106,7 @@ node_check=`echo "${r_var[@]}" | sed -n "1p"` # this also serves as a variable c
 rscript_display=`echo "${r_var[@]}"`
 echo -e "Done!\n\n"
 if [ "$node_check" == "none_existent" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n\n" >&2
+	echo -e "${COLOUR_RED}\nERROR: -d or -r variables not found in the -n node annotation file. Program terminated.${NO_COLOUR}\n" >&2
 	# end time and display
 	end_t=`date +%s`
 	tot=`hms $((end_t-start_t))`
@@ -140,12 +132,6 @@ fi
 if ! [ -f "$dat_ml_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
 	exit 1  # exit 1: terminating with error
 fi
 # -- additional display --
@@ -182,8 +168,8 @@ else
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
 echo -en "CV-rRF-FS-SVR machine learning analysis..."
-echo -e "--------------------- source script: cv_reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/cv_reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -214,21 +200,15 @@ fi
 # 	rm "${OUT_DIR}"/OUTPUT/normdata.Rdata
 # fi
 # -- set up variables for output svm model file
-svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 # -- file check before next step --
 if ! [ -f "$svm_model_file" ]; then
 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVR analysis failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
 	exit 1  # exit 1: terminating with error
 fi
 echo -e "Done!"
-echo -e "SVM analysis results saved to file: cv_only_${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
+echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
@@ -237,7 +217,7 @@ echo -e "=======================================================================
 echo -e "\n"
 echo -e "PLSR machine learning for SVM results evaluation"
 echo -e "=========================================================================="
-echo -e "SVM model file: ${COLOUR_GREEN_L}cv_only_${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
+echo -e "SVM model file: ${COLOUR_GREEN_L}${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata${NO_COLOUR}"
 echo -en "Parallel computing: "
 if [ $PSETTING == "FALSE" ]; then
 	echo -e "OFF"
@@ -246,8 +226,8 @@ else
 	echo -e "Cores: $CORES"
 fi
 echo -en "PLSR analysis..."
-echo -e "--------------------- source script: cv_reg_plsr_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/cv_reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: reg_plsr_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \
@@ -285,7 +265,7 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 echo -e "Done!"
-echo -e "Additional PLSR analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
+echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
 
