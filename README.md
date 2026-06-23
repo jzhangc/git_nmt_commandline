@@ -16,7 +16,7 @@ Please cite the following if you are to use this application:
 
     - Waterbox
         - Data processing modules updates
-          - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
+          - Data transformation step separated for univariate analysis and ml analysis to prevent info leakage
 
         - Modelling module updates
           - Exported SVM model file (.RData) now include data processing config information
@@ -43,12 +43,12 @@ Please cite the following if you are to use this application:
     - 0.5.x-260426-0.5.x-260508
         - General updates
           - Bug fixes
-            - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
+            - warning parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
 
         - Other
           - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
             - Interactive version added
-          - Discription typo fixed to Description in 24 shell scripts
+          - Description typo fixed to Description in 24 shell scripts
           - Trailing whitespace removed from all shell scripts
 
 
@@ -58,10 +58,10 @@ Please cite the following if you are to use this application:
             - helper functions added for flag checks
         
           - Bug fixes
-            - warining parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
+            - warning parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
 
           - Other
-            - Discription typo fixed to Description in 24 shell scripts
+            - Description typo fixed to Description in 24 shell scripts
             - Trailing whitespace removed from all shell scripts
 
 
@@ -89,7 +89,7 @@ Please cite the following if you are to use this application:
         - General updates
           - Code base complexity substantially reduced
             - Code base complexity substantially reduced for classification modules
-            - Common utility prcoesses unified into expanded utility scripts for classification modules
+            - Common utility processes unified into expanded utility scripts for classification modules
           - Application display updated with more accuracy
           - Default htmap_key_xlab set to "Processed values" for 2D modules
           - A bug fixed where random state no longer works
@@ -150,7 +150,7 @@ Please cite the following if you are to use this application:
         - General updates
           - Memory management improvement started to be implemented, more to come
           - Data NA check added for the 2D modules
-          - Modellng speed improvement for all SVM modules
+          - Modeling speed improvement for all SVM modules
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
           - To show version number, the shorterned "-v" flag added for all modules
@@ -167,9 +167,7 @@ Please cite the following if you are to use this application:
         - Updates to the classification module
           - Added single input feature compatibility 
           - Added more error handling in cv_ml_svm.R and ml_svm.R
-          - Added interporlated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
-          - Updated the file name suffix to "_plsda_roc_auc_test.txt" for the plsda analysis output file
-          - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
+          - Added interpolated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
 
         - Updates to the regression module
           - Added single input feature compatibility 
@@ -187,7 +185,7 @@ Please cite the following if you are to use this application:
           - Better code organization with application version, citation and common utilities files
 
 
-    - 0.3.2 (July.1.2021)
+    - 0.3.2 (July 1, 2021)
         - Updates to modelling modules
           - AUC scores now included in .RData model files
 
@@ -245,7 +243,7 @@ Please cite the following if you are to use this application:
           - The existing univariate analysis now mandatory for all modules
           - Univariate prior knowledge flag -k added to all modules
           - Random state added to all modules
-          - CV-SVM-rRF-FS heatmap lables fixed for all modules
+          - CV-SVM-rRF-FS heatmap labels fixed for all modules
           - Error handling added to rRF-FS plotting
           - Citation added
         
@@ -278,18 +276,16 @@ Please cite the following if you are to use this application:
           - Small formatting fix for univariate module
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
           - A bug fixed for the display messaging order
-          - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
+          - A bug fixed for univariate.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to connectivity_ml_2d.sh
-          - Unsorted annotation file support
+        - Updates to connectivity_ml_2d.sh          - Unsorted annotation file support
           - Resampling is now stratified
           - Small formatting fix for univariate module
           - Error handling added for supervised hierarchical clustering analysis when only one significant result found
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
-          - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
+          - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to the regression module
-          - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
+        - Updates to the regression module          - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
           - Accordingly, new R file reg_plsr_val_svm.R added
 
 
