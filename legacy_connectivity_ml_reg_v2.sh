@@ -9,7 +9,7 @@ start_t=`date +%s`
 APP_NAME="connectivity_ml_reg.sh"
 source ./zzz
 source ./src/global_var
-source ./src/help_var_reg_conn
+source ./src/legacy_help_var_reg_conn
 source ./src/utils
 source ./scripts/legacy_sys_init_reg_conn.sh
 

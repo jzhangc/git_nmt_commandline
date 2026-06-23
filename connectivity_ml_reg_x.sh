@@ -9,14 +9,14 @@ start_t=`date +%s`
 APP_NAME="connectivity_ml_reg.sh"
 source ./zzz
 source ./src/global_var
-source ./src/help_var_reg_conn
+source ./src/help_var_reg_conn_x
 source ./src/utils
 source ./scripts/sys_init_reg_conn_x.sh
 
 # --- dependency file id variables ---
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R reg_plsr_val_svm.R)
+R_SCRIPT_FILES=(reg_input_dat_process.R reg_univariate.R reg_ml_svm.R reg_plsr_val_svm.R reg_ml_svm_nofs.R cv_reg_ml_svm.R cv_reg_ml_svm_nofs.R cv_reg_plsr_val_svm.R)
 
 
 # ------ system check ------
@@ -167,9 +167,28 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES (Set value. Max thread number minus one if exceeds the hardware config)"
 fi
+if [ $XFLAG -eq 0 ]; then
+	# echo -e "Cross-validation only: ON"
+	if [ $LFLAG -eq 0 ]; then
+		# echo -e "No feature selection: ON"
+		ml_script="cv_reg_ml_svm_nofs.R"
+	else
+		# echo -e "No feature selection: OFF"
+		ml_script="cv_reg_ml_svm.R"
+	fi
+else
+	# echo -e "Cross-validation only: OFF"
+	if [ $LFLAG -eq 0 ]; then
+		# echo -e "No feature selection: ON"
+		ml_script="reg_ml_svm_nofs.R"
+	else
+		# echo -e "No feature selection: OFF"
+		ml_script="reg_ml_svm.R"
+	fi
+fi
 echo -en "CV-rRF-FS-SVR machine learning analysis..."
-echo -e "--------------------- source script: reg_ml_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/reg_ml_svm.R "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: $ml_script ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/$ml_script "$dat_ml_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" "$training_percentage" \
@@ -200,14 +219,36 @@ fi
 # 	rm "${OUT_DIR}"/OUTPUT/normdata.Rdata
 # fi
 # -- set up variables for output svm model file
-svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
-# -- file check before next step --
-if ! [ -f "$svm_model_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVR analysis failed. Program terminated.${NO_COLOUR}\n" >&2
-	exit 1  # exit 1: terminating with error
+# svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
+if [ $XFLAG -eq 0 ]; then
+	if [ $LFLAG -eq 0 ]; then
+		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svr_model.Rdata"
+	else
+		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_svr_model.Rdata"
+	fi
+else
+	if [ $LFLAG -eq 0 ]; then
+		svm_model_file="${OUT_DIR}/OUTPUT/nofs_${MAT_FILENAME_WO_EXT}_final_svr_model.Rdata"
+	else
+		svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svr_model.Rdata"
+	fi
 fi
 echo -e "Done!"
+# -- file check before next step --
+echo -en "Checking SVR model file..."
+if ! [ -f "$svm_model_file" ]; then
+	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+	echo -e "${COLOUR_RED}\nERROR: Final SVR model file not found. Program terminated.${NO_COLOUR}\n" >&2
+	# end time and display
+	end_t=`date +%s`
+	tot=`hms $((end_t-start_t))`
+	echo -e "\n"
+	echo -e "Total run time: $tot"
+	echo -e "\n"
+	exit 1  # exit 1: terminating with error
+else
+	echo -e "Done!\n CV-rRF-FS-SVR model saved to file: ${svm_model_file}"
+fi
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
@@ -225,9 +266,14 @@ else
 	echo -e "ON"
 	echo -e "Cores: $CORES"
 fi
+if [ $XFLAG -eq 0 ]; then
+	pls_script=cv_reg_plsr_val_svm.R
+else
+	pls_script=reg_plsr_val_svm.R
+fi
 echo -en "PLSR analysis..."
-echo -e "--------------------- source script: reg_plsr_val_svm.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
-r_var=`Rscript ./R_files/reg_plsr_val_svm.R "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
+echo -e "--------------------- source script: $pls_script ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
+r_var=`Rscript ./R_files/$pls_script "$svm_model_file" "$MAT_FILENAME_WO_EXT" \
 "${OUT_DIR}/OUTPUT" \
 "$PSETTING" "$CORES" \
 "$cpu_cluster" \
