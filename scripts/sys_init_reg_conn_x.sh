@@ -192,6 +192,12 @@ else
 				UFLAG=0
 				CVUNI=TRUE
 				;;
+			x)
+				XFLAG=0
+				;;
+			l)
+				LFLAG=0
+				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1
@@ -208,15 +214,15 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -y -n, -d, -r flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+# ------ flag check -----
+mand_flag_check "IFLAG:-i" "AFLAG:-a" "SFLAG:-s" "YFLAG:-y" "NFLAG:-n" "DFLAG:-d" "RFLAG:-r"
 
-if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
-	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+opt_flag_check \
+	--mutex "KFLAG:UFLAG" \
+	"UFLAG:-u:use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done." \
+	"KFLAG:-k:incorporate univariate prior knowledge to SVM analysis." \
+	"XFLAG:-x:cross-validation only." \
+	"LFLAG:-l:no feature selection."
 
 # ------ display output folder ------
 echo -e "Output direcotry: ${COLOUR_BLUE_L}$OUT_DIR${NO_COLOUR}"
