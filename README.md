@@ -278,14 +278,16 @@ Please cite the following if you are to use this application:
           - A bug fixed for the display messaging order
           - A bug fixed for univariate.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to connectivity_ml_2d.sh          - Unsorted annotation file support
+        - Updates to connectivity_ml_2d.sh          
+        - Unsorted annotation file support
           - Resampling is now stratified
           - Small formatting fix for univariate module
           - Error handling added for supervised hierarchical clustering analysis when only one significant result found
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
           - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to the regression module          - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
+        - Updates to the regression module          
+          - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
           - Accordingly, new R file reg_plsr_val_svm.R added
 
 
