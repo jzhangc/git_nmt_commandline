@@ -6,9 +6,13 @@
 
 # ------ variables ------
 # load utils and zzz config file
+start_t=`date +%s`
 APP_NAME="predict_class.sh"
 source ./zzz
+source ./src/global_var
 source ./src/utils
+source ./scripts/sys_init_pred_class_2d.sh
+
 
 # --- iniitate internal system variables ---
 VERSION=$VERSION
@@ -51,202 +55,13 @@ NO_COLOUR="\033[0;0m"
 # bash scrit array use space to separate
 R_SCRIPT_FILES=(r_dependency_check.R pred_dat_process_2d.R pred_classif.R)
 
-# initiate mandatory variable check variable. initial value 1 (false)
-CONF_CHECK=1
 
-# --- flag check and flag variables (unfinished) ---
-# initiate mandatory variable check variable. initial value 1 (false)
-PSETTING=FALSE  # note: PSETTING is to be passed to R. therefore a separate variable is used
-CORES=1  # this is for the parallel computing
-
-IFLAG=1
-SFLAG=1
-LFLAG=1
-# optional flag values
-OUT_DIR=.  # set the default to output directory
-
-# flag check and set flag variable from command flags
-if [ $# -eq 0 ]; then
-	echo -e $HELP
-	echo -e "\n"
-	echo -e "=========================================================================="
-	echo -e "${COLOUR_YELLOW}$CITE${NO_COLOUR}\n"
-	exit 0  # exit 0: terminating without error. FYI exit 1 - exit with error, exit 2 - exit with message
-else
-	case "$1" in  # "one off" flags
-		-h|--help)
-			echo -e $HELP
-			echo -e "\n"
-			echo -e "=========================================================================="
-			echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-			exit 0
-			;;
-		-v|--version)
-			echo -e "Current version: $VERSION\n"
-			exit 0
-			;;
-	esac
-
-	while getopts ":p:i:s:l:m:o:" opt; do
-		case $opt in
-			p)
-				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
-				CORES=$OPTARG
-				;;
-			i)
-				# if [[ $OPTARG == *"~"* ]]; then
-				#     RAW_FILE=$(expand_path $OPTARG)
-				# else
-				#     RAW_FILE=$(get_abs_filename $OPTARG)
-				# fi
-				RAW_FILE=$(path_resolve $OPTARG)
-				if ! [ -f "$RAW_FILE" ]; then
-					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -i input file not found.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-				MAT_FILENAME=`basename "$RAW_FILE"`
-				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -i file should be in .csv format.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
-				IFLAG=0
-				;;
-			s)
-				SAMPLE_ID=$OPTARG
-				SFLAG=0
-				;;
-			l)
-				# if [[ $OPTARG == *"~"* ]]; then
-				# 	MODEL_FILE=$(expand_path $OPTARG)
-				# else
-				# 	MODEL_FILE=$(get_abs_filename $OPTARG)
-				# fi
-				MODEL_FILE=$(path_resolve $OPTARG)
-				if ! [ -f "$MODEL_FILE" ]; then
-					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_RED}\nERROR: -l SVM model file not found.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-
-				MODEL_FILENAME=`basename "$MODEL_FILE"`
-				if [ ${MODEL_FILENAME: -6} != ".Rdata" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -l SMV model file needs to be .Rdata format.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
-				fi
-
-				LFLAG=0
-				;;
-			m)
-				# if [[ $OPTARG == *"~"* ]]; then
-				#     CONFIG_FILE=$(expand_path $OPTARG)
-				# else
-				#     CONFIG_FILE=$(get_abs_filename $OPTARG)
-				# fi
-				CONFIG_FILE=$(path_resolve $OPTARG)
-				if ! [ -f "$CONFIG_FILE" ]; then
-					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-					echo -e "${COLOUR_YELLOW}\nWARNING: -m config file not found. Use the default settings.${NO_COLOUR}\n" >&2
-				else
-					CONFIG_FILENAME=`basename "$CONFIG_FILE"`
-					CONF_CHECK=0
-				fi
-				;;
-			o)
-				# if [[ $OPTARG == *"~"* ]]; then
-				#     OUT_DIR=$(expand_path $OPTARG)
-				# else
-				#     OUT_DIR=$(get_abs_filename $OPTARG)
-				# fi
-				OUT_DIR=$(path_resolve $OPTARG)
-				if ! [ -d "$OUT_DIR" ]; then
-					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
-					OUT_DIR=.
-				else
-					OFLAG=0
-				fi
-				;;
-			:)
-				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
-				exit 1
-				;;
-			*)  # if the input option not defined
-				echo ""
-				echo -e "${COLOUR_RED}\nERROR: Invalid option: -$OPTARG${NO_COLOUR}\n" >&2
-				echo -e $HELP
-				echo -e "=========================================================================="
-				echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-				exit 1
-				;;
-		esac
-	done
-fi
-
-if [[ $IFLAG -eq 1 || $SFLAG -eq 1 ||  $LFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -s, -l flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+# ------ system check ------
+source ./scripts/sys_check.sh
 
 
-# ------ script ------
-# --- start time ---
-start_t=`date +%s`
-
-
-# --- initial message ---
-echo -e "\nYou are running ${COLOUR_BLUE_L}predict_class.sh${NO_COLOUR}"
-echo -e "Version: $VERSION"
-echo -e "Current OS: $PLATFORM"
-echo -e "Output direcotry: $OUT_DIR"
-echo -e "Today is: $CURRENT_DAY\n"
-echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
-
-
-# --- Rscript check ---
-echo -e "\n"
-echo -e "R environment check"
-echo -e "=========================================================================="
-# -- R script chack --
-check_dependency
-echo -e "=========================================================================="
-
-
-# --- system files check ---
-echo -e "\n"
-echo -e "System file check"
-echo -e "=========================================================================="
-# -- R script chack --
-echo -e "Checking required R script file(s)"
-required_file_check "${R_SCRIPT_FILES[@]}"
-echo -e "=========================================================================="
-
-
-# --- construct output folder structure ---
-echo -e "\n"
-echo -en "Copnstructing output file folder structure..."
-[ -d "${OUT_DIR}"/PREDICTION_LOG ] || mkdir "${OUT_DIR}"/PREDICTION_LOG
-[ -d "${OUT_DIR}"/PREDICTION ] || mkdir "${OUT_DIR}"/PREDICTION
-echo -e "Done!"
-echo -e "=========================================================================="
-echo -e "Folders created and their usage:"
-echo -e "\tPREDICTION_LOG: Applcation log files"
-echo -e "\tPREDICTION: Output prediction files"
-echo -e "=========================================================================="
-
-
-# --- check R dependecies ---
-echo -e "\n"
-echo -e "Checking R pacakge dependecies"
-echo -e "=========================================================================="
-Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/PREDICTION_LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/PREDICTION_LOG/R_check_shell_$CURRENT_DAY.log
-R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
-if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
-	echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
-	echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
-  	exit 1
-fi
-echo -e "=========================================================================="
+# ------ config loading ------
+source ./scripts/pred_config_init.sh
 
 
 # --- config file and variables ---
