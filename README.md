@@ -27,7 +27,15 @@ Please cite the following if you are to use this application:
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-260618-260619
+    - 0.5.x-260624
+        - Modelling module updates
+          - Prediction module updates
+            - Prediction modules now read the data processing config information from the SVM model file for data processing and inferencing
+            - Prediction modules config files revamped
+            - Prediction module code base complexity substantially reduced
+            
+
+    - 0.5.x-260618-260623
         - General updates
           - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
           - Typo fixes for comments and display texts
