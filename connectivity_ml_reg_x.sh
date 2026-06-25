@@ -235,7 +235,6 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-echo -en "Checking SVR model file..."
 check_model_file "$svm_model_file" "Final SVR model file not found. Program terminated."
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
@@ -306,7 +305,6 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-echo -en "Checking PLSR model file..."
 check_model_file "$pls_model_file" "Final PLSR model file not found. Program terminated."
 
 echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
