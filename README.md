@@ -21,11 +21,6 @@ Please cite the following if you are to use this application:
         - Modelling module updates
           - Exported SVM model file (.RData) now include data processing config information
 
-        - Prediction modules updates
-          - Prediction modules reads the data processing config information from the SVM model file for data processing
-          - Prediction modules reads the data processing config information from the SVM model file for inferencing
-          - Prediction modules config files to be revamped
-
 
     - 0.5.x-260624 - 0.5.x-260625
         - General updates
@@ -37,9 +32,9 @@ Please cite the following if you are to use this application:
           - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
           
         - Prediction module updates
-          - Prediction modules now read the data processing config information from the SVM model file for data processing and inferencing
           - Prediction modules config files revamped
           - Prediction module code base complexity substantially reduced
+          - Prediction modules reads the data processing config information from the SVM model file for new data processing and inferencing
             
 
     - 0.5.x-260618 - 0.5.x-260623
