@@ -19,12 +19,12 @@ ANNOT_FILE <- args[8]
 # --- directory variables ---
 RES_OUT_DIR <- args[11]
 
-# --- mata data input variables ---
-SAMPLEID_VAR <- args[9]
-GROUP_VAR <- args[10]
-MINMAX_NORM <- eval(parse(text = args[12]))
-ZSCORE_STAND <- eval(parse(text = args[13]))
-CONTRAST <- args[14]
+# # --- mata data input variables ---
+# SAMPLEID_VAR <- args[9]
+# GROUP_VAR <- args[10]
+# MINMAX_NORM <- eval(parse(text = args[12]))
+# ZSCORE_STAND <- eval(parse(text = args[13]))
+# CONTRAST <- args[14]
 
 # ------ config list ------
 DAT_PROCESS_CONFIG <- list(
