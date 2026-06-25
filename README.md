@@ -27,7 +27,7 @@ Please cite the following if you are to use this application:
           - Prediction modules config files to be revamped
 
 
-    - 0.5.x-260624
+    - 0.5.x-260624 - 0.5.x-260625
         - data processing module updates
           - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
         - Prediction module updates
@@ -36,7 +36,7 @@ Please cite the following if you are to use this application:
           - Prediction module code base complexity substantially reduced
             
 
-    - 0.5.x-260618-260623
+    - 0.5.x-260618 - 0.5.x-260623
         - General updates
           - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
           - Typo fixes for comments and display texts
@@ -49,7 +49,7 @@ Please cite the following if you are to use this application:
           - A bug fixed for connectivity_ml_x.sh where the generated model files cannot be checked
 
 
-    - 0.5.x-260426-0.5.x-260508
+    - 0.5.x-260426 - 0.5.x-260508
         - General updates
           - Bug fixes
             - warning parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
@@ -74,7 +74,7 @@ Please cite the following if you are to use this application:
             - Trailing whitespace removed from all shell scripts
 
 
-    - 0.5.x-260314-260324
+    - 0.5.x-260314 - 0.5.x-260324
         - General updates
           - Code base complexity substantially reduced
         
@@ -83,7 +83,7 @@ Please cite the following if you are to use this application:
             - nofs modules combined into their respective regular modules with "-l" flag
           
 
-    - 0.5.x-251211-260313
+    - 0.5.x-251211 - 0.5.x-260313
         - General updates
           - Code base complexity substantially reduced
             - Code base complexity substantially reduced for regression modules
