@@ -2,9 +2,6 @@
 
 Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for neuroimaging connectivity and vectorized 2D tabular data
 
-![NMT Workflow](docs/NMT_workflow.png)
-
-[**View Interactive Diagram**](https://jzhangc.github.io/git_nmt_commandline/) — Click any module to see details and source code links
 
 Please cite the following if you are to use this application:
 
