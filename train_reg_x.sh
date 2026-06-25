@@ -50,7 +50,7 @@ elif [ "$group_summary" == "single_value" ]; then
 	exit 1
 fi
 
-# -- display --
+# -- check files anddisplay --
 echo -e "\n"
 echo -e "Input files"
 echo -e "=========================================================================="
@@ -58,22 +58,12 @@ echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "$group_summary\n"
 echo -e "Data transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-echo -e "=========================================================================="
-
-# -- set up variables for output 2d data file
 dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# -- file check before next step --
-if ! [ -f "$dat_2d_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-fi
+check_file "${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv" "Data processing failed. Program terminated."
+echo -e "Data processing configuration saved to file: ${MAT_FILENAME_WO_EXT}_data_processing_config.RData"
+dat_process_config_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_data_processing_config.RData"
+check_file "$dat_process_config_file" "Data processing configuration file not found. Program terminated."
+echo -e "=========================================================================="
 
 
 # ------ inspection and univariant analysis ------
@@ -115,17 +105,18 @@ else
 	# dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_ml.csv"
 fi
 # -- file check before next step --
-if ! [ -f "$dat_ml_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-fi
+check_file "$dat_ml_file" "Working data file for ML analysis not found. Program terminated."
+# if ! [ -f "$dat_ml_file" ]; then
+# 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+# 	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+# 	# end time and display
+# 	end_t=`date +%s`
+# 	tot=`hms $((end_t-start_t))`
+# 	echo -e "\n"
+# 	echo -e "Total run time: $tot"
+# 	echo -e "\n"
+# 	exit 1  # exit 1: terminating with error
+# fi
 # -- additional display --
 # echo -e "Data for machine learning saved to file (w univariate): ${MAT_FILENAME_WO_EXT}_ml.csv"
 echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_w_prior.csv"
@@ -202,11 +193,20 @@ rscript_display=`echo "${r_var[@]}"`
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
-# if [ -f "${OUT_DIR}"/OUTPUT/normdata.Rdata ]; then
-# 	rm "${OUT_DIR}"/OUTPUT/normdata.Rdata
-# fi
+# -- error handling --
+if [ $LFLAG -eq 1 ]; then
+	if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
+		echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. ${NO_COLOUR}\n\n" >&2
+		# end time and display
+		end_t=`date +%s`
+		tot=`hms $((end_t-start_t))`
+		echo -e "\n"
+		echo -e "Total run time: $tot"
+		echo -e "\n"
+		exit 1
+	fi
+fi
 # -- set up variables for output svm model file
-# svm_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_svm_model.Rdata"
 if [ $XFLAG -eq 0 ]; then
 	if [ $LFLAG -eq 0 ]; then
 		svm_model_file="${OUT_DIR}/OUTPUT/cv_only_nofs_${MAT_FILENAME_WO_EXT}_final_svr_model.Rdata"
@@ -223,6 +223,7 @@ fi
 echo -e "Done!"
 # -- file check before next step --
 check_file "$svm_model_file" "Final SVR model file not found. Program terminated."
+merge_rdata	"$dat_config_file" "$svm_model_file"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="

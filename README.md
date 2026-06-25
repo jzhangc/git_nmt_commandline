@@ -18,9 +18,6 @@ Please cite the following if you are to use this application:
         - Data processing modules updates
           - Data transformation step separated for univariate analysis and ml analysis to prevent info leakage
 
-        - Modelling module updates
-          - Exported SVM model file (.RData) now include data processing config information
-
 
     - 0.5.x-260624 - 0.5.x-260625
         - General updates
@@ -30,6 +27,9 @@ Please cite the following if you are to use this application:
 
         - data processing module updates
           - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
+
+        - Modelling module updates
+          - SVM model file now includes the data processing config information
           
         - Prediction module updates
           - Prediction modules config files revamped
