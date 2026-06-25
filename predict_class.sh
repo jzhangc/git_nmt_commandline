@@ -10,45 +10,9 @@ start_t=`date +%s`
 APP_NAME="predict_class.sh"
 source ./zzz
 source ./src/global_var
+source ./src/help_var_pred_class_2d_x
 source ./src/utils
 source ./scripts/sys_init_pred_class_2d.sh
-
-
-# --- iniitate internal system variables ---
-VERSION=$VERSION
-CURRENT_DAY=$(date +%d-%b-%Y)
-PLATFORM="Unknown UNIX or UNIX-like system"
-UNAMESTR=`uname`  # use `uname` variable to detect OS type
-if [ $UNAMESTR == "Darwin" ]; then
-	PLATFORM="macOS"
-elif [ $UNAMESTR == "Linux" ]; then
-	PLATFORM="Linux"
-fi
-HELP="\n
-Format: $APP_NAME <INPUTS> [OPTIONS]\n
-Current version: $VERSION\n
-\n
--h, --help: This help information.\n
---version: Display current version number.\n
-\n
-<INPUTS>: Mandatory\n
--i <file>: Input 2D CSV file. \n
--s <string>: Sample ID variable name from the -i inpout file.\n
--l <file>: Input .RData SVM model file with full path. \n
-\n
-[OPTIONS]: Optional\n
--m <CONFIG>: Optional input config file. The program will use the default if not provided. \n
--o <dir>: Optional output directory. Default is where the program is. \n
--p <int>: parallel computing, with core numbers.\n"
-CITE=$CITE
-
-# below: some colours
-COLOUR_YELLOW="\033[1;33m"
-COLOUR_ORANGE="\033[0;33m"
-COLOUR_RED="\033[0;31m"
-COLOUR_GREEN_L="\033[1;32m"
-COLOUR_BLUE_L="\033[1;34m"
-NO_COLOUR="\033[0;0m"
 
 # -- dependency file id variables --
 # file arrays

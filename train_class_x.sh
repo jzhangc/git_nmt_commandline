@@ -251,20 +251,7 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-echo -en "Checking the resulting model file..."
-if ! [ -f "$svm_model_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: Output model file cannot be found. Program terminated. ${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-else
-	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${svm_model_file}${NO_COLOUR}"
-fi
+check_model_file "$svm_model_file" "Output SVM model file cannot be found. Program terminated."
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
@@ -333,13 +320,7 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-echo -en "Checking PLS-DA model file..."
-if ! [ -f "$pls_model_file" ]; then
-	echo -e "${COLOUR_RED}\nERROR: Final PLS-DA model file not found. Program terminated.${NO_COLOUR}\n" >&2
-	exit 1
-else
-	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${pls_model_file}${NO_COLOUR}"
-fi
+check_model_file "$pls_model_file" "Final PLS-DA model file not found. Program terminated."
 echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsda_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="

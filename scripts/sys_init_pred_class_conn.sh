@@ -58,7 +58,7 @@ else
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 	
-	while getopts ":p:i:s:b:m:o:" opt; do
+	while getopts ":p:i:a:s:b:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -77,12 +77,33 @@ else
 					exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME=`basename "$RAW_FILE"`
-				if [ ${MAT_FILENAME: -4} != ".csv" ]; then
-					echo -e "${COLOUR_RED}\nERROR: -i file should be in .csv format.${NO_COLOUR}\n" >&2
-					exit 1  # exit 1: terminating with error
+				if [ ${MAT_FILENAME: -4} != ".mat" ]; then
+				echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
+				exit 1  # exit 1: terminating with error
 				fi
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
+				;;
+			a)
+				# if [[ $OPTARG == *"~"* ]]; then
+				# 	ANNOT_FILE=$(expand_path $OPTARG)
+				# else
+				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
+				# fi
+				ANNOT_FILE=$(path_resolve $OPTARG)
+				if ! [ -f "$ANNOT_FILE" ]; then
+					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file not found.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				ANNOT_FILENAME=`basename "$ANNOT_FILE"`
+				if [ ${ANNOT_FILENAME: -4} != ".csv" ]; then
+					echo -e "${COLOUR_RED}\nERROR: -a sample annotation file needs to be .csv format.${NO_COLOUR}\n" >&2
+					exit 1  # exit 1: terminating with error
+				fi
+
+				AFLAG=0
 				;;
 			s)
 				SAMPLE_ID=$OPTARG
