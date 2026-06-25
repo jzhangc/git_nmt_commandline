@@ -195,16 +195,18 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 fi
 # -- error handling --
 if [ $LFLAG -eq 1 ]; then
-	if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-		echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. ${NO_COLOUR}\n\n" >&2
-		# end time and display
-		end_t=`date +%s`
-		tot=`hms $((end_t-start_t))`
-		echo -e "\n"
-		echo -e "Total run time: $tot"
-		echo -e "\n"
-		exit 1
-	fi
+	case "$rscript_display" in
+		fs_failure)
+			echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVR failed. Program terminated.${NO_COLOUR}\n\n" >&2
+			end_t=`date +%s`
+			tot=`hms $((end_t-start_t))`
+			echo -e "\nTotal run time: $tot\n"
+			exit 1
+				;;
+			*)
+				# no error — proceed
+				;;
+	esac
 fi
 # -- set up variables for output svm model file
 if [ $XFLAG -eq 0 ]; then
@@ -221,7 +223,7 @@ else
 	fi
 fi
 echo -e "Done!"
-# -- file check before next step --
+# -- file check and merge config file with svm model file --
 check_file "$svm_model_file" "Final SVR model file not found. Program terminated."
 merge_rdata	"$dat_config_file" "$svm_model_file"
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"

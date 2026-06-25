@@ -240,16 +240,18 @@ if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
 # -- error handling --
-if [ "$rscript_display" == "fs_failure" ]; then  # use "$group_summary" (quotations) to avid "too many arguments" error
-	echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1
-fi
+case "$rscript_display" in
+	fs_failure)
+		echo -e "${COLOUR_RED}\nERROR: CV-rRF-FS-SVM failed. Program terminated. See ${NO_COLOUR}\n\n" >&2
+		end_t=`date +%s`
+		tot=`hms $((end_t-start_t))`
+		echo -e "\nTotal run time: $tot\n"
+		exit 1
+			;;
+		*)
+			# no error — proceed
+			;;
+esac
 # -- set up variables for output svm model file
 if [ $XFLAG -eq 0 ]; then
 	if [ $LFLAG -eq 0 ]; then
