@@ -17,7 +17,7 @@ source ./scripts/sys_init_class_2d_x.sh
 # -- dependency file id variables --
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R ml_svm_nofs.R plsda_val_svm.R cv_ml_svm.R cv_ml_svm_nofs.R cv_plsda_val_svm)
+R_SCRIPT_FILES=(r_dependency_check.R input_dat_process_2d.R univariate_2d.R ml_svm.R ml_svm_nofs.R plsda_val_svm.R cv_ml_svm.R cv_ml_svm_nofs.R cv_plsda_val_svm.R)
 
 
 # ------ system check ------
@@ -325,13 +325,13 @@ rscript_display=`echo "${r_var[@]}"`
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
-echo -e "Done!"
 # -- set up variables for output pls-da model file
 if [ $XFLAG -eq 0 ]; then
 	pls_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_plsda_model.Rdata"
 else
 	pls_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_plsda_model.Rdata"
 fi
+echo -e "Done!"
 # -- file check before next step --
 echo -en "Checking PLS-DA model file..."
 if ! [ -f "$pls_model_file" ]; then

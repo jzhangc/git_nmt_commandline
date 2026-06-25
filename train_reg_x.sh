@@ -9,14 +9,14 @@ start_t=`date +%s`
 APP_NAME="train_reg.sh"
 source ./zzz
 source ./src/global_var
-source ./src/help_var_reg_2d_x.sh
+source ./src/help_var_reg_2d_x
 source ./src/utils
 source ./scripts/sys_init_reg_2d_x.sh
 
 # --- dependency file id variables ---
 # file arrays
 # bash scrit array use space to separate
-R_SCRIPT_FILES=(r_dependency_check.R reg_input_dat_process_2d.R reg_univariate_2d.R reg_ml_svm.R reg_ml_svm_nofs.R reg_plsr_val_svm.R cv_reg_svm.R cv_reg_ml_svm_nofs.R cv_reg_plsr_val_svm.R)
+R_SCRIPT_FILES=(r_dependency_check.R reg_input_dat_process_2d.R reg_univariate_2d.R reg_ml_svm.R reg_ml_svm_nofs.R reg_plsr_val_svm.R cv_reg_ml_svm.R cv_reg_ml_svm_nofs.R cv_reg_plsr_val_svm.R)
 
 
 # ------ system check ------
@@ -222,20 +222,7 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-echo -en "Checking SVR model file..."
-if ! [ -f "$svm_model_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: Final SVR model file not found. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-else
-	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${svm_model_file}${NO_COLOUR}"
-fi
+check_model_file "$svm_model_file" "Final SVR model file not found. Program terminated."
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
@@ -297,7 +284,6 @@ rscript_display=`echo "${r_var[@]}"`
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
-echo -e "Done!"
 # -- set up variables for output plsr model file
 if [ $XFLAG -eq 0 ]; then
 	pls_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_plsr_model.Rdata"
@@ -306,20 +292,20 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-echo -en "Checking PLSR model file..."
-if ! [ -f "$pls_model_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: Final PSLR model file not found. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-else
-	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${pls_model_file}${NO_COLOUR}"
-fi
+check_model_file "$pls_model_file" "Final PLSR model file not found. Program terminated."
+# if ! [ -f "$pls_model_file" ]; then
+# 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+# 	echo -e "${COLOUR_RED}\nERROR: Final PSLR model file not found. Program terminated.${NO_COLOUR}\n" >&2
+# 	# end time and display
+# 	end_t=`date +%s`
+# 	tot=`hms $((end_t-start_t))`
+# 	echo -e "\n"
+# 	echo -e "Total run time: $tot"
+# 	echo -e "\n"
+# 	exit 1  # exit 1: terminating with error
+# else
+# 	echo -e "Done!\n Model file generated: ${COLOUR_GREEN_L}${pls_model_file}${NO_COLOUR}"
+# fi
 echo -e "Additional PLSR analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="

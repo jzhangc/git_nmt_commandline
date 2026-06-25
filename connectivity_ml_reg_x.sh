@@ -236,19 +236,7 @@ fi
 echo -e "Done!"
 # -- file check before next step --
 echo -en "Checking SVR model file..."
-if ! [ -f "$svm_model_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: Final SVR model file not found. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-else
-	echo -e "Done!\n CV-rRF-FS-SVR model saved to file: ${svm_model_file}"
-fi
+check_model_file "$svm_model_file" "Final SVR model file not found. Program terminated."
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
@@ -310,7 +298,17 @@ rscript_display=`echo "${r_var[@]}"`
 if [ -f "${OUT_DIR}"/OUTPUT/Rplots.pdf ]; then
 	rm "${OUT_DIR}"/OUTPUT/Rplots.pdf
 fi
+# -- set up variables for output pls-da model file
+if [ $XFLAG -eq 0 ]; then
+	pls_model_file="${OUT_DIR}/OUTPUT/cv_only_${MAT_FILENAME_WO_EXT}_final_plsda_model.Rdata"
+else
+	pls_model_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_final_plsda_model.Rdata"
+fi
 echo -e "Done!"
+# -- file check before next step --
+echo -en "Checking PLSR model file..."
+check_model_file "$pls_model_file" "Final PLSR model file not found. Program terminated."
+
 echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsr_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
