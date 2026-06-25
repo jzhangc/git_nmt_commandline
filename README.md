@@ -74,7 +74,7 @@ Please cite the following if you are to use this application:
             - Trailing whitespace removed from all shell scripts
 
 
-      - 0.5.x-260314-260324
+    - 0.5.x-260314-260324
         - General updates
           - Code base complexity substantially reduced
         
