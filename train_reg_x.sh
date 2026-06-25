@@ -222,7 +222,7 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-check_model_file "$svm_model_file" "Final SVR model file not found. Program terminated."
+check_file "$svm_model_file" "Final SVR model file not found. Program terminated."
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
@@ -292,7 +292,7 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-check_model_file "$pls_model_file" "Final PLSR model file not found. Program terminated."
+check_file "$pls_model_file" "Final PLSR model file not found. Program terminated."
 # if ! [ -f "$pls_model_file" ]; then
 # 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 # 	echo -e "${COLOUR_RED}\nERROR: Final PSLR model file not found. Program terminated.${NO_COLOUR}\n" >&2

@@ -30,6 +30,8 @@ Please cite the following if you are to use this application:
     - 0.5.x-260624 - 0.5.x-260625
         - General updates
           - check_model_file function added to the common utility script for checking the existence of model files
+          - merge_rdata function added to the common utility script for merging two RData files into one RData file
+            - this is used to merge the data processing config information into the SVM model file for data processing and inferencing
 
         - data processing module updates
           - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing

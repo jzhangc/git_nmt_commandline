@@ -27,8 +27,7 @@ source ./scripts/sys_check.sh
 source ./scripts/pred_config_init.sh
 
 
-# --- New data prediction ---
-# -- input mat and annot files processing --
+# ------ input mat and annot files processing ------
 echo -e "--------------------- source script: pred_dat_process.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/pred_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" \
@@ -77,6 +76,7 @@ if ! [ -f "$dat_2d_file" ]; then
 fi
 
 
+# ------ inferencing ------
 echo -e "\n"
 echo -e "SVM prediction"
 echo -e "=========================================================================="
@@ -115,7 +115,8 @@ echo -e "\tData with feature subset and saved to file: data_subset.csv"
 echo -e "\tPie charts depicting resutls saved to the ${COLOUR_GREEN_L}PREDICTION${NO_COLOUR} folder in the output directory."
 echo -e "=========================================================================="
 
-# end time and display
+
+# ------ end time and display ------
 end_t=`date +%s`
 tot=`hms $((end_t-start_t))`
 echo -e "\n"

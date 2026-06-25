@@ -78,8 +78,7 @@ echo -e "\tpie_height=$pie_height"
 echo -e "=========================================================================="
 
 
-# --- New data prediction ---
-# -- input mat and annot files processing --
+# ------ input 2d files processing ------
 echo -e "--------------------- source script: pred_dat_process_2d.R ---------------------\n" >>"${OUT_DIR}"/LOG/processing_R_log_$CURRENT_DAY.log
 r_var=`Rscript ./R_files/pred_dat_process_2d.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$SAMPLE_ID" \
@@ -96,8 +95,6 @@ elif [ "$nsamples_to_pred" == "unequal_length" ]; then
 	exit 1
 fi
 nsamples_to_pred=`echo "${r_var[@]}" | sed -n "1p"`
-
-
 
 # -- display --
 echo -e "\n"
@@ -126,7 +123,7 @@ if ! [ -f "$dat_2d_file" ]; then
 fi
 
 
-# --- Prediction ---
+# ------ Inferencing ------
 echo -e "\n"
 echo -e "SVM prediction"
 echo -e "=========================================================================="
@@ -159,7 +156,8 @@ echo -e "\tData with feature subset and saved to file: data_subset.csv"
 echo -e "\tPie charts depicting resutls saved to the ${COLOUR_GREEN_L}PREDICTION${NO_COLOUR} folder in the output directory."
 echo -e "=========================================================================="
 
-# end time and display
+
+# ------ end time and display ------
 end_t=`date +%s`
 tot=`hms $((end_t-start_t))`
 echo -e "\n"

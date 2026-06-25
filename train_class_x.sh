@@ -56,7 +56,7 @@ elif [ "$group_summary" == "contrast_none_existent" ]; then
 fi
 dat_dim=`echo "${r_var[@]}" | sed -n "2p"`  # pipe to sed to print the first line (i.e. 1p)
 
-# -- display --
+# -- check files and display --
 echo -e "\n"
 echo -e "Input files"
 echo -e "=========================================================================="
@@ -66,22 +66,12 @@ echo -e "$dat_dim"
 echo -e "\nSample metadata"
 echo -e "$group_summary\n"
 echo -e "\nData processed and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
-echo -e "=========================================================================="
-
-# -- set up variables for output 2d data file
 dat_2d_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_2D.csv"
-# -- file check before next step --
-if ! [ -f "$dat_2d_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-fi
+check_file "$dat_2d_file" "Processed 2D data file not found. Program terminated."
+echo -e "\nData processing config saved to file: ${MAT_FILENAME_WO_EXT}_data_processing_config.RData"
+dat_config_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_data_processing_config.RData"
+check_file "$dat_config_file" "Data processing config file not found. Program terminated."
+echo -e "=========================================================================="
 
 
 # ------ inspection and univariant analysis ------
@@ -134,17 +124,18 @@ else
 	dat_ml_file="${OUT_DIR}/OUTPUT/${MAT_FILENAME_WO_EXT}_w_prior.csv"
 fi
 # -- file check before next step --
-if ! [ -f "$dat_ml_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-fi
+check_file "$dat_ml_file" "Working data file for ML analysis not found. Program terminated."
+# if ! [ -f "$dat_ml_file" ]; then
+# 	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
+# 	echo -e "${COLOUR_RED}\nERROR: Unsupervised analysis failed. Program terminated.${NO_COLOUR}\n" >&2
+# 	# end time and display
+# 	end_t=`date +%s`
+# 	tot=`hms $((end_t-start_t))`
+# 	echo -e "\n"
+# 	echo -e "Total run time: $tot"
+# 	echo -e "\n"
+# 	exit 1  # exit 1: terminating with error
+# fi
 # -- additional display --
 echo -e "Data for machine learning w prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_w_prior.csv"
 echo -e "Data for machine learning wo prior knowledge incorporation: ${MAT_FILENAME_WO_EXT}_2D.csv"
@@ -250,8 +241,9 @@ else
 	fi
 fi
 echo -e "Done!"
-# -- file check before next step --
-check_model_file "$svm_model_file" "Output SVM model file cannot be found. Program terminated."
+# -- file check and merge with data processing file --
+check_file "$svm_model_file" "Output SVM model file cannot be found. Program terminated."
+merge_rdata "$dat_config_file" "$svm_model_file" 
 echo -e "SVM analysis results saved to file: ${MAT_FILENAME_WO_EXT}_svm_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
@@ -320,7 +312,7 @@ else
 fi
 echo -e "Done!"
 # -- file check before next step --
-check_model_file "$pls_model_file" "Final PLS-DA model file not found. Program terminated."
+check_file "$pls_model_file" "Final PLS-DA model file not found. Program terminated."
 echo -e "Additional PLS-DA analysis results saved to file: ${MAT_FILENAME_WO_EXT}_plsda_results.txt\n\n"
 echo -e "$rscript_display" # print the screen display from the R script
 echo -e "=========================================================================="
