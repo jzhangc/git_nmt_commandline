@@ -28,11 +28,12 @@ Please cite the following if you are to use this application:
 
 
     - 0.5.x-260624
-        - Modelling module updates
-          - Prediction module updates
-            - Prediction modules now read the data processing config information from the SVM model file for data processing and inferencing
-            - Prediction modules config files revamped
-            - Prediction module code base complexity substantially reduced
+        - data processing module updates
+          - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
+        - Prediction module updates
+          - Prediction modules now read the data processing config information from the SVM model file for data processing and inferencing
+          - Prediction modules config files revamped
+          - Prediction module code base complexity substantially reduced
             
 
     - 0.5.x-260618-260623
