@@ -145,6 +145,8 @@ if (input_n_total_features == 1) {
     },
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
+      # below: has to add \n so cat does not output partial end of line sign: %
+      error_flag <<- "fs_failure\n" # use <<- to assign global vars
     }
   )
   # extract selected features
@@ -177,7 +179,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
+        cat(paste0("rRF-FS iteration: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
@@ -212,7 +214,7 @@ svm_m_cv <- rbioClass_svm_cv(
   verbose = TRUE
 )
 
-# ------ permuation test and plotting ------
+# ------ permutation test and plotting ------
 if (SVM_PERM_METHOD != "by_y") {
   cat("WARNING: SVM_PERM_METHOD can only be 'by_y' for regression. Proceed as such.\n")
   SVM_PERM_METHOD <- "by_y"
@@ -233,7 +235,8 @@ rbioUtil_perm_plot(
   plot.xTickLblSize = SVM_PERM_PLOT_X_TICK_LABEL_SIZE,
   plot.yLabelSize = SVM_PERM_PLOT_Y_LABEL_SIZE,
   plot.yTickLblSize = SVM_PERM_PLOT_Y_TICK_LABEL_SIZE,
-  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT
+  plot.Width = SVM_PERM_PLOT_WIDTH, plot.Height = SVM_PERM_PLOT_HEIGHT,
+  verbose = FALSE
 )
 
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -308,7 +311,7 @@ write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = 
 svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
 save(
   list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
-  file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
+  file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svr_model.Rdata")
 )
 
 ## cat the vairables to export to shell scipt

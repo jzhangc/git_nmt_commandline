@@ -1,0 +1,25 @@
+# File name: help_var_2d
+# Description: help var
+
+# --- help var ---
+HELP="\n
+Format: $APP_NAME <INPUTS> [OPTIONS]\n
+Current version: $VERSION\n
+\n
+-h, --help: This help information.\n
+--version: Display current version number.\n
+\n
+<INPUTS>: Mandatory\n
+-i <file>: Input 2D .csv file.\n
+-s <string>: Sample ID variable name.\n
+-g <string>: Group ID variable name.\n
+-c <string>: Contrasts. All in one pair of quotations and separated by comma if multiple contrasts, e.g. \"b-a, c-a, b-c\". \n
+\n
+[OPTIONS]: Optional\n
+-k: Incorporate univariate prior knowledge to SVM analysis. NOTE: -k and -u are mutually exclusive. \n
+-u: Use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done. \n
+-x: Cross-validaion only, i.e. train-test split only happens during cross-validation. \n
+-l: No feature selection or "nofs" mode.\n
+-m <CONFIG>: Optoinal configuration file. NOTE: If no config file is supplied, the default settings are used. \n
+-o <dir>: Optional output directory. Default is where the program is. \n
+-p <int>: parallel computing, with core numbers.\n"

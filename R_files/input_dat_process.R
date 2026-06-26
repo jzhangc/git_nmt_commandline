@@ -14,27 +14,40 @@ require(R.matlab) # to read .mat files
 # ------ sys variables ------
 # --- file name variables ---
 MAT_FILE <- args[6]
-MAT_FILE_NO_EXT <- args[7]
 ANNOT_FILE <- args[8]
 
 # --- directory variables ---
 RES_OUT_DIR <- args[11]
 
-# --- mata data input variables ---
-SAMPLEID_VAR <- args[9]
-GROUP_VAR <- args[10]
-MINMAX_NORM <- args[12]
-ZSCORE_STAND <- args[13]
-CONTRAST <- args[14]
+# # --- mata data input variables ---
+# SAMPLEID_VAR <- args[9]
+# GROUP_VAR <- args[10]
+# MINMAX_NORM <- eval(parse(text = args[12]))
+# ZSCORE_STAND <- eval(parse(text = args[13]))
+# CONTRAST <- args[14]
 
-# ------ load mat file ------
+# ------ config list ------
+DAT_PROCESS_CONFIG <- list(
+  MAT_FILE_NO_EXT = args[7],
+  SAMPLEID_VAR = args[9],
+  GROUP_VAR = args[10],
+  MINMAX_NORM = eval(parse(text = args[12])),
+  ZSCORE_STAND = eval(parse(text = args[13])),
+  CONTRAST = args[14]
+)
+
+# ------ set the output directory as the working directory ------
+setwd(RES_OUT_DIR) # the folder that all the results will be exports to
+
+# ------ load files ------
+# --- load mat file ---
 raw <- readMat(MAT_FILE)
 raw <- raw[[1]]
 raw_dim <- dim(raw)
 
-# ------ load annotation file (meta data) ------
+# --- load annotation file (meta data) ---
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(annot))) {
+if (!all(c(DAT_PROCESS_CONFIG$SAMPLEID_VAR, DAT_PROCESS_CONFIG$GROUP_VAR) %in% names(annot))) {
   cat("none_existent")
   quit()
 }
@@ -42,26 +55,27 @@ if (nrow(annot) != raw_dim[3]) {
   cat("unequal_length")
   quit()
 }
-if (any(is.na(unique(annot[, GROUP_VAR])))) {
+if (any(is.na(unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR])))) {
   cat("na_values")
   quit()
 }
-if (length(unique(annot[, GROUP_VAR])) == 1) {
+if (length(unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR])) == 1) {
   cat("single_value")
   quit()
 }
-sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
-sampleid <- annot[, SAMPLEID_VAR]
+sample_group <- factor(annot[, DAT_PROCESS_CONFIG$GROUP_VAR], levels = unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR]))
+sample_group_names <- unique(as.character(sample_group))
+sampleid <- annot[, DAT_PROCESS_CONFIG$SAMPLEID_VAR]
 
-contra_string <- unlist(strsplit(CONTRAST, split = ","))
+# --- load and process contrast ---
+contra_string <- unlist(strsplit(DAT_PROCESS_CONFIG$CONTRAST, split = ","))
 contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
 pasted_contrast <- paste0(contra_string, collapse = "-")
-contrast_group <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
-if (!all(contrast_group  %in% as.character(unique(annot[, GROUP_VAR])))) {
+contrast_group_names <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
+if (!all(contrast_group_names  %in% as.character(unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR])))) {
   cat("contrast_none_existent")
   quit()
 }
-
 
 # ------ process the mat file with the mata data ------
 raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
@@ -77,24 +91,35 @@ raw_sample <- foreach(i = 1:raw_dim[3], .combine = "rbind") %do% {
 # group <- foreach(i = 1:length(levels(sample_group)), .combine = "c") %do% rep(levels(sample_group)[i], times = summary(sample_group)[i])
 raw_sample_dfm <- data.frame(sampleid = sampleid, y = sample_group, raw_sample, row.names = NULL)
 colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
-# names(raw_sample_dfm)[names(raw_sample_dfm) %in% "group"] <- "y"
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 
 # -- data transformation --
-if (MINMAX_NORM) {
+if (DAT_PROCESS_CONFIG$MINMAX_NORM) {
   feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
 }
-if (ZSCORE_STAND) {
+if (DAT_PROCESS_CONFIG$ZSCORE_STAND) {
   feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 }
 
-# -- data output --
+# -------- data output --------
+# --- output data ---
 raw_sample_dfm_output <- cbind(id_dat, feature_dat)
+
+# --- output data sorting ---
+rem_group_names <- sample_group_names[!sample_group_names %in% contrast_group_names]
+if (length(rem_group_names) > 0)  {
+  order_group_names <- c(contrast_group_names, rem_group_names)
+} else {
+  order_group_names <- contrast_group_names
+}
+new_group_order <- order(factor(sample_group, levels = order_group_names, ordered = TRUE))
+raw_sample_dfm_output <- raw_sample_dfm_output[new_group_order, ]  # sorting
 
 # ------ export and clean up the mess --------
 ## export to results files if needed
-write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
+write.csv(file = paste0(DAT_PROCESS_CONFIG$MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
+save(list = "DAT_PROCESS_CONFIG", file = paste0(DAT_PROCESS_CONFIG$MAT_FILE_NO_EXT, "_data_processing_config.RData"))
 
 # free memory
 rm(raw_sample_dfm, raw, annot)

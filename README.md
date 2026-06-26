@@ -1,6 +1,8 @@
 # Neuro-ML-tools (NMT)
 
-Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection data
+Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for neuroimaging connectivity and vectorized 2D tabular data
+
+![NMT Workflow](docs/project_workflow.svg)
 
 Please cite the following if you are to use this application:
 
@@ -10,39 +12,57 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.5.x
-      (ICEBOX)
-          - General updates
-          - Reduced intermediate CSV file complexity
-            - Overall optimization
-            - A memory check module to ensure the stability
-            - Node file length check added for univariate.R and reg_univariate.R
-            - A NMT version without feature selection
-            - Compatibility of missing data
-            - Add VI for the final model(s): additional models see below
-            - Set up installation scripts
-            - Modelling speed optimization
-              - CV-rRF-FS-SVM: SVM element optimizaiton for speed
-          - New python script based final modelling modules
-            - Classification/regression final models
-              - PLS
-              - XGB
-              - RF
-              - LR
-              - kNN
-              - DNN
-            - Final model calibration functionality
-          - Modelling modules updates
-            - Handle "reaching max number of iterations" error
-            - CV-rRF-FS-XGB: Swtich CV SVM assessment to XGB, optimal for bigger datasets
-          - Prediction modules updates
-            - Proper data handling for input data with an outcome variable
-          - Bug fixes
+    - 0.5.1 (June 25, 2026)
+        - General updates
+          - Code base complexity substantially reduced
+            - Code base complexity substantially reduced for regression modules
+            - Code base complexity substantially reduced for classification modules
+            - Common utility processes unified into expanded utility scripts for classification modules
+            - helper functions added for flag checks
+            - helper function check_model_file added to the common utility script for checking the existence of model files
+            - helper function merge_rdata added to the common utility script for merging two RData files into one RData file
+              - this is used to merge the data processing config information into the SVM model file for data processing and inferencing
+            - various logic improvements
+          - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
+          - Typo fixes for comments and display texts
+          - Description typo fixed to Description in 24 shell scripts
+          - Trailing whitespace removed from all shell scripts
+          - Small fixes
 
-      (ADDED)
-          - Modelling modules updates
-            - Classification modules updated with interporlated ROC curves 
-            - SHAP value implementation
+        - Data processing modules updates
+          - Data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
+          - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
+          - A bug fixed where the minmax and zscore transformation not properly parsed
+          - A bug fixed where non-variance column remove would result in data column shift
+          - Warning messages added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
+            - Explanation: running min-max and zscore transformation at the same time is the same as running whichever comes second only
+          - Default value for minmax_norm set to TRUE
+          - Default value for zscore_standardization set to FALSE
+
+        - Modelling module updates
+          - SVM model file now includes the data processing config information
+          - cv-only modules combined into their respective modules with "-x" flag
+          - "nofs" modules combined into their respective regular modules with "-l" flag
+          - Default value for svm_cv_centre_scale from the config file set to FALSE
+            - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
+          - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
+          - Messaging updated for clarity for train_class.sh and connectivity_ml.sh
+          - A bug fixed for connectivity_ml.sh where the generated model files cannot be checked
+          - Default htmap_key_xlab set to "Processed values" for 2D modules
+          - A bug fixed where random state no longer works
+
+        - Prediction module updates
+          - Prediction module flag "-l" (input model) changed to "-b" to avoid confusion with the "-l" flag for the classification and regression modules
+          - Prediction modules config files revamped
+          - Prediction module code base complexity substantially reduced
+          - Prediction modules reads the data processing config information from the SVM model file for new data processing and inferencing
+
+        - Classification module updates
+            - cv-only modules combined into their respective modules with "-x" flag
+            - "nofs" modules combined into their respective regular modules with "-l" flag
+
+        - Other
+          - Workflow diagram added: visualizes pipeline structure
 
 
     - 0.5.0 (Nov 16, 2025)
@@ -66,17 +86,20 @@ Please cite the following if you are to use this application:
         - Update to SVM modules
           - fscount plot name fixed
 
-        - 0.4.2 (April 4, 2025)
-            - General updates
-              - Application termination behaviour updated with early stop and messaging
-              - Application messaging updated          
-              
-            - General updates
-              - More detailed error messages added
-              - Error handling updated with more explicit error messaging
 
-            - Modelling modules updates
-              - CV-rRF-FS-SVM step updated with fail error handling properties
+    - 0.4.2 (April 4, 2025)
+        - General updates
+          - Application termination behaviour updated with early stop and messaging
+          - Application messaging updated
+
+
+    - 0.4.1 (March 2, 2025)
+        - General updates
+          - More detailed error messages added
+          - Error handling updated with more explicit error messaging
+
+        - Modelling modules updates
+          - CV-rRF-FS-SVM step updated with fail error handling properties
 
 
     - 0.4.0 (December 26, 2024)
@@ -85,7 +108,7 @@ Please cite the following if you are to use this application:
         - General updates
           - Memory management improvement started to be implemented, more to come
           - Data NA check added for the 2D modules
-          - Modellng speed improvement for all SVM modules
+          - Modeling speed improvement for all SVM modules
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
           - To show version number, the shorterned "-v" flag added for all modules
@@ -102,9 +125,7 @@ Please cite the following if you are to use this application:
         - Updates to the classification module
           - Added single input feature compatibility 
           - Added more error handling in cv_ml_svm.R and ml_svm.R
-          - Added interporlated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
-          - Updated the file name suffix to "_plsda_roc_auc_test.txt" for the plsda analysis output file
-          - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
+          - Added interpolated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
 
         - Updates to the regression module
           - Added single input feature compatibility 
@@ -122,7 +143,7 @@ Please cite the following if you are to use this application:
           - Better code organization with application version, citation and common utilities files
 
 
-    - 0.3.2 (July.1.2021)
+    - 0.3.2 (July 1, 2021)
         - Updates to modelling modules
           - AUC scores now included in .RData model files
 
@@ -159,6 +180,7 @@ Please cite the following if you are to use this application:
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
           - Error handling substantially updated            
 
+
     - 0.2.1 (June.10.2020)        
         - General updates
           - Heatmap row now displays connection names for all non-2d modules
@@ -180,7 +202,7 @@ Please cite the following if you are to use this application:
           - The existing univariate analysis now mandatory for all modules
           - Univariate prior knowledge flag -k added to all modules
           - Random state added to all modules
-          - CV-SVM-rRF-FS heatmap lables fixed for all modules
+          - CV-SVM-rRF-FS heatmap labels fixed for all modules
           - Error handling added to rRF-FS plotting
           - Citation added
         
@@ -213,17 +235,17 @@ Please cite the following if you are to use this application:
           - Small formatting fix for univariate module
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
           - A bug fixed for the display messaging order
-          - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
+          - A bug fixed for univariate.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to connectivity_ml_2d.sh
-          - Unsorted annotation file support
+        - Updates to connectivity_ml_2d.sh          
+        - Unsorted annotation file support
           - Resampling is now stratified
           - Small formatting fix for univariate module
           - Error handling added for supervised hierarchical clustering analysis when only one significant result found
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
-          - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
+          - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to the regression module
+        - Updates to the regression module          
           - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
           - Accordingly, new R file reg_plsr_val_svm.R added
 

@@ -1,0 +1,318 @@
+# File name: utils
+# Description: utility functions and variables
+#
+# get absolute file path
+get_abs_filename() {
+  # $1 : relative filename
+  filename=$1
+  parentdir=$(dirname "${filename}")
+
+  if [ -d "${filename}" ]; then
+    echo "$(cd "${filename}" && pwd)"
+  elif [ -d "${parentdir}" ]; then
+    echo "$(cd "${parentdir}" && pwd)/$(basename "${filename}")"
+  fi
+}
+
+# expand path if containing tilde "~"
+expand_path() {
+  local path
+  local -a pathElements resultPathElements
+  IFS=':' read -r -a pathElements <<<"$1"
+  : "${pathElements[@]}"
+  for path in "${pathElements[@]}"; do
+    : "$path"
+    case $path in
+      "~+"/*)
+        path=$PWD/${path#"~+/"}
+        ;;
+      "~-"/*)
+        path=$OLDPWD/${path#"~-/"}
+        ;;
+      "~"/*)
+        path=$HOME/${path#"~/"}
+        ;;
+      "~"*)
+        username=${path%%/*}
+        username=${username#"~"}
+        IFS=: read -r _ _ _ _ _ homedir _ < <(getent passwd "$username")
+        if [[ $path = */* ]]; then
+          path=${homedir}/${path#*/}
+        else
+          path=$homedir
+        fi
+        ;;
+    esac
+    resultPathElements+=( "$path" )
+  done
+  local result
+  printf -v result '%s:' "${resultPathElements[@]}"
+  printf '%s\n' "${result%:}"
+}
+
+path_resolve(){
+  if [[ $1 == *"~"* ]]; then
+    echo $(expand_path $1)
+  else
+    echo $(get_abs_filename $1)
+  fi
+} 
+
+# function to check dependencies
+check_dependency(){
+  echo -en "Rscript..."
+  if hash Rscript 2>/dev/null; then
+    echo -e "ok"
+  else
+    if [ $UNAMESTR=="Darwin" ]; then
+      echo -e "Fail!"
+      echo -e "\t-------------------------------------"
+      echo -en "\t\tChecking Homebrew..."
+        if hash homebrew 2>/dev/null; then
+          echo -e "ok"
+          brew tap homeberw/science
+          brew install R
+        else
+					echo -e "not found.\n"
+          echo -e "${COLOUR_RED}ERROR: Homebrew isn't installed. Install it first or go to       www.r-project.org to install R directly.${NO_COLOUR}\n" >&2
+					exit 1
+        fi
+    elif [ $UNAMESTR=="Linux" ]; then
+      echo -e "${COLOUR_RED}ERROR: R isn't installed. Install it first to use Rscript.${NO_COLOUR}\n" >&2
+			exit 1
+    fi
+  fi
+}
+
+# function to check the program program files
+required_file_check(){
+	# usage:
+	# ARR=(1 2 3)
+	# file_check "${ARR[@]}"
+  arr=("$@") # this is how you call the input arry from the function argument
+  for i in ${arr[@]}; do
+    echo -en "\t$i..."
+    if [ -f ./R_files/$i ]; then
+      echo -e "ok"
+    else
+      echo -e "not found"
+      echo -e "${COLOUR_RED}ERROR: required file $i not found. Program terminated.${NO_COLOUR}\n" >&2
+      exit 1
+    fi
+  done
+}
+
+# timing function
+# from: https://www.shellscript.sh/tips/hms/
+hms(){
+  # Convert Seconds to Hours, Minutes, Seconds
+  # Optional second argument of "long" makes it display
+  # the longer format, otherwise short format.
+  local SECONDS H M S MM H_TAG M_TAG S_TAG
+  SECONDS=${1:-0}
+  let S=${SECONDS}%60
+  let MM=${SECONDS}/60 # Total number of minutes
+  let M=${MM}%60
+  let H=${MM}/60
+
+  if [ "$2" == "long" ]; then
+    # Display "1 hour, 2 minutes and 3 seconds" format
+    # Using the x_TAG variables makes this easier to translate; simply appending
+    # "s" to the word is not easy to translate into other languages.
+    [ "$H" -eq "1" ] && H_TAG="hour" || H_TAG="hours"
+    [ "$M" -eq "1" ] && M_TAG="minute" || M_TAG="minutes"
+    [ "$S" -eq "1" ] && S_TAG="second" || S_TAG="seconds"
+    [ "$H" -gt "0" ] && printf "%d %s " $H "${H_TAG},"
+    [ "$SECONDS" -ge "60" ] && printf "%d %s " $M "${M_TAG} and"
+    printf "%d %s\n" $S "${S_TAG}"
+  else
+    # Display "01h02m03s" format
+    [ "$H" -gt "0" ] && printf "%02d%s" $H "h"
+    [ "$M" -gt "0" ] && printf "%02d%s" $M "m"
+    printf "%02d%s\n" $S "s"
+  fi
+}
+
+# funciton to check system integrity
+integrity_check(){
+  # --- Rscript check ---
+  echo -e "\n"
+  echo -e "R environment check"
+  echo -e "=========================================================================="
+  # -- R script chack --
+  check_dependency
+  echo -e "=========================================================================="
+
+  # --- system files check ---
+  echo -e "\n"
+  echo -e "System file check"
+  echo -e "=========================================================================="
+  # -- R script chack --
+  echo -e "Checking required R script file(s)"
+  required_file_check "${R_SCRIPT_FILES[@]}"
+  echo -e "=========================================================================="
+
+  # --- check R dependecies ---
+  echo -e "\n"
+  echo -e "Checking R pacakge dependecies"
+  echo -e "=========================================================================="
+  Rscript ./R_files/r_dependency_check.R 2>>"${OUT_DIR}"/LOG/R_check_R_$CURRENT_DAY.log | tee -a "${OUT_DIR}"/LOG/R_check_shell_$CURRENT_DAY.log
+  R_EXIT_STATUS=${PIPESTATUS[0]}  # PIPESTATUS[0] capture the exit status for the Rscript part of the command above
+  if [ $R_EXIT_STATUS -eq 1 ]; then  # test if the r_dependency_check.R failed with exit status 1 (stderr)
+    echo -e "${COLOUR_RED}ERROR: R package dependency installation failure. Program terminated."
+    echo -e "Please check the log files. ${NO_COLOUR}\n" >&2
+    exit 1
+  fi
+  echo -e "=========================================================================="
+}
+
+# function to set up output dirs
+setup_dirs(){
+  # --- construct output folder structure ---
+  echo -e "\n"
+  echo -en "Copnstructing output file folder structure..."
+  [ -d "${OUT_DIR}"/LOG ] || mkdir "${OUT_DIR}"/LOG
+  [ -d "${OUT_DIR}"/OUTPUT ] || mkdir "${OUT_DIR}"/OUTPUT
+  # [ -d "${OUT_DIR}"/OUTPUT/RESULTS_FILES ] || mkdir "${OUT_DIR}"/OUTPUT/RESULTS_FILES
+  # [ -d "${OUT_DIR}"/OUTPUT/FIGURES ] || mkdir "${OUT_DIR}"/OUTPUT/FIGURES
+  echo -e "Done!"
+  echo -e "=========================================================================="
+  echo -e "Folders created and their usage:"
+  echo -e "\tLOG: Applcation log files"
+  echo -e "\tOUTPUT: Output files"
+  echo -e "=========================================================================="
+}
+
+# function to check mandatory flags
+# usage: mand_flag_check "IFLAG:-i" "SFLAG:-s" "GFLAG:-g"
+# each argument is a "VARNAME:flag_letter" pair; the variable holds 1 (unset) or 0 (set)
+mand_flag_check(){
+  local missing=()
+  for pair in "$@"; do
+    local varname="${pair%%:*}"
+    local flag="${pair##*:}"
+    if [[ "${!varname}" -eq 1 ]]; then
+      missing+=("$flag")
+    fi
+  done
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    local missing_str
+    missing_str=$(IFS=', '; echo "${missing[*]}")
+    echo -e "${COLOUR_RED}ERROR: ${missing_str} flag(s) are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
+    exit 1
+  fi
+}
+
+# function to check optional flags and print a summary of active ones
+# usage: opt_flag_check [--mutex "VARNAME1:VARNAME2"] "VARNAME:-flag:description" ...
+# --mutex pair errors if both variables are 0 (both set)
+# each non-mutex argument is a "VARNAME:-flag:description" triple
+opt_flag_check(){
+  local mutex_a="" mutex_b=""
+  local -a triples=()
+
+  while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--mutex" ]]; then
+      mutex_a="${2%%:*}"
+      mutex_b="${2##*:}"
+      shift 2
+    else
+      triples+=("$1")
+      shift
+    fi
+  done
+
+  if [[ -n "$mutex_a" && -n "$mutex_b" ]]; then
+    if [[ "${!mutex_a}" -eq 0 && "${!mutex_b}" -eq 0 ]]; then
+      local fa="${mutex_a//FLAG/-}" fb="${mutex_b//FLAG/-}"
+      echo -e "${COLOUR_RED}ERROR: Set either ${fa,,} or ${fb,,}, but not both.${NO_COLOUR}\n" >&2
+      exit 1
+    fi
+  fi
+
+  local header_printed=0
+  for triple in "${triples[@]}"; do
+    local varname="${triple%%:*}"
+    local rest="${triple#*:}"
+    local flag="${rest%%:*}"
+    local desc="${rest#*:}"
+    if [[ "${!varname}" -eq 0 ]]; then
+      if [[ $header_printed -eq 0 ]]; then
+        echo -e "\nYou are running with following options\n"
+        header_printed=1
+      fi
+      echo -e "${flag}: ${desc}\n"
+    fi
+  done
+}
+
+# function to check if a file exists
+# usage: check_file "$file" [custom_error_message]
+check_file(){
+  local file="$1"
+  local file_name=$(basename "$file")
+  local error_msg="${2:-$file_name not found. Program terminated.}"
+  echo -en "Checking ${COLOUR_GREEN_L}${file_name}${NO_COLOUR} file..."
+  if ! [ -f "$file" ]; then
+      # >&2 means assign file descriptor 2 (stderr). >&1 means assign to file descriptor 1 (stdout)
+    echo -e "${COLOUR_RED}\nERROR: ${error_msg}.${NO_COLOUR}\n" >&2
+     # end time and display
+    end_t=`date +%s`
+    tot=`hms $((end_t-start_t))`
+    echo -e "\n"
+    echo -e "Total run time: $tot"
+    echo -e "\n"
+    exit 1    # exit 1: terminating with error
+  else
+    echo -e "Done!\n"
+  fi
+}
+
+# function to merge one RData file into another without overwriting existing objects
+# usage: merge_rdata "$source_rdata" "$target_rdata" [output_rdata]
+#    $source_rdata : RData file whose objects will be added
+#    $target_rdata : RData file that receives the objects (base)
+#    $output_rdata : optional output file; defaults to $target_rdata (overwritten)
+merge_rdata(){
+  local source_file="$1"
+  local target_file="$2"
+  local output_file="${3:-$target_file}"
+  local output_file_name=$(basename "$output_file")
+
+  echo -en "Merging RData files..."
+  if ! [ -f "$source_file" ]; then
+    echo -e "${COLOUR_RED}\nERROR: Source RData file not found: ${source_file}.${NO_COLOUR}\n" >&2
+    exit 1
+  fi
+  if ! [ -f "$target_file" ]; then
+    echo -e "${COLOUR_RED}\nERROR: Target RData file not found: ${target_file}.${NO_COLOUR}\n" >&2
+    exit 1
+  fi
+
+  Rscript -e '
+    args <- commandArgs(trailingOnly = TRUE)
+    source_file <- args[1]
+    target_file <- args[2]
+    output_file <- if (length(args) > 2) args[3] else target_file
+
+    # Load target into its own environment
+    env_target <- new.env()
+    load(target_file, envir = env_target)
+
+    # Load source into its own environment
+    env_source <- new.env()
+    load(source_file, envir = env_source)
+
+    # Add objects from source to target, skipping duplicates
+    for (nm in ls(env_source)) {
+      if (!exists(nm, envir = env_target)) {
+        assign(nm, get(nm, envir = env_source), envir = env_target)
+      }
+    }
+
+    # Save merged result
+    save(list = ls(env_target), file = output_file, envir = env_target)
+  ' "$source_file" "$target_file" "$output_file" 2>>"${OUT_DIR}"/LOG/R_merge_log_$CURRENT_DAY.log
+
+  echo -e "Done!\n Merged RData saved: ${COLOUR_GREEN_L}${output_file_name}${NO_COLOUR}"
+}

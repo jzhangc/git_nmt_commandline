@@ -1,0 +1,19 @@
+# File name: connectivity_ml_config
+# Description: Configeration file for connectivity_predict.sh, containing variable and values for the application
+# Usage: Adjust the values for the variables
+#
+# ------ Settings for data preprocessing ------
+
+# ------ Settings for SVM machine learning analysis ------
+# -- General settings --
+cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
+
+# -- Data processing --
+
+# -- Prediction with SVM model --
+newdata_centre_scale=TRUE
+probability_method="softmax"  # options are "logistic", "Bayes", and "softmax"
+
+# -- Figure settings --
+pie_width=170
+pie_height=150
