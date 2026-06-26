@@ -24,19 +24,21 @@ SAMPLEID_VAR <- args[4]
 # FIG_OUT_DIR
 RES_OUT_DIR <- args[5]
 
+# --- other config variables ---
+MODEL_FILE <- args[6]
+load(MODEL_FILE)
+MINMAX_NORM <- DAT_PROCESS_CONFIG$MINMAX_NORM
+ZSCORE_STAND <- DAT_PROCESS_CONFIG$ZSCORE_STAND
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load mat file ------
-# setwd("/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/")
-# MAT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/predict_3d.mat"
 raw <- readMat(MAT_FILE)
 raw <- raw[[1]]
 raw_dim <- dim(raw)
 
 # ------ load annotation file (meta data) ------
-# ANNOT_FILE <- "/Users/jingzhang/Documents/git_repo/git_meg_ml_app/data/sample_annotation.csv"
-# SAMPLEID_VAR <- "sampleid"
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 
 if (!all(SAMPLEID_VAR %in% names(annot))) {
@@ -66,6 +68,12 @@ if (is.null(nrow(raw_sample))) { # one entry only
   raw_sample_dfm <- raw_sample
 }
 raw_sample_dfm <- data.frame(sampleid = sampleid, raw_sample_dfm, row.names = NULL, check.names = FALSE)
+if (MINMAX_NORM) {
+  raw_sample_dfm[, -c(1:2)] <- apply(raw_sample_dfm[, -c(1:2)], 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
+}
+if (ZSCORE_STAND) {
+  raw_sample_dfm[, -c(1:2)] <- center_scale(raw_sample_dfm[, -c(1:2)], scale = FALSE)$centerX
+}
 
 # ------ export and clean up the mess --------
 ## export to results files if needed

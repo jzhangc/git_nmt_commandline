@@ -16,6 +16,9 @@ Please cite the following if you are to use this application:
         - Data processing modules updates
           - Data transformation step separated for univariate analysis and ml analysis to prevent info leakage
 
+        - Prediction module updates
+          - Prediction module for regression model added: predict_reg.sh
+
 
     - 0.5.x-260624 - 0.5.x-260625
         - General updates

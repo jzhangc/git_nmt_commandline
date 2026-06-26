@@ -15,8 +15,8 @@ if [ $CONF_CHECK -eq 0 ]; then  # variables read from the configeration file
   ## below: to check the completeness of the file: the variables will only load if all the variables are present
   # -z tests if the variable has zero length. returns True if zero.
   # v1, v2, etc are placeholders for now
-  if [[ -z $newdata_centre_scale || -z $probability_method \
-	|| -z $cpu_cluster \
+  if [[ -z $cpu_cluster \ 
+  || -z $newdata_centre_scale || -z $probability_method \
 	|| -z $pie_width || -z $pie_height ]]; then
     echo -e "${COLOUR_YELLOW}WARNING: Config file detected. But one or more vairables missing.${NO_COLOUR}"
     CONF_CHECK=1
@@ -29,7 +29,7 @@ if [ $CONF_CHECK -eq 1 ]; then
   echo -e "Config file not found or loaded. Proceed with default settings."
   # set the values back to default
 	cpu_cluster="PSOCK"
-	newdata_centre_scale=TRUE
+	newdata_centre_scale=FALSE
 	probability_method="softmax"
 	pie_width=170
 	pie_height=150

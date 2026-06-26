@@ -86,7 +86,7 @@ if (PSETTING) {
     rbioClass_svm_predict(object = svm_m,
                           newdata = x[i,],
                           export.name = "pred_x", sampleID.vector = rownames(x[i, ]),
-                          prob.method = "softmax", verbose = FALSE)
+                          prob.method = PROBABILITY_METHOD, verbose = FALSE)
     rbioUtil_classplot(pred.obj = pred_x_svm_predict,
                       export.name = rownames(x[i, ]),                      
                       plot.Width = PIE_WIDTH, plot.Height = PIE_HEIGHT,

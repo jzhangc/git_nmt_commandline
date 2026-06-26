@@ -32,6 +32,7 @@ echo -e "--------------------- source script: pred_dat_process.R ---------------
 r_var=`Rscript ./R_files/pred_dat_process.R "$RAW_FILE" "$MAT_FILENAME_WO_EXT" \
 "$ANNOT_FILE" "$SAMPLE_ID" \
 "${OUT_DIR}/PREDICTION" \
+"MODEL_FILE" \
 --save 2>>"${OUT_DIR}"/PREDICTION_LOG/processing_R_log_$CURRENT_DAY.log \
 | tee -a "${OUT_DIR}"/PREDICTION_LOG/processing_shell_log_$CURRENT_DAY.log`
 echo -e "\n" >> "${OUT_DIR}"/PREDICTION_LOG/processing_R_log_$CURRENT_DAY.log
@@ -48,32 +49,19 @@ fi
 mat_dim=`echo "${r_var[@]}" | sed -n "1p"`  # pipe to sed to print the second line (i.e. 1p)
 nsamples_to_pred=`echo "${r_var[@]}" | sed -n "2p"`
 
-# -- display --
+# -- check file and display --
 echo -e "\n"
 echo -e "Input file"
 echo -e "=========================================================================="
 echo -e "Input data file"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$MAT_FILENAME${NO_COLOUR}"
 echo -e "\n\tData transformed into 2D format and saved to file: ${MAT_FILENAME_WO_EXT}_2D.csv"
+dat_2d_file="${OUT_DIR}/PREDICTION/${MAT_FILENAME_WO_EXT}_2D.csv"
+check_file "$dat_2d_file" "2D data file"
 echo -e "\nSample annotation"
 echo -e "\tFile name: ${COLOUR_GREEN_L}$ANNOT_FILENAME${NO_COLOUR}"
 echo -e "$nsamples_to_pred"
 echo -e "=========================================================================="
-
-# -- set up variables for output 2d data file
-dat_2d_file="${OUT_DIR}/PREDICTION/${MAT_FILENAME_WO_EXT}_2D.csv"
-# -- file check before next step --
-if ! [ -f "$dat_2d_file" ]; then
-	# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
-	echo -e "${COLOUR_RED}\nERROR: File processing failed. Program terminated.${NO_COLOUR}\n" >&2
-	# end time and display
-	end_t=`date +%s`
-	tot=`hms $((end_t-start_t))`
-	echo -e "\n"
-	echo -e "Total run time: $tot"
-	echo -e "\n"
-	exit 1  # exit 1: terminating with error
-fi
 
 
 # ------ inferencing ------
