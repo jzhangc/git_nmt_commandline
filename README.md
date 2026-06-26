@@ -12,113 +12,57 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - Waterbox
-        - Data processing modules updates
-          - Data transformation step separated for univariate analysis and ml analysis to prevent info leakage
-
-        - Prediction module updates
-          - Prediction module for regression model added: predict_reg.sh
-
-
-    - 0.5.x-260624 - 0.5.x-260625
-        - General updates
-          - merge_rdata function added to the common utility script for merging two RData files into one RData file
-            - this is used to merge the data processing config information into the SVM model file for data processing and inferencing
-          - Code base complexity substantially reduced
-            - helper function check_model_file added to the common utility script for checking the existence of model files
-            - helper function merge_rdata added to the common utility script for merging two RData files into one RData file
-            - various logic improvements
-
-        - Data processing module updates
-          - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
-
-        - Modelling module updates
-          - SVM model file now includes the data processing config information
-          
-        - Prediction module updates
-          - Prediction modules config files revamped
-          - Prediction module code base complexity substantially reduced
-          - Prediction modules reads the data processing config information from the SVM model file for new data processing and inferencing
-            
-
-    - 0.5.x-260618 - 0.5.x-260623
-        - General updates
-          - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
-          - Typo fixes for comments and display texts
-
-        - Modelling module updates
-          - Regression module updates
-            - cv-only modules combined into their respective modules with "-x" flag
-            - nofs modules combined into their respective regular modules with "-l" flag          
-          - Messaging updated for clarity for train_class_x.sh and connectivity_ml_x.sh
-          - A bug fixed for connectivity_ml_x.sh where the generated model files cannot be checked
-
-
-    - 0.5.x-260426 - 0.5.x-260508
-        - General updates
-          - Bug fixes
-            - warning parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
-
-        - Other
-          - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
-            - Interactive version added
-          - Description typo fixed to Description in 24 shell scripts
-          - Trailing whitespace removed from all shell scripts
-
-
-    - 0.5.x-260325
-        - General updates
-          - Code base complexity substantially reduced
-            - helper functions added for flag checks
-        
-          - Bug fixes
-            - warning parameter name typo fixed to warning in 4 R SVM files: ml_svm.R, ml_svm_nofs.R, cv_ml_svm.R, cv_ml_svm_nofs.R
-
-          - Other
-            - Description typo fixed to Description in 24 shell scripts
-            - Trailing whitespace removed from all shell scripts
-
-
-    - 0.5.x-260314 - 0.5.x-260324
-        - General updates
-          - Code base complexity substantially reduced
-        
-        - Classification module updates
-            - cv-only modules combined into their respective modules with "-x" flag
-            - nofs modules combined into their respective regular modules with "-l" flag
-          
-
-    - 0.5.x-251211 - 0.5.x-260313
+    - 0.5.1
         - General updates
           - Code base complexity substantially reduced
             - Code base complexity substantially reduced for regression modules
-
-        - Data processing modules updates
-          - A bug fixed where the minmax and zscore transformation not properly parsed            
-
-        - Small fixes    
-
-
-    - 0.5.x-251210
-        - General updates
-          - Code base complexity substantially reduced
             - Code base complexity substantially reduced for classification modules
             - Common utility processes unified into expanded utility scripts for classification modules
-          - Application display updated with more accuracy
-          - Default htmap_key_xlab set to "Processed values" for 2D modules
-          - A bug fixed where random state no longer works
-        
+            - helper functions added for flag checks
+            - helper function check_model_file added to the common utility script for checking the existence of model files
+            - helper function merge_rdata added to the common utility script for merging two RData files into one RData file
+              - this is used to merge the data processing config information into the SVM model file for data processing and inferencing
+            - various logic improvements
+          - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
+          - Typo fixes for comments and display texts
+          - Description typo fixed to Description in 24 shell scripts
+          - Trailing whitespace removed from all shell scripts
+          - Small fixes
+
         - Data processing modules updates
+          - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
           - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
+          - A bug fixed where the minmax and zscore transformation not properly parsed
+          - A bug fixed where non-variance column remove would result in data column shift
           - Warning messages added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
             - Explanation: running min-max and zscore transformation at the same time is the same as running whichever comes second only
           - Default value for minmax_norm set to TRUE
           - Default value for zscore_standardization set to FALSE
 
         - Modelling module updates
+          - SVM model file now includes the data processing config information
+          - cv-only modules combined into their respective modules with "-x" flag
+          - nofs modules combined into their respective regular modules with "-l" flag
           - Default value for svm_cv_centre_scale from the config file set to FALSE
             - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
           - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
+          - Messaging updated for clarity for train_class_x.sh and connectivity_ml_x.sh
+          - A bug fixed for connectivity_ml_x.sh where the generated model files cannot be checked
+          - Default htmap_key_xlab set to "Processed values" for 2D modules
+          - A bug fixed where random state no longer works
+
+        - Prediction module updates
+          - Prediction modules config files revamped
+          - Prediction module code base complexity substantially reduced
+          - Prediction modules reads the data processing config information from the SVM model file for new data processing and inferencing
+
+        - Classification module updates
+            - cv-only modules combined into their respective modules with "-x" flag
+            - nofs modules combined into their respective regular modules with "-l" flag
+
+        - Other
+          - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
+            - Interactive version added
 
 
     - 0.5.0 (Nov 16, 2025)
