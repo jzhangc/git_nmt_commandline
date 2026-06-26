@@ -2,6 +2,8 @@
 
 Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for neuroimaging connectivity and vectorized 2D tabular data
 
+![NMT Workflow](docs/project_workflow.svg)
+
 Please cite the following if you are to use this application:
 
       Zhang J, Wong SM, Richardson DJ, Rakesh J, Dunkley BT. 2020. Predicting PTSD severity using longitudinal magnetoencephalography with a multi-step learning framework. Journal of Neuro Engineering. 17: 066013. doi: 10.1088/1741-2552/abc8d6.

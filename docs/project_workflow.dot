@@ -1,0 +1,53 @@
+digraph NMT_Project_Workflow {
+  rankdir=TB;
+  fontname="Helvetica";
+  node [fontname="Helvetica", style=filled, shape=box, fontsize=12];
+  edge [fontname="Helvetica", fontsize=10];
+
+  // Main project root
+  root [label="NMT Project", shape=folder, fillcolor="#e0e0e0", fontsize=16];
+
+  // Top-level folders
+  bash [label=".sh Scripts\n(Entry Points)", fillcolor="#c8e6c9"];
+  r_files [label="R_files\n(ML Logic)", fillcolor="#bbdefb"];
+  scripts_dir [label="scripts/\n(Init & Validation)", fillcolor="#fff9c4"];
+  src_dir [label="src/\n(Utils & Vars)", fillcolor="#f8bbd0"];
+  config_templates [label="config_file_templates/\n(Config Files)", fillcolor="#e1bee7"];
+  conda_env [label="conda_env_nmt/\n(Conda Env)", fillcolor="#dcedc8"];
+  z_legacy [label="z_legacy/\n(Backed-up)", fillcolor="#ffcddb"];
+  docs [label="docs/", fillcolor="#eceff1"];
+
+  root -> bash;
+  root -> r_files;
+  root -> scripts_dir;
+  root -> src_dir;
+  root -> config_templates;
+  root -> conda_env;
+  root -> z_legacy;
+  root -> docs;
+
+  // z_legacy sub-folders
+  legacy_config [label="config_file_templates/", fillcolor="#ffcdd8", parent=z_legacy];
+  legacy_r_files [label="R_files/", fillcolor="#ffcdd8", parent=z_legacy];
+  legacy_scripts [label="scripts/", fillcolor="#ffcdd8", parent=z_legacy];
+  legacy_src [label="src/", fillcolor="#ffcdd8", parent=z_legacy];
+
+  z_legacy -> legacy_config;
+  z_legacy -> legacy_r_files;
+  z_legacy -> legacy_scripts;
+  z_legacy -> legacy_src;
+
+  // conda_env sub-folders (summarized)
+  conda_scripts [label="bin/\n(Binaries)", fillcolor="#dcedc8", parent=conda_env];
+  conda_lib [label="lib/\n(Libraries)", fillcolor="#dcedc8", parent=conda_env];
+  conda_include [label="include/\n(Headers)", fillcolor="#dcedc8", parent=conda_env];
+  conda_meta [label="conda-meta/\n(Env Manifest)", fillcolor="#dcedc8", parent=conda_env];
+
+  conda_env -> conda_scripts;
+  conda_env -> conda_lib;
+  conda_env -> conda_include;
+  conda_env -> conda_meta;
+
+  // Style edges
+  edge [color="#666666", arrowsize=0.8];
+}
