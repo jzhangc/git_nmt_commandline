@@ -233,6 +233,7 @@ Please cite the following if you are to use this application:
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
           - Error handling substantially updated            
 
+
     - 0.2.1 (June.10.2020)        
         - General updates
           - Heatmap row now displays connection names for all non-2d modules
