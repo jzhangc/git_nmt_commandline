@@ -30,7 +30,7 @@ Please cite the following if you are to use this application:
           - Small fixes
 
         - Data processing modules updates
-          - data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
+          - Data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
           - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
           - A bug fixed where the minmax and zscore transformation not properly parsed
           - A bug fixed where non-variance column remove would result in data column shift
@@ -42,7 +42,7 @@ Please cite the following if you are to use this application:
         - Modelling module updates
           - SVM model file now includes the data processing config information
           - cv-only modules combined into their respective modules with "-x" flag
-          - nofs modules combined into their respective regular modules with "-l" flag
+          - "nofs" modules combined into their respective regular modules with "-l" flag
           - Default value for svm_cv_centre_scale from the config file set to FALSE
             - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
           - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
@@ -52,17 +52,17 @@ Please cite the following if you are to use this application:
           - A bug fixed where random state no longer works
 
         - Prediction module updates
+          - Prediction module flag "-l" (input model) changed to "-b" to avoid confusion with the "-l" flag for the classification and regression modules
           - Prediction modules config files revamped
           - Prediction module code base complexity substantially reduced
           - Prediction modules reads the data processing config information from the SVM model file for new data processing and inferencing
 
         - Classification module updates
             - cv-only modules combined into their respective modules with "-x" flag
-            - nofs modules combined into their respective regular modules with "-l" flag
+            - "nofs" modules combined into their respective regular modules with "-l" flag
 
         - Other
-          - Workflow diagram added: visualizes pipeline structure, flag behavior, and module interconnections
-            - Interactive version added
+          - Workflow diagram added: visualizes pipeline structure
 
 
     - 0.5.0 (Nov 16, 2025)
