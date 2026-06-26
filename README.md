@@ -12,7 +12,7 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
-    - 0.5.1
+    - 0.5.1 (June 25, 2026)
         - General updates
           - Code base complexity substantially reduced
             - Code base complexity substantially reduced for regression modules
