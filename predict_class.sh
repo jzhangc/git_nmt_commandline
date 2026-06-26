@@ -10,7 +10,7 @@ start_t=`date +%s`
 APP_NAME="predict_class.sh"
 source ./zzz
 source ./src/global_var
-source ./src/help_var_pred_class_2d_x
+source ./src/help_var_pred_class_2d
 source ./src/utils
 source ./scripts/sys_init_pred_class_2d.sh
 

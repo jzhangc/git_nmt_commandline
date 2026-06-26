@@ -46,8 +46,8 @@ Please cite the following if you are to use this application:
           - Default value for svm_cv_centre_scale from the config file set to FALSE
             - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
           - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
-          - Messaging updated for clarity for train_class_x.sh and connectivity_ml_x.sh
-          - A bug fixed for connectivity_ml_x.sh where the generated model files cannot be checked
+          - Messaging updated for clarity for train_class.sh and connectivity_ml.sh
+          - A bug fixed for connectivity_ml.sh where the generated model files cannot be checked
           - Default htmap_key_xlab set to "Processed values" for 2D modules
           - A bug fixed where random state no longer works
 
