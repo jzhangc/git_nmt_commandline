@@ -2,7 +2,11 @@
 # Description: version info etc
 # Usage: Adjust the values for the variables
 
+<<<<<<< HEAD
 VERSION="0.5.x-py-260425"
+=======
+VERSION="0.5.1b1"
+>>>>>>> beta
 CITE="Written by Jing Zhang PhD
 Contact: <jzhangcad@gmail.com>
 To cite in your research:  

@@ -1,0 +1,21 @@
+# File name: help_var_2d
+# Description: help var
+
+# --- help var ---
+HELP="\n
+Format: ./connectivity_predict.sh <INPUTS> [OPTIONS]\n
+Current version: $VERSION\n
+\n
+-h, --help: This help information.\n
+--version: Display current version number.\n
+\n
+<INPUTS>: Mandatory\n
+-i <file>: Input .mat file. Make sure to have 3 dimensions, even if only one matrix: MxNx1\n
+-a <file>: Sample annotation file (i.e. sample meta data) with full path. Needs to be a .csv file.\n
+-s <string>: Sample ID variable name from -a file.\n
+-b <file>: Input .RData SVM model file with full path. \n
+\n
+[OPTIONS]: Optional\n
+-m <CONFIG>: Optional input config file. The program will use the default if not provided. \n
+-o <dir>: Optional output directory. Default is where the program is. \n
+-p <int>: parallel computing, with core numbers.\n"

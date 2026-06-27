@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: sys_init_2d.sh
-# Discription: system initiation with flag checks and dependency checks
+# Description: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -28,6 +28,8 @@ RFLAG=1
 UFLAG=1
 CVUNI=FALSE
 KFLAG=1   # prior univariate knowledge
+XFLAG=1  # cross-validation only flag
+LFLAG=1  # no feature selection flag
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -81,7 +83,7 @@ else
 				# else
 				#     RAW_FILE=$(get_abs_filename $OPTARG)
 				# fi
-				RAW_FILE=$(path_resolve $OPTARG)				
+				RAW_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$RAW_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
 					echo -e "${COLOUR_RED}\nERROR: -i the input file should be in .mat format; or file not found.${NO_COLOUR}\n" >&2
@@ -100,7 +102,7 @@ else
 				# 	ANNOT_FILE=$(expand_path $OPTARG)
 				# else
 				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -129,7 +131,7 @@ else
 				# 	NODE_FILE=$(expand_path $OPTARG)
 				# else
 				# 	NODE_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				NODE_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$NODE_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -140,7 +142,7 @@ else
 				NODE_FILENAME=`basename "$NODE_FILE"`
 				if [ ${NODE_FILENAME: -4} != ".csv" ]; then
 					echo -e "${COLOUR_RED}\nERROR: -N node annotation file needs to be .csv format.${NO_COLOUR}\n\n" >&2
-					
+
 					exit 1  # exit 1: terminating with error
 				fi
 
@@ -175,7 +177,7 @@ else
 				# else
 				#     OUT_DIR=$(get_abs_filename $OPTARG)
 				# fi
-				OUT_DIR=$(path_resolve $OPTARG)				
+				OUT_DIR=$(path_resolve $OPTARG)
 				if ! [ -d "$OUT_DIR" ]; then
 					echo -e "${COLOUR_YELLOW}\nWARNING: -o output direcotry not found. use the current directory instead.${NO_COLOUR}\n" >&1
 					OUT_DIR=.
@@ -189,6 +191,12 @@ else
 			u)
 				UFLAG=0
 				CVUNI=TRUE
+				;;
+			x)
+				XFLAG=0
+				;;
+			l)
+				LFLAG=0
 				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
@@ -206,15 +214,15 @@ else
 	done
 fi
 
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 || $YFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -y -n, -d, -r flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+# ------ flag check -----
+mand_flag_check "IFLAG:-i" "AFLAG:-a" "SFLAG:-s" "YFLAG:-y" "NFLAG:-n" "DFLAG:-d" "RFLAG:-r"
 
-if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
-	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+opt_flag_check \
+	--mutex "KFLAG:UFLAG" \
+	"UFLAG:-u:use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done." \
+	"KFLAG:-k:incorporate univariate prior knowledge to SVM analysis." \
+	"XFLAG:-x:cross-validation only." \
+	"LFLAG:-l:no feature selection."
 
 # ------ display output folder ------
 echo -e "Output direcotry: ${COLOUR_BLUE_L}$OUT_DIR${NO_COLOUR}"

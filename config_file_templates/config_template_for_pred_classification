@@ -8,10 +8,8 @@
 # -- General settings --
 cpu_cluster="FORK"  # for parallel computing only, options are "FORK" or "PSOCK"
 
-# -- Data processing --
-
 # -- Prediction with SVM model --
-newdata_centre_scale=TRUE
+newdata_centre_scale=FALSE
 probability_method="softmax"  # options are "logistic", "Bayes", and "softmax"
 
 # -- Figure settings --

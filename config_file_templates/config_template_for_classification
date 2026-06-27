@@ -19,10 +19,14 @@ htmap_textangle_col=90
 htmap_textsize_row=0.2
 htmap_keysize=2
 <<<<<<< HEAD
+<<<<<<< HEAD
 htmap_key_xlab="Feature Value"
 =======
 htmap_key_xlab="Processed values"
 >>>>>>> nightly
+=======
+htmap_key_xlab="Processed values"
+>>>>>>> beta
 htmap_key_ylab="Count"
 htmap_margin="c(4, 5)"
 htmap_width=6
@@ -39,7 +43,7 @@ pca_biplot_ellipse=FALSE
 pca_biplot_ellipse_conf=0.9
 pca_biplot_loading=TRUE  # this setting only applies to the sig PCA and ML PCA below
 pca_biplot_loading_textsize=3
-pca_biplot_multi_desity=TRUE
+pca_biplot_multi_density=TRUE
 pca_biplot_multi_striplabel_size=10
 pca_rightside_y=FALSE
 pca_x_tick_label_size=10
@@ -85,12 +89,17 @@ training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set
 
 # -- SVM internal nested cross-validation and feature selection
 <<<<<<< HEAD
+<<<<<<< HEAD
 svm_cv_centre_scale=TRUE
 svm_cv_kernel="radial"  # options are "radial", "ploynomial", "sigmoid". "radial" aka RBF
 =======
 svm_cv_centre_scale=FALSE
 svm_cv_kernel="linear"  # options are "radial", "ploynomial", "radial", "sigmoid". "radial" aka RBF
 >>>>>>> nightly
+=======
+svm_cv_centre_scale=FALSE
+svm_cv_kernel="linear"  # options are "radial", "ploynomial", "radial", "sigmoid". "radial" aka RBF
+>>>>>>> beta
 svm_cv_cross_k=10  # outer loop
 svm_cv_tune_method="cross"  # inner loop. options are "cross" (i.e. cross validation), "boot" (i.e. bootstrap), and "fix"
 svm_cv_tune_cross_k=10  # set only when svm_cv_tune_method="cross", fold number for cross validation
@@ -98,7 +107,7 @@ svm_cv_tune_boot_n=10  # set only when svm_cv_tune_method="boot", bootstrap iter
 svm_cv_fs_rf_ifs_ntree=501
 svm_cv_fs_rf_sfs_ntree=501
 svm_cv_best_model_method="none"  # opitons are "none" or "median"
-svm_cv_fs_count_cutoff=5
+svm_cv_fs_count_cutoff=2
 
 # -- SVM modelling --
 # NOTE: some settings will share with the above CV step

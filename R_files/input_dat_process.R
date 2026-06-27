@@ -14,18 +14,30 @@ require(R.matlab) # to read .mat files
 # ------ sys variables ------
 # --- file name variables ---
 MAT_FILE <- args[6]
-MAT_FILE_NO_EXT <- args[7]
 ANNOT_FILE <- args[8]
 
 # --- directory variables ---
 RES_OUT_DIR <- args[11]
 
-# --- mata data input variables ---
-SAMPLEID_VAR <- args[9]
-GROUP_VAR <- args[10]
-MINMAX_NORM <- eval(parse(text = args[12]))
-ZSCORE_STAND <- eval(parse(text = args[13]))
-CONTRAST <- args[14]
+# # --- mata data input variables ---
+# SAMPLEID_VAR <- args[9]
+# GROUP_VAR <- args[10]
+# MINMAX_NORM <- eval(parse(text = args[12]))
+# ZSCORE_STAND <- eval(parse(text = args[13]))
+# CONTRAST <- args[14]
+
+# ------ config list ------
+DAT_PROCESS_CONFIG <- list(
+  MAT_FILE_NO_EXT = args[7],
+  SAMPLEID_VAR = args[9],
+  GROUP_VAR = args[10],
+  MINMAX_NORM = eval(parse(text = args[12])),
+  ZSCORE_STAND = eval(parse(text = args[13])),
+  CONTRAST = args[14]
+)
+
+# ------ set the output directory as the working directory ------
+setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load files ------
 # --- load mat file ---
@@ -35,7 +47,7 @@ raw_dim <- dim(raw)
 
 # --- load annotation file (meta data) ---
 annot <- read.csv(file = ANNOT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
-if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(annot))) {
+if (!all(c(DAT_PROCESS_CONFIG$SAMPLEID_VAR, DAT_PROCESS_CONFIG$GROUP_VAR) %in% names(annot))) {
   cat("none_existent")
   quit()
 }
@@ -43,24 +55,24 @@ if (nrow(annot) != raw_dim[3]) {
   cat("unequal_length")
   quit()
 }
-if (any(is.na(unique(annot[, GROUP_VAR])))) {
+if (any(is.na(unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR])))) {
   cat("na_values")
   quit()
 }
-if (length(unique(annot[, GROUP_VAR])) == 1) {
+if (length(unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR])) == 1) {
   cat("single_value")
   quit()
 }
-sample_group <- factor(annot[, GROUP_VAR], levels = unique(annot[, GROUP_VAR]))
+sample_group <- factor(annot[, DAT_PROCESS_CONFIG$GROUP_VAR], levels = unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR]))
 sample_group_names <- unique(as.character(sample_group))
-sampleid <- annot[, SAMPLEID_VAR]
+sampleid <- annot[, DAT_PROCESS_CONFIG$SAMPLEID_VAR]
 
 # --- load and process contrast ---
-contra_string <- unlist(strsplit(CONTRAST, split = ","))
+contra_string <- unlist(strsplit(DAT_PROCESS_CONFIG$CONTRAST, split = ","))
 contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
 pasted_contrast <- paste0(contra_string, collapse = "-")
 contrast_group_names <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
-if (!all(contrast_group_names  %in% as.character(unique(annot[, GROUP_VAR])))) {
+if (!all(contrast_group_names  %in% as.character(unique(annot[, DAT_PROCESS_CONFIG$GROUP_VAR])))) {
   cat("contrast_none_existent")
   quit()
 }
@@ -83,10 +95,10 @@ feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 
 # -- data transformation --
-if (MINMAX_NORM) {
+if (DAT_PROCESS_CONFIG$MINMAX_NORM) {
   feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
 }
-if (ZSCORE_STAND) {
+if (DAT_PROCESS_CONFIG$ZSCORE_STAND) {
   feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 }
 
@@ -106,7 +118,8 @@ raw_sample_dfm_output <- raw_sample_dfm_output[new_group_order, ]  # sorting
 
 # ------ export and clean up the mess --------
 ## export to results files if needed
-write.csv(file = paste0(RES_OUT_DIR, "/", MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
+write.csv(file = paste0(DAT_PROCESS_CONFIG$MAT_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
+save(list = "DAT_PROCESS_CONFIG", file = paste0(DAT_PROCESS_CONFIG$MAT_FILE_NO_EXT, "_data_processing_config.RData"))
 
 # free memory
 rm(raw_sample_dfm, raw, annot)

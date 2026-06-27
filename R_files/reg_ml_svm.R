@@ -152,6 +152,8 @@ if (input_n_total_features == 1) {
     },
     error = function(e) {
       cat("\nCV-rRF-FS-SVR feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n")
+      # below: has to add \n so cat does not output partial end of line sign: %
+      error_flag <<- "fs_failure\n" # use <<- to assign global vars
     }
   )
   # extract selected features
@@ -184,7 +186,7 @@ if (input_n_total_features == 1) {
         )
       },
       error = function(e) {
-        cat(paste0("rRF-FS iteraction: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
+        cat(paste0("rRF-FS iteration: ", i, " failed. No SFS plot for this iteration.\n", "\tRef error message: ", e, "\n"))
       }
     )
   }
@@ -370,7 +372,7 @@ write.csv(file = "ml_training.csv", training, row.names = FALSE)
 write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(
   list = c("svm_m", "svm_rf_selected_features", "svm_training", "svm_test", "svm_nested_cv_fs", "svm_m_cv"),
-  file = paste0(MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
+  file = paste0(MAT_FILE_NO_EXT, "_final_svr_model.Rdata")
 )
 
 ## cat the vairables to export to shell scipt

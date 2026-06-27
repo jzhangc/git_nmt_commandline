@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Name: sys_init_2d.sh
-# Discription: system initiation with flag checks and dependency checks
+# Description: system initiation with flag checks and dependency checks
 # Note: in Shell, 0 is true, and 1 is false - reverted from other languages like R and Python
 
 # ------ variables ------
@@ -24,7 +24,9 @@ CFLAG=1
 # below: CV univariate reduction
 UFLAG=1
 CVUNI=FALSE
-KFLAG=1   # prior univariate knowledge
+KFLAG=1  # prior univariate knowledge
+XFLAG=1  # cross-validation only flag
+LFLAG=1  # no feature selection flag #
 
 # optional flag values
 OUT_DIR=.  # set the default to output directory
@@ -61,7 +63,7 @@ else
 	echo -e "Today is: $CURRENT_DAY\n"
 	echo -e "${COLOUR_ORANGE}$CITE${NO_COLOUR}\n"
 
-	while getopts ":kup:i:a:s:g:n:d:r:c:m:o:" opt; do
+	while getopts ":kuxlp:i:a:s:g:n:d:r:c:m:o:" opt; do
 		case $opt in
 			p)
 				PSETTING=TRUE  # note: PSETTING is to be passed to R. therefore a separate variable is used
@@ -84,7 +86,7 @@ else
 					echo -e "${COLOUR_RED}\nERROR: -i file should be in .mat format.${NO_COLOUR}\n" >&2
 					exit 1  # exit 1: terminating with error
 				fi
-				
+
 				MAT_FILENAME_WO_EXT="${MAT_FILENAME%%.*}"
 				IFLAG=0
 				;;
@@ -93,7 +95,7 @@ else
 				# 	ANNOT_FILE=$(expand_path $OPTARG)
 				# else
 				# 	ANNOT_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				ANNOT_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$ANNOT_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -122,7 +124,7 @@ else
 				# 	NODE_FILE=$(expand_path $OPTARG)
 				# else
 				# 	NODE_FILE=$(get_abs_filename $OPTARG)
-				# fi	
+				# fi
 				NODE_FILE=$(path_resolve $OPTARG)
 				if ! [ -f "$NODE_FILE" ]; then
 					# >&2 means assign file descripter 2 (stderr). >&1 means assign to file descripter 1 (stdout)
@@ -185,7 +187,13 @@ else
 			u)
 				UFLAG=0
 				CVUNI=TRUE
-				;;		
+				;;
+			x)
+				XFLAG=0
+				;;
+			l)
+				LFLAG=0
+				;;
 			:)
 				echo -e "${COLOUR_RED}\nERROR: Option -$OPTARG requires an argument.${NO_COLOUR}\n" >&2
 				exit 1
@@ -203,15 +211,15 @@ else
 fi
 
 # ------ flag check -----
-if [[ $IFLAG -eq 1 || $AFLAG -eq 1 || $SFLAG -eq 1 ||$GFLAG -eq 1 || $NFLAG -eq 1 || $DFLAG -eq 1 || $RFLAG -eq 1 || $CFLAG -eq 1 ]]; then
-	echo -e "${COLOUR_RED}ERROR: -i, -a, -s, -g, -n, -d, -r, -c flags are mandatory. Use -h or --help to see help info.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+mand_flag_check "IFLAG:-i" "AFLAG:-a" "SFLAG:-s" "GFLAG:-g" "NFLAG:-n" "DFLAG:-d" "RFLAG:-r" "CFLAG:-c"
 
-if [[ $KFLAG -eq 0 && $UFLAG -eq 0 ]]; then
-	echo -e "${COLOUR_RED}ERROR: Set either -u or -k, but not both.${NO_COLOUR}\n" >&2
-	exit 1
-fi
+opt_flag_check \
+	--mutex "KFLAG:UFLAG" \
+	"UFLAG:-u:use univariate analysis result during CV-SVM-rRF-FS. NOTE: the analysis on all data is still done." \
+	"KFLAG:-k:incorporate univariate prior knowledge to SVM analysis." \
+	"XFLAG:-x:cross-validation only." \
+	"LFLAG:-l:no feature selection."
+
 
 # ------ display output folder ------
 echo -e "Output direcotry: ${COLOUR_BLUE_L}$OUT_DIR${NO_COLOUR}"

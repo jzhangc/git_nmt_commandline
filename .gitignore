@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 
@@ -100,6 +101,17 @@ vignettes/*.pdf
 
 # Shiny token
 rsconnect/
+=======
+<<<<<<< HEAD
+=======
+# Jing's stuff
+data
+results
+.DS_Store
+.vscode
+log
+AGENTS.md
+>>>>>>> beta
 
 # Distribution / packaging
 .Python
@@ -130,11 +142,27 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
+<<<<<<< HEAD
 # Environments
 .env
 .venv
 *venv*/
 *env*/
+=======
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox//
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+>>>>>>> beta
 
 # Spyder project settings
 .spyderproject

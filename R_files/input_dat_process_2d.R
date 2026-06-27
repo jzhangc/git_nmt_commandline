@@ -9,30 +9,33 @@ args <- commandArgs()
 # ------ load libraries ------
 require(foreach)
 require(RBioFS)
-require(R.matlab) # to read .mat files
 
 # ------ sys variables --------
 # --- file name variables ---
 CSV_2D_FILE <- args[6]
-CSV_2D_FILE_NO_EXT <- args[7]
 
 # --- directory variables ---
-# FIG_OUT_DIR
 RES_OUT_DIR <- args[10]
 
-# -- mata data input variables --
-SAMPLEID_VAR <- args[8]
-GROUP_VAR <- args[9]
-MINMAX_NORM <- eval(parse(text = args[11]))
-ZSCORE_STAND <- eval(parse(text = args[12]))
-CONTRAST <- args[13]
+# ------ config list ------
+DAT_PROCESS_CONFIG <- list(
+  CSV_2D_FILE_NO_EXT = args[7],
+  SAMPLEID_VAR = args[8],
+  GROUP_VAR = args[9],
+  MINMAX_NORM = eval(parse(text = args[11])),
+  ZSCORE_STAND = eval(parse(text = args[12])),
+  CONTRAST = args[13]
+)
+
+# ------ set the output directory as the working directory ------
+setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load file ------
 # --- load data ---
 raw_csv <- read.csv(file = CSV_2D_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 raw_dim <- dim(raw_csv)
 
-if (!all(c(SAMPLEID_VAR, GROUP_VAR) %in% names(raw_csv))) {
+if (!all(c(DAT_PROCESS_CONFIG$SAMPLEID_VAR, DAT_PROCESS_CONFIG$GROUP_VAR) %in% names(raw_csv))) {
   cat("none_existent")
   quit()
 }
@@ -40,16 +43,16 @@ if (length(which(!complete.cases(raw_csv))) > 0) {
   cat("na_values")
   quit()
 }
-if (length(unique(raw_csv[, GROUP_VAR])) == 1) {
+if (length(unique(raw_csv[, DAT_PROCESS_CONFIG$GROUP_VAR])) == 1) {
   cat("single_value")
   quit()
 }
-sample_group <- factor(raw_csv[, GROUP_VAR], levels = unique(raw_csv[, GROUP_VAR]))
+sample_group <- factor(raw_csv[, DAT_PROCESS_CONFIG$GROUP_VAR], levels = unique(raw_csv[, DAT_PROCESS_CONFIG$GROUP_VAR]))
 sample_group_names <- unique(as.character(sample_group))
-sampleid <- raw_csv[, SAMPLEID_VAR]
+sampleid <- raw_csv[, DAT_PROCESS_CONFIG$SAMPLEID_VAR]
 
 # --- load and process contrast ---
-contra_string <- unlist(strsplit(CONTRAST, split = ","))
+contra_string <- unlist(strsplit(DAT_PROCESS_CONFIG$CONTRAST, split = ","))
 contra_string <- gsub(" ", "", contra_string, fixed = TRUE) # remove all the white space
 pasted_contrast <- paste0(contra_string, collapse = "-")
 contrast_group_names <- unique(unlist(strsplit(pasted_contrast, split = "-", fixed = TRUE)))
@@ -59,8 +62,8 @@ if (!all(contrast_group_names  %in% sample_group_names)) {
 
 # ------ process the file with the mata data ------
 # group <- sample_group
-raw_sample_dfm <- data.frame(sampleid = sampleid, y = sample_group, raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)], row.names = NULL)
-names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(SAMPLEID_VAR, GROUP_VAR)])
+raw_sample_dfm <- data.frame(sampleid = sampleid, y = sample_group, raw_csv[, !names(raw_csv) %in% c(DAT_PROCESS_CONFIG$SAMPLEID_VAR, DAT_PROCESS_CONFIG$GROUP_VAR)], row.names = NULL)
+names(raw_sample_dfm)[-c(1:2)] <- names(raw_csv[, !names(raw_csv) %in% c(DAT_PROCESS_CONFIG$SAMPLEID_VAR, DAT_PROCESS_CONFIG$GROUP_VAR)])
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 # -- free memory --
@@ -72,10 +75,10 @@ feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
 # raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
 # -- data transformation --
-if (MINMAX_NORM) {
+if (DAT_PROCESS_CONFIG$MINMAX_NORM) {
   feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
 }
-if (ZSCORE_STAND) {
+if (DAT_PROCESS_CONFIG$ZSCORE_STAND) {
   feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
 }
 
@@ -95,7 +98,8 @@ raw_sample_dfm_output <- raw_sample_dfm_output[new_group_order, ]  # sorting
 
 # ------ export and clean up the mess ------
 ## export to results files if needed
-write.csv(file = paste0(RES_OUT_DIR, "/", CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
+write.csv(file = paste0(DAT_PROCESS_CONFIG$CSV_2D_FILE_NO_EXT, "_2D.csv"), raw_sample_dfm_output, row.names = FALSE)
+save(list = "DAT_PROCESS_CONFIG", file = paste0(DAT_PROCESS_CONFIG$CSV_2D_FILE_NO_EXT, "_data_processing_config.RData"))
 
 # free memory
 rm(raw_sample_dfm)

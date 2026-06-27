@@ -1,6 +1,8 @@
 # Neuro-ML-tools (NMT)
 
-Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for MEG connection data
+Neuro-ML-tools (NMT): A bash application for automating machine learning analysis for neuroimaging connectivity and vectorized 2D tabular data
+
+![NMT Workflow](docs/project_workflow.svg)
 
 Please cite the following if you are to use this application:
 
@@ -9,81 +11,6 @@ Please cite the following if you are to use this application:
       Zhang J, Hadj-Moussa H, Storey KB. 2016. Current progress of high-throughput microRNA differential expression analysis and random forest gene selection for model and non-model systems: an R implementation. J Integr Bioinform. 13: 306. doi: 10.1515/jib-2016-306.
 
 ## Version History
-
-      - Waterbox
-          - Data processing modules updates
-            - Data transformation step seperated for univariate analysis and ml analysis to prevent info leakage
-
-        - Modelling module updates
-          - Exported SVM model file (.RData) now include data processing config information
-
-        - Prediction modules updates
-          - Prediction modules reads the data processing config information from the SVM model file for data processing
-          - Prediction modules reads the data processing config information from the SVM model file for inferencing
-            - Prediction modules config files to be revamped
-
-      - 0.5.x-py-260425
-          - Prototype Python implementations
-            - train class_reg_v2.py added: Python version of train_reg_v2.sh for regression analysis with univariate prior knowledge incorporation, cross-validation, and parallel computing support
-            - train_class_x.py added: Python version of train_class_x.sh for classification machine learning analysis with SVM and PLS-DA
-              - Updated with coding style consistent with new Python implementations
-              - Added --version/-v flag for version display
-              - Added hms() function for time formatting
-              - Updated run_r_script to handle logging internally with out_dir and current_day parameters
-              - Added --save flag to R script calls for log file output
-              - OS detection updated via platform.system() with macOS/Linux identification
-              - Flag variables updated to Shell convention (0 = true, 1 = false)
-
-
-      - 0.5.x-260325
-        - General updates
-          - Code base complexity substantially reduced
-            - helper functions added for flag checks
-
-    - 0.5.x-260314-260324
-        - General updates
-          - Code base complexity substantially reduced
-            - cv-only modules combined into their respective modules with "-x" flag
-        
-        - Classification module updates
-            - nofs modules combined into their respective regular modules with "-l" flag
-
-        - Regression module updates
-            - nofs modules combined into their respective regular modules with "-n" flag
-          
-
-    - 0.5.x-251211-260313
-        - General updates
-          - Code base complexity substantially reduced
-            - Code base complexity substantially reduced for regression modules
-
-        - Data processing modules updates
-          - A bug fixed where the minmax and zscore transformation not properly parsed            
-
-        - Small fixes    
-
-
-    - 0.5.x-251210
-        - General updates
-          - Code base complexity substantially reduced
-            - Code base complexity substantially reduced for classification modules
-            - Common utility prcoesses unified into expanded utility scripts for classification modules
-          - Application display updated with more accuracy
-          - Default htmap_key_xlab set to "Processed values" for 2D modules
-          - A bug fixed where random state no longer works
-        
-        - Data processing modules updates
-          - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
-          - Warning messaged added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
-            - Explaination: running min-max and zscore transformation at the same time is the same as running whichever comes second only
-          - Default value for minmax_norm set to TRUE
-          - Default value for zscore_standardization set to FALSE
-
-        - Modelling module updates
-          - Default value for svm_cv_centre_scale from the config file set to FALSE
-            - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
-          - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
-
 
     - 0.5.0 (Nov 16, 2025)
         - General updates
@@ -106,17 +33,20 @@ Please cite the following if you are to use this application:
         - Update to SVM modules
           - fscount plot name fixed
 
-        - 0.4.2 (April 4, 2025)
-            - General updates
-              - Application termination behaviour updated with early stop and messaging
-              - Application messaging updated          
-              
-            - General updates
-              - More detailed error messages added
-              - Error handling updated with more explicit error messaging
 
-            - Modelling modules updates
-              - CV-rRF-FS-SVM step updated with fail error handling properties
+    - 0.4.2 (April 4, 2025)
+        - General updates
+          - Application termination behaviour updated with early stop and messaging
+          - Application messaging updated
+
+
+    - 0.4.1 (March 2, 2025)
+        - General updates
+          - More detailed error messages added
+          - Error handling updated with more explicit error messaging
+
+        - Modelling modules updates
+          - CV-rRF-FS-SVM step updated with fail error handling properties
 
 
     - 0.4.0 (December 26, 2024)
@@ -125,7 +55,7 @@ Please cite the following if you are to use this application:
         - General updates
           - Memory management improvement started to be implemented, more to come
           - Data NA check added for the 2D modules
-          - Modellng speed improvement for all SVM modules
+          - Modeling speed improvement for all SVM modules
           - Data center_scaling added to PLS modules
           - Error handling improvement for PLS modules
           - To show version number, the shorterned "-v" flag added for all modules
@@ -142,9 +72,7 @@ Please cite the following if you are to use this application:
         - Updates to the classification module
           - Added single input feature compatibility 
           - Added more error handling in cv_ml_svm.R and ml_svm.R
-          - Added interporlated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
-          - Updated the file name suffix to "_plsda_roc_auc_test.txt" for the plsda analysis output file
-          - Fixed a bug in univariate_2d.R where univarite "_ml" file does not include sampleid
+          - Added interpolated CV ROC-AUC plot to show all outcome labels, mean ROC with +/- ranges
 
         - Updates to the regression module
           - Added single input feature compatibility 
@@ -162,7 +90,7 @@ Please cite the following if you are to use this application:
           - Better code organization with application version, citation and common utilities files
 
 
-    - 0.3.2 (July.1.2021)
+    - 0.3.2 (July 1, 2021)
         - Updates to modelling modules
           - AUC scores now included in .RData model files
 
@@ -199,6 +127,7 @@ Please cite the following if you are to use this application:
           - A bug fixed where the ROC-AUC won't work for some data in both CV only and regular modes
           - Error handling substantially updated            
 
+
     - 0.2.1 (June.10.2020)        
         - General updates
           - Heatmap row now displays connection names for all non-2d modules
@@ -220,7 +149,7 @@ Please cite the following if you are to use this application:
           - The existing univariate analysis now mandatory for all modules
           - Univariate prior knowledge flag -k added to all modules
           - Random state added to all modules
-          - CV-SVM-rRF-FS heatmap lables fixed for all modules
+          - CV-SVM-rRF-FS heatmap labels fixed for all modules
           - Error handling added to rRF-FS plotting
           - Citation added
         
@@ -253,17 +182,17 @@ Please cite the following if you are to use this application:
           - Small formatting fix for univariate module
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
           - A bug fixed for the display messaging order
-          - A bug fixed for univariate.R where it fails to produce significant feature subset when having more then two groups
+          - A bug fixed for univariate.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to connectivity_ml_2d.sh
-          - Unsorted annotation file support
+        - Updates to connectivity_ml_2d.sh          
+        - Unsorted annotation file support
           - Resampling is now stratified
           - Small formatting fix for univariate module
           - Error handling added for supervised hierarchical clustering analysis when only one significant result found
           - A bug fixed for supervised clustering analysis where the functionality processes heatmaps using all groups when more than three groups
-          - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more then two groups
+          - A bug fixed for univariate_2D.R where it fails to produce significant feature subset when having more than two groups
         
-        - Updates to the regression module
+        - Updates to the regression module          
           - PLSR functionality added so PLS VIP and permutation are done as a validation for SVM-rRF-FS process
           - Accordingly, new R file reg_plsr_val_svm.R added
 
@@ -319,45 +248,3 @@ Please cite the following if you are to use this application:
 
     - 0.0.1
         - Initial commit
-<<<<<<< HEAD
-
-
-## Prototype Python Implementation
-
-This repository contains Python implementations of the training modules, providing the same functionality as the original shell scripts with improved error handling, readability, and maintainability. Version information is dynamically read from the `zzz` configuration file.
-
-### Scripts
-
-- **`train_class_x.py`**: Python version of `train_class_x.sh` for classification machine learning analysis with SVM and PLS-DA
-- **`train_class_reg_v2.py`**: Python version of `train_reg_v2.sh` for regression machine learning analysis with SVR and PLSR
-
-### Usage
-
-Classification:
-
-    python3 train_class_x.py -i input_file.csv -s sample_id -g group_id -c "contrast1,contrast2" [options]
-
-Regression:
-
-    python3 train_class_reg_v2.py -i input_file.csv -s sample_id -y y_var [options]
-
-### Required Arguments
-
-- `-i, --input`: Input 2D .csv file
-- `-s, --sample-id`: Sample ID variable name
-- `-g, --group-id`: Group ID variable name (classification only)
-- `-y, --y-var`: Continuous outcome (y) variable name (regression only)
-- `-c, --contrast`: Contrasts (e.g., "a-b,c-a") (classification only)
-
-### Optional Arguments
-
-- `-k, --prior-knowledge`: Incorporate univariate prior knowledge to SVM/SVR analysis
-- `-u, --univariate`: Use univariate analysis result during CV-SVM-rRF-FS
-- `-x, --cross-validation-only`: Cross-validation only mode (classification only)
-- `-l, --nofs`: No feature selection mode
-- `-m, --config`: Optional configuration file (reads from `zzz` for version info)
-- `-o, --output`: Optional output directory (default: current directory)
-- `-p, --parallel`: Parallel computing with core numbers
-- `-v, --version`: Display current version from zzz file
-=======
->>>>>>> fix_warining
