@@ -12,6 +12,59 @@ Please cite the following if you are to use this application:
 
 ## Version History
 
+    - 0.5.1 (June 25, 2026)
+        - General updates
+          - Code base complexity substantially reduced
+            - Code base complexity substantially reduced for regression modules
+            - Code base complexity substantially reduced for classification modules
+            - Common utility processes unified into expanded utility scripts for classification modules
+            - helper functions added for flag checks
+            - helper function check_model_file added to the common utility script for checking the existence of model files
+            - helper function merge_rdata added to the common utility script for merging two RData files into one RData file
+              - this is used to merge the data processing config information into the SVM model file for data processing and inferencing
+            - various logic improvements
+          - Upon nofs and cv-only streamlining, old sh files filenames and their dependencies renamed with "legacy_" prefix
+          - Typo fixes for comments and display texts
+          - Description typo fixed to Description in 24 shell scripts
+          - Trailing whitespace removed from all shell scripts
+          - Small fixes
+
+        - Data processing modules updates
+          - Data processing config information now exported to the a "_data_processing_config.RData" file and then the SVM model file for data processing and inferencing
+          - For classification models, the input files are now sorted according to the order of appearance in the contrast flag before processing into 2D and w_prior files
+          - A bug fixed where the minmax and zscore transformation not properly parsed
+          - A bug fixed where non-variance column remove would result in data column shift
+          - Warning messages added for minmax_norm and zscore_standardization: "WARNING: minmax_norm=TRUE, zscore_standardization=TRUE: equivalent to zscore_standardization=TRUE only."
+            - Explanation: running min-max and zscore transformation at the same time is the same as running whichever comes second only
+          - Default value for minmax_norm set to TRUE
+          - Default value for zscore_standardization set to FALSE
+
+        - Modelling module updates
+          - SVM model file now includes the data processing config information
+          - cv-only modules combined into their respective modules with "-x" flag
+          - "nofs" modules combined into their respective regular modules with "-l" flag
+          - Default value for svm_cv_centre_scale from the config file set to FALSE
+            - This setting will be deprecated in a future version as data transformation is now handled by the following settings: minmax_norm, zscore_standardization
+          - A bug fixed where program crashes with svm_cv_centre_scale set to FALSE
+          - Messaging updated for clarity for train_class.sh and connectivity_ml.sh
+          - A bug fixed for connectivity_ml.sh where the generated model files cannot be checked
+          - Default htmap_key_xlab set to "Processed values" for 2D modules
+          - A bug fixed where random state no longer works
+
+        - Prediction module updates
+          - Prediction module flag "-l" (input model) changed to "-b" to avoid confusion with the "-l" flag for the classification and regression modules
+          - Prediction modules config files revamped
+          - Prediction module code base complexity substantially reduced
+          - Prediction modules reads the data processing config information from the SVM model file for new data processing and inferencing
+
+        - Classification module updates
+            - cv-only modules combined into their respective modules with "-x" flag
+            - "nofs" modules combined into their respective regular modules with "-l" flag
+
+        - Other
+          - Workflow diagram added: visualizes pipeline structure
+
+
     - 0.5.0 (Nov 16, 2025)
         - General updates
           - Reduced intermediate CSV file complexity
