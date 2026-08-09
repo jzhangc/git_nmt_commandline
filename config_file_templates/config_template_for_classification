@@ -81,7 +81,7 @@ training_percentage=0.8  # range (non-inclusive): (0, 1). Will set to 0.8 if set
 
 # -- SVM internal nested cross-validation and feature selection
 svm_cv_centre_scale=FALSE
-svm_cv_kernel="linear"  # options are "radial", "ploynomial", "radial", "sigmoid". "radial" aka RBF
+svm_cv_kernel="radial"  # options are "radial", "ploynomial", "radial", "sigmoid". "radial" aka RBF
 svm_cv_cross_k=10  # outer loop
 svm_cv_tune_method="cross"  # inner loop. options are "cross" (i.e. cross validation), "boot" (i.e. bootstrap), and "fix"
 svm_cv_tune_cross_k=10  # set only when svm_cv_tune_method="cross", fold number for cross validation
@@ -89,7 +89,7 @@ svm_cv_tune_boot_n=10  # set only when svm_cv_tune_method="boot", bootstrap iter
 svm_cv_fs_rf_ifs_ntree=501
 svm_cv_fs_rf_sfs_ntree=501
 svm_cv_best_model_method="none"  # opitons are "none" or "median"
-svm_cv_fs_count_cutoff=2
+svm_cv_fs_count_cutoff=5
 
 # -- SVM modelling --
 # NOTE: some settings will share with the above CV step

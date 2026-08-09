@@ -270,9 +270,10 @@ sink()
 # ------ SHAP analysis ------
 sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Aggregated SHAP analysis messages ------\n")
-tryCatch(
-  {
-    shap_out <- rbioClass_svm_shap_aggregated(
+warn_msg <- NULL
+shap_out <- tryCatch(
+  withCallingHandlers(
+    rbioClass_svm_shap_aggregated(
       model = svm_m, X = svm_training[, -1], bg_X = svm_training[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES, randomState = CONFIG_LIST$RANDOM_STATE,
@@ -281,15 +282,18 @@ tryCatch(
       plot.bee.colorscale = "D",
       plot.xLabel = NULL, plot.yLabel = NULL, plot.yTickLblSize = 12,
       plot.Width = 410, plot.Height = 255
-    )
-  },
+    ),
+    warning = function(w) {
+      warn_msg <<- w$message
+      invokeRestart("muffleWarning")
+    }
+  ),
   error = function(e) {
-    cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
-  },
-  warning = function(w) {
-    cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
+    cat(paste0("\nError(s) generated during aggregated SHAP analysis\n", "\tError message: ", e, "\n"))
+    NULL # Returns NULL if a hard error breaks the code
   }
 )
+if (!is.null(warn_msg)) cat(paste0("\nWarning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", warn_msg, "\n"))
 sink()
 
 

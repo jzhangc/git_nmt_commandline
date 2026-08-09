@@ -224,10 +224,17 @@ if [ $LFLAG -eq 1 ]; then
 			tot=`hms $((end_t-start_t))`
 			echo -e "\nTotal run time: $tot\n"
 			exit 1
-				;;
-			*)
-				# no error — proceed
-				;;
+			;;
+		conflicting_sampleid)
+			echo -e "${COLOUR_RED}\nERROR: Samples with shared sample IDs have different class labels. Program terminated.${NO_COLOUR}\n\n" >&2
+			end_t=`date +%s`
+			tot=`hms $((end_t-start_t))`
+			echo -e "\nTotal run time: $tot\n"
+			exit 1
+			;;
+		*)
+			# no error — proceed
+			;;
 	esac
 fi
 # -- set up variables for output svm model file

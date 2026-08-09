@@ -14,8 +14,9 @@ require(parallel)
 require(limma)
 
 # ------ sys variables ------
-# --- warning flags ---
+# --- warning and error flags ---
 CORE_OUT_OF_RANGE <- FALSE
+ERROR_FLAG <- NA
 
 # --- file name variables ---
 DAT_FILE <- args[6] # ML file
@@ -126,17 +127,42 @@ ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALS
 ml_dfm$y <- factor(ml_dfm$y, levels = unique(ml_dfm$y))
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
-# stratified resampling: proportionally sample by groups
+# detect non-unique sample IDs
+has_repeated_sampleid <- length(unique(ml_dfm$sampleid)) < nrow(ml_dfm)
+
+if (has_repeated_sampleid) {
+  id_classes <- aggregate(y ~ sampleid, data = ml_dfm, FUN = function(x) length(unique(x)))
+  conflict_ids <- id_classes$sampleid[id_classes$y > 1]
+  if (length(conflict_ids) > 0) {
+    ERROR_FLAG <- "conflicting_sampleid\n"
+    cat(ERROR_FLAG)
+    quit()
+  }
+}
+
+# stratified resampling: row-wise (unique sampleIDs) or group-aware (repeated sampleIDs)
 training <- foreach(i = levels(ml_dfm$y), .combine = "rbind") %do% {
   dfm <- ml_dfm[ml_dfm$y == i, ]
-  dfm_rand <- dfm[sample(nrow(dfm)), ]
-  training_n <- ceiling(nrow(dfm_rand) * CONFIG_LIST$TRAINING_PERCENTAGE)
-  training <- dfm_rand[1:training_n, ]
+  if (has_repeated_sampleid) {
+    uniq <- unique(dfm$sampleid)
+    uniq_shuffled <- uniq[sample(length(uniq))]
+    training_n <- ceiling(length(uniq_shuffled) * CONFIG_LIST$TRAINING_PERCENTAGE)
+    train_ids <- uniq_shuffled[1:training_n]
+    dfm[dfm$sampleid %in% train_ids, ]
+  } else {
+    dfm_rand <- dfm[sample(nrow(dfm)), ]
+    training_n <- ceiling(nrow(dfm_rand) * CONFIG_LIST$TRAINING_PERCENTAGE)
+    dfm_rand[1:training_n, ]
+  }
 }
-test <- ml_dfm[!rownames(ml_dfm) %in% rownames(training), ]
+
+if (has_repeated_sampleid) {
+  test <- ml_dfm[!ml_dfm$sampleid %in% training$sampleid, ]
+} else {
+  test <- ml_dfm[!rownames(ml_dfm) %in% rownames(training), ]
+}
 
 # ------ internal nested cross-validation and feature selection ------
-error_flag <- NA
 sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("------ Internal nested cross-validation with rRF-FS error messages ------\n")
 if (input_n_total_features == 1) {
@@ -170,8 +196,8 @@ if (input_n_total_features == 1) {
     error = function(e) {
       cat(paste0("\nCV-rRF-FS-SVM feature selection step failed. try a larger uni_alpha value or running the command without -u or -k\n", "\tRef error message: ", e, "\n"))
       # below: has to add \n so cat does not output partial end of line sign: %
-      error_flag <<- "fs_failure\n" # use <<- to assign global vars
-      # assign("error_flag", "fs_failure\n", envir = .GlobalEnv)
+      ERROR_FLAG <<- "fs_failure\n" # use <<- to assign global vars
+      # assign("ERROR_FLAG", "fs_failure\n", envir = .GlobalEnv)
     }
   )
 
@@ -182,8 +208,8 @@ if (input_n_total_features == 1) {
 sink()
 # output to the shell script
 # has to add \n so cat does not output partial end of line sign: %
-if (!is.na(error_flag)) {
-  cat(error_flag)
+if (!is.na(ERROR_FLAG)) {
+  cat(ERROR_FLAG)
   quit()
 }
 
@@ -456,9 +482,10 @@ sink()
 # ------ SHAP analysis ------
 sink(file = paste0(CONFIG_LIST$MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
 cat("\n\n------ Aggregated SHAP analysis messages ------\n")
-tryCatch(
-  {
-    shap_out <- rbioClass_svm_shap_aggregated(
+warn_msg <- NULL
+shap_out <- tryCatch(
+  withCallingHandlers(
+    rbioClass_svm_shap_aggregated(
       model = svm_m, X = svm_test[, -1], bg_X = svm_training[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES, randomState = CONFIG_LIST$RANDOM_STATE,
@@ -467,15 +494,18 @@ tryCatch(
       plot.bee.colorscale = "D",
       plot.xLabel = NULL, plot.yLabel = NULL, plot.yTickLblSize = 12,
       plot.Width = 410, plot.Height = 255
-    )
-  },
+    ),
+    warning = function(w) {
+      warn_msg <<- w$message
+      invokeRestart("muffleWarning")
+    }
+  ),
   error = function(e) {
-    cat(paste0("ERROR: . \n", "\tError message: ", e, "\n"))
-  },
-  warning = function(w) {
-    cat(paste0("Warning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", w, "\n"))
+    cat(paste0("\nError(s) generated during aggregated SHAP analysis\n", "\tError message: ", e, "\n"))
+    NULL # Returns NULL if a hard error breaks the code
   }
 )
+if (!is.null(warn_msg)) cat(paste0("\nWarning message(s) generated during aggregated SHAP analysis\n", "\tRef warning message: ", warn_msg, "\n"))
 sink()
 
 
@@ -700,6 +730,7 @@ cat("Group labels (size): ", orignal_y_summary, "\n")
 cat("\n\n")
 cat("Training-test sets split with class stratification\n")
 cat("-------------------------------------\n")
+if (has_repeated_sampleid) cat("Non-unique sample id detected: training/test split stratified on unique sample groups.\n")
 if (CONFIG_LIST$TRAINING_PERCENTAGE <= options()$ts.eps || CONFIG_LIST$TRAINING_PERCENTAGE == 1) cat("Invalid percentage. Use default instead.\n")
 cat("Training set percentage: ", CONFIG_LIST$TRAINING_PERCENTAGE, "\n")
 cat("Training set: ", training_summary, "\n")
