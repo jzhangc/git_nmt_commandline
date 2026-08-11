@@ -111,13 +111,29 @@ setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
 
-ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
-training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE) # use ceiling to maximize the training set size
-training <- ml_dfm_randomized[1:training_n, ]
-training_sampleid <- training$sampleid
-training <- training[, -1] # remove sampleid
-test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
-test <- test[, -1] # remove sampleid
+has_repeated_sampleid <- length(unique(ml_dfm$sampleid)) < nrow(ml_dfm)
+
+if (has_repeated_sampleid) {
+  uniq_ids <- unique(ml_dfm$sampleid)
+  shuffled_ids <- uniq_ids[sample(length(uniq_ids))]
+  training_n <- ceiling(length(shuffled_ids) * TRAINING_PERCENTAGE)
+  train_ids <- shuffled_ids[1:training_n]
+
+  training <- ml_dfm[ml_dfm$sampleid %in% train_ids, ]
+  training_sampleid <- training$sampleid
+  training <- training[, -1]
+  test <- ml_dfm[!ml_dfm$sampleid %in% train_ids, ]
+  test <- test[, -1]
+  ml_dfm_randomized <- ml_dfm[order(ml_dfm$sampleid), ]
+} else {
+  ml_dfm_randomized <- ml_dfm[sample(nrow(ml_dfm)), ]
+  training_n <- ceiling(nrow(ml_dfm_randomized) * TRAINING_PERCENTAGE)
+  training <- ml_dfm_randomized[1:training_n, ]
+  training_sampleid <- training$sampleid
+  training <- training[, -1]
+  test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
+  test <- test[, -1]
+}
 
 # ------ SVM modelling ------
 svm_training <- training[, !names(training) %in% "sampleid"]
