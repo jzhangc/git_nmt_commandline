@@ -19,12 +19,12 @@ Please cite the following if you are to use this application:
         - Prediction module updates
           - Prediction module for regression model added
 
-    - 0.5.x-20260804-20260808
+    - 0.5.x-20260804-20260811
       - General updates
         - A bug fixed for warning handling where script stops executing when warning(s) generated
         
       - Data processing modules updates
-        - The application now supports stratified sampling based on input sample id: this is for the case where the input sample id is not unique and the user wants to keep the same sample id in both training and test sets
+        - For both classification and regression modules, The application now supports stratified sampling based on input sample id: this is for the case where the input sample id is not unique and the user wants to keep the same sample id in both training and test sets
 
     - 0.5.1 (June 25, 2026)
         - General updates
