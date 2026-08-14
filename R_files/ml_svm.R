@@ -172,9 +172,10 @@ if (input_n_total_features == 1) {
 } else {
   tryCatch(
     {
-      svm_nested_cv_fs <- rbioClass_svm_ncv_fs(
+      svm_nested_cv_fs <- rbioClass_svm_ncv_fs_v3(
         x = training[, !colnames(training) %in% c("sampleid", "y")],
         y = factor(training$y, levels = unique(training$y)),
+        sampleIds = training$sampleid,
         univariate.fs = CONFIG_LIST$CVUNI, uni.log2trans = CONFIG_LIST$LOG2_TRANS,
         uni.fdr = CONFIG_LIST$UNI_FDR, uni.alpha = CONFIG_LIST$UNI_ALPHA,
         uni.contrast = CONFIG_LIST$CONTRAST,
