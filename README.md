@@ -19,6 +19,9 @@ Please cite the following if you are to use this application:
         - Prediction module updates
           - Prediction module for regression model added
 
+    - 0.5.x-20260825
+      - SVM R moduels updated with refined multi-core support with updated RBioFS and e1071mc dependencies
+
     - 0.5.x-20260804-20260811
       - General updates
         - A bug fixed for warning handling where script stops executing when warning(s) generated

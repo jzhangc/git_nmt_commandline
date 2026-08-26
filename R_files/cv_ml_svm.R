@@ -235,6 +235,7 @@ svm_m <- rbioClass_svm(
   svm.cross.k = CONFIG_LIST$SVM_CROSS_K,
   tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD,
   tune.cross.k = CONFIG_LIST$SVM_TUNE_CROSS_K, tune.boot.n = CONFIG_LIST$SVM_TUNE_BOOT_N,
+  n_cores = CORES,
   verbose = FALSE
 )
 
