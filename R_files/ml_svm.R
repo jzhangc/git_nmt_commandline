@@ -272,7 +272,7 @@ svm_m <- rbioClass_svm(
   tune.method = CONFIG_LIST$SVM_CV_TUNE_METHOD,
   tune.cross.k = CONFIG_LIST$SVM_TUNE_CROSS_K,
   tune.boot.n = CONFIG_LIST$SVM_TUNE_BOOT_N,
-  n_cores = CORES, 
+  n_cores = CORES,
   verbose = FALSE
 )
 
@@ -332,17 +332,20 @@ if (input_n_total_features == 1) {
 } else {
   cat("-- On CV-SVM-rRF-FS (nested) models --\n")
   tryCatch(
-    {
-      # nested cv roc-auc
-      rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
-        plot.smooth = CONFIG_LIST$SVM_ROC_SMOOTH,
-        plot.legendSize = CONFIG_LIST$SVM_ROC_LEGEND_SIZE,
-        plot.xLabelSize = CONFIG_LIST$SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = CONFIG_LIST$SVM_ROC_X_TICK_LABEL_SIZE,
-        plot.yLabelSize = CONFIG_LIST$SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = CONFIG_LIST$SVM_ROC_Y_TICK_LABEL_SIZE,
-        plot.Width = CONFIG_LIST$SVM_ROC_WIDTH, plot.Height = CONFIG_LIST$SVM_ROC_HEIGHT,
-        verbose = FALSE
-      )
+    # nested cv roc-auc
+    rbioClass_svm_cv_roc_auc(svm_nested_cv_fs,
+      plot.smooth = CONFIG_LIST$SVM_ROC_SMOOTH,
+      plot.legendSize = CONFIG_LIST$SVM_ROC_LEGEND_SIZE,
+      plot.xLabelSize = CONFIG_LIST$SVM_ROC_X_LABEL_SIZE, plot.xTickLblSize = CONFIG_LIST$SVM_ROC_X_TICK_LABEL_SIZE,
+      plot.yLabelSize = CONFIG_LIST$SVM_ROC_Y_LABEL_SIZE, plot.yTickLblSize = CONFIG_LIST$SVM_ROC_Y_TICK_LABEL_SIZE,
+      plot.Width = CONFIG_LIST$SVM_ROC_WIDTH, plot.Height = CONFIG_LIST$SVM_ROC_HEIGHT,
+      verbose = FALSE
+    ),
+    error = function(e) cat(paste0("nested cv roc_auc construction failure\n", "\tRef error message: ", e, "\n"))
+  )
 
+  tryCatch(
+    {
       rffs_nested_cv_auc <- vector(mode = "list", length = length(unique(ml_dfm$y)))
       for (i in 1:length(rffs_nested_cv_auc)) {
         out <- vector(length = length(svm_nested_cv_fs_svm_nestedcv_roc_auc))
@@ -384,7 +387,10 @@ if (input_n_total_features == 1) {
       )
       cat("\n")
     },
-    error = function(e) cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s)\n", "\tRef error message: ", e, "\n"))
+    error = function(e) {
+      cat(paste0("ROC-AUC for nested CV-SVM-rRF-FS generated error(s)\n", "\tRef error message: ", e, "\n"))
+      rffs_nested_cv_auc <- NA
+    }
   )
 
   tryCatch(

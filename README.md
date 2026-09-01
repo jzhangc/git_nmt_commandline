@@ -19,8 +19,13 @@ Please cite the following if you are to use this application:
         - Prediction module updates
           - Prediction module for regression model added
 
+    - 0.5.x-20260831
+      - SVM module udpates
+        - A bug fixed for svm_ml.R and cv_svm_ml.R where the scripts will fail when ROC-AUC produces an error
+
     - 0.5.x-20260825
-      - SVM R moduels updated with refined multi-core support with updated RBioFS and e1071mc dependencies
+      - General updates
+        - SVM R moduels updated with refined multi-core support with updated RBioFS and e1071mc dependencies
 
     - 0.5.x-20260804-20260811
       - General updates
