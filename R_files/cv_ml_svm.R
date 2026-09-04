@@ -388,7 +388,7 @@ if (input_n_total_features == 1) {
             },
             error = function(e) {
               cat(paste0("ERROR: svm_m_cv_svm_cv_roc_auc[[", j, "]] not found. Skip to next.\n", "\tRef error message: ", e, "\n"))
-              out[j] <- NA
+              out[j] <<- NA
             }
           )
         }
@@ -413,6 +413,9 @@ if (input_n_total_features == 1) {
       names(final_cv_auc) <- final_cv_names
 
       for (i in 1:length(final_cv_auc)) {
+        if (any(is.na(final_cv_auc[[i]]))) {
+          cat(paste0("WARNING: final_cv_auc[[", i, "]] is missing ", length(final_cv_auc[[i]][!is.na(final_cv_auc[[i]])]), "|", length(final_cv_auc), " iterations. Proceed with removing them."))
+          }        
         cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(mean): ", mean(final_cv_auc[[i]]), "\n"))
         cat(paste0("Final CV ", names(final_cv_auc)[i], " AUC(SD): ", sd(final_cv_auc[[i]]), "\n"))
       }
