@@ -19,17 +19,15 @@ Please cite the following if you are to use this application:
         - Prediction module updates
           - Prediction module for regression model added
 
-    - 0.5.x-20260831
+    - 0.5.x-20260831 - 0.5.x-20260904
       - SVM module udpates
         - A bug fixed for svm_ml.R and cv_svm_ml.R where the scripts will fail when ROC-AUC produces an error
+        - A bug fixed for svm_ml.R and cv_svm_ml.R where error iterations are not removed when ROC-AUC produces an error, which would like to incorrect calculation on mean(auc) and sd(auc)
 
-    - 0.5.x-20260825
-      - General updates
-        - SVM R moduels updated with refined multi-core support with updated RBioFS and e1071mc dependencies
-
-    - 0.5.x-20260804-20260811
+    - 0.5.x-20260804 - 0.5.x-20260825
       - General updates
         - A bug fixed for warning handling where script stops executing when warning(s) generated
+        - SVM R moduels updated with refined multi-core support with updated RBioFS and e1071mc dependencies
         
       - Data processing modules updates
         - For both classification and regression modules, The application now supports stratified sampling based on input sample id: this is for the case where the input sample id is not unique and the user wants to keep the same sample id in both training and test sets
