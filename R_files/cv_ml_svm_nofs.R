@@ -275,7 +275,7 @@ warn_msg <- NULL
 shap_out <- tryCatch(
   withCallingHandlers(
     rbioClass_svm_shap_aggregated(
-      model = svm_m, X = svm_training[, -1], bg_X = svm_training[, -1],
+      model = svm_m, X = final_svm_data[, -1], bg_X = final_svm_data[, -1],
       parallelComputing = PSETTING, clusterType = "PSOCK",
       n_cores = CORES, randomState = CONFIG_LIST$RANDOM_STATE,
       plot.type = "both", plot.n = Inf,

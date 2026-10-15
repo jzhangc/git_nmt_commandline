@@ -19,9 +19,13 @@ Please cite the following if you are to use this application:
         - Prediction module updates
           - Prediction module for regression model added
 
+    - 0.5.x-20261015
+      - SVM module updates
+        - A bug fixed for cv_ml_svm_nofs.R where SHAP would fail due to input data objective mismatch: svm_training -> final_svm_data
+
     - 0.5.x-20260831 - 0.5.x-20260904
-      - SVM module udpates
-        - A bug fixed for svm_ml.R and cv_svm_ml.R where the scripts will fail when ROC-AUC produces an error
+      - SVM module updates
+        - A bug fixed` for svm_ml.R and cv_svm_ml.R where the scripts will fail when ROC-AUC produces an error
         - A bug fixed for svm_ml.R and cv_svm_ml.R where error iterations are not removed when ROC-AUC produces an error, which would like to incorrect calculation on mean(auc) and sd(auc)
 
     - 0.5.x-20260804 - 0.5.x-20260825
