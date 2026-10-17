@@ -104,12 +104,28 @@ if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
 
+# ------ load leak-free data transformation helpers ------
+# cwd is the repo root before setwd below, so the relative path resolves
+source("R_files/dat_transform.R")
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
 # ------ load and processed ML data files ------
 ml_dfm <- read.csv(file = DAT_FILE, stringsAsFactors = FALSE, check.names = FALSE)
 input_n_total_features <- ncol(ml_dfm[, !names(ml_dfm) %in% c("sampleid", "y"), drop = FALSE])
+
+# ------ data transformation (CV-only mode: global fit) ------
+# In CV-only mode there is no train/test split, so the transform is fit on the
+# whole dataset (as before) to keep CV results identical. The fitted parameters are
+# stored in dat_transform_param and applied to new data at prediction time.
+tr <- load_dat_process_config(RES_OUT_DIR, MAT_FILE_NO_EXT)
+if (isTRUE(tr$minmax) || isTRUE(tr$zscore)) {
+  feat_all <- setdiff(names(ml_dfm), c("sampleid", "y"))
+  res_g <- fit_dat_transform(ml_dfm[, feat_all, drop = FALSE], minmax = tr$minmax, zscore = tr$zscore)
+  ml_dfm[, feat_all] <- res_g$transformed
+  dat_transform_param <- res_g$param
+}
 
 # ------ internal nested cross-validation and feature selection ------
 sink(file = paste0(MAT_FILE_NO_EXT, "_svm_results.txt"), append = TRUE)
@@ -311,7 +327,7 @@ write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = 
 
 svm_training <- ml_dfm[, c("y", svm_rf_selected_features)]
 save(
-  list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv"),
+  list = c("svm_m", "svm_training", "svm_rf_selected_features", "svm_nested_cv_fs", "svm_m_cv", "dat_transform_param"),
   file = paste0("cv_only_", MAT_FILE_NO_EXT, "_final_svr_model.Rdata")
 )
 

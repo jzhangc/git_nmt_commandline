@@ -104,6 +104,10 @@ if (RANDOM_STATE) {
   set.seed(RANDOM_STATE)
 }
 
+# ------ load leak-free data transformation helpers ------
+# cwd is the repo root before setwd below, so the relative path resolves
+source("R_files/dat_transform.R")
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
@@ -133,6 +137,24 @@ if (has_repeated_sampleid) {
   training <- training[, -1]
   test <- ml_dfm_randomized[(training_n + 1):nrow(ml_dfm_randomized), ]
   test <- test[, -1]
+}
+
+# ------ leak-free data transformation (fit on training only) ------
+# min-max normalization and z-score centering are fit on the training rows only,
+# then applied to both training and test rows, so no statistics from the test set
+# leak into the model. Flags are read from the data processing config written by
+# the input-processing step.
+tr <- load_dat_process_config(RES_OUT_DIR, MAT_FILE_NO_EXT)
+tt <- transform_train_test(training, test, minmax = tr$minmax, zscore = tr$zscore)
+training <- tt$train
+test <- tt$test
+dat_transform_param <- tt$param
+# keep ml_dfm (used for downstream _dl.csv export and visualizations) consistent
+if (!is.null(dat_transform_param)) {
+  feat_all <- setdiff(names(ml_dfm), c("sampleid", "y"))
+  if (length(feat_all) > 0) {
+    ml_dfm[, feat_all] <- apply_dat_transform(ml_dfm[, feat_all, drop = FALSE], dat_transform_param)
+  }
 }
 
 # ------ SVM modelling ------
@@ -205,7 +227,7 @@ output_for_dl <- ml_dfm
 write.csv(file = "ml_randomized_group_label_order.csv", y_randomized, row.names = FALSE)
 write.csv(file = paste0(MAT_FILE_NO_EXT, "_dl.csv"), output_for_dl, row.names = FALSE)
 save(
-  list = c("svm_m", "svm_training", "svm_test", "svm_m_cv"),
+  list = c("svm_m", "svm_training", "svm_test", "svm_m_cv", "dat_transform_param"),
   file = paste0("nofs_", MAT_FILE_NO_EXT, "_final_svr_model.Rdata")
 )
 

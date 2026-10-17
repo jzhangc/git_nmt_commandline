@@ -30,6 +30,10 @@ load(MODEL_FILE)
 MINMAX_NORM <- DAT_PROCESS_CONFIG$MINMAX_NORM
 ZSCORE_STAND <- DAT_PROCESS_CONFIG$ZSCORE_STAND
 
+# ------ load leak-free data transformation helpers ------
+# cwd is the repo root before setwd below, so the relative path resolves
+source("R_files/dat_transform.R")
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
@@ -68,11 +72,16 @@ if (is.null(nrow(raw_sample))) { # one entry only
   raw_sample_dfm <- raw_sample
 }
 raw_sample_dfm <- data.frame(sampleid = sampleid, raw_sample_dfm, row.names = NULL, check.names = FALSE)
-if (MINMAX_NORM) {
-  raw_sample_dfm[, -c(1:2)] <- apply(raw_sample_dfm[, -c(1:2)], 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
-}
-if (ZSCORE_STAND) {
-  raw_sample_dfm[, -c(1:2)] <- center_scale(raw_sample_dfm[, -c(1:2)], scale = FALSE)$centerX
+# apply the transform FIT ON THE TRAINING SET (dat_transform_param, loaded from the
+# model) instead of re-fitting on the new batch: re-fitting would (a) leak
+# new-batch statistics into the model and (b) be inconsistent with the trained
+# model. apply_dat_transform matches columns by name, so only known features are
+# transformed; the sampleid column is left untouched.
+if (exists("dat_transform_param") && !is.null(dat_transform_param)) {
+  feat_cols_p <- setdiff(names(raw_sample_dfm), "sampleid")
+  if (length(feat_cols_p) > 0) {
+    raw_sample_dfm[, feat_cols_p] <- apply_dat_transform(raw_sample_dfm[, feat_cols_p, drop = FALSE], dat_transform_param)
+  }
 }
 
 # ------ export and clean up the mess --------

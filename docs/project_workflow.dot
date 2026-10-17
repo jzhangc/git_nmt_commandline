@@ -1,55 +1,66 @@
 digraph NMT_Project_Workflow {
   rankdir=TB;
   fontname="Helvetica";
-  node [fontname="Helvetica", style=filled, shape=box, fontsize=12];
-  edge [fontname="Helvetica", fontsize=10];
+  node [fontname="Helvetica", style=filled, shape=box, fontsize=11];
+  edge [fontname="Helvetica", fontsize=9];
+  labelloc="t";
+  label=<LEAK-FREE DATA TRANSFORMATION<BR/><BR/>fit on TRAIN only &#183; apply to TEST / PRED &#183; never re-fit<BR/><FONT FACE="Helvetica">docs/project_workflow.svg</FONT>>;
+  fontsize=13;
 
-   // Main project root
-   root [label="NMT Project", shape=folder, fillcolor="#e0e0e0", fontsize=16];
+  // ---- 1. Input processing (RAW: no transform) ----
+  input [label=<INPUT PROCESSING (RAW)<BR/>input_dat_process*.R &#8789; reg_input_dat_process*.R<BR/><BR/>no min-max / z-score transform here>, fillcolor="#c8e6c9"];
+  raw [label=<_2D.csv<BR/><BR/>(RAW features)>, shape=note, fillcolor="#e8f5e9"];
+  cfg [label=<_data_processing_config.RData<BR/><BR/>MINMAX_NORM &#183; ZSCORE_STAND flags>, shape=note, fillcolor="#fff9c4"];
 
-   // Top-level directories
-   bash [label="*.sh Scripts\n(Entry Points)", fillcolor="#c8e6c9"];
-   r_files [label="R_files/\n(ML Logic)", fillcolor="#bbdefb"];
-   scripts_dir [label="scripts/\n(Init & Validation)", fillcolor="#fff9c4"];
-   src_dir [label="src/\n(Utils & Vars)", fillcolor="#f8bbd0"];
-   config_templates [label="config_file_templates/\n(Config Templates)", fillcolor="#e1bee7"];
-   data_dir [label="data/\n(Sample Data)", fillcolor="#ffe0b2"];
-   z_legacy [label="z_legacy/\n(Backed-up)", fillcolor="#ffcdd8"];
-   docs [label="docs/\n(Diagrams)", fillcolor="#eceff1"];
-   zzz [label="zzz\n(Shared Sourcing)", fillcolor="#d7ccc8"];
+  input -> raw  [label="write raw features"];
+  input -> cfg  [label="write flags"];
 
-   root -> bash;
-   root -> r_files;
-   root -> scripts_dir;
-   root -> src_dir;
-   root -> config_templates;
-   root -> data_dir;
-   root -> z_legacy;
-   root -> docs;
-   root -> zzz;
+  // ---- 2. Prior-knowledge / univariate (optional) ----
+  univ [label=<UNIVARIATE / PRIOR KNOWLEDGE (optional)<BR/>univariate*.R  (when -k)<BR/><BR/>-&gt; _w_prior.csv (RAW features)>, fillcolor="#bbdefb"];
+  raw -> univ  [label="-k on", constraint=false];
+  univ -> ml   [label="_w_prior.csv"];
+  raw  -> ml   [label="raw _2D.csv (-k off)"];
 
-    // z_legacy sub-folders
-   legacy_config [label="config_file_templates/", fillcolor="#ffcdd8", parent=z_legacy];
-   legacy_r_files [label="R_files/", fillcolor="#ffcdd8", parent=z_legacy];
-   legacy_scripts [label="scripts/", fillcolor="#ffcdd8", parent=z_legacy];
-   legacy_src [label="src/", fillcolor="#ffcdd8", parent=z_legacy];
+  // ---- 3. ML / CV stage: fit-on-train, apply-to-test ----
+  ml [label=<ML / CV STAGE<BR/>ml_svm* &#8789; reg_ml_svm* &#8789; cv_ml_svm*<BR/>(+ _nofs twins)>, fillcolor="#e1bee7"];
+  split [label=<train / test split>, shape=ellipse, fillcolor="#f3e5f5"];
+  ml -> split;
 
-   z_legacy -> legacy_config;
-   z_legacy -> legacy_r_files;
-   z_legacy -> legacy_scripts;
-   z_legacy -> legacy_src;
+  tr [label=<training>, shape=ellipse, fillcolor="#f3e5f5"];
+  tt [label=<test>, shape=ellipse, fillcolor="#f3e5f5"];
+  split -> tr [label="training rows"];
+  split -> tt [label="test rows"];
 
-    // data sub-folders
-   data_conn [label="1_conn/\n(3D .mat connectivity)", fillcolor="#ffe0b2", parent=data_dir];
-   data_tabular [label="2_tabular/\n(2D tabular data)", fillcolor="#ffe0b2", parent=data_dir];
-   data_adhoc [label="3_adhoc_data/\n(Ad-hoc data)", fillcolor="#ffe0b2", parent=data_dir];
-   data_archive [label="z_archive/\n(Archived old versions)", fillcolor="#ffe0b2", parent=data_dir];
+  fit   [label=<fit_dat_transform(training)<BR/><BR/>fit on TRAIN only>, shape=box, fillcolor="#ffecb3"];
+  apply [label=<= train + apply_dat_transform(test)<BR/><BR/>same fitted params &#8594; LEAK-FREE>, shape=box, fillcolor="#ffecb3"];
+  tr  -> fit;
+  fit -> apply;
+  tt  -> apply;
 
-   data_dir -> data_conn;
-   data_dir -> data_tabular;
-   data_dir -> data_adhoc;
-   data_dir -> data_archive;
+  model [label=<model + dat_transform_param<BR/><BR/>saved into *_final_svm/svr_model.Rdata>, shape=cylinder, fillcolor="#ffe0b2"];
+  apply -> model [label="transformed data + fitted params"];
 
-    // Style edges
-   edge [color="#666666", arrowsize=0.8];
+  // ---- 4. Prediction: apply, never re-fit ----
+  newdata [label=<new data<BR/>(.mat / .csv)>, shape=note, fillcolor="#e8f5e9"];
+  loadm   [label=<model RData loaded<BR/>(provides dat_transform_param)>, shape=ellipse, fillcolor="#fff9c4"];
+  applyp  [label=<apply_dat_transform(newdata, param)<BR/><BR/>APPLY only &#8594; NO re-fit>, shape=box, fillcolor="#ffecb3"];
+  pred    [label=<pred_classif.R<BR/><BR/>&#8594; predictions>, shape=box, fillcolor="#c8e6c9"];
+
+  model   -> loadm  [label="load(MODEL_FILE)"];
+  loadm   -> applyp [label="dat_transform_param"];
+  newdata -> applyp;
+  applyp  -> pred;
+
+  // ---- Shared helper (dashed: sourced, not a data carrier) ----
+  helper [label=<R_files/dat_transform.R<BR/><BR/>fit_dat_transform &#183; apply_dat_transform<BR/>transform_train_test &#183; load_dat_process_config<BR/><BR/>sourced by every ML / CV / pred script>,
+          shape=box3d, fillcolor="#eceff1", style="filled,dashed", color="#999999"];
+  helper -> ml     [style=dashed, color="#999999", constraint=false, label="source()"];
+
+  // ---- CV-only note (global fit; existing numbers preserved) ----
+  cvnote [label=<CV-only (-x): no external split &#8594;<BR/>global fit on whole set<BR/>(existing CV numbers preserved)>,
+          shape=note, fillcolor="#f5f5f5", fontsize=9];
+  ml -> cvnote [style=dashed, color="#999999", constraint=false];
+
+  // edge styling
+  edge [color="#444444", arrowsize=0.7];
 }

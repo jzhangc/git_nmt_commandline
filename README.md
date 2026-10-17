@@ -13,11 +13,15 @@ Please cite the following if you are to use this application:
 ## Version History
 
     - Waterbox
-        - Data processing modules updates
-          - Data transformation step separated for univariate analysis and ml analysis to prevent info leakage
 
-        - Prediction module updates
-          - Prediction module for regression model added
+      - Prediction module updates
+        - Prediction module for regression model added
+
+    - 0.5.x-20261017
+      - Data processing modules updates
+        - Data transformation step separated for univariate analysis and ml analysis to prevent info leakage
+      - Figure updates
+        - Updated project_workflow figure to reflect the data transformation step separation
 
     - 0.5.x-20261015
       - SVM module updates

@@ -74,13 +74,10 @@ drop_cols <- names(feature_dat)[which(!vapply(feature_dat, function(x) length(un
 feature_dat <- feature_dat[, !names(feature_dat) %in% drop_cols, drop = FALSE]
 # raw_sample_dfm[, -c(1:2)] <- raw_sample_dfm[, -c(1:2)][vapply(raw_sample_dfm[, -c(1:2)], function(x) length(unique(x)) > 1, logical(1L))] # remove columns with only the same value
 
-# -- data transformation --
-if (DAT_PROCESS_CONFIG$MINMAX_NORM) {
-  feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
-}
-if (DAT_PROCESS_CONFIG$ZSCORE_STAND) {
-  feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
-}
+# NOTE: min-max normalization and z-score centering are intentionally NOT applied here.
+# They must be fit on the training set only, then applied to the test set, to avoid
+# data leakage. The ML scripts (ml_svm.R, ml_svm_nofs.R) fit the transform after the
+# train/test split using the same flags stored in DAT_PROCESS_CONFIG.
 
 # -------- data output --------
 # --- output data ---

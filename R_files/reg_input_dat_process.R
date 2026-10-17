@@ -81,13 +81,10 @@ colnames(raw_sample_dfm)[-c(1:2)] <- dimnames(raw_sample)[[2]]
 feature_dat <- raw_sample_dfm[, -c(1:2)]
 id_dat <- raw_sample_dfm[, c(1:2)]
 
-# -- data transformation --
-if (DAT_PROCESS_CONFIG$MINMAX_NORM) {
-  feature_dat <- apply(feature_dat, 2, FUN = function(x)(x-min(x))/(max(x)-min(x)))
-}
-if (DAT_PROCESS_CONFIG$ZSCORE_STAND) {
-  feature_dat <- center_scale(feature_dat, scale = FALSE)$centerX
-}
+# NOTE: min-max normalization and z-score centering are intentionally NOT applied here.
+# They must be fit on the training set only, then applied to the test set, to avoid
+# data leakage. The regression ML scripts (reg_ml_svm.R, reg_ml_svm_nofs.R) fit the
+# transform after the train/test split using the same flags stored in DAT_PROCESS_CONFIG.
 
 # -- data output --
 raw_sample_dfm_output <- cbind(id_dat, feature_dat)

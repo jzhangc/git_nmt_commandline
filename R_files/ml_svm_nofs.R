@@ -120,6 +120,10 @@ if (CONFIG_LIST$RANDOM_STATE) {
   set.seed(CONFIG_LIST$RANDOM_STATE)
 }
 
+# ------ load leak-free data transformation helpers ------
+# cwd is the repo root before setwd below, so the relative path resolves
+source("R_files/dat_transform.R")
+
 # ------ set the output directory as the working directory ------
 setwd(RES_OUT_DIR) # the folder that all the results will be exports to
 
@@ -160,6 +164,24 @@ if (has_repeated_sampleid) {
   test <- ml_dfm[!ml_dfm$sampleid %in% training$sampleid, ]
 } else {
   test <- ml_dfm[!rownames(ml_dfm) %in% rownames(training), ]
+}
+
+# ------ leak-free data transformation (fit on training only) ------
+# min-max normalization and z-score centering are fit on the training rows only,
+# then applied to both training and test rows, so no statistics from the test set
+# leak into the model. Flags are read from the data processing config written by
+# the input-processing step.
+tr <- load_dat_process_config(RES_OUT_DIR, CONFIG_LIST$MAT_FILE_NO_EXT)
+tt <- transform_train_test(training, test, minmax = tr$minmax, zscore = tr$zscore)
+training <- tt$train
+test <- tt$test
+dat_transform_param <- tt$param
+# keep ml_dfm (used for downstream _dl.csv export and visualizations) consistent
+if (!is.null(dat_transform_param)) {
+  feat_all <- setdiff(names(ml_dfm), c("sampleid", "y"))
+  if (length(feat_all) > 0) {
+    ml_dfm[, feat_all] <- apply_dat_transform(ml_dfm[, feat_all, drop = FALSE], dat_transform_param)
+  }
 }
 
 
@@ -380,7 +402,7 @@ test_summary <- foreach(i = 1:length(levels(test_y)), .combine = "c") %do%
 write.csv(file = "ml_training.csv", training, row.names = FALSE)
 write.csv(file = "ml_test.csv", test, row.names = FALSE)
 save(
-  list = c("svm_m", "svm_m_cv", "svm_training", "svm_test", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc"),
+  list = c("svm_m", "svm_m_cv", "svm_training", "svm_test", "final_cv_auc", "svm_m_training_svm_roc_auc", "svm_m_test_svm_roc_auc", "dat_transform_param"),
   file = paste0("nofs_", CONFIG_LIST$MAT_FILE_NO_EXT, "_final_svm_model.Rdata")
 )
 

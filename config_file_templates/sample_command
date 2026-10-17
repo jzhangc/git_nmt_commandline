@@ -44,9 +44,20 @@
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results/res_reg" -x -l -p 12
 
 # ------ sample id stratification testing ------
+# -- tabular classification --
 ./train_class.sh \
 -i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/working_el_rev2_effort.csv" \
 -s "subjectid" -g "effort" \
 -c "high-none" \
 -m "./config_file_templates/config_template_for_classification" \
 -o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/2_tabular/1_results/res_class" -p 12
+
+# -- conn classification --
+./connectivity_ml.sh \
+-i "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/freq_4.mtbi_new_aec.mat" \
+-a "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/annot_new_50.csv" \
+-s "sampleid" -g "groupid" -c "mtbi-control" \
+-n "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/AAL90_labels_zahra_ver.csv" \
+-m "./config_file_templates/config_template_for_classification_connectivity" \
+-d "node_id" -r "region" \
+-o "/Users/jingzhang/Documents/git_repo/git_nmt_commandline/data/1_conn/1_results/res_class" -k -p 12
